@@ -1269,7 +1269,7 @@ button[draggable="true"],
     </div>
     <section class="panel salary-calendar-panel" aria-labelledby="salaryCalendarTitle" style="margin-bottom:18px">
       <div class="panel-head salary-calendar-head">
-        <div><h2 id="salaryCalendarTitle" style="font-size:19px">Salary calendar</h2><div class="panel-sub">View your scheduled payday each month. Update Salary details to change the amount or payday.</div></div>
+        <div><h2 id="salaryCalendarTitle" style="font-size:19px">Salary calendar</h2><div class="panel-sub">View both monthly cutoff paydays. If a payday falls on a weekend or recognized Philippine holiday, it moves to the previous working day.</div></div>
         <div class="salary-calendar-controls">
           <button type="button" class="btn btn-light" onclick="changeSalaryCalendarMonth(-1)" aria-label="Previous month">‹</button>
           <button type="button" class="btn btn-light" onclick="goToCurrentSalaryCalendarMonth()">Today</button>
@@ -1288,7 +1288,7 @@ button[draggable="true"],
       <div class="panel-head"><div><h2 id="salaryDetailsTitle">Salary details</h2><div class="panel-sub">Update this whenever your monthly salary changes.</div></div><button type="button" class="btn btn-light" onclick="toggleSalaryDetails(false)" aria-label="Close salary details">✕ Close</button></div>
       <form id="monthlySalaryForm" onsubmit="saveMonthlySalary(event)" class="form-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
         <div class="field"><label for="monthlySalaryAmount">Monthly salary (₱)</label><input id="monthlySalaryAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 12000" required></div>
-        <div class="field"><label for="monthlySalaryPayDay">Usual payday</label><select id="monthlySalaryPayDay"><option value="1">1st of the month</option><option value="5">5th of the month</option><option value="10">10th of the month</option><option value="15">15th of the month</option><option value="20">20th of the month</option><option value="25">25th of the month</option><option value="30">30th of the month</option><option value="custom">Varies / not fixed</option></select></div>
+        <div class="field"><label for="monthlySalaryPayDay">Usual payday</label><select id="monthlySalaryPayDay"><option value="15-30">15–30 cutoff (15th &amp; end of month)</option><option value="5-20">5–20 cutoff (5th &amp; 20th)</option><option value="10-25">10–25 cutoff (10th &amp; 25th)</option><option value="custom">Varies / not fixed</option></select></div>
         <div class="field" style="grid-column:1/-1"><label for="monthlySalaryNotes">Notes (optional)</label><input id="monthlySalaryNotes" type="text" maxlength="240" placeholder="e.g. Part-time salary, net of deductions"></div>
         <div style="grid-column:1/-1;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button type="submit" class="btn btn-primary">Save monthly salary</button><span class="panel-sub" id="monthlySalaryUpdatedAt">Not saved yet</span></div>
       </form>
@@ -1566,9 +1566,13 @@ function renderSalaryPage(){
  const amount=Math.max(0,Number(data.monthlySalary)||0);
  const display=document.getElementById('salaryMonthlyDisplay');if(display)display.textContent=peso(amount);
  const annual=document.getElementById('salaryAnnualDisplay');if(annual)annual.textContent=peso(amount*12);
- const pay=document.getElementById('salaryPayDayDisplay');if(pay){const d=String(data.salaryPayDay||'custom');pay.textContent=d==='custom'?'Payday varies':`Usual payday: ${d}${d==='1'?'st':d==='2'?'nd':d==='3'?'rd':'th'} of the month`;}
+ const rawPayday=String(data.salaryPayDay||'custom');
+ // Migrate legacy single-date choices to the closest twice-monthly cutoff schedule.
+ const paydayValue=({'1':'5-20','5':'5-20','10':'10-25','15':'15-30','20':'5-20','25':'10-25','30':'15-30'})[rawPayday]||rawPayday;
+ const payLabels={'15-30':'15th & end of month (15–30 cutoff)','5-20':'5th & 20th of the month (5–20 cutoff)','10-25':'10th & 25th of the month (10–25 cutoff)'};
+ const pay=document.getElementById('salaryPayDayDisplay');if(pay){pay.textContent=paydayValue==='custom'?'Payday varies':`Usual paydays: ${payLabels[paydayValue]||paydayValue}`;}
  const input=document.getElementById('monthlySalaryAmount');if(input&&document.activeElement!==input)input.value=amount?String(amount):'';
- const payday=document.getElementById('monthlySalaryPayDay');if(payday)payday.value=String(data.salaryPayDay||'custom');
+ const payday=document.getElementById('monthlySalaryPayDay');if(payday)payday.value=paydayValue;
  const notes=document.getElementById('monthlySalaryNotes');if(notes&&document.activeElement!==notes)notes.value=String(data.salaryNotes||'');
  const updated=document.getElementById('monthlySalaryUpdatedAt');if(updated)updated.textContent=data.salaryUpdatedAt?`Last updated: ${new Date(data.salaryUpdatedAt).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'})}`:'Not saved yet';
  renderSalaryCalendar();
@@ -1585,6 +1589,44 @@ function goToCurrentSalaryCalendarMonth(){
  renderSalaryCalendar();
 }
 function salaryCalendarISO(year,monthIndex,day){return year+'-'+String(monthIndex+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');}
+function getPhilippineHolidays(year){
+ // Common Philippine regular/special non-working holidays. Dates that are announced
+ // by proclamation (for example Eid holidays) may vary and are not inferred here.
+ const fixed=new Set([
+  `${year}-01-01`, `${year}-02-25`, `${year}-04-09`, `${year}-05-01`,
+  `${year}-06-12`, `${year}-08-21`, `${year}-11-01`, `${year}-11-02`,
+  `${year}-11-30`, `${year}-12-08`, `${year}-12-24`, `${year}-12-25`,
+  `${year}-12-30`, `${year}-12-31`
+ ]);
+ // Easter-based Philippine holidays: Maundy Thursday, Good Friday, Black Saturday.
+ const a=year%19,b=Math.floor(year/100),c=year%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451);
+ const easterMonth=Math.floor((h+l-7*m+114)/31),easterDay=((h+l-7*m+114)%31)+1;
+ const easter=new Date(year,easterMonth-1,easterDay);
+ [-3,-2,-1].forEach(offset=>{const dt=new Date(easter);dt.setDate(dt.getDate()+offset);fixed.add(salaryCalendarISO(dt.getFullYear(),dt.getMonth(),dt.getDate()));});
+ // National Heroes Day: last Monday of August.
+ const lastAug=new Date(year,7,31);lastAug.setDate(31-((lastAug.getDay()+6)%7));
+ fixed.add(salaryCalendarISO(year,7,lastAug.getDate()));
+ return fixed;
+}
+function getSalaryPaydayEntries(schedule,year,monthIndex){
+ const daysInMonth=new Date(year,monthIndex+1,0).getDate();
+ let scheduled=[];
+ if(schedule==='15-30')scheduled=[15,daysInMonth];
+ else if(schedule==='5-20')scheduled=[5,20];
+ else if(schedule==='10-25')scheduled=[10,25];
+ else {const legacy=Number(schedule);if([1,5,10,15,20,25,30].includes(legacy))scheduled=[Math.min(legacy,daysInMonth)];}
+ const holidays=getPhilippineHolidays(year);
+ return scheduled.map((scheduledDay,index)=>{
+  let actualDay=scheduledDay,dt=new Date(year,monthIndex,actualDay),reason='';
+  // If payday lands on a weekend or recognized holiday, move it to the previous working day.
+  while(dt.getDay()===0||dt.getDay()===6||holidays.has(salaryCalendarISO(dt.getFullYear(),dt.getMonth(),dt.getDate()))){
+   reason=dt.getDay()===0||dt.getDay()===6?'weekend':'holiday';
+   dt.setDate(dt.getDate()-1);actualDay=dt.getDate();
+  }
+  return {day:actualDay,scheduledDay,index,reason:actualDay!==scheduledDay?reason:''};
+ });
+}
+function getSalaryPaydays(schedule,year,monthIndex){return getSalaryPaydayEntries(schedule,year,monthIndex).map(entry=>entry.day);}
 function renderSalaryCalendar(){
  const grid=document.getElementById('salaryCalendarGrid'),label=document.getElementById('salaryCalendarMonthLabel'),details=document.getElementById('salaryCalendarDetails');
  if(!grid||!label||!details)return;
@@ -1603,16 +1645,16 @@ function renderSalaryCalendar(){
   else day=i-firstDay+1;
   const iso=salaryCalendarISO(cellYear,cellMonth,day);
   const isToday=iso===todayISOString;
-  let isPayday=false;
-  if(hasSchedule){
-   const actualPayday=Math.min(Number(payday),new Date(cellYear,cellMonth+1,0).getDate());
-   isPayday=cellYear===year&&cellMonth===month&&day===actualPayday;
-  }
+  const paydayEntries=hasSchedule?getSalaryPaydayEntries(payday,cellYear,cellMonth):[];
+  const paydayEntry=paydayEntries.find(entry=>entry.day===day);
+  const paydayIndex=paydayEntry?paydayEntry.index:-1;
+  const isPayday=!!paydayEntry;
   const selected=salaryCalendarSelectedDate===iso;
-  cells.push(`<button type="button" role="gridcell" aria-label="${new Date(cellYear,cellMonth,day).toLocaleDateString('en-PH',{dateStyle:'full'})}${isPayday?', payday':''}" class="salary-calendar-day${outside?' is-outside':''}${isToday?' is-today':''}${isPayday?' is-payday':''}${selected?' is-selected':''}" onclick="selectSalaryCalendarDate('${iso}')"><span class="salary-calendar-day-number">${day}</span>${isPayday?`<span class="salary-calendar-event">Payday</span><span class="salary-calendar-event-amount">${peso(amount)}</span>`:''}</button>`);
+  const payoutAmount=amount/2;
+  cells.push(`<button type="button" role="gridcell" aria-label="${new Date(cellYear,cellMonth,day).toLocaleDateString('en-PH',{dateStyle:'full'})}${isPayday?', payday':''}" class="salary-calendar-day${outside?' is-outside':''}${isToday?' is-today':''}${isPayday?' is-payday':''}${selected?' is-selected':''}" onclick="selectSalaryCalendarDate('${iso}')"><span class="salary-calendar-day-number">${day}</span>${isPayday?`<span class="salary-calendar-event">${paydayIndex===0?'1st cutoff':'2nd cutoff'}${paydayEntry.reason?' · moved':''}</span><span class="salary-calendar-event-amount">${peso(payoutAmount)}</span>`:''}</button>`);
  }
  grid.innerHTML=cells.join('');
- if(!salaryCalendarSelectedDate) salaryCalendarSelectedDate=hasSchedule?salaryCalendarISO(year,month,Math.min(Number(payday),daysInMonth)):todayISOString;
+ if(!salaryCalendarSelectedDate) salaryCalendarSelectedDate=hasSchedule?salaryCalendarISO(year,month,getSalaryPaydays(payday,year,month)[0]||1):todayISOString;
  renderSalaryCalendarDetails(salaryCalendarSelectedDate);
 }
 function selectSalaryCalendarDate(iso){salaryCalendarSelectedDate=iso;renderSalaryCalendar();}
@@ -1622,9 +1664,12 @@ function renderSalaryCalendarDetails(iso){
  const parts=String(iso||'').split('-').map(Number),date=new Date(parts[0],parts[1]-1,parts[2]);
  const dateLabel=date.toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
  const hasSchedule=amount>0&&payday!=='custom'&&!!data.salaryUpdatedAt;
- const actualPayday=hasSchedule?Math.min(Number(payday),new Date(parts[0],parts[1],0).getDate()):null;
- if(hasSchedule&&parts[2]===actualPayday){
-  details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">₱</div><div><strong>Salary payday · ${esc(dateLabel)}</strong><div>${peso(amount)} scheduled based on your saved monthly salary details.</div>${data.salaryNotes?`<div style="margin-top:4px">Note: ${esc(data.salaryNotes)}</div>`:''}</div>`;
+ const paydayEntries=hasSchedule?getSalaryPaydayEntries(payday,parts[0],parts[1]-1):[];
+ const paydayEntry=paydayEntries.find(entry=>entry.day===parts[2]);
+ const paydayIndex=paydayEntry?paydayEntry.index:-1;
+ if(hasSchedule&&paydayEntry){
+  const movedNote=paydayEntry.reason?`<div style="margin-top:4px;color:var(--green)">Moved earlier from the ${paydayEntry.scheduledDay}${paydayEntry.scheduledDay===1?'st':paydayEntry.scheduledDay===2?'nd':paydayEntry.scheduledDay===3?'rd':'th'} because the scheduled payday falls on a ${esc(paydayEntry.reason)}.</div>`:'';
+  details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">₱</div><div><strong>${paydayIndex===0?'1st cutoff':'2nd cutoff'} · ${esc(dateLabel)}</strong><div>Estimated payout: ${peso(amount/2)} (half of your saved monthly salary of ${peso(amount)}).</div>${movedNote}${data.salaryNotes?`<div style="margin-top:4px">Note: ${esc(data.salaryNotes)}</div>`:''}</div>`;
  }else if(amount>0&&payday==='custom'){
   details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">📅</div><div><strong>${esc(dateLabel)}</strong><div>Your payday is set to “Varies / not fixed,” so no automatic payday is scheduled on this date.</div></div>`;
  }else if(amount<=0||!data.salaryUpdatedAt){
