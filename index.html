@@ -1092,6 +1092,35 @@ button[draggable="true"],
 #page-salary .field input:focus,#page-salary .field select:focus{outline:2px solid #15966f35;border-color:var(--green)}
 @media(max-width:650px){#page-salary #monthlySalaryForm{grid-template-columns:minmax(0,1fr)!important}#page-salary #monthlySalaryForm .field{grid-column:1/-1}}
 </style>
+<style id="savely-salary-calendar-v1">
+.salary-calendar-panel{padding:clamp(16px,2.2vw,26px)}
+.salary-calendar-head{align-items:flex-start}
+.salary-calendar-controls{display:flex;gap:7px;flex-shrink:0}
+.salary-calendar-controls .btn{min-width:40px;padding:8px 12px;font-size:14px}
+.salary-calendar-month-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:4px 0 12px}
+.salary-calendar-month-row strong{font-size:18px;letter-spacing:-.35px}
+.salary-calendar-key{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:11px}
+.salary-calendar-key i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px var(--green2)}
+.salary-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px}
+.salary-calendar-weekdays{margin-bottom:7px}
+.salary-calendar-weekdays>div{text-align:center;padding:8px 2px;color:#8a94a7;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
+.salary-calendar-day{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0;min-height:clamp(76px,8vw,112px);padding:10px;border:1px solid var(--line);border-radius:12px;background:#fff;text-align:left;color:var(--text);transition:border-color .15s,background .15s,box-shadow .15s}
+.salary-calendar-day:hover{border-color:#9bd8bd;background:#f8fcfa}
+.salary-calendar-day.is-outside{background:#f8fafc;color:#a8b0bf}
+.salary-calendar-day.is-today{border-color:#9bcdb8;box-shadow:inset 0 0 0 1px #d5f1e3}
+.salary-calendar-day.is-payday{background:linear-gradient(180deg,#effbf5 0%,#fff 90%);border-color:#a8e0c5}
+.salary-calendar-day.is-selected{outline:2px solid var(--green);outline-offset:1px}
+.salary-calendar-day-number{font-size:13px;font-weight:800}
+.salary-calendar-day.is-today .salary-calendar-day-number{display:grid;place-items:center;width:25px;height:25px;margin:-5px 0 0 -5px;background:var(--green);color:#fff;border-radius:50%}
+.salary-calendar-event{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-radius:7px;padding:4px 6px;background:#dff6e9;color:#087a56;font-size:10px;font-weight:800}
+.salary-calendar-event-amount{font-size:10px;font-weight:750;color:#087a56;overflow-wrap:anywhere}
+.salary-calendar-details{display:flex;align-items:flex-start;gap:12px;margin-top:16px;padding:14px 16px;background:#f7fafc;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:12px}
+.salary-calendar-details strong{display:block;color:var(--text);font-size:13px;margin-bottom:3px}
+.salary-calendar-details .salary-calendar-detail-icon{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:11px;background:var(--green2);color:var(--green);font-size:18px}
+.salary-calendar-empty{padding:20px;text-align:center;color:var(--muted);font-size:12px}
+@media(max-width:700px){.salary-calendar-head{flex-direction:column}.salary-calendar-controls{align-self:stretch}.salary-calendar-controls .btn{flex:1}.salary-calendar-grid{gap:4px}.salary-calendar-day{min-height:68px;padding:6px;border-radius:9px}.salary-calendar-day-number{font-size:12px}.salary-calendar-event{font-size:9px;padding:3px 4px}.salary-calendar-event-amount{font-size:9px}.salary-calendar-weekdays>div{font-size:9px;letter-spacing:0}.salary-calendar-details{padding:12px}}
+@media(max-width:420px){.salary-calendar-grid{gap:3px}.salary-calendar-day{min-height:58px;padding:4px}.salary-calendar-day.is-today .salary-calendar-day-number{width:22px;height:22px}.salary-calendar-event{white-space:normal;line-height:1.15}}
+</style>
 </head>
 <body>
 
@@ -1238,6 +1267,22 @@ button[draggable="true"],
       <div class="stat"><div class="stat-top">Monthly take-home salary</div><div class="stat-value" id="salaryMonthlyDisplay" style="color:var(--green)">₱0.00</div><div class="stat-foot" id="salaryPayDayDisplay">Set your monthly salary below</div></div>
       <div class="stat"><div class="stat-top">Annual projection</div><div class="stat-value" id="salaryAnnualDisplay" style="color:var(--blue)">₱0.00</div><div class="stat-foot">Monthly salary × 12, before any changes or bonuses</div></div>
     </div>
+    <section class="panel salary-calendar-panel" aria-labelledby="salaryCalendarTitle" style="margin-bottom:18px">
+      <div class="panel-head salary-calendar-head">
+        <div><h2 id="salaryCalendarTitle" style="font-size:19px">Salary calendar</h2><div class="panel-sub">View your scheduled payday each month. Update Salary details to change the amount or payday.</div></div>
+        <div class="salary-calendar-controls">
+          <button type="button" class="btn btn-light" onclick="changeSalaryCalendarMonth(-1)" aria-label="Previous month">‹</button>
+          <button type="button" class="btn btn-light" onclick="goToCurrentSalaryCalendarMonth()">Today</button>
+          <button type="button" class="btn btn-light" onclick="changeSalaryCalendarMonth(1)" aria-label="Next month">›</button>
+        </div>
+      </div>
+      <div class="salary-calendar-month-row"><strong id="salaryCalendarMonthLabel">Month Year</strong><span class="salary-calendar-key"><i></i> Payday</span></div>
+      <div class="salary-calendar-grid salary-calendar-weekdays" aria-hidden="true">
+        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+      </div>
+      <div id="salaryCalendarGrid" class="salary-calendar-grid" role="grid" aria-label="Monthly salary calendar"></div>
+      <div id="salaryCalendarDetails" class="salary-calendar-details" aria-live="polite"></div>
+    </section>
     <div id="salaryDetailsBackdrop" hidden onclick="if(event.target===this)toggleSalaryDetails(false)" style="position:fixed;inset:0;background:rgba(15,23,42,.48);backdrop-filter:blur(3px);z-index:9998;display:none;align-items:center;justify-content:center;padding:20px;overflow:auto">
     <div class="panel" id="salaryDetailsPanel" role="dialog" aria-modal="true" aria-labelledby="salaryDetailsTitle" style="width:min(100%,760px);max-width:760px;max-height:calc(100vh - 40px);overflow:auto;box-shadow:0 24px 80px rgba(15,23,42,.25)">
       <div class="panel-head"><div><h2 id="salaryDetailsTitle">Salary details</h2><div class="panel-sub">Update this whenever your monthly salary changes.</div></div><button type="button" class="btn btn-light" onclick="toggleSalaryDetails(false)" aria-label="Close salary details">✕ Close</button></div>
@@ -1526,6 +1571,67 @@ function renderSalaryPage(){
  const payday=document.getElementById('monthlySalaryPayDay');if(payday)payday.value=String(data.salaryPayDay||'custom');
  const notes=document.getElementById('monthlySalaryNotes');if(notes&&document.activeElement!==notes)notes.value=String(data.salaryNotes||'');
  const updated=document.getElementById('monthlySalaryUpdatedAt');if(updated)updated.textContent=data.salaryUpdatedAt?`Last updated: ${new Date(data.salaryUpdatedAt).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'})}`:'Not saved yet';
+ renderSalaryCalendar();
+}
+let salaryCalendarCursor=new Date(new Date().getFullYear(),new Date().getMonth(),1);
+let salaryCalendarSelectedDate=null;
+function changeSalaryCalendarMonth(delta){
+ salaryCalendarCursor=new Date(salaryCalendarCursor.getFullYear(),salaryCalendarCursor.getMonth()+Number(delta||0),1);
+ salaryCalendarSelectedDate=null;renderSalaryCalendar();
+}
+function goToCurrentSalaryCalendarMonth(){
+ const now=new Date();salaryCalendarCursor=new Date(now.getFullYear(),now.getMonth(),1);
+ salaryCalendarSelectedDate=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+ renderSalaryCalendar();
+}
+function salaryCalendarISO(year,monthIndex,day){return year+'-'+String(monthIndex+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');}
+function renderSalaryCalendar(){
+ const grid=document.getElementById('salaryCalendarGrid'),label=document.getElementById('salaryCalendarMonthLabel'),details=document.getElementById('salaryCalendarDetails');
+ if(!grid||!label||!details)return;
+ const year=salaryCalendarCursor.getFullYear(),month=salaryCalendarCursor.getMonth();
+ label.textContent=salaryCalendarCursor.toLocaleDateString('en-PH',{month:'long',year:'numeric'});
+ const amount=Math.max(0,Number(data.monthlySalary)||0),payday=String(data.salaryPayDay||'custom');
+ const hasSchedule=amount>0&&payday!=='custom'&&!!data.salaryUpdatedAt;
+ const today=new Date(),todayISOString=salaryCalendarISO(today.getFullYear(),today.getMonth(),today.getDate());
+ const firstDay=new Date(year,month,1).getDay(),daysInMonth=new Date(year,month+1,0).getDate();
+ const prevMonthDays=new Date(year,month,0).getDate(),totalCells=Math.ceil((firstDay+daysInMonth)/7)*7;
+ const cells=[];
+ for(let i=0;i<totalCells;i++){
+  let day,cellYear=year,cellMonth=month,outside=false;
+  if(i<firstDay){day=prevMonthDays-firstDay+i+1;cellMonth=month-1;outside=true;if(cellMonth<0){cellMonth=11;cellYear--;}}
+  else if(i>=firstDay+daysInMonth){day=i-(firstDay+daysInMonth)+1;cellMonth=month+1;outside=true;if(cellMonth>11){cellMonth=0;cellYear++;}}
+  else day=i-firstDay+1;
+  const iso=salaryCalendarISO(cellYear,cellMonth,day);
+  const isToday=iso===todayISOString;
+  let isPayday=false;
+  if(hasSchedule){
+   const actualPayday=Math.min(Number(payday),new Date(cellYear,cellMonth+1,0).getDate());
+   isPayday=cellYear===year&&cellMonth===month&&day===actualPayday;
+  }
+  const selected=salaryCalendarSelectedDate===iso;
+  cells.push(`<button type="button" role="gridcell" aria-label="${new Date(cellYear,cellMonth,day).toLocaleDateString('en-PH',{dateStyle:'full'})}${isPayday?', payday':''}" class="salary-calendar-day${outside?' is-outside':''}${isToday?' is-today':''}${isPayday?' is-payday':''}${selected?' is-selected':''}" onclick="selectSalaryCalendarDate('${iso}')"><span class="salary-calendar-day-number">${day}</span>${isPayday?`<span class="salary-calendar-event">Payday</span><span class="salary-calendar-event-amount">${peso(amount)}</span>`:''}</button>`);
+ }
+ grid.innerHTML=cells.join('');
+ if(!salaryCalendarSelectedDate) salaryCalendarSelectedDate=hasSchedule?salaryCalendarISO(year,month,Math.min(Number(payday),daysInMonth)):todayISOString;
+ renderSalaryCalendarDetails(salaryCalendarSelectedDate);
+}
+function selectSalaryCalendarDate(iso){salaryCalendarSelectedDate=iso;renderSalaryCalendar();}
+function renderSalaryCalendarDetails(iso){
+ const details=document.getElementById('salaryCalendarDetails');if(!details)return;
+ const amount=Math.max(0,Number(data.monthlySalary)||0),payday=String(data.salaryPayDay||'custom');
+ const parts=String(iso||'').split('-').map(Number),date=new Date(parts[0],parts[1]-1,parts[2]);
+ const dateLabel=date.toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+ const hasSchedule=amount>0&&payday!=='custom'&&!!data.salaryUpdatedAt;
+ const actualPayday=hasSchedule?Math.min(Number(payday),new Date(parts[0],parts[1],0).getDate()):null;
+ if(hasSchedule&&parts[2]===actualPayday){
+  details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">₱</div><div><strong>Salary payday · ${esc(dateLabel)}</strong><div>${peso(amount)} scheduled based on your saved monthly salary details.</div>${data.salaryNotes?`<div style="margin-top:4px">Note: ${esc(data.salaryNotes)}</div>`:''}</div>`;
+ }else if(amount>0&&payday==='custom'){
+  details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">📅</div><div><strong>${esc(dateLabel)}</strong><div>Your payday is set to “Varies / not fixed,” so no automatic payday is scheduled on this date.</div></div>`;
+ }else if(amount<=0||!data.salaryUpdatedAt){
+  details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">📅</div><div><strong>${esc(dateLabel)}</strong><div>Save your salary amount and usual payday in <b>Salary details</b> to show payday events on this calendar.</div></div>`;
+ }else{
+  details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">📅</div><div><strong>${esc(dateLabel)}</strong><div>No salary event scheduled for this date.</div></div>`;
+ }
 }
 function toggleSalaryDetails(open){const backdrop=document.getElementById("salaryDetailsBackdrop");if(!backdrop)return;backdrop.hidden=!open;if(open){backdrop.style.display="flex";setTimeout(()=>{const input=document.getElementById("monthlySalaryAmount");if(input)input.focus();},30);}else{backdrop.style.display="none";}}
 
