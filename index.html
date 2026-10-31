@@ -1383,6 +1383,18 @@ function updateLiveDateTime(){
   settingsEl.innerHTML=`<div style="font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.5px">${time}</div><div style="font-size:15px;margin-top:5px">${date}</div>`;
  }
 }
+function updateFinancialSavingsAsOf(){
+ const el=document.getElementById('financialSavingsAsOf');
+ if(!el)return;
+ const now=getDisplayedDateTime();
+ const timezone=(dateTimePrefs&&dateTimePrefs.timezone)||'Asia/Manila';
+ try{
+  const time=new Intl.DateTimeFormat('en-PH',{timeZone:timezone,hour:'numeric',minute:'2-digit',second:'2-digit',hour12:dateTimePrefs.format!=='24'}).format(now);
+  const date=new Intl.DateTimeFormat('en-PH',{timeZone:timezone,month:'short',day:'numeric',year:'numeric'}).format(now);
+  el.textContent=`As of ${date} · ${time}${timezone==='Asia/Manila'?' PHT':''}`;
+  el.title=`Financial List savings total timestamp · ${timezone}`;
+ }catch(err){el.textContent='As of '+new Date().toLocaleString('en-PH');}
+}
 function updateSavingsTotalAsOf(){
  const el=document.getElementById('savingsTotalAsOf');
  if(!el)return;
@@ -2093,7 +2105,7 @@ function renderSavingsList(){
   : `<div class="stat-foot" style="color:var(--muted)">No increase recorded</div>`;
  document.getElementById('financialCategoryStats').innerHTML=
 
-  `<div class="stat"><div class="stat-top">Savings total</div><div class="stat-value" style="color:var(--green)">${peso(savings)}</div>${savingsChangeHtml}</div>`+
+  `<div class="stat"><div class="stat-top">Savings total</div><div class="stat-value" style="color:var(--green)">${peso(savings)}</div><div class="stat-foot" id="financialSavingsAsOf" style="margin-top:5px;font-size:10px">As of —</div>${savingsChangeHtml}</div>`+
   `<div class="stat"><div class="stat-top">Salary / income total</div><div class="stat-value" style="color:var(--blue)">${peso(income)}</div><div class="stat-foot">Across all recorded items</div></div>`+
   `<div class="stat"><div class="stat-top">Debt total</div><div class="stat-value" style="color:var(--red)">${peso(debt)}</div><div class="stat-foot">Across all recorded items</div></div>`;
  renderSavingsTrend();
@@ -2756,8 +2768,8 @@ function updateMariBankLivePanel(){
 updateMariBankLivePanel();
 updateLiveDateTime();
 setInterval(()=>{try{updateLiveDateTime();}catch(err){console.error('Savely live clock update failed:',err);}},1000);
-setInterval(()=>{try{updateSavingsTotalAsOf();}catch(err){console.error('Savings total timestamp update failed:',err);}},1000);
-document.addEventListener('visibilitychange',()=>{if(!document.hidden){try{updateLiveDateTime();updateSavingsTotalAsOf();updateMariBankLivePanel();}catch(err){console.error('Savely live clock refresh failed:',err);}}});
+setInterval(()=>{try{updateSavingsTotalAsOf();updateFinancialSavingsAsOf();}catch(err){console.error('Savings total timestamp update failed:',err);}},1000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){try{updateLiveDateTime();updateSavingsTotalAsOf();updateFinancialSavingsAsOf();updateMariBankLivePanel();}catch(err){console.error('Savely live clock refresh failed:',err);}}});
 setInterval(()=>{try{updateMariBankLivePanel();}catch(err){console.error('MariBank live estimate update failed:',err);}},1000);
 setInterval(accrueRealtimeInterest,30000);
 accrueRealtimeInterest();
