@@ -2579,7 +2579,7 @@ function addFinancialItemFromForm(e){
  if(!Array.isArray(data.savingsList))data.savingsList=[];
  const category=['Savings','Salary','Debt'].includes(activeFinancialCategory)?activeFinancialCategory:'Savings';
  const createdAt=Date.now();
- data.savingsList.push({id:uid(),name,amount,category,date:todayISO(),...((/^maya$/i.test(name)||/maya savings/i.test(name))&&category==='Savings'?{mayaBonusRate:Number(document.getElementById('mayaAddBonusRate').value||3)}:{}),graphHistory:[{at:createdAt-1,amount:0},{at:createdAt,amount}],...( /mari\s?bank/i.test(name)&&category==='Savings'?{interestTracking:{lastTickAt:createdAt,dayStartBalance:amount,lastHistoryDate:interestLocalDate(createdAt)}}:{})});
+ data.savingsList.push({id:uid(),name,amount,category,date:todayISO(),...((/^maya$/i.test(name)||/maya savings/i.test(name))&&category==='Savings'?{mayaBonusRate:Number(document.getElementById('mayaAddBonusRate').value||3)}:{}),graphHistory:[{at:createdAt,amount}],...( /mari\s?bank/i.test(name)&&category==='Savings'?{interestTracking:{lastTickAt:createdAt,dayStartBalance:amount,lastHistoryDate:interestLocalDate(createdAt)}}:{})});
  try{localStorage.setItem(STORE,JSON.stringify(data));}
  catch(err){data.savingsList.pop();toast('Could not save: browser storage is full or blocked.');return;}
  closeFinancialAdd();
