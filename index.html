@@ -1232,21 +1232,22 @@ button[draggable="true"],
 
   <section class="page" id="page-salary">
     <div class="salary-page-intro" style="margin:18px 0 20px">
-      <div class="panel-head" style="align-items:flex-start"><div><h2 style="font-size:22px;margin:0 0 6px">Monthly Salary</h2><div class="panel-sub">Set your usual monthly take-home salary and keep it separate from your savings items.</div></div><span class="pill" style="background:#e7f7ef;color:var(--green)">MONTHLY</span></div>
+      <div class="panel-head" style="align-items:flex-start;gap:16px"><div><h2 style="font-size:22px;margin:0 0 6px">Monthly Salary</h2><div class="panel-sub">Set your usual monthly take-home salary and keep it separate from your savings items.</div></div><button type="button" class="btn btn-light" id="salaryDetailsOpenButton" onclick="toggleSalaryDetails(true)" style="margin-left:auto;white-space:nowrap">⚙ Salary details</button></div>
     </div>
     <div class="cards salary-summary-cards" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:18px">
       <div class="stat"><div class="stat-top">Monthly take-home salary</div><div class="stat-value" id="salaryMonthlyDisplay" style="color:var(--green)">₱0.00</div><div class="stat-foot" id="salaryPayDayDisplay">Set your monthly salary below</div></div>
       <div class="stat"><div class="stat-top">Annual projection</div><div class="stat-value" id="salaryAnnualDisplay" style="color:var(--blue)">₱0.00</div><div class="stat-foot">Monthly salary × 12, before any changes or bonuses</div></div>
     </div>
-    <div class="panel" style="max-width:850px">
-      <div class="panel-head"><div><h2>Salary details</h2><div class="panel-sub">Update this whenever your monthly salary changes.</div></div></div>
+    <div id="salaryDetailsBackdrop" hidden onclick="if(event.target===this)toggleSalaryDetails(false)" style="position:fixed;inset:0;background:rgba(15,23,42,.48);backdrop-filter:blur(3px);z-index:9998;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto">
+    <div class="panel" id="salaryDetailsPanel" role="dialog" aria-modal="true" aria-labelledby="salaryDetailsTitle" style="width:min(100%,760px);max-width:760px;max-height:calc(100vh - 40px);overflow:auto;box-shadow:0 24px 80px rgba(15,23,42,.25)">
+      <div class="panel-head"><div><h2 id="salaryDetailsTitle">Salary details</h2><div class="panel-sub">Update this whenever your monthly salary changes.</div></div><button type="button" class="btn btn-light" onclick="toggleSalaryDetails(false)" aria-label="Close salary details">✕ Close</button></div>
       <form id="monthlySalaryForm" onsubmit="saveMonthlySalary(event)" class="form-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
         <div class="field"><label for="monthlySalaryAmount">Monthly salary (₱)</label><input id="monthlySalaryAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 12000" required></div>
         <div class="field"><label for="monthlySalaryPayDay">Usual payday</label><select id="monthlySalaryPayDay"><option value="1">1st of the month</option><option value="5">5th of the month</option><option value="10">10th of the month</option><option value="15">15th of the month</option><option value="20">20th of the month</option><option value="25">25th of the month</option><option value="30">30th of the month</option><option value="custom">Varies / not fixed</option></select></div>
         <div class="field" style="grid-column:1/-1"><label for="monthlySalaryNotes">Notes (optional)</label><input id="monthlySalaryNotes" type="text" maxlength="240" placeholder="e.g. Part-time salary, net of deductions"></div>
         <div style="grid-column:1/-1;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button type="submit" class="btn btn-primary">Save monthly salary</button><span class="panel-sub" id="monthlySalaryUpdatedAt">Not saved yet</span></div>
       </form>
-    </div>
+    </div></div>
     <div class="panel" style="max-width:850px;margin-top:18px"><div class="panel-head"><div><h2>Keep in mind</h2><div class="panel-sub">This is a monthly salary reference, not a bank balance. It won't create duplicate entries in Financial List or change your savings totals.</div></div></div></div>
   </section>
 
@@ -1526,6 +1527,8 @@ function renderSalaryPage(){
  const notes=document.getElementById('monthlySalaryNotes');if(notes&&document.activeElement!==notes)notes.value=String(data.salaryNotes||'');
  const updated=document.getElementById('monthlySalaryUpdatedAt');if(updated)updated.textContent=data.salaryUpdatedAt?`Last updated: ${new Date(data.salaryUpdatedAt).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'})}`:'Not saved yet';
 }
+function toggleSalaryDetails(open){const backdrop=document.getElementById("salaryDetailsBackdrop");if(!backdrop)return;backdrop.hidden=!open;if(open){backdrop.style.display="flex";setTimeout(()=>{const input=document.getElementById("monthlySalaryAmount");if(input)input.focus();},30);}else{backdrop.style.display="none";}}
+
 function saveMonthlySalary(event){
  if(event)event.preventDefault();
  const input=document.getElementById('monthlySalaryAmount');const amount=Number(input?.value);
@@ -2210,7 +2213,7 @@ function openGoalAllocationInterest(goalId,bankName){
 }
 function toggleSavingsItemMenu(event,id){event.stopPropagation();const menu=document.getElementById('savings-item-menu-'+id);if(!menu)return;const wasOpen=menu.classList.contains('open');closeSavingsItemMenus();if(!wasOpen){const row=event.currentTarget;menu.classList.add('open');row.setAttribute('aria-expanded','true');positionSavingsItemMenu(menu,row);}}
 window.addEventListener('resize',closeSavingsItemMenus,{passive:true});window.addEventListener('scroll',function(){if(document.querySelector('.savings-item-menu.open.is-floating'))closeSavingsItemMenus();},true);
-document.addEventListener('click',event=>{if(event.target.closest('.savings-item-menu')){return;}if(!event.target.closest('.savings-item-actions'))closeSavingsItemMenus();},true);
+document.addEventListener('click',event=>{if(event.target.closest('.savings-item-menu')){event.stopPropagation();return;}if(!event.target.closest('.savings-item-actions'))closeSavingsItemMenus();},true);
 function financialItemTrendIndicator(item){
  const history=Array.isArray(item.changeHistory)?item.changeHistory:[];
  const latest=history.filter(h=>h && Number.isFinite(Number(h.at)) && Number.isFinite(Number(h.oldAmount)) && Number.isFinite(Number(h.newAmount))).sort((a,b)=>Number(b.at)-Number(a.at))[0];
@@ -4121,5 +4124,6 @@ function deleteAllSavingsItems(){
 }
 </script>
 
+<script>document.addEventListener("keydown",function(e){if(e.key==="Escape"){const b=document.getElementById("salaryDetailsBackdrop");if(b&&!b.hidden)toggleSalaryDetails(false);}});</script>
 </body>
 </html>
