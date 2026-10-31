@@ -124,6 +124,8 @@
 .auth-loading{opacity:.7;pointer-events:none}
 .auth-user-chip{display:flex;align-items:center;gap:8px}
 .auth-user-email{font-size:11px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Keep account identity out of the shared top bar on every page. */
+.top-actions > .avatar, .top-actions > .auth-user-chip, .top-actions > #savely-auth-user-chip, .top-actions .auth-user-email { display:none !important; }
 .auth-logout{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 10px;color:#586478;font-weight:700;font-size:11px}
 @media(max-width:760px){.auth-gate{grid-template-columns:1fr}.auth-story{min-height:auto;padding:24px 25px 20px}.auth-story-copy{margin:35px 0 20px}.auth-story-copy h1{font-size:36px}.auth-story-copy p{font-size:14px}.auth-perks{grid-template-columns:1fr 1fr;gap:9px}.auth-perk{font-size:11px}.auth-story-foot{display:none}.auth-panel-wrap{min-height:auto;padding:24px 16px 32px}.auth-panel{max-width:480px}}
 
