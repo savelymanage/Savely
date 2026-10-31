@@ -1821,6 +1821,16 @@ function renderSavingsTrend(){
   else if(points[0].amount!==0) points=[{...points[0],at:points[0].at-1,amount:0},...points];
   // Use evenly spaced event positions so each recorded edit creates a visible diagonal segment.
   const coords=points.map((p,i)=>({x:pad.l+(((points.length===1?0:i/(points.length-1))*savingsTrendZoom-savingsTrendPan)*plotW),y:yForAmount(p.amount),amount:p.amount,at:p.at,bankName:p.bankName,delta:p.delta,itemAmount:p.itemAmount,previousAmount:i>0?Number(points[i-1].amount)||0:0})).filter(p=>p.x>=pad.l-12&&p.x<=width-pad.r+12);
+  // Add a soft shaded area beneath the balance line, matching the reference dashboard style.
+  if(coords.length>1){
+   const areaGradient=ctx.createLinearGradient(0,pad.t,0,pad.t+plotH);
+   areaGradient.addColorStop(0,color+'38');
+   areaGradient.addColorStop(0.62,color+'18');
+   areaGradient.addColorStop(1,color+'03');
+   ctx.beginPath();ctx.moveTo(coords[0].x,pad.t+plotH);ctx.lineTo(coords[0].x,coords[0].y);
+   for(let i=1;i<coords.length;i++)ctx.lineTo(coords[i].x,coords[i].y);
+   ctx.lineTo(coords[coords.length-1].x,pad.t+plotH);ctx.closePath();ctx.fillStyle=areaGradient;ctx.fill();
+  }
   // Draw each recorded balance segment and a color-coded candlestick marker at its endpoint.
   for(let k=1;k<coords.length;k++){
    const from=coords[k-1],to=coords[k];
@@ -1942,6 +1952,16 @@ function renderOverallTrend(){
   if(pts.length===1)pts=[{at:pts[0].at-1,amount:0},pts[0]];
   else if(pts[0].amount!==0)pts=[{at:pts[0].at-1,amount:0},...pts];
   const coords=pts.map((p,i)=>({x:pad.l+(pts.length===1?0:plotW*i/(pts.length-1)),y:y(p.amount),amount:p.amount}));
+  // Fill the space below each financial trend line with a subtle vertical fade.
+  if(coords.length>1){
+   const areaGradient=ctx.createLinearGradient(0,pad.t,0,pad.t+plotH);
+   areaGradient.addColorStop(0,c.color+'38');
+   areaGradient.addColorStop(0.62,c.color+'18');
+   areaGradient.addColorStop(1,c.color+'03');
+   ctx.beginPath();ctx.moveTo(coords[0].x,pad.t+plotH);ctx.lineTo(coords[0].x,coords[0].y);
+   for(let i=1;i<coords.length;i++)ctx.lineTo(coords[i].x,coords[i].y);
+   ctx.lineTo(coords[coords.length-1].x,pad.t+plotH);ctx.closePath();ctx.fillStyle=areaGradient;ctx.fill();
+  }
   ctx.strokeStyle=c.color;ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.lineCap='round';
   ctx.beginPath();coords.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();
   coords.forEach(p=>{ctx.fillStyle=c.color;ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();});
