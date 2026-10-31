@@ -147,7 +147,7 @@
 .savings-item-menu-button{width:34px;height:34px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#64748b;font-size:22px;line-height:1;cursor:pointer}
 .savings-item-menu{position:absolute;right:0;top:calc(100% + 5px);z-index:10080;min-width:150px;max-width:min(230px,calc(100vw - 24px));padding:5px;background:var(--surface,#fff);border:1px solid var(--line);border-radius:11px;box-shadow:0 10px 28px rgba(15,23,42,.18);display:none;text-align:left;box-sizing:border-box}.savings-item-menu.is-floating{position:fixed!important;right:auto!important;top:0;left:0;z-index:10080!important;max-height:calc(100vh - 24px);overflow-y:auto}
 .savings-item-menu.open{display:grid}
-.savings-item-menu button{border:0;background:transparent;text-align:left;padding:9px 10px;border-radius:7px;font-size:12px;font-weight:700;color:var(--text);cursor:pointer}
+.savings-item-menu button{position:relative;z-index:1;pointer-events:auto;border:0;background:transparent;text-align:left;padding:9px 10px;border-radius:7px;font-size:12px;font-weight:700;color:var(--text);cursor:pointer}
 .savings-item-menu button:hover{background:#f1f5f9}
 .savings-item-menu button.menu-delete{color:var(--red)}
 #savingsTrendCanvasWrap{position:relative;isolation:isolate}
@@ -2213,7 +2213,11 @@ function openGoalAllocationInterest(goalId,bankName){
 }
 function toggleSavingsItemMenu(event,id){event.stopPropagation();const menu=document.getElementById('savings-item-menu-'+id);if(!menu)return;const wasOpen=menu.classList.contains('open');closeSavingsItemMenus();if(!wasOpen){const row=event.currentTarget;menu.classList.add('open');row.setAttribute('aria-expanded','true');positionSavingsItemMenu(menu,row);}}
 window.addEventListener('resize',closeSavingsItemMenus,{passive:true});window.addEventListener('scroll',function(){if(document.querySelector('.savings-item-menu.open.is-floating'))closeSavingsItemMenus();},true);
-document.addEventListener('click',event=>{if(event.target.closest('.savings-item-menu')){event.stopPropagation();return;}if(!event.target.closest('.savings-item-actions'))closeSavingsItemMenus();},true);
+document.addEventListener('click',event=>{
+ // Do not stop propagation for clicks inside the menu: that blocks the menu button's own onclick handlers.
+ if(event.target.closest('.savings-item-menu')) return;
+ if(!event.target.closest('.savings-item-actions')) closeSavingsItemMenus();
+},false);
 function financialItemTrendIndicator(item){
  const history=Array.isArray(item.changeHistory)?item.changeHistory:[];
  const latest=history.filter(h=>h && Number.isFinite(Number(h.at)) && Number.isFinite(Number(h.oldAmount)) && Number.isFinite(Number(h.newAmount))).sort((a,b)=>Number(b.at)-Number(a.at))[0];
