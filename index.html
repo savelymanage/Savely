@@ -2210,7 +2210,7 @@ function openGoalAllocationInterest(goalId,bankName){
 }
 function toggleSavingsItemMenu(event,id){event.stopPropagation();const menu=document.getElementById('savings-item-menu-'+id);if(!menu)return;const wasOpen=menu.classList.contains('open');closeSavingsItemMenus();if(!wasOpen){const row=event.currentTarget;menu.classList.add('open');row.setAttribute('aria-expanded','true');positionSavingsItemMenu(menu,row);}}
 window.addEventListener('resize',closeSavingsItemMenus,{passive:true});window.addEventListener('scroll',function(){if(document.querySelector('.savings-item-menu.open.is-floating'))closeSavingsItemMenus();},true);
-document.addEventListener('click',event=>{if(event.target.closest('.savings-item-menu')){event.stopPropagation();return;}if(!event.target.closest('.savings-item-actions'))closeSavingsItemMenus();},true);
+document.addEventListener('click',event=>{if(event.target.closest('.savings-item-menu')){return;}if(!event.target.closest('.savings-item-actions'))closeSavingsItemMenus();},true);
 function financialItemTrendIndicator(item){
  const history=Array.isArray(item.changeHistory)?item.changeHistory:[];
  const latest=history.filter(h=>h && Number.isFinite(Number(h.at)) && Number.isFinite(Number(h.oldAmount)) && Number.isFinite(Number(h.newAmount))).sort((a,b)=>Number(b.at)-Number(a.at))[0];
