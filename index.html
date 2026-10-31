@@ -1085,6 +1085,13 @@ button[draggable="true"],
 }
 
 </style>
+<style id="savely-monthly-salary-page-v264">
+#page-salary .field{display:flex;flex-direction:column;gap:7px;min-width:0}
+#page-salary .field label{font-size:12px;font-weight:750;color:var(--muted)}
+#page-salary .field input,#page-salary .field select{width:100%;min-width:0;border:1px solid var(--line);border-radius:10px;background:var(--surface,#fff);color:var(--text);padding:12px 13px;font:inherit;box-sizing:border-box}
+#page-salary .field input:focus,#page-salary .field select:focus{outline:2px solid #15966f35;border-color:var(--green)}
+@media(max-width:650px){#page-salary #monthlySalaryForm{grid-template-columns:minmax(0,1fr)!important}#page-salary #monthlySalaryForm .field{grid-column:1/-1}}
+</style>
 </head>
 <body>
 
@@ -1154,6 +1161,7 @@ button[draggable="true"],
   <div><div class="nav-label">WORKSPACE</div><nav class="nav" id="nav">
     <button class="active" data-page="dashboard"><span class="ico">▦</span>Overview</button>
     <button data-page="financial-list"><span class="ico">☷</span>Financial List</button>
+    <button data-page="salary"><span class="ico">₱</span>Monthly Salary</button>
     
     
     <button data-page="goals"><span class="ico">◎</span>Savings goals</button>
@@ -1222,10 +1230,29 @@ button[draggable="true"],
     </div>
   </section>
 
+  <section class="page" id="page-salary">
+    <div class="salary-page-intro" style="margin:18px 0 20px">
+      <div class="panel-head" style="align-items:flex-start"><div><h2 style="font-size:22px;margin:0 0 6px">Monthly Salary</h2><div class="panel-sub">Set your usual monthly take-home salary and keep it separate from your savings items.</div></div><span class="pill" style="background:#e7f7ef;color:var(--green)">MONTHLY</span></div>
+    </div>
+    <div class="cards salary-summary-cards" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:18px">
+      <div class="stat"><div class="stat-top">Monthly take-home salary</div><div class="stat-value" id="salaryMonthlyDisplay" style="color:var(--green)">₱0.00</div><div class="stat-foot" id="salaryPayDayDisplay">Set your monthly salary below</div></div>
+      <div class="stat"><div class="stat-top">Annual projection</div><div class="stat-value" id="salaryAnnualDisplay" style="color:var(--blue)">₱0.00</div><div class="stat-foot">Monthly salary × 12, before any changes or bonuses</div></div>
+    </div>
+    <div class="panel" style="max-width:850px">
+      <div class="panel-head"><div><h2>Salary details</h2><div class="panel-sub">Update this whenever your monthly salary changes.</div></div></div>
+      <form id="monthlySalaryForm" onsubmit="saveMonthlySalary(event)" class="form-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+        <div class="field"><label for="monthlySalaryAmount">Monthly salary (₱)</label><input id="monthlySalaryAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 12000" required></div>
+        <div class="field"><label for="monthlySalaryPayDay">Usual payday</label><select id="monthlySalaryPayDay"><option value="1">1st of the month</option><option value="5">5th of the month</option><option value="10">10th of the month</option><option value="15">15th of the month</option><option value="20">20th of the month</option><option value="25">25th of the month</option><option value="30">30th of the month</option><option value="custom">Varies / not fixed</option></select></div>
+        <div class="field" style="grid-column:1/-1"><label for="monthlySalaryNotes">Notes (optional)</label><input id="monthlySalaryNotes" type="text" maxlength="240" placeholder="e.g. Part-time salary, net of deductions"></div>
+        <div style="grid-column:1/-1;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button type="submit" class="btn btn-primary">Save monthly salary</button><span class="panel-sub" id="monthlySalaryUpdatedAt">Not saved yet</span></div>
+      </form>
+    </div>
+    <div class="panel" style="max-width:850px;margin-top:18px"><div class="panel-head"><div><h2>Keep in mind</h2><div class="panel-sub">This is a monthly salary reference, not a bank balance. It won't create duplicate entries in Financial List or change your savings totals.</div></div></div></div>
+  </section>
+
   <section class="page" id="page-financial-list">
     <div class="financial-tabs" role="navigation" aria-label="Financial categories" style="margin-top:18px">
       <button type="button" class="financial-tab active" data-fin-tab="Savings">Savings</button>
-      <button type="button" class="financial-tab" data-fin-tab="Salary">Salary</button>
       <button type="button" class="financial-tab" data-fin-tab="Debt">Debt</button>
     </div>
     <div class="cards" id="financialCategoryStats"></div>
@@ -1270,7 +1297,7 @@ const STORE='savely_html_v1';
 const peso=n=>new Intl.NumberFormat('en-PH',{style:'currency',currency:'PHP',maximumFractionDigits:2}).format(Number(n)||0);
 const todayISO=()=>new Date().toISOString().slice(0,10);
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36);
-const seed=()=>({accounts:[{id:'main',name:'Main Savings',type:'Savings',opening:50000,color:'green'},{id:'emergency',name:'Emergency Fund',type:'Savings',opening:0,color:'orange'}],goals:[],transactions:[],budgets:[{id:uid(),category:'Food & groceries',limit:5000},{id:uid(),category:'Transportation',limit:2000},{id:uid(),category:'Shopping',limit:2500},{id:uid(),category:'Bills & utilities',limit:3000}],recurring:[],savingsList:[]});
+const seed=()=>({accounts:[{id:'main',name:'Main Savings',type:'Savings',opening:50000,color:'green'},{id:'emergency',name:'Emergency Fund',type:'Savings',opening:0,color:'orange'}],goals:[],transactions:[],budgets:[{id:uid(),category:'Food & groceries',limit:5000},{id:uid(),category:'Transportation',limit:2000},{id:uid(),category:'Shopping',limit:2500},{id:uid(),category:'Bills & utilities',limit:3000}],recurring:[],savingsList:[],monthlySalary:0,salaryPayDay:'custom',salaryNotes:'',salaryUpdatedAt:null});
 let data;
 try{data=JSON.parse(localStorage.getItem(STORE))||seed();if(!Array.isArray(data.savingsList))data.savingsList=[]}catch(e){data=seed()}
 function save(){try{localStorage.setItem(STORE,JSON.stringify(data))}catch(e){toast('Browser storage is unavailable. Export a backup to keep your data safe.')}render()}
@@ -1489,7 +1516,24 @@ function updateSavingsTotalAsOf(){
   el.title=`Live savings total timestamp · ${timezone}`;
  }catch(err){el.textContent='As of '+new Date().toLocaleString('en-PH');}
 }
-function render(){updateLiveDateTime();renderDashboard();updateSavingsTotalAsOf();renderTransactions();renderAccounts();renderGoals();renderBudget();renderReports();renderRecurring();renderSavingsList()}
+function renderSalaryPage(){
+ const amount=Math.max(0,Number(data.monthlySalary)||0);
+ const display=document.getElementById('salaryMonthlyDisplay');if(display)display.textContent=peso(amount);
+ const annual=document.getElementById('salaryAnnualDisplay');if(annual)annual.textContent=peso(amount*12);
+ const pay=document.getElementById('salaryPayDayDisplay');if(pay){const d=String(data.salaryPayDay||'custom');pay.textContent=d==='custom'?'Payday varies':`Usual payday: ${d}${d==='1'?'st':d==='2'?'nd':d==='3'?'rd':'th'} of the month`;}
+ const input=document.getElementById('monthlySalaryAmount');if(input&&document.activeElement!==input)input.value=amount?String(amount):'';
+ const payday=document.getElementById('monthlySalaryPayDay');if(payday)payday.value=String(data.salaryPayDay||'custom');
+ const notes=document.getElementById('monthlySalaryNotes');if(notes&&document.activeElement!==notes)notes.value=String(data.salaryNotes||'');
+ const updated=document.getElementById('monthlySalaryUpdatedAt');if(updated)updated.textContent=data.salaryUpdatedAt?`Last updated: ${new Date(data.salaryUpdatedAt).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'})}`:'Not saved yet';
+}
+function saveMonthlySalary(event){
+ if(event)event.preventDefault();
+ const input=document.getElementById('monthlySalaryAmount');const amount=Number(input?.value);
+ if(!Number.isFinite(amount)||amount<0){toast('Enter a valid monthly salary amount.');return;}
+ data.monthlySalary=amount;data.salaryPayDay=document.getElementById('monthlySalaryPayDay')?.value||'custom';data.salaryNotes=(document.getElementById('monthlySalaryNotes')?.value||'').trim();data.salaryUpdatedAt=new Date().toISOString();
+ save();renderSalaryPage();toast('Monthly salary saved.');
+}
+function render(){updateLiveDateTime();renderDashboard();updateSavingsTotalAsOf();renderTransactions();renderAccounts();renderGoals();renderBudget();renderReports();renderRecurring();renderSavingsList();renderSalaryPage()}
 function renderDashboard(){const bal=totalBalance(),goal=data.goals[0];const month=todayISO().slice(0,7);const inc=data.transactions.filter(t=>(t.type==='deposit'||t.type==='interest')&&t.date.slice(0,7)===month).reduce((s,t)=>s+ +t.amount,0);const out=data.transactions.filter(t=>(t.type==='expense'||t.type==='withdrawal')&&t.date.slice(0,7)===month).reduce((s,t)=>s+ +t.amount,0);
 const financialItems=Array.isArray(data.savingsList)?data.savingsList:[];
 const financialSum=cat=>financialItems.filter(item=>(item.category||'Savings')===cat).reduce((sum,item)=>sum+Number(item.amount||0),0);
@@ -2221,7 +2265,7 @@ function renderSavingsList(){
  document.getElementById('financialCategoryStats').innerHTML=
 
   `<div class="stat"><div class="stat-top">Savings total</div><div class="stat-value" style="color:var(--green)">${peso(savings)}</div><div class="stat-foot" id="financialSavingsAsOf" style="margin-top:5px;font-size:10px">As of —</div>${savingsChangeHtml}</div>`+
-  `<div class="stat"><div class="stat-top">Salary / income total</div><div class="stat-value" style="color:var(--blue)">${peso(income)}</div><div class="stat-foot">Across all recorded items</div></div>`+
+
   `<div class="stat"><div class="stat-top">Debt total</div><div class="stat-value" style="color:var(--red)">${peso(debt)}</div><div class="stat-foot">Across all recorded items</div></div>`;
  renderSavingsTrend();
  renderOverallTrend();
@@ -2701,7 +2745,7 @@ function openFinancialList(){showPage('financial-list') }
 function closeFinancialList(){showPage('dashboard')}
 function closeSavelyUpdates(){const el=document.getElementById('savelyUpdatesBackdrop');if(el)el.style.display='none'}
 window.addEventListener('load',()=>{const el=document.getElementById('savelyUpdatesBackdrop');if(el)el.style.display='flex'});
-function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard')setTimeout(renderOverallTrend,50);document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Budget & expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR FINANCES, ORGANIZED','Financial List'],'live-map':['ROADS & CONDITIONS','Live Map']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
+function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard')setTimeout(renderOverallTrend,50);document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Budget & expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR FINANCES, ORGANIZED','Financial List'],salary:['YOUR INCOME, ORGANIZED','Monthly Salary'],'live-map':['ROADS & CONDITIONS','Live Map']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
 document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
 function openModal(kind,goalToEdit=null){const form=document.getElementById('modalForm'),title=document.getElementById('modalTitle'),desc=document.getElementById('modalDesc');let accountOptions=data.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');let field=(label,name,type='text',value='',extra='')=>`<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let select=(label,name,opts)=>`<div class="field"><label>${label}</label><select name="${name}">${opts}</select></div>`;let fullfield=(label,name,type='text',value='',extra='')=>`<div class="field full"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let body='';
 if(kind==='transaction'){title.textContent='Add transaction';desc.textContent='Record a deposit, withdrawal, interest credit, or expense.';body=`<div class="form-grid">${fullfield('Description','description','text','','required maxlength="100"')}${select('Transaction type','type','<option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option><option value="expense">Expense</option><option value="interest">Interest credit</option>')}${select('Account','accountId',accountOptions)}${field('Amount (₱)','amount','number','','required min=".01" step=".01"')}${field('Date','date','date',todayISO(),'required')}${field('Category','category','text','General','maxlength="60"')}</div>`}
