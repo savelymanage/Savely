@@ -1143,7 +1143,9 @@ html.theme-transitioning body *:not(svg):not(path):not(img):not(video):not(canva
 </style>
 
 <style id="savely-dashboard-username-style">
-.dashboard-username{margin-top:4px;font-size:13px;font-weight:600;letter-spacing:.01em;color:var(--muted,#64748b)}
+/* Show the signed-in username inline to the right of the greeting. */
+#pageTitle{display:inline-block;vertical-align:baseline}
+.dashboard-username{display:inline-block;margin:0 0 0 9px;vertical-align:baseline;font-size:14px;font-weight:650;letter-spacing:.01em;color:var(--green,#16a34a)}
 .dashboard-username[hidden]{display:none!important}
 </style>
 </head>
