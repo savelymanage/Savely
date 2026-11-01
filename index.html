@@ -1127,6 +1127,20 @@ button[draggable="true"],
 .salary-amount-top-button:hover{transform:translateY(-1px);box-shadow:0 7px 16px rgba(15,137,101,.2)}
 @media(max-width:760px){.salary-amount-top-button{font-size:11px;padding:8px 9px;white-space:normal!important;max-width:128px;line-height:1.25}}
 </style>
+
+<style id="savely-smooth-theme-transition">
+/* Smoothly animate day/night theme color changes without delaying layout or interactions. */
+html.theme-transitioning body,
+html.theme-transitioning body *:not(svg):not(path):not(img):not(video):not(canvas) {
+  transition-property: background-color, color, border-color, outline-color, box-shadow, fill, stroke;
+  transition-duration: 420ms;
+  transition-timing-function: ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.theme-transitioning body,
+  html.theme-transitioning body * { transition-duration: 0.01ms !important; }
+}
+</style>
 </head>
 <body>
 
@@ -3799,7 +3813,16 @@ accrueRealtimeInterest();
  }
  function applyTheme(mode){
   const actual=effectiveTheme(mode);
-  document.body.classList.toggle('dark-theme',actual==='dark');
+  const root=document.documentElement;
+  // Enable transitions only for an actual day/night change, not initial page paint.
+  const wasDark=document.body.classList.contains('dark-theme');
+  const willBeDark=actual==='dark';
+  if(wasDark!==willBeDark){
+   root.classList.add('theme-transitioning');
+   window.clearTimeout(window.__savelyThemeTransitionTimer);
+   window.__savelyThemeTransitionTimer=window.setTimeout(()=>root.classList.remove('theme-transitioning'),500);
+  }
+  document.body.classList.toggle('dark-theme',willBeDark);
   if(select && select.value!==mode) select.value=mode;
   if(icon) icon.textContent=mode==='auto'?'🌗':(actual==='dark'?'☾':'☀️');
   if(status){
