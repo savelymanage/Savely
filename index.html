@@ -1172,6 +1172,57 @@ html.theme-transitioning body *:not(svg):not(path):not(img):not(video):not(canva
 @media(max-width:560px){#savelySatelliteBackdrop > .modal{width:calc(100vw - 20px) !important;padding:16px !important;}#savelySatelliteBackdrop #savelyHourlyForecast > .savely-hourly-cards{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:9px !important;}#savelySatelliteBackdrop .savely-hour-card{min-height:210px;padding:12px;} }
 </style>
 
+
+<style id="savely-weather-card-width-fix">
+/* Give the five hourly forecast cards enough width and make them fill their grid cells. */
+#savelySatelliteBackdrop > .modal{
+  width:min(1220px,calc(100vw - 40px)) !important;
+  max-width:1220px !important;
+}
+#savelySatelliteBackdrop #savelyHourlyForecast{
+  width:100% !important;
+  max-width:none !important;
+  overflow:visible !important;
+}
+#savelySatelliteBackdrop #savelyHourlyForecast > .savely-hourly-cards{
+  display:grid !important;
+  grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+  justify-content:stretch !important;
+  justify-items:stretch !important;
+  align-items:stretch !important;
+  gap:16px !important;
+  width:100% !important;
+  max-width:none !important;
+  min-width:0 !important;
+}
+#savelySatelliteBackdrop #savelyHourlyForecast .savely-hour-card{
+  display:flex !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  justify-self:stretch !important;
+  box-sizing:border-box !important;
+  padding:18px !important;
+  min-height:238px !important;
+}
+@media(max-width:850px){
+  #savelySatelliteBackdrop #savelyHourlyForecast > .savely-hourly-cards{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  }
+}
+@media(max-width:560px){
+  #savelySatelliteBackdrop > .modal{width:calc(100vw - 20px) !important;}
+  #savelySatelliteBackdrop #savelyHourlyForecast > .savely-hourly-cards{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:10px !important;
+  }
+  #savelySatelliteBackdrop #savelyHourlyForecast .savely-hour-card{
+    padding:13px !important;
+    min-height:215px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 
