@@ -1148,6 +1148,30 @@ html.theme-transitioning body *:not(svg):not(path):not(img):not(video):not(canva
 .dashboard-username{display:inline-block;margin:0 0 0 9px;vertical-align:baseline;font-size:14px;font-weight:650;letter-spacing:.01em;color:var(--green,#16a34a)}
 .dashboard-username[hidden]{display:none!important}
 </style>
+
+<style id="savely-weather-forecast-refined-v1">
+#savelySatelliteBackdrop > .modal{width:min(1120px,calc(100vw - 36px)) !important;max-width:1120px !important;max-height:88vh !important;padding:22px !important;border-radius:20px !important;box-shadow:0 28px 90px rgba(15,23,42,.22) !important;}
+#savelySatelliteBackdrop .modal-head{margin-bottom:16px !important;}
+#savelySatelliteBackdrop #savelyHourlyForecast,#savelySatelliteBackdrop #savelyDailyForecast{overflow:visible !important;padding:4px 0 8px !important;}
+#savelySatelliteBackdrop #savelyHourlyForecast > .savely-hourly-cards{display:grid !important;grid-template-columns:repeat(5,minmax(0,1fr)) !important;gap:12px !important;width:100% !important;min-width:0 !important;}
+#savelySatelliteBackdrop .savely-hour-card{min-width:0;width:auto !important;max-width:none !important;min-height:226px;box-sizing:border-box;border:1px solid var(--line,#e2e8f0);border-radius:16px;padding:15px 14px;background:var(--card,#fff);display:flex;flex-direction:column;align-items:flex-start;box-shadow:0 4px 14px rgba(15,23,42,.035);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;}
+#savelySatelliteBackdrop .savely-hour-card:hover{transform:translateY(-2px);box-shadow:0 9px 22px rgba(15,23,42,.08);}
+#savelySatelliteBackdrop .savely-hour-card.is-current{border:1.5px solid #15966f;background:linear-gradient(155deg,#e9fbf3 0%,#f5fff9 100%);box-shadow:0 7px 22px rgba(21,150,111,.12);}
+#savelySatelliteBackdrop .savely-hour-time{font-size:12px;font-weight:750;color:var(--muted,#718096);display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-height:22px;}
+#savelySatelliteBackdrop .savely-hour-card.is-current .savely-hour-time{color:#087653;}
+#savelySatelliteBackdrop .savely-current-badge{font-size:9px;letter-spacing:.07em;font-weight:850;padding:3px 6px;border-radius:20px;background:#15966f;color:#fff;}
+#savelySatelliteBackdrop .savely-hour-icon{font-size:34px;line-height:1;margin:15px 0 10px;}
+#savelySatelliteBackdrop .savely-hour-temp{font-size:29px;line-height:1.1;font-weight:850;letter-spacing:-.04em;color:var(--text,#172033);}
+#savelySatelliteBackdrop .savely-hour-card.is-current .savely-hour-temp{color:#087653;}
+#savelySatelliteBackdrop .savely-hour-condition{font-size:12px;line-height:1.4;color:var(--text,#334155);min-height:34px;margin:7px 0 13px;}
+#savelySatelliteBackdrop .savely-hour-meta{width:100%;display:flex;justify-content:space-between;gap:8px;padding-top:8px;margin-top:7px;border-top:1px solid rgba(148,163,184,.2);font-size:11px;color:var(--muted,#718096);}
+#savelySatelliteBackdrop .savely-hour-meta strong{color:var(--text,#334155);font-weight:750;white-space:nowrap;}
+#savelySatelliteBackdrop .savely-hour-card.is-current .savely-hour-meta{border-color:rgba(21,150,111,.18);}
+#savelySatelliteBackdrop #savelyDailyForecast > div{width:100% !important;min-width:0 !important;}
+@media(max-width:850px){#savelySatelliteBackdrop #savelyHourlyForecast > .savely-hourly-cards{grid-template-columns:repeat(3,minmax(0,1fr)) !important;}}
+@media(max-width:560px){#savelySatelliteBackdrop > .modal{width:calc(100vw - 20px) !important;padding:16px !important;}#savelySatelliteBackdrop #savelyHourlyForecast > .savely-hourly-cards{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:9px !important;}#savelySatelliteBackdrop .savely-hour-card{min-height:210px;padding:12px;} }
+</style>
+
 </head>
 <body>
 
@@ -4207,15 +4231,17 @@ accrueRealtimeInterest();
  function renderHourly(data){
    const target=$('savelyHourlyForecast');if(!target)return;
    const h=data.hourly||{}, times=h.time||[], now=Date.now();
-   let indices=times.map((t,i)=>({t,i})).filter(x=>new Date(x.t).getTime()>=now-3600000).slice(0,24);
-   if(!indices.length)indices=times.map((t,i)=>({t,i})).slice(0,24);
+   let indices=times.map((t,i)=>({t,i})).filter(x=>new Date(x.t).getTime()>=now-3600000).slice(0,5);
+   if(!indices.length)indices=times.map((t,i)=>({t,i})).slice(0,5);
    if(!indices.length){target.innerHTML='<p class="panel-sub">Hourly forecast is unavailable right now.</p>';return;}
-   target.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px">'+indices.map(({t,i})=>{
+   target.innerHTML='<div class="savely-hourly-cards">'+indices.map(({t,i},cardIndex)=>{
      const [icon,label]=weather(h.weather_code?.[i]);
      const temp=Number.isFinite(h.temperature_2m?.[i])?Math.round(h.temperature_2m[i])+'°C':'—';
      const rain=Number.isFinite(h.precipitation_probability?.[i])?Math.round(h.precipitation_probability[i])+'%':'—';
      const wind=Number.isFinite(h.wind_speed_10m?.[i])?Math.round(h.wind_speed_10m[i])+' km/h':'—';
-     return '<div style="border:1px solid var(--line);border-radius:13px;padding:12px;background:var(--card, #fff)"><div class="panel-sub">'+dateLabel(t,{weekday:'short',hour:'numeric'})+'</div><div style="font-size:27px;margin:7px 0">'+icon+'</div><div style="font-size:24px;font-weight:800">'+temp+'</div><div style="font-size:12px;min-height:32px;margin:4px 0 8px">'+label+'</div><div class="panel-sub">Rain chance: <strong>'+rain+'</strong></div><div class="panel-sub">Wind: <strong>'+wind+'</strong></div></div>';
+     const current=cardIndex===0;
+     const timeText=current?'NOW':dateLabel(t,{weekday:'short',hour:'numeric'});
+     return '<article class="savely-hour-card'+(current?' is-current':'')+'"><div class="savely-hour-time">'+timeText+(current?'<span class="savely-current-badge">CURRENT</span>':'')+'</div><div class="savely-hour-icon">'+icon+'</div><div class="savely-hour-temp">'+temp+'</div><div class="savely-hour-condition">'+label+'</div><div class="savely-hour-meta"><span>Rain chance</span><strong>'+rain+'</strong></div><div class="savely-hour-meta"><span>Wind</span><strong>'+wind+'</strong></div></article>';
    }).join('')+'</div>';
  }
  function renderDaily(data){
