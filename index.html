@@ -211,11 +211,11 @@ body.dark-theme #savingsListTable .financial-draggable-row td { color: var(--tex
 }
 
 
-/* Sidebar interaction fix: keep navigation above stale page-level overlays. */
+/* Sidebar stays clickable on normal pages, but must remain below modal overlays. */
 .app{position:relative}
 .sidebar{
   position:relative!important;
-  z-index:10000!important;
+  z-index:1!important;
   isolation:isolate;
   pointer-events:auto!important;
 }
@@ -223,8 +223,16 @@ body.dark-theme #savingsListTable .financial-draggable-row td { color: var(--tex
 #nav{position:relative;z-index:1;pointer-events:auto}
 #nav button{position:relative;z-index:2;pointer-events:auto;touch-action:manipulation}
 @media(max-width:760px){
-  .sidebar{position:relative!important;z-index:10000!important}
+  .sidebar{position:relative!important;z-index:1!important}
 }
+/* Keep every standard popup above the sidebar and the app content. */
+.modal-backdrop{z-index:30000!important}
+.financial-list-backdrop{z-index:30010!important}
+.confirm-dialog-backdrop{z-index:30020!important}
+#savelySatelliteBackdrop{z-index:30030!important}
+#savelyTransferModal{z-index:30040!important}
+#savelyDeleteItemsBackdrop{z-index:30050!important}
+#savelyUpdatesBackdrop{z-index:30060!important}
 
 
 /* Salary amount action lives in the global top-right header, only on Monthly Salary. */
