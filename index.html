@@ -1314,13 +1314,6 @@ html.theme-transitioning body *:not(svg):not(path):not(img):not(video):not(canva
 @media(max-width:600px){.debt-intro{align-items:flex-start}.debt-summary-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.debt-calendar-grid{gap:4px}.debt-day{min-height:72px;padding:5px;border-radius:8px}.debt-day-chip{font-size:7px;padding:3px}.debt-calendar-legend{gap:9px}.debt-item-card{align-items:flex-start;flex-direction:column}.debt-item-amount{text-align:left}.debt-item-actions{justify-content:flex-start}.debt-form-grid{grid-template-columns:1fr}.debt-form-grid .field.full{grid-column:auto}}
 </style>
 
-<style id="savely-debt-duplicate-title-fix">
-/* Debt page already has its own Debt calendar heading; hide the duplicate global page title. */
-body:has(#page-debt.active) .topbar > div:first-child {
-  display: none !important;
-}
-</style>
-
 <style id="savely-page-header-descriptions">
 .page-description{
   margin-top:6px;
@@ -1333,6 +1326,41 @@ body:has(#page-debt.active) .topbar > div:first-child {
 @media(max-width:760px){
   .page-description{font-size:11px;max-width:100%}
 }
+</style>
+
+
+<style id="savely-debt-topbar-button">
+#topbarAddDebtButton{display:none;flex:0 0 auto;white-space:nowrap}
+body:has(#page-debt.active) #topbarAddDebtButton{display:inline-flex!important}
+@media(max-width:760px){
+ body:has(#page-debt.active) #topbarAddDebtButton{font-size:11px;padding:8px 10px}
+}
+</style>
+
+
+<style id="savely-debt-typography-alignment">
+#page-debt .debt-calendar-panel .panel-head h2,
+#page-debt .debt-upcoming-panel .panel-head h2{
+  font-size:16px;
+  line-height:1.3;
+  font-weight:800;
+  letter-spacing:-.35px;
+  color:var(--text);
+}
+#page-debt .debt-calendar-panel .panel-sub,
+#page-debt .debt-upcoming-panel .panel-sub{
+  font-size:11px;
+  line-height:1.5;
+}
+#page-debt .debt-calendar-toolbar > strong{
+  font-size:16px;
+  line-height:1.3;
+  font-weight:800;
+  letter-spacing:-.35px;
+}
+#page-debt .debt-summary-cards .stat-top{font-size:12px;font-weight:750}
+#page-debt .debt-summary-cards .stat-value{font-size:27px;font-weight:850;letter-spacing:-.7px}
+#page-debt .debt-summary-cards .stat-foot{font-size:10px;line-height:1.45}
 </style>
 
 </head>
@@ -1421,7 +1449,7 @@ body:has(#page-debt.active) .topbar > div:first-child {
 <main class="main">
   <header class="topbar"><div><div class="eyebrow" id="eyebrow">YOUR MONEY, IN FOCUS</div><h1 class="page-title" id="pageTitle">Good afternoon 👋</h1><div id="dashboardUsername" class="dashboard-username" hidden></div><div class="page-description" id="pageDescription">A clear view of your savings, income, and financial progress.</div></div><div class="top-actions"><div class="weather-pill" id="savelyWeather" title="Live weather · Click to view satellite imagery" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="savelySatelliteBackdrop" style="cursor:pointer"><span class="weather-icon" id="savelyWeatherIcon">🌤️</span><span class="weather-copy"><strong id="savelyWeatherTemp">Loading…</strong><small id="savelyWeatherDesc">Current weather</small></span></div><div class="date-pill" id="today">
 
-</div><button type="button" class="btn btn-primary salary-amount-top-button" id="salaryDetailsOpenButton" onclick="toggleSalaryDetails(true)" style="background:var(--green);border-color:var(--green);white-space:nowrap">＋ Add salary amount</button><button id="topbarAddSavingsButton" class="btn btn-primary" style="background:var(--green);border-color:var(--green)" onclick="openFinancialAdd()">＋ <span class="desktop-label">Add Savings</span><span class="mobile-label">Add Savings</span></button><div class="avatar">S</div><div class="auth-user-chip" id="savely-auth-user-chip" hidden><span class="auth-user-email" id="savely-auth-user-email"></span></div></div></header>
+</div><button type="button" class="btn btn-primary" id="topbarAddDebtButton" onclick="openDebtForm()" style="display:none;background:var(--green);border-color:var(--green);white-space:nowrap">＋ Add debt</button><button type="button" class="btn btn-primary salary-amount-top-button" id="salaryDetailsOpenButton" onclick="toggleSalaryDetails(true)" style="background:var(--green);border-color:var(--green);white-space:nowrap">＋ Add salary amount</button><button id="topbarAddSavingsButton" class="btn btn-primary" style="background:var(--green);border-color:var(--green)" onclick="openFinancialAdd()">＋ <span class="desktop-label">Add Savings</span><span class="mobile-label">Add Savings</span></button><div class="avatar">S</div><div class="auth-user-chip" id="savely-auth-user-chip" hidden><span class="auth-user-email" id="savely-auth-user-email"></span></div></div></header>
   <section class="page active" id="page-dashboard">
     <div class="cards" id="stats"></div>
     <div class="panel" id="overallTrendPanel" style="margin-bottom:18px">
@@ -1510,10 +1538,6 @@ body:has(#page-debt.active) .topbar > div:first-child {
 
 
   <section class="page" id="page-debt">
-    <div class="debt-intro">
-      <div><div class="panel-sub">PAYMENTS &amp; COLLECTIONS</div><h2 style="margin:5px 0 4px">Debt calendar</h2><div class="panel-sub">Track what you need to pay and money you are waiting to collect.</div></div>
-      <button type="button" class="btn btn-primary" style="background:var(--green);border-color:var(--green)" onclick="openDebtForm()">＋ Add debt</button>
-    </div>
     <div class="cards debt-summary-cards">
       <div class="stat"><div class="stat-top">I owe</div><div class="stat-value" id="debtOweTotal" style="color:var(--red)">₱0.00</div><div class="stat-foot">Your remaining payments</div></div>
       <div class="stat"><div class="stat-top">Owed to me</div><div class="stat-value" id="debtLentTotal" style="color:var(--green)">₱0.00</div><div class="stat-foot">Money to collect</div></div>
@@ -3650,7 +3674,7 @@ function closeSavelyUpdates(){const el=document.getElementById('savelyUpdatesBac
 document.addEventListener('DOMContentLoaded',()=>{const el=document.getElementById('savelyUpdatesBackdrop');if(el)el.style.display='none';});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'){const updates=document.getElementById('savelyUpdatesBackdrop');if(updates&&getComputedStyle(updates).display!=='none')closeSavelyUpdates();}});
 
-function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard')setTimeout(renderOverallTrend,50);document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Budget & expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR FINANCES, ORGANIZED','Financial List'],salary:['YOUR INCOME, ORGANIZED','Monthly Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and financial items.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Plan your spending and keep monthly expenses within your limits.',reports:'Review your financial activity and export your records.','live-map':'View nearby road conditions and travel information.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
+function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard')setTimeout(renderOverallTrend,50);document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Budget & expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR FINANCES, ORGANIZED','Financial List'],salary:['YOUR INCOME, ORGANIZED','Monthly Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and financial items.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Plan your spending and keep monthly expenses within your limits.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
 document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
 function openModal(kind,goalToEdit=null){const form=document.getElementById('modalForm'),title=document.getElementById('modalTitle'),desc=document.getElementById('modalDesc');let accountOptions=data.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');let field=(label,name,type='text',value='',extra='')=>`<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let select=(label,name,opts)=>`<div class="field"><label>${label}</label><select name="${name}">${opts}</select></div>`;let fullfield=(label,name,type='text',value='',extra='')=>`<div class="field full"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let body='';
 if(kind==='transaction'){title.textContent='Add transaction';desc.textContent='Record a deposit, withdrawal, interest credit, or expense.';body=`<div class="form-grid">${fullfield('Description','description','text','','required maxlength="100"')}${select('Transaction type','type','<option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option><option value="expense">Expense</option><option value="interest">Interest credit</option>')}${select('Account','accountId',accountOptions)}${field('Amount (₱)','amount','number','','required min=".01" step=".01"')}${field('Date','date','date',todayISO(),'required')}${field('Category','category','text','General','maxlength="60"')}</div>`}
