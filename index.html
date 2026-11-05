@@ -1145,7 +1145,7 @@ html.theme-transitioning body *:not(svg):not(path):not(img):not(video):not(canva
 <style id="savely-dashboard-username-style">
 /* Show the signed-in username inline to the right of the greeting. */
 #pageTitle{display:inline-block;vertical-align:baseline}
-.dashboard-username{display:inline-block;margin:0 0 0 9px;vertical-align:baseline;font-size:14px;font-weight:650;letter-spacing:.01em;color:var(--green,#16a34a)}
+.dashboard-username{display:inline-block;margin:0 0 0 9px;vertical-align:baseline;font-size:clamp(21px,5vw,27px);font-weight:650;letter-spacing:-.035em;line-height:1.2;color:var(--green,#16a34a)}
 .dashboard-username[hidden]{display:none!important}
 </style>
 
@@ -1450,8 +1450,18 @@ let data;
 try{data=JSON.parse(localStorage.getItem(STORE))||seed();if(!Array.isArray(data.savingsList))data.savingsList=[]}catch(e){data=seed()}
 function save(){try{localStorage.setItem(STORE,JSON.stringify(data))}catch(e){toast('Browser storage is unavailable. Export a backup to keep your data safe.')}render()}
 
+function getTrackedDailyInterestRate(item){
+ if(!item || (item.category||'Savings')!=='Savings')return null;
+ const schedule=getInterestSchedule(item.name||'');
+ if(!schedule || !/daily/i.test(String(schedule.frequency||'')))return null;
+ if(isMayaInterestItem(item))return getMayaInterestRates(item).total;
+ const known=getInterestRate(item.name||'','Savings');
+ const custom=Number(item.annualInterestRate??item.interestRate);
+ const rate=known!==null&&known!==undefined?Number(known):(Number.isFinite(custom)&&custom>0?custom:null);
+ return Number.isFinite(rate)&&rate>0?rate:null;
+}
 function isRealtimeDailyInterestItem(item){
- return !!item && (item.category||'Savings')==='Savings' && /mari\s?bank/i.test(String(item.name||''));
+ return getTrackedDailyInterestRate(item)!==null;
 }
 function isMayaInterestItem(item){
  return !!item && (item.category||'Savings')==='Savings' && /maya/i.test(String(item.name||''));
@@ -1467,23 +1477,28 @@ function interestLocalDate(ts){
  return `${parts.year}-${parts.month}-${parts.day}`;
 }
 function ensureInterestTracking(item, now){
+ let changed=false;
  if(!item.interestTracking || typeof item.interestTracking!=='object'){
   const amount=Math.max(0,Number(item.amount)||0);
   item.interestTracking={lastTickAt:now,dayStartBalance:amount,lastHistoryDate:interestLocalDate(now)};
+  changed=true;
  }
- if(!Array.isArray(item.changeHistory))item.changeHistory=[];
+ if(!Array.isArray(item.changeHistory)){item.changeHistory=[];changed=true;}
  if(!Array.isArray(item.graphHistory)||!item.graphHistory.length){
   item.graphHistory=[{at:now-1,amount:Math.max(0,Number(item.amount)||0)}];
+  changed=true;
  }
+ return changed;
 }
 function accrueRealtimeInterest(){
- // Record estimated net interest after each complete 24-hour interval, not merely at midnight.
- // Use real elapsed time so changing the displayed clock/timezone does not trigger early credits.
- const now=Date.now(), intervalMs=24*60*60*1000, annualNetRate=0.0325*0.8;
+ // Save the tracking anchor on first run, then record one estimated net-interest
+ // entry after every complete 24-hour period. Missed days are caught up on next visit.
+ const now=Date.now(), intervalMs=24*60*60*1000, taxMultiplier=.8;
  let changed=false;
  for(const item of (data.savingsList||[])){
-  if(!isRealtimeDailyInterestItem(item))continue;
-  ensureInterestTracking(item,now);
+  const annualRate=getTrackedDailyInterestRate(item);
+  if(annualRate===null)continue;
+  if(ensureInterestTracking(item,now))changed=true;
   const t=item.interestTracking;
   if(!Number.isFinite(Number(t.lastTickAt)) || Number(t.lastTickAt)<=0){
    t.lastTickAt=now;
@@ -1492,7 +1507,8 @@ function accrueRealtimeInterest(){
    changed=true;
    continue;
   }
-  // Keep one graph sample per local calendar day, removing legacy minute-by-minute samples.
+  // Keep only one graph sample per local calendar day; history cards remain tied
+  // to actual 24-hour accrual events, never to the live seconds counter.
   if(Array.isArray(item.graphHistory)){
    const seen=new Map();
    for(const point of item.graphHistory){
@@ -1506,30 +1522,30 @@ function accrueRealtimeInterest(){
     item.graphHistory=cleaned;changed=true;
    }
   }
-  // Catch up each complete 24-hour period. This also handles the page being closed overnight.
   let guard=0;
   while(now-Number(t.lastTickAt)>=intervalMs && guard<365){
    guard++;
    const tickAt=Number(t.lastTickAt)+intervalMs;
    const oldBalance=Math.max(0,Number(item.amount)||0);
-   const dailyInterest=oldBalance*annualNetRate/365;
+   const dailyInterest=oldBalance*(annualRate/100)*taxMultiplier/365;
    const newBalance=oldBalance+dailyInterest;
-   item.amount=newBalance;
-   if(!Array.isArray(item.changeHistory))item.changeHistory=[];
    const tickDate=interestLocalDate(tickAt);
+   if(!Array.isArray(item.changeHistory))item.changeHistory=[];
    const alreadyRecorded=item.changeHistory.some(h=>
     h && h.type==='interest' && Math.abs(Number(h.at)-tickAt)<60000
    );
-   if(!alreadyRecorded){
+   if(!alreadyRecorded && dailyInterest>=0.0000001){
     item.changeHistory.push({
      at:tickAt,oldName:item.name,newName:item.name,oldAmount:oldBalance,newAmount:newBalance,
-     type:'interest',label:'Estimated daily interest',interestEarned:dailyInterest,interestDate:tickDate
+     type:'interest',label:'Estimated daily interest',interestEarned:dailyInterest,
+     annualRate:annualRate,taxRate:20,interestDate:tickDate
     });
    }
    if(!Array.isArray(item.graphHistory))item.graphHistory=[];
    const existing=item.graphHistory.find(point=>interestLocalDate(Number(point.at)||now)===tickDate);
    if(existing){existing.at=tickAt;existing.amount=newBalance;delete existing.liveMinute;}
    else item.graphHistory.push({at:tickAt,amount:newBalance,dailyInterestDate:tickDate});
+   item.amount=newBalance;
    t.dayStartBalance=newBalance;
    t.lastTickAt=tickAt;
    t.lastHistoryDate=tickDate;
@@ -1537,7 +1553,7 @@ function accrueRealtimeInterest(){
   }
  }
  if(changed){
-  try{localStorage.setItem(STORE,JSON.stringify(data));}catch(e){}
+  try{localStorage.setItem(STORE,JSON.stringify(data));}catch(e){toast('Could not save daily interest history. Export a backup and check browser storage.');}
   if(typeof renderSavingsList==='function')renderSavingsList();
  }
 }
@@ -2963,9 +2979,9 @@ function openSavingsHistory(id){
  const content=document.getElementById('savingsHistoryContent');
  const liveBalance=Math.max(0,Number(item.amount)||0);
  const mayaRates=getMayaInterestRates(item);
- const liveRate=isMayaBank?mayaRates.total:3.25;
+ const liveRate=getTrackedDailyInterestRate(item)||0;
  const liveDailyNet=liveBalance*liveRate/100*0.8/365;
- const livePanel=showLiveInterest?`<div id="mariBankLiveInterestPanel" data-item-id="${esc(item.id)}" data-bank-type="${isMayaBank?'maya':'mari'}" style="border:1px solid #b8ead4;background:#effbf5;border-radius:14px;padding:14px 16px;margin-bottom:12px"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><strong style="color:#07845e">LIVE · Estimated daily interest</strong><span style="font-size:11px;font-weight:800;color:#07845e">LIVE ESTIMATE</span></div><div id="mariBankLiveInterestAmount" style="font-size:26px;font-weight:850;color:#07845e;margin:8px 0 3px">+₱0.000000</div><div class="panel-sub" id="mariBankInterestDescription">${isMayaBank?'Estimate uses your configured Maya base + bonus annual rate, less 20% withholding tax. Bonus interest is not assumed unless you enter it below.':'Estimated net interest accumulated today so far. Full-day estimate uses 3.25% p.a. after 20% withholding tax.'}</div>${isMayaBank?`<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px"><label class="panel-sub" style="display:grid;gap:4px">Base rate (% p.a.)<input type="number" min="0" max="100" step="0.01" id="mayaBaseRateInput" value="${mayaRates.base}" style="width:130px;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--card);color:var(--text)" onchange="saveMayaInterestRates('${esc(item.id)}')"></label><label class="panel-sub" style="display:grid;gap:4px">Bonus rate (% p.a.)<input type="number" min="0" max="100" step="0.01" id="mayaBonusRateInput" value="${mayaRates.bonus}" style="width:130px;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--card);color:var(--text)" onchange="saveMayaInterestRates('${esc(item.id)}')"></label><div class="panel-sub" style="align-self:end;padding-bottom:8px">Combined rate: <strong id="mayaCombinedRate">${mayaRates.total.toFixed(2)}% p.a.</strong></div></div>`:''}<div class="panel-sub" style="margin-top:8px">Full-day estimate: <strong id="mariBankFullDayEstimate">${peso(liveDailyNet)}</strong> · Current estimated balance: <strong id="mariBankLiveBalance">${peso(liveBalance)}</strong></div><div class="panel-sub" style="margin-top:5px">Philippines time · <strong id="mariBankLiveTimestamp">Starting live clock…</strong></div></div>`:'';
+ const livePanel=showLiveInterest?`<div id="mariBankLiveInterestPanel" data-item-id="${esc(item.id)}" data-bank-type="${isMayaBank?'maya':'daily'}" style="border:1px solid #b8ead4;background:#effbf5;border-radius:14px;padding:14px 16px;margin-bottom:12px"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><strong style="color:#07845e">LIVE · Estimated daily interest</strong><span style="font-size:11px;font-weight:800;color:#07845e">LIVE ESTIMATE</span></div><div id="mariBankLiveInterestAmount" style="font-size:26px;font-weight:850;color:#07845e;margin:8px 0 3px">+₱0.000000</div><div class="panel-sub" id="mariBankInterestDescription">${isMayaBank?'Estimate uses your configured Maya base + bonus annual rate, less 20% withholding tax. Bonus interest is not assumed unless you enter it below.':'Estimated net interest accumulated today so far, based on the configured annual rate for this savings balance after 20% withholding tax.'}</div>${isMayaBank?`<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px"><label class="panel-sub" style="display:grid;gap:4px">Base rate (% p.a.)<input type="number" min="0" max="100" step="0.01" id="mayaBaseRateInput" value="${mayaRates.base}" style="width:130px;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--card);color:var(--text)" onchange="saveMayaInterestRates('${esc(item.id)}')"></label><label class="panel-sub" style="display:grid;gap:4px">Bonus rate (% p.a.)<input type="number" min="0" max="100" step="0.01" id="mayaBonusRateInput" value="${mayaRates.bonus}" style="width:130px;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--card);color:var(--text)" onchange="saveMayaInterestRates('${esc(item.id)}')"></label><div class="panel-sub" style="align-self:end;padding-bottom:8px">Combined rate: <strong id="mayaCombinedRate">${mayaRates.total.toFixed(2)}% p.a.</strong></div></div>`:''}<div class="panel-sub" style="margin-top:8px">Full-day estimate: <strong id="mariBankFullDayEstimate">${peso(liveDailyNet)}</strong> · Current estimated balance: <strong id="mariBankLiveBalance">${peso(liveBalance)}</strong></div><div class="panel-sub" style="margin-top:5px">Philippines time · <strong id="mariBankLiveTimestamp">Starting live clock…</strong></div></div>`:'';
  if(!rows.length){
   content.innerHTML=livePanel+'<div class="empty">No changes recorded yet. Edit this item to start building its history.</div>';
  }else{
@@ -3194,8 +3210,9 @@ function updateMariBankLivePanel(){
  if(!item)return;
  const isMaya=isMayaInterestItem(item);
  const balance=Math.max(0,Number(item.amount)||0);
- const rates=isMaya?getMayaInterestRates(item):{base:3.25,bonus:0,total:3.25};
- const dailyNet=balance*rates.total/100*0.8/365;
+ const annualRate=getTrackedDailyInterestRate(item)||0;
+ const rates=isMaya?getMayaInterestRates(item):{base:annualRate,bonus:0,total:annualRate};
+ const dailyNet=balance*annualRate/100*0.8/365;
  // Use Savely's continuously advancing clock (including the user's chosen timezone/time setting).
  const now=getDisplayedDateTime();
  const timezone=(dateTimePrefs&&dateTimePrefs.timezone)||'Asia/Manila';
@@ -3210,7 +3227,7 @@ function updateMariBankLivePanel(){
  const fullDayEl=panel.querySelector('#mariBankFullDayEstimate');
  if(fullDayEl)fullDayEl.textContent=peso(dailyNet);
  const descriptionEl=panel.querySelector('#mariBankInterestDescription');
- if(descriptionEl && isMaya)descriptionEl.textContent=`Estimated net interest uses ${rates.total.toFixed(2)}% p.a. total (${rates.base.toFixed(2)}% base + ${rates.bonus.toFixed(2)}% bonus), after 20% withholding tax. Bonus rate is your manual estimate; confirm eligibility and actual rate in Maya.`;
+ if(descriptionEl)descriptionEl.textContent=isMaya?`Estimated net interest uses ${rates.total.toFixed(2)}% p.a. total (${rates.base.toFixed(2)}% base + ${rates.bonus.toFixed(2)}% bonus), after 20% withholding tax. Bonus rate is your manual estimate; confirm eligibility and actual rate in Maya.`:`Estimated net interest uses ${annualRate.toFixed(2)}% p.a. after 20% withholding tax. This is a Savely estimate, not a bank-confirmed credit.`;
  const combinedEl=panel.querySelector('#mayaCombinedRate');
  if(combinedEl && isMaya)combinedEl.textContent=rates.total.toFixed(2)+'% p.a.';
  if(timestampEl)timestampEl.textContent=new Intl.DateTimeFormat('en-PH',{timeZone:timezone,year:'numeric',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',second:'2-digit',hour12:dateTimePrefs.format!=='24'}).format(now)+' '+(timezone==='Asia/Manila'?'PHT':timezone);
