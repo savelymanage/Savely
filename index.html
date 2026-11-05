@@ -1557,6 +1557,85 @@ function accrueRealtimeInterest(){
   if(typeof renderSavingsList==='function')renderSavingsList();
  }
 }
+
+function closeSavingsTransfer(){
+ const modal=document.getElementById('savelyTransferModal');
+ if(modal)modal.remove();
+}
+function openSavingsTransfer(sourceId){
+ const source=(data.savingsList||[]).find(item=>String(item.id)===String(sourceId));
+ if(!source){toast('Source savings item not found.');return;}
+ if((source.category||'Savings')!=='Savings'){toast('Transfers are available for Savings items only.');return;}
+ const destinations=(data.savingsList||[]).filter(item=>String(item.id)!==String(sourceId)&&(item.category||'Savings')==='Savings');
+ if(!destinations.length){toast('Add another bank or digital bank to your Savings list first.');return;}
+ closeSavingsTransfer();
+ const modal=document.createElement('div');
+ modal.id='savelyTransferModal';
+ modal.className='modal-backdrop';
+ modal.style.cssText='display:flex;z-index:100120;align-items:center;justify-content:center;padding:18px';
+ modal.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="savelyTransferTitle" style="width:min(500px,100%);max-height:90vh;overflow:auto">
+  <div class="panel-head" style="align-items:flex-start"><div><h2 id="savelyTransferTitle">⇄ Transfer money</h2><p class="panel-sub">Move money between your saved banks and digital banks.</p></div><button type="button" class="btn btn-light" onclick="closeSavingsTransfer()">✕ Close</button></div>
+  <div style="border:1px solid var(--line);background:var(--soft);border-radius:12px;padding:12px 14px;margin:14px 0"><div class="panel-sub">FROM</div><strong>${esc(source.name||'Savings')}</strong><div style="font-size:20px;font-weight:850;color:var(--green);margin-top:3px">${peso(source.amount)}</div><div class="panel-sub">Available balance</div></div>
+  <form id="savelyTransferForm">
+   <div class="field" style="margin-bottom:13px"><label for="savelyTransferDestination">TO · Destination bank</label><select id="savelyTransferDestination" required style="width:100%">${destinations.map(item=>`<option value="${esc(String(item.id))}">${esc(item.name||'Savings')} · ${peso(item.amount)}</option>`).join('')}</select></div>
+   <div class="field" style="margin-bottom:13px"><label for="savelyTransferAmount">Transfer amount (₱)</label><input id="savelyTransferAmount" type="number" min="0.01" max="${Math.max(0,Number(source.amount)||0)}" step="0.01" placeholder="Enter amount" required style="width:100%"><div class="panel-sub" id="savelyTransferAvailable" style="margin-top:5px">Available: ${peso(source.amount)}</div></div>
+   <div class="field"><label for="savelyTransferNote">Note (optional)</label><input id="savelyTransferNote" maxlength="100" placeholder="e.g. Move savings to Maya" style="width:100%"></div>
+   <div class="form-actions" style="justify-content:flex-end;margin-top:18px"><button type="button" class="btn btn-secondary" onclick="closeSavingsTransfer()">Cancel</button><button type="submit" class="btn btn-primary" style="background:var(--green);border-color:var(--green)">Review transfer</button></div>
+  </form>
+ </div>`;
+ modal.addEventListener('click',event=>{if(event.target===modal)closeSavingsTransfer();});
+ document.body.appendChild(modal);
+ const amountInput=modal.querySelector('#savelyTransferAmount');
+ amountInput.addEventListener('input',()=>{
+  const amount=Math.max(0,Number(amountInput.value)||0),available=Math.max(0,Number(source.amount)||0);
+  const label=modal.querySelector('#savelyTransferAvailable');
+  label.textContent=`Remaining after transfer: ${peso(Math.max(0,available-amount))}`;
+  label.style.color=amount>available?'var(--red)':'var(--muted)';
+ });
+ modal.querySelector('#savelyTransferForm').addEventListener('submit',event=>{
+  event.preventDefault();
+  const destinationId=modal.querySelector('#savelyTransferDestination').value;
+  const amount=Number(amountInput.value);
+  const note=modal.querySelector('#savelyTransferNote').value.trim();
+  const currentSource=(data.savingsList||[]).find(item=>String(item.id)===String(sourceId));
+  const destination=(data.savingsList||[]).find(item=>String(item.id)===String(destinationId));
+  if(!currentSource||!destination){toast('Please choose valid source and destination accounts.');return;}
+  if(String(currentSource.id)===String(destination.id)){toast('Source and destination must be different.');return;}
+  if(!Number.isFinite(amount)||amount<=0){toast('Enter a transfer amount greater than zero.');return;}
+  const sourceBalance=Math.max(0,Number(currentSource.amount)||0);
+  if(amount>sourceBalance+0.000001){toast('Transfer amount exceeds the available balance.');return;}
+  const confirmed=window.confirm(`Transfer ${peso(amount)} from ${currentSource.name} to ${destination.name}?\\n\\nThis will update both balances and add entries to both histories.`);
+  if(!confirmed)return;
+  const now=Date.now(),transferId='tr-'+uid();
+  const destinationBalance=Math.max(0,Number(destination.amount)||0);
+  currentSource.amount=Math.max(0,sourceBalance-amount);
+  destination.amount=destinationBalance+amount;
+  if(!Array.isArray(currentSource.changeHistory))currentSource.changeHistory=[];
+  if(!Array.isArray(destination.changeHistory))destination.changeHistory=[];
+  currentSource.changeHistory.push({at:now,oldName:currentSource.name,newName:currentSource.name,oldAmount:sourceBalance,newAmount:currentSource.amount,type:'transfer_out',label:'Transfer sent',transferId,relatedItemId:destination.id,relatedItemName:destination.name,note});
+  destination.changeHistory.push({at:now,oldName:destination.name,newName:destination.name,oldAmount:destinationBalance,newAmount:destination.amount,type:'transfer_in',label:'Transfer received',transferId,relatedItemId:currentSource.id,relatedItemName:currentSource.name,note});
+  if(!Array.isArray(currentSource.graphHistory)||!currentSource.graphHistory.length)currentSource.graphHistory=[{at:now-1,amount:sourceBalance}];
+  if(!Array.isArray(destination.graphHistory)||!destination.graphHistory.length)destination.graphHistory=[{at:now-1,amount:destinationBalance}];
+  currentSource.graphHistory.push({at:now,amount:currentSource.amount});
+  destination.graphHistory.push({at:now,amount:destination.amount});
+  // Reset the daily-interest anchor to the post-transfer balances so the next
+  // full accrual period uses the correct amount for each account.
+  [currentSource,destination].forEach(item=>{
+   if(isRealtimeDailyInterestItem(item))item.interestTracking={lastTickAt:now,dayStartBalance:Math.max(0,Number(item.amount)||0),lastHistoryDate:interestLocalDate(now)};
+  });
+  try{localStorage.setItem(STORE,JSON.stringify(data));}
+  catch(error){
+   currentSource.amount=sourceBalance;destination.amount=destinationBalance;
+   currentSource.changeHistory.pop();destination.changeHistory.pop();
+   currentSource.graphHistory.pop();destination.graphHistory.pop();
+   toast('Transfer could not be saved. Check browser storage and try again.');
+   return;
+  }
+  closeSavingsTransfer();
+  renderSavingsList();
+  toast(`Transferred ${peso(amount)} to ${destination.name}.`);
+ });
+}
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.style.display='block';setTimeout(()=>el.style.display='none',2400)}
 function balance(accountId){const a=data.accounts.find(x=>x.id===accountId);if(!a)return 0;return Number(a.opening)+data.transactions.filter(t=>t.accountId===accountId).reduce((s,t)=>s+(t.type==='deposit'||t.type==='interest'?Number(t.amount):-Number(t.amount)),0)}
 function totalBalance(){return data.accounts.reduce((s,a)=>s+balance(a.id),0)}
@@ -2577,7 +2656,7 @@ function renderSavingsList(){
  renderSavingsTrend();
  renderOverallTrend();
  const target=document.getElementById('savingsListTable');
- target.innerHTML=selected.length?`<table><thead><tr><th>Item / source</th><th>Date added</th><th class="financial-trend-col" aria-label="Balance trend"></th><th style="text-align:right">Amount</th>${activeFinancialCategory==='Savings'?'<th>Interest estimate</th>':''}<th></th></tr></thead><tbody>${selected.map(item=>`<tr data-financial-item-id="${esc(item.id)}" data-trend-bank="${esc(item.isGoalAllocation?item.name:(item.bankName||item.name))}" title="Click to focus this item on the graph" draggable="true" class="financial-draggable-row" style="cursor:pointer"><td><div class="tx-title" style="display:flex;align-items:center;min-width:180px">${financialBankLogo(item.bankName||item.name)}<span>${item.isGoalAllocation?`<span class="goal-linked-item">${esc(item.name)}</span><div class="footer-note">Linked from Savings Goals</div>`:esc(item.name)}</span></div></td><td>${fmtDate(item.date)}</td><td class="financial-trend-col" style="text-align:center;width:42px">${financialItemTrendIndicator(item)}</td><td style="text-align:right;font-weight:800;color:${item.category==='Debt'?'var(--red)':'var(--text)'}"><span style="display:inline-flex;align-items:center;justify-content:flex-end;gap:6px"><span>${item.category==='Debt'?'−':'+'}${peso(item.amount)}</span></span></td>${activeFinancialCategory==='Savings'?`<td>${(/^maya$/i.test(String(item.bankName||item.name||'').trim())||/maya savings/i.test(String(item.bankName||item.name||'')))?mayaInterestEstimate(item.amount,item.mayaBonusRate||3):(interestEstimate(item.amount,getInterestRate(item.bankName||item.name,item.category))||'<span class="muted">Rate unavailable</span>')}</td>`:''}<td style="text-align:right"><div class="savings-item-actions"><button type="button" class="savings-item-menu-button" aria-label="Savings item actions" aria-expanded="false" onclick="toggleSavingsItemMenu(event,'${esc(String(item.id))}')">⋯</button><div class="savings-item-menu" id="savings-item-menu-${esc(String(item.id))}">${item.isGoalAllocation?`<button type="button" class="apply-savings-goal-action is-disabled" disabled aria-disabled="true" title="This bank is already linked to a savings goal">Apply to savings goal ✓</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationInterest('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">View interest</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationHistory('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editGoal('${esc(String(item.goalId))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();removeGoalBankAllocation('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">Delete</button>`:`${activeFinancialCategory==='Savings'?`<button type="button" class="apply-savings-goal-action" data-savings-item-id="${esc(String(item.id))}" onclick="event.preventDefault();event.stopPropagation();closeSavingsItemMenus();askAddSavingsToGoal(this.dataset.savingsItemId)">Apply to savings goal</button>`:''}${activeFinancialCategory==='Savings'&&!/^(cash|coins?|coins?\s*\(.*\)|₱1 coin.*|1 coin.*)$/i.test(String(item.name||'').trim())?`<button type="button" onclick="closeSavingsItemMenus();openSavingsInterest('${esc(String(item.id))}')">View interest</button>`:''}<button type="button" onclick="closeSavingsItemMenus();openSavingsHistory('${esc(String(item.id))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editFinancialItem('${esc(String(item.id))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();deleteSavingsItem('${esc(String(item.id))}')">Delete</button>`}</div></div></td></tr>`).join('')}</tbody></table><div class="between savely-items-updated-footer" style="margin-top:14px;justify-content:flex-end"><span style="color:var(--muted)">Last updated</span><strong id="savingsItemsLastUpdated" style="font-weight:700">${getSavingsItemsLastUpdatedLabel(selected)}</strong></div>`:`<div class="empty">No ${activeFinancialCategory.toLowerCase()} items yet. Click Add to create one.</div>`;
+ target.innerHTML=selected.length?`<table><thead><tr><th>Item / source</th><th>Date added</th><th class="financial-trend-col" aria-label="Balance trend"></th><th style="text-align:right">Amount</th>${activeFinancialCategory==='Savings'?'<th>Interest estimate</th>':''}<th></th></tr></thead><tbody>${selected.map(item=>`<tr data-financial-item-id="${esc(item.id)}" data-trend-bank="${esc(item.isGoalAllocation?item.name:(item.bankName||item.name))}" title="Click to focus this item on the graph" draggable="true" class="financial-draggable-row" style="cursor:pointer"><td><div class="tx-title" style="display:flex;align-items:center;min-width:180px">${financialBankLogo(item.bankName||item.name)}<span>${item.isGoalAllocation?`<span class="goal-linked-item">${esc(item.name)}</span><div class="footer-note">Linked from Savings Goals</div>`:esc(item.name)}</span></div></td><td>${fmtDate(item.date)}</td><td class="financial-trend-col" style="text-align:center;width:42px">${financialItemTrendIndicator(item)}</td><td style="text-align:right;font-weight:800;color:${item.category==='Debt'?'var(--red)':'var(--text)'}"><span style="display:inline-flex;align-items:center;justify-content:flex-end;gap:6px"><span>${item.category==='Debt'?'−':'+'}${peso(item.amount)}</span></span></td>${activeFinancialCategory==='Savings'?`<td>${(/^maya$/i.test(String(item.bankName||item.name||'').trim())||/maya savings/i.test(String(item.bankName||item.name||'')))?mayaInterestEstimate(item.amount,item.mayaBonusRate||3):(interestEstimate(item.amount,getInterestRate(item.bankName||item.name,item.category))||'<span class="muted">Rate unavailable</span>')}</td>`:''}<td style="text-align:right"><div class="savings-item-actions"><button type="button" class="savings-item-menu-button" aria-label="Savings item actions" aria-expanded="false" onclick="toggleSavingsItemMenu(event,'${esc(String(item.id))}')">⋯</button><div class="savings-item-menu" id="savings-item-menu-${esc(String(item.id))}">${item.isGoalAllocation?`<button type="button" class="apply-savings-goal-action is-disabled" disabled aria-disabled="true" title="This bank is already linked to a savings goal">Apply to savings goal ✓</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationInterest('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">View interest</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationHistory('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editGoal('${esc(String(item.goalId))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();removeGoalBankAllocation('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">Delete</button>`:`${activeFinancialCategory==='Savings'?`<button type="button" class="apply-savings-goal-action" data-savings-item-id="${esc(String(item.id))}" onclick="event.preventDefault();event.stopPropagation();closeSavingsItemMenus();askAddSavingsToGoal(this.dataset.savingsItemId)">Apply to savings goal</button><button type="button" onclick="closeSavingsItemMenus();openSavingsTransfer('${esc(String(item.id))}')">⇄ Transfer</button>`:''}${activeFinancialCategory==='Savings'&&!/^(cash|coins?|coins?\s*\(.*\)|₱1 coin.*|1 coin.*)$/i.test(String(item.name||'').trim())?`<button type="button" onclick="closeSavingsItemMenus();openSavingsInterest('${esc(String(item.id))}')">View interest</button>`:''}<button type="button" onclick="closeSavingsItemMenus();openSavingsHistory('${esc(String(item.id))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editFinancialItem('${esc(String(item.id))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();deleteSavingsItem('${esc(String(item.id))}')">Delete</button>`}</div></div></td></tr>`).join('')}</tbody></table><div class="between savely-items-updated-footer" style="margin-top:14px;justify-content:flex-end"><span style="color:var(--muted)">Last updated</span><strong id="savingsItemsLastUpdated" style="font-weight:700">${getSavingsItemsLastUpdatedLabel(selected)}</strong></div>`:`<div class="empty">No ${activeFinancialCategory.toLowerCase()} items yet. Click Add to create one.</div>`;
  // Clicking a savings row focuses the growth graph on that bank; clicking it again restores all banks.
  const tbody=target.querySelector('tbody');
  if(tbody){
@@ -2958,7 +3037,7 @@ function openSavingsHistory(id){
  const showLiveInterest=isDailyInterestBank||isMayaBank;
  // Build entries from actual edits and daily interest records. For MariBank, graph samples
  // are not bank-history events: never turn those samples into minute-by-minute history cards.
- let rows=changes.map(h=>({at:Number(h.at)||0,oldAmount:Number(h.oldAmount)||0,newAmount:Number(h.newAmount)||0,oldName:h.oldName??item.name,newName:h.newName??item.name,type:h.type||'edit',label:h.label||''})).filter(h=>isDailyInterestBank ? (h.type==='edit'||h.type==='interest') : (h.type==='edit'||Math.abs(h.newAmount-h.oldAmount)>=0.005));
+ let rows=changes.map(h=>({at:Number(h.at)||0,oldAmount:Number(h.oldAmount)||0,newAmount:Number(h.newAmount)||0,oldName:h.oldName??item.name,newName:h.newName??item.name,type:h.type||'edit',label:h.label||'',relatedItemName:h.relatedItemName||'',note:h.note||''})).filter(h=>isDailyInterestBank ? (h.type==='edit'||h.type==='interest'||h.type==='transfer_in'||h.type==='transfer_out') : (h.type==='edit'||h.type==='transfer_in'||h.type==='transfer_out'||Math.abs(h.newAmount-h.oldAmount)>=0.005));
  if(!isDailyInterestBank && graph.length>1){
   for(let i=1;i<graph.length;i++){
    const g={at:Number(graph[i].at)||0,oldAmount:Number(graph[i-1].amount)||0,newAmount:Number(graph[i].amount)||0,oldName:item.name,newName:item.name,type:'balance',label:''};
@@ -2992,8 +3071,9 @@ function openSavingsHistory(id){
    const color=positive?'var(--green)':negative?'var(--red)':'var(--muted)';
    const date=new Date(Number(h.at)||Date.now()).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'});
    const nameChange=h.oldName!==h.newName?`<div class="panel-sub">Name: ${esc(h.oldName||'')} → ${esc(h.newName||'')}</div>`:'';
+   const transferMeta=(h.type==='transfer_in'||h.type==='transfer_out')?`<div class="panel-sub" style="margin-top:5px">${h.type==='transfer_in'?'From':'To'}: <strong>${esc(h.relatedItemName||'another savings item')}</strong>${h.note?` · ${esc(h.note)}`:''}</div>`:'';
    const notification=negative?`<div style="margin-top:10px;padding:9px 11px;border-radius:9px;background:rgba(239,68,68,.09);color:var(--red);font-size:12px;font-weight:700">↓ Balance decreased by ${peso(Math.abs(delta))}</div>`:positive?`<div style="margin-top:10px;padding:9px 11px;border-radius:9px;background:rgba(34,197,94,.10);color:var(--green);font-size:12px;font-weight:700">↑ Balance increased by ${peso(delta)}</div>`:'<div class="panel-sub" style="margin-top:10px">No balance change recorded.</div>';
-   return `<div style="border:1px solid var(--line);border-radius:12px;padding:12px 14px"><div style="font-size:11px;font-weight:800;letter-spacing:.03em;color:${h.type==='interest'?'var(--green)':'var(--muted)'};margin-bottom:6px">${h.type==='interest'?'ESTIMATED DAILY INTEREST':h.type==='edit'?'MANUAL UPDATE':'BALANCE HISTORY'}</div><div class="between"><strong>${date}</strong><strong style="color:${color}">${delta>0?'+':delta<0?'−':''}${peso(Math.abs(delta))}</strong></div><div class="panel-sub" style="margin-top:6px">${peso(h.oldAmount)} → ${peso(h.newAmount)}</div>${notification}${nameChange}</div>`;
+   return `<div style="border:1px solid var(--line);border-radius:12px;padding:12px 14px"><div style="font-size:11px;font-weight:800;letter-spacing:.03em;color:${h.type==='interest'?'var(--green)':'var(--muted)'};margin-bottom:6px">${h.type==='interest'?'ESTIMATED DAILY INTEREST':h.type==='transfer_out'?'TRANSFER SENT':h.type==='transfer_in'?'TRANSFER RECEIVED':h.type==='edit'?'MANUAL UPDATE':'BALANCE HISTORY'}</div><div class="between"><strong>${date}</strong><strong style="color:${color}">${delta>0?'+':delta<0?'−':''}${peso(Math.abs(delta))}</strong></div><div class="panel-sub" style="margin-top:6px">${peso(h.oldAmount)} → ${peso(h.newAmount)}</div>${notification}${transferMeta}${nameChange}</div>`;
   }).join('')+'</div>';
  }
  document.getElementById('savingsHistoryBackdrop').style.display='flex';
@@ -3035,7 +3115,7 @@ function openAllSavingsHistory(){
    const delta=h.newAmount-h.oldAmount,positive=delta>0,negative=delta<0;
    const color=positive?'var(--green)':negative?'var(--red)':'var(--muted)';
    const date=new Date(h.at||Date.now()).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'});
-   const label=h.type==='interest'?'ESTIMATED DAILY INTEREST':h.type==='edit'?'MANUAL UPDATE':'BALANCE HISTORY';
+   const label=h.type==='interest'?'ESTIMATED DAILY INTEREST':h.type==='transfer_out'?'TRANSFER SENT':h.type==='transfer_in'?'TRANSFER RECEIVED':h.type==='edit'?'MANUAL UPDATE':'BALANCE HISTORY';
    const notification=negative?`<div style="margin-top:9px;padding:9px 11px;border-radius:9px;background:rgba(239,68,68,.09);color:var(--red);font-size:12px;font-weight:700">↓ Balance decreased by ${peso(Math.abs(delta))}</div>`:positive?`<div style="margin-top:9px;padding:9px 11px;border-radius:9px;background:rgba(34,197,94,.10);color:var(--green);font-size:12px;font-weight:700">↑ Balance increased by ${peso(delta)}</div>`:'';
    return `<div style="border:1px solid var(--line);border-radius:12px;padding:12px 14px"><div class="between" style="gap:12px"><div><div style="font-size:11px;font-weight:800;color:${h.type==='interest'?'var(--green)':'var(--muted)'};margin-bottom:6px">${label}</div><strong>${esc(h.bank)}</strong><div class="panel-sub" style="margin-top:5px">${date}</div></div><strong style="white-space:nowrap;color:${color}">${delta>0?'+':delta<0?'−':''}${peso(Math.abs(delta))}</strong></div><div class="panel-sub" style="margin-top:8px">${peso(h.oldAmount)} → ${peso(h.newAmount)}</div>${notification}</div>`;
   }).join('')+'</div>';
