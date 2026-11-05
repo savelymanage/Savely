@@ -1615,9 +1615,8 @@ function openSavingsTransfer(sourceId){
   </div>
   <div class="bank-picker" id="savelyTransferBankPicker" style="max-height:260px"></div>
   <form id="savelyTransferForm" style="border-top:1px solid var(--line);padding-top:14px;margin-top:10px">
-   <div class="form-grid">
+   <div class="form-grid" style="grid-template-columns:minmax(0,420px)">
     <div class="field"><label for="savelyTransferAmount">Transfer amount (₱)</label><input id="savelyTransferAmount" type="number" min="0.01" max="${Math.max(0,Number(source.amount)||0)}" step="0.01" placeholder="Choose destination first" required disabled style="width:100%"><div class="panel-sub" id="savelyTransferAvailable" style="margin-top:5px">Available: ${peso(source.amount)}</div></div>
-    <div class="field"><label for="savelyTransferNote">Note (optional)</label><input id="savelyTransferNote" maxlength="100" placeholder="e.g. Move savings to Maya" style="width:100%" disabled></div>
    </div>
    <div class="form-actions" style="justify-content:flex-end;margin-top:16px"><button type="button" class="btn btn-secondary" onclick="closeSavingsTransfer()">Cancel</button><button type="submit" id="savelyTransferReviewButton" class="btn btn-primary" style="background:var(--green);border-color:var(--green)" disabled>Review transfer</button></div>
   </form>
@@ -1626,7 +1625,6 @@ function openSavingsTransfer(sourceId){
  document.body.appendChild(modal);
  const picker=modal.querySelector('#savelyTransferBankPicker');
  const amountInput=modal.querySelector('#savelyTransferAmount');
- const noteInput=modal.querySelector('#savelyTransferNote');
  const reviewButton=modal.querySelector('#savelyTransferReviewButton');
  const selectedCard=modal.querySelector('#savelyTransferSelectedCard');
  function renderTransferBankPicker(){
@@ -1662,7 +1660,7 @@ function openSavingsTransfer(sourceId){
    selectedDestinationName=selected?String(selected.name||bankName):bankName;
    const currentBalance=selected?Math.max(0,Number(selected.amount)||0):0;
    selectedCard.innerHTML=`<div class="panel-sub">TO · DESTINATION</div><div style="display:flex;align-items:center;gap:9px;margin-top:4px">${savelyBrandLogo(bankName,'bank-logo')||`<span class="bank-logo" style="background:#168765">${esc(String(bankName).slice(0,3).toUpperCase())}</span>`}<div style="min-width:0"><strong>${esc(bankName)}</strong><div class="panel-sub">${selected?`${peso(currentBalance)} current balance`:'New Savings item · will be created automatically'}</div></div></div>`;
-   amountInput.disabled=false;noteInput.disabled=false;reviewButton.disabled=false;
+   amountInput.disabled=false;reviewButton.disabled=false;
    amountInput.placeholder='Enter amount';amountInput.focus();
    renderTransferBankPicker();
   }));
@@ -1683,20 +1681,54 @@ function openSavingsTransfer(sourceId){
   label.textContent=`Remaining after transfer: ${peso(Math.max(0,available-amount))}`;
   label.style.color=amount>available?'var(--red)':'var(--muted)';
  });
- modal.querySelector('#savelyTransferForm').addEventListener('submit',event=>{
-  event.preventDefault();
-  const destinationId=selectedDestinationId;
-  const amount=Number(amountInput.value);
-  const note=noteInput.value.trim();
+ function showTransferReview(amount){
+  const destination=selectedDestinationId?(data.savingsList||[]).find(item=>String(item.id)===String(selectedDestinationId)):null;
+  const destinationName=destination?String(destination.name||selectedDestinationName):selectedDestinationName;
+  const sourceBalance=Math.max(0,Number(source.amount)||0);
+  const destinationBalance=destination?Math.max(0,Number(destination.amount)||0):0;
+  const review=document.createElement('section');
+  review.id='savelyTransferReview';
+  review.style.cssText='border-top:1px solid var(--line);padding-top:16px;margin-top:14px';
+  review.innerHTML=`<div style="font-size:16px;font-weight:850;margin-bottom:12px">Review transfer</div>
+   <div style="border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:12px">
+    <div style="display:flex;justify-content:space-between;gap:12px"><span class="panel-sub">From</span><strong>${esc(source.name||'Savings')}</strong></div>
+    <div style="display:flex;justify-content:space-between;gap:12px"><span class="panel-sub">To</span><strong>${esc(destinationName)}</strong></div>
+    <div style="display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:12px"><span class="panel-sub">Transfer amount</span><strong style="font-size:19px;color:var(--green)">${peso(amount)}</strong></div>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+     <div style="background:var(--soft);border-radius:10px;padding:10px"><div class="panel-sub">Source balance after</div><strong>${peso(sourceBalance-amount)}</strong></div>
+     <div style="background:var(--soft);border-radius:10px;padding:10px"><div class="panel-sub">Destination balance after</div><strong>${peso(destinationBalance+amount)}</strong></div>
+    </div>
+    ${destination?'<div class="panel-sub">This bank already exists in your Savings items.</div>':'<div class="panel-sub" style="color:var(--green)">A new Savings item will be created automatically for this bank.</div>'}
+   </div>
+   <div class="form-actions" style="justify-content:flex-end;margin-top:14px">
+    <button type="button" class="btn btn-secondary" id="savelyTransferBackButton">Back</button>
+    <button type="button" class="btn btn-primary" id="savelyTransferConfirmButton" style="background:var(--green);border-color:var(--green)">Confirm transfer</button>
+   </div>`;
+  picker.hidden=true;
+  modal.querySelectorAll('[data-transfer-filter]').forEach(btn=>btn.closest('.bank-picker-tabs').hidden=true);
+  modal.querySelector('#savelyTransferForm').hidden=true;
+  selectedCard.parentElement.hidden=true;
+  modal.querySelector('#savelyTransferForm').after(review);
+  review.querySelector('#savelyTransferBackButton').addEventListener('click',()=>{
+   review.remove();
+   picker.hidden=false;
+   modal.querySelectorAll('[data-transfer-filter]').forEach(btn=>btn.closest('.bank-picker-tabs').hidden=false);
+   modal.querySelector('#savelyTransferForm').hidden=false;
+   selectedCard.parentElement.hidden=false;
+   amountInput.focus();
+  });
+  review.querySelector('#savelyTransferConfirmButton').addEventListener('click',commitTransfer);
+ }
+ function commitTransfer(){
   const currentSource=(data.savingsList||[]).find(item=>String(item.id)===String(sourceId));
-  let destination=destinationId?(data.savingsList||[]).find(item=>String(item.id)===String(destinationId)):null;
+  let destination=selectedDestinationId?(data.savingsList||[]).find(item=>String(item.id)===String(selectedDestinationId)):null;
+  const amount=Number(amountInput.value);
   if(!currentSource||!selectedDestinationName){toast('Please choose a destination bank.');return;}
   if(destination && String(currentSource.id)===String(destination.id)){toast('Source and destination must be different.');return;}
   if(!Number.isFinite(amount)||amount<=0){toast('Enter a transfer amount greater than zero.');return;}
   const sourceBalance=Math.max(0,Number(currentSource.amount)||0);
   if(amount>sourceBalance+0.000001){toast('Transfer amount exceeds the available balance.');return;}
-  const confirmed=window.confirm(`Transfer ${peso(amount)} from ${currentSource.name} to ${destination.name}?\n\nThis will update both balances and add entries to both histories.`);
-  if(!confirmed)return;
+
   const now=Date.now(),transferId='tr-'+uid();
   let createdDestination=false;
   if(!destination){
@@ -1708,13 +1740,27 @@ function openSavingsTransfer(sourceId){
    data.savingsList.push(destination);
    createdDestination=true;
   }
+
   const destinationBalance=Math.max(0,Number(destination.amount)||0);
+  const sourceSnapshot={
+   amount:currentSource.amount,
+   changeHistory:Array.isArray(currentSource.changeHistory)?currentSource.changeHistory.slice():null,
+   graphHistory:Array.isArray(currentSource.graphHistory)?currentSource.graphHistory.slice():null,
+   interestTracking:currentSource.interestTracking?{...currentSource.interestTracking}:null
+  };
+  const destinationSnapshot={
+   amount:destination.amount,
+   changeHistory:Array.isArray(destination.changeHistory)?destination.changeHistory.slice():null,
+   graphHistory:Array.isArray(destination.graphHistory)?destination.graphHistory.slice():null,
+   interestTracking:destination.interestTracking?{...destination.interestTracking}:null
+  };
+
   currentSource.amount=Math.max(0,sourceBalance-amount);
   destination.amount=destinationBalance+amount;
   if(!Array.isArray(currentSource.changeHistory))currentSource.changeHistory=[];
   if(!Array.isArray(destination.changeHistory))destination.changeHistory=[];
-  currentSource.changeHistory.push({at:now,oldName:currentSource.name,newName:currentSource.name,oldAmount:sourceBalance,newAmount:currentSource.amount,type:'transfer_out',label:'Transfer sent',transferId,relatedItemId:destination.id,relatedItemName:destination.name,note});
-  destination.changeHistory.push({at:now,oldName:destination.name,newName:destination.name,oldAmount:destinationBalance,newAmount:destination.amount,type:'transfer_in',label:'Transfer received',transferId,relatedItemId:currentSource.id,relatedItemName:currentSource.name,note});
+  currentSource.changeHistory.push({at:now,oldName:currentSource.name,newName:currentSource.name,oldAmount:sourceBalance,newAmount:currentSource.amount,type:'transfer_out',label:'Transfer sent',transferId,relatedItemId:destination.id,relatedItemName:destination.name});
+  destination.changeHistory.push({at:now,oldName:destination.name,newName:destination.name,oldAmount:destinationBalance,newAmount:destination.amount,type:'transfer_in',label:'Transfer received',transferId,relatedItemId:currentSource.id,relatedItemName:currentSource.name});
   if(!Array.isArray(currentSource.graphHistory)||!currentSource.graphHistory.length)currentSource.graphHistory=[{at:now-1,amount:sourceBalance}];
   if(!Array.isArray(destination.graphHistory)||!destination.graphHistory.length)destination.graphHistory=[{at:now-1,amount:destinationBalance}];
   currentSource.graphHistory.push({at:now,amount:currentSource.amount});
@@ -1724,17 +1770,31 @@ function openSavingsTransfer(sourceId){
   });
   try{localStorage.setItem(STORE,JSON.stringify(data));}
   catch(error){
-   currentSource.amount=sourceBalance;destination.amount=destinationBalance;
-   currentSource.changeHistory.pop();destination.changeHistory.pop();
-   currentSource.graphHistory.pop();destination.graphHistory.pop();
+   currentSource.amount=sourceSnapshot.amount;
+   currentSource.changeHistory=sourceSnapshot.changeHistory||[];
+   currentSource.graphHistory=sourceSnapshot.graphHistory||[];
+   if(sourceSnapshot.interestTracking)currentSource.interestTracking=sourceSnapshot.interestTracking;else delete currentSource.interestTracking;
+   destination.amount=destinationSnapshot.amount;
+   destination.changeHistory=destinationSnapshot.changeHistory||[];
+   destination.graphHistory=destinationSnapshot.graphHistory||[];
+   if(destinationSnapshot.interestTracking)destination.interestTracking=destinationSnapshot.interestTracking;else delete destination.interestTracking;
    if(createdDestination)data.savingsList=data.savingsList.filter(item=>String(item.id)!==String(destination.id));
    toast('Transfer could not be saved. Check browser storage and try again.');
    return;
   }
   closeSavingsTransfer();
   renderSavingsList();
-  renderBankPicker();
+  if(typeof renderBankPicker==='function')renderBankPicker();
   toast(createdDestination?`Transferred ${peso(amount)}. ${destination.name} was added to Savings.`:`Transferred ${peso(amount)} to ${destination.name}.`);
+ }
+ modal.querySelector('#savelyTransferForm').addEventListener('submit',event=>{
+  event.preventDefault();
+  const amount=Number(amountInput.value);
+  const available=Math.max(0,Number(source.amount)||0);
+  if(!selectedDestinationName){toast('Please choose a destination bank.');return;}
+  if(!Number.isFinite(amount)||amount<=0){toast('Enter a transfer amount greater than zero.');return;}
+  if(amount>available+0.000001){toast('Transfer amount exceeds the available balance.');return;}
+  showTransferReview(amount);
  });
 }
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.style.display='block';setTimeout(()=>el.style.display='none',2400)}
