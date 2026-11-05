@@ -210,6 +210,22 @@ body.dark-theme #savingsListTable .financial-draggable-row td { color: var(--tex
   pointer-events: none !important;
 }
 
+
+/* Sidebar interaction fix: keep navigation above stale page-level overlays. */
+.app{position:relative}
+.sidebar{
+  position:relative!important;
+  z-index:10000!important;
+  isolation:isolate;
+  pointer-events:auto!important;
+}
+.sidebar *{pointer-events:auto}
+#nav{position:relative;z-index:1;pointer-events:auto}
+#nav button{position:relative;z-index:2;pointer-events:auto;touch-action:manipulation}
+@media(max-width:760px){
+  .sidebar{position:relative!important;z-index:10000!important}
+}
+
 </style>
 
 <style id="savely-v205-settings-cleanup">
@@ -3216,6 +3232,7 @@ function renderRecurring(){let el=document.getElementById('recurringList');if(!d
 function openFinancialList(){showPage('financial-list') }
 function closeFinancialList(){showPage('dashboard')}
 function closeSavelyUpdates(){const el=document.getElementById('savelyUpdatesBackdrop');if(el)el.style.display='none'}
+document.addEventListener('DOMContentLoaded',()=>{const el=document.getElementById('savelyUpdatesBackdrop');if(el)el.style.display='none';});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'){const updates=document.getElementById('savelyUpdatesBackdrop');if(updates&&getComputedStyle(updates).display!=='none')closeSavelyUpdates();}});
 
 function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard')setTimeout(renderOverallTrend,50);document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Budget & expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR FINANCES, ORGANIZED','Financial List'],salary:['YOUR INCOME, ORGANIZED','Monthly Salary'],'live-map':['ROADS & CONDITIONS','Live Map']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
@@ -4610,5 +4627,26 @@ function deleteAllSavingsItems(){
 </script>
 
 <script>document.addEventListener("keydown",function(e){if(e.key==="Escape"){const b=document.getElementById("salaryDetailsBackdrop");if(b&&!b.hidden)toggleSalaryDetails(false);}});</script>
+
+<script id="savely-sidebar-interaction-fallback">
+(function(){
+ const nav=document.getElementById('nav');
+ if(!nav)return;
+ nav.addEventListener('click',function(event){
+  const button=event.target.closest('button[data-page]');
+  if(!button)return;
+  event.preventDefault();
+  event.stopPropagation();
+  if(typeof showPage==='function')showPage(button.dataset.page);
+ },true);
+ nav.addEventListener('keydown',function(event){
+  if((event.key==='Enter'||event.key===' ')&&event.target.matches('button[data-page]')){
+   event.preventDefault();
+   if(typeof showPage==='function')showPage(event.target.dataset.page);
+  }
+ });
+})();
+</script>
+
 </body>
 </html>
