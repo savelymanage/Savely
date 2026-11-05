@@ -2906,7 +2906,7 @@ function renderBankPicker(){
   const unavailable=used||assigned;
   const favorite=favs.has(b.name.toLowerCase());
   const reason=used?'already added':(assigned?'already assigned to a savings goal':'');
-  return `<div class="bank-option-wrap"><button type="button" class="bank-option${unavailable?' bank-option-used':''}${assigned&&!used?' bank-option-goal-assigned':''}" data-bank-name="${esc(b.name)}" title="${esc(b.name)}${reason?' — '+reason:''}" ${unavailable?'disabled aria-disabled="true"':''}>${savelyBrandLogo(b.name,'bank-logo')||`<span class="bank-logo" style="background:${b.color}">${esc(b.short)}</span>`}<span class="bank-option-name">${esc(b.name)}${isSource?' · SOURCE':''}${assigned&&!used?' · Goal':''}</span></button><button type="button" class="bank-favorite${favorite?' is-favorite':''}" data-favorite-bank="${esc(b.name)}" aria-label="${favorite?'Remove':'Add'} ${esc(b.name)} ${favorite?'from':'to'} favorites" title="${favorite?'Remove from':'Add to'} favorites">${favorite?'★':'☆'}</button></div>`;
+  return `<div class="bank-option-wrap"><button type="button" class="bank-option${unavailable?' bank-option-used':''}${assigned&&!used?' bank-option-goal-assigned':''}" data-bank-name="${esc(b.name)}" title="${esc(b.name)}${reason?' — '+reason:''}" ${unavailable?'disabled aria-disabled="true"':''}>${savelyBrandLogo(b.name,'bank-logo')||`<span class="bank-logo" style="background:${b.color}">${esc(b.short)}</span>`}<span class="bank-option-name">${esc(b.name)}${assigned&&!used?' · Goal':''}</span></button><button type="button" class="bank-favorite${favorite?' is-favorite':''}" data-favorite-bank="${esc(b.name)}" aria-label="${favorite?'Remove':'Add'} ${esc(b.name)} ${favorite?'from':'to'} favorites" title="${favorite?'Remove from':'Add to'} favorites">${favorite?'★':'☆'}</button></div>`;
  }).join('')||'<div class="panel-sub" style="padding:10px">No favorites yet. Tap ☆ beside a bank to add it here.</div>';
  picker.querySelectorAll('[data-bank-name]:not(:disabled)').forEach(btn=>btn.addEventListener('click',()=>{
   const name=btn.dataset.bankName;const input=document.getElementById('financialAddName');
@@ -3111,8 +3111,8 @@ function openFinancialAdd(){
  document.getElementById('financialAddForm').reset();
  document.getElementById('mayaAddBonusRate').value='3';updateMayaAddBonusVisibility();
  document.querySelectorAll('#bankPicker .bank-option').forEach(b=>b.classList.remove('selected'));
- renderBankPicker();
  document.getElementById('financialAddBackdrop').style.display='flex';
+ renderBankPicker();
 }
 function closeFinancialAdd(){document.getElementById('financialAddBackdrop').style.display='none'}
 function addFinancialItemFromForm(e){
