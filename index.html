@@ -1486,7 +1486,7 @@ body:has(#page-debt.active) #topbarAddDebtButton{display:inline-flex!important}
   <div class="side-bottom"><strong>Small steps add up.</strong><p>Keep your goals in sight and your savings moving forward.</p></div>
 </aside>
 <main class="main">
-  <header class="topbar"><div><div class="eyebrow" id="eyebrow">YOUR MONEY, IN FOCUS</div><h1 class="page-title" id="pageTitle">Good afternoon 👋</h1><div id="dashboardUsername" class="dashboard-username" hidden></div><div class="page-description" id="pageDescription">A clear view of your savings, income, and financial progress.</div></div><div class="top-actions"><div class="weather-pill" id="savelyWeather" title="Live weather · Click to view satellite imagery" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="savelySatelliteBackdrop" style="cursor:pointer"><span class="weather-icon" id="savelyWeatherIcon">🌤️</span><span class="weather-copy"><strong id="savelyWeatherTemp">Loading…</strong><small id="savelyWeatherDesc">Current weather</small></span></div><div class="date-pill" id="today">
+  <header class="topbar"><div><div class="eyebrow" id="eyebrow">YOUR MONEY, IN FOCUS</div><h1 class="page-title" id="pageTitle">Good afternoon 👋</h1><div id="dashboardUsername" class="dashboard-username" hidden></div><div class="page-description" id="pageDescription">A clear view of your savings, income, and financial progress.</div></div><div class="top-actions"><div class="weather-pill" id="savelyWeather" title="Live weather · Click to view satellite imagery" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="savelySatelliteBackdrop" style="cursor:pointer"><span class="weather-icon" id="savelyWeatherIcon">🌤️</span><span class="weather-copy"><strong id="savelyWeatherTemp">Loading…</strong><small id="savelyWeatherDesc">Current weather</small></span></div><div class="date-pill date-pill-clickable" id="today" role="button" tabindex="0" aria-label="Open Date &amp; Time settings" title="Open Date &amp; Time settings" onclick="openDateTimeSettingsPage()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDateTimeSettingsPage()}">
 
 </div><button type="button" class="btn btn-primary" id="topbarAddDebtButton" onclick="openDebtForm()" style="display:none;background:var(--green);border-color:var(--green);white-space:nowrap">＋ Add debt</button><button type="button" class="btn btn-primary salary-amount-top-button" id="salaryDetailsOpenButton" onclick="toggleSalaryDetails(true)" style="background:var(--green);border-color:var(--green);white-space:nowrap">＋ Add salary amount</button><button id="topbarAddSavingsButton" class="btn btn-primary" style="background:var(--green);border-color:var(--green)" onclick="openFinancialAdd()">＋ <span class="desktop-label">Add Savings</span><span class="mobile-label">Add Savings</span></button><div class="avatar">S</div><div class="auth-user-chip" id="savely-auth-user-chip" hidden><span class="auth-user-email" id="savely-auth-user-email"></span></div></div></header>
   <section class="page active" id="page-dashboard">
@@ -1618,10 +1618,6 @@ body:has(#page-debt.active) #topbarAddDebtButton{display:inline-flex!important}
   </section>
 
   <section class="page" id="page-financial-list">
-    <div class="financial-tabs" role="navigation" aria-label="Financial categories" style="margin-top:18px">
-      <button type="button" class="financial-tab active" data-fin-tab="Savings">Savings</button>
-      <button type="button" class="financial-tab" data-fin-tab="Debt">Debt</button>
-    </div>
     <div class="cards" id="financialCategoryStats"></div>
         <div class="panel" id="savingsTrendPanel" style="margin-bottom:18px">
       <div class="panel-head"><div><h2>Savings growth by bank</h2><div class="panel-sub">Live comparison of current savings balances across your banks and digital wallets.</div></div><span class="panel-sub" id="savingsTrendMeta">Savings only</span></div>
@@ -3173,6 +3169,13 @@ function setSettingsTab(tab){
  document.querySelectorAll('[data-settings-panel]').forEach(panel=>panel.classList.toggle('settings-panel-active',panel.dataset.settingsPanel===tab));
 }
 document.querySelectorAll('[data-settings-tab]').forEach(btn=>btn.addEventListener('click',()=>setSettingsTab(btn.dataset.settingsTab)));
+function openDateTimeSettingsPage(){
+ showPage('settings');
+ setSettingsTab('datetime');
+ const dateTimePanel=document.getElementById('settingsDateTimePanel');
+ if(dateTimePanel)requestAnimationFrame(()=>dateTimePanel.scrollIntoView({behavior:'smooth',block:'start'}));
+}
+
 const settingsLogoutButton=document.getElementById('settingsLogoutButton');
 if(settingsLogoutButton)settingsLogoutButton.addEventListener('click',()=>{if(typeof window.savelyLogout==='function')window.savelyLogout();});
 setSettingsTab('datetime');
@@ -3326,10 +3329,7 @@ function renderSavingsList(){
   ? `<div class="stat-foot" style="color:var(--green);font-weight:800">＋ ${peso(Math.abs(savedDelta))} increase</div>`
   : `<div class="stat-foot" style="color:var(--muted)">No increase recorded</div>`;
  document.getElementById('financialCategoryStats').innerHTML=
-
-  `<div class="stat"><div class="stat-top">Savings total</div><div class="stat-value" style="color:var(--green)">${peso(savings)}</div><div class="stat-foot" id="financialSavingsAsOf" style="margin-top:5px;font-size:10px">As of —</div>${savingsChangeHtml}</div>`+
-
-  `<div class="stat"><div class="stat-top">Debt total</div><div class="stat-value" style="color:var(--red)">${peso(debt)}</div><div class="stat-foot">Across all recorded items</div></div>`;
+  `<div class="stat"><div class="stat-top">Savings total</div><div class="stat-value" style="color:var(--green)">${peso(savings)}</div><div class="stat-foot" id="financialSavingsAsOf" style="margin-top:5px;font-size:10px">As of —</div>${savingsChangeHtml}</div>`;
  renderSavingsTrend();
  renderOverallTrend();
  const target=document.getElementById('savingsListTable');
@@ -5291,5 +5291,18 @@ function deleteAllSavingsItems(){
 })();
 </script>
 
+
+<style id="savely-sidebar-active-green-and-date-link">
+.nav button.active, body.dark-theme .nav button.active{
+ background:var(--green)!important;
+ color:#fff!important;
+ border-color:var(--green)!important;
+ box-shadow:0 4px 12px color-mix(in srgb,var(--green) 22%,transparent);
+}
+.nav button.active .ico, body.dark-theme .nav button.active .ico{color:#fff!important}
+.date-pill-clickable{cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s}
+.date-pill-clickable:hover{border-color:var(--green);box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 12%,transparent)}
+.date-pill-clickable:focus-visible{outline:3px solid color-mix(in srgb,var(--green) 35%,transparent);outline-offset:2px}
+</style>
 </body>
 </html>
