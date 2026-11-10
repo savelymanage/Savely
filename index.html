@@ -6428,5 +6428,138 @@ body.dark-theme .app > .sidebar .nav button.active {
 })();
 </script>
 
+
+<style id="savely-global-consistent-typography-v1">
+/*
+  Savely global typography scale:
+  page titles 24px · section headings 17px · body/control text 12–13px
+  supporting text 11px. Bold changes weight, not font size.
+*/
+:root {
+  --savely-type-page: 24px;
+  --savely-type-section: 17px;
+  --savely-type-subsection: 15px;
+  --savely-type-body: 13px;
+  --savely-type-control: 12px;
+  --savely-type-support: 11px;
+}
+body {
+  font-size: var(--savely-type-body);
+  line-height: 1.5;
+}
+
+/* Consistent heading hierarchy across every page and modal. */
+body :where(h1, .page-title, .page-heading) {
+  font-size: var(--savely-type-page) !important;
+  line-height: 1.25 !important;
+  font-weight: 800 !important;
+  letter-spacing: -.45px !important;
+}
+body :where(h2, .panel h2, .panel-head h2, .modal h2) {
+  font-size: var(--savely-type-section) !important;
+  line-height: 1.35 !important;
+  font-weight: 750 !important;
+  letter-spacing: -.25px !important;
+}
+body :where(h3, .section-heading) {
+  font-size: var(--savely-type-subsection) !important;
+  line-height: 1.4 !important;
+  font-weight: 750 !important;
+  letter-spacing: -.15px !important;
+}
+
+/* Supporting copy uses one shared size, regardless of page. */
+body :where(
+  p, .panel-sub, .page-subtitle, .subtitle, .stat-foot, .muted,
+  .helper-text, .form-help, .description, .caption, .hint,
+  .salary-calendar-holiday-status, .debt-item-sub
+) {
+  font-size: var(--savely-type-support) !important;
+  line-height: 1.5 !important;
+}
+
+/* Common labels, controls, table text, and navigation. */
+body :where(
+  .stat-top, .field label, label, th, td, .btn, button.btn,
+  .nav button, .financial-tab, .financial-subnav button,
+  .debt-filters button, .goal-item-tab, .pill, .badge,
+  .link-btn, .between, .table-wrap, .table-wrap table
+) {
+  font-size: var(--savely-type-control) !important;
+  line-height: 1.4 !important;
+}
+
+/* Bold should only change weight; it should not enlarge the text. */
+body :where(strong, b) {
+  font-size: inherit !important;
+}
+
+/* Consistent form field text without oversized labels or inputs. */
+body :where(input:not([type="checkbox"]):not([type="radio"]),
+  select, textarea):not(#savelyFloatingCalculator *) {
+  font-size: var(--savely-type-body) !important;
+  line-height: 1.4 !important;
+}
+body :where(.field label, label) {
+  font-weight: 700 !important;
+}
+
+/* Keep important financial amounts prominent, but use the same scale. */
+body :where(.stat-value) {
+  font-size: 26px !important;
+  line-height: 1.18 !important;
+  font-weight: 850 !important;
+  letter-spacing: -.6px !important;
+}
+body :where(.goal-amount, .account-balance) {
+  font-size: 23px !important;
+  line-height: 1.2 !important;
+  font-weight: 800 !important;
+}
+body :where(#settingsLiveDateTime > div:first-child) {
+  font-size: 26px !important;
+  line-height: 1.2 !important;
+}
+
+/* Calendar typography: shared sizes for event labels across Debt and Salary. */
+body :where(.debt-day-number, .salary-calendar-day-number) {
+  font-size: 13px !important;
+  line-height: 1.3 !important;
+  font-weight: 800 !important;
+}
+body :where(.debt-day-chip, .salary-calendar-event, .salary-calendar-event-amount) {
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+  font-weight: 750 !important;
+}
+body :where(.salary-calendar-holiday) {
+  font-size: 11px !important;
+  line-height: 1.35 !important;
+  font-weight: 750 !important;
+}
+
+/* Keep the larger action-button hit areas, but align their text with the UI scale. */
+body :where(
+  #topbarAddSavingsButton, #topbarAddDebtButton, #topbarAddSalaryButton,
+  #page-goals > .panel > .panel-head > button.btn-primary
+) {
+  font-size: 13px !important;
+  font-weight: 800 !important;
+}
+
+/* Smaller screens use the same hierarchy, not random page-specific font changes. */
+@media(max-width:700px) {
+  body :where(h1, .page-title, .page-heading) {
+    font-size: 22px !important;
+  }
+  body :where(h2, .panel h2, .panel-head h2, .modal h2) {
+    font-size: 16px !important;
+  }
+  body :where(.stat-value) {
+    font-size: 23px !important;
+  }
+}
+</style>
+
 </body>
 </html>
