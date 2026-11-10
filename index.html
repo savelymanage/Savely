@@ -1467,20 +1467,23 @@ body:has(#page-debt.active) #topbarAddDebtButton{display:inline-flex!important}
 <div class="app">
 <aside class="sidebar">
   <div class="brand"><div class="brand-mark">₱</div><div><span>savely</span><div style="font-size:10px;font-weight:750;color:var(--muted);letter-spacing:.6px;margin-top:2px">VERSION 2.8.60</div></div></div>
+  <button type="button" id="savelySidebarToggle" aria-label="Collapse sidebar" aria-expanded="true" title="Collapse sidebar">
+    <span aria-hidden="true">‹</span>
+  </button>
   <div><div class="nav-label">WORKSPACE</div><nav class="nav" id="nav">
-    <button class="active" data-page="dashboard"><span class="ico">▦</span>Overview</button>
-    <button data-page="financial-list"><span class="ico">☷</span>Savings</button>
-    <button data-page="salary"><span class="ico">₱</span>Salary</button>
-    <button data-page="debt"><span class="ico">▦</span>Debt</button>
+    <button class="active" data-page="dashboard" aria-label="Overview" title="Overview"><span class="ico">▦</span><span class="nav-text">Overview</span></button>
+    <button data-page="financial-list" aria-label="Savings" title="Savings"><span class="ico">☷</span><span class="nav-text">Savings</span></button>
+    <button data-page="salary" aria-label="Salary" title="Salary"><span class="ico">₱</span><span class="nav-text">Salary</span></button>
+    <button data-page="debt" aria-label="Debt" title="Debt"><span class="ico">▦</span><span class="nav-text">Debt</span></button>
     
     
-    <button data-page="goals"><span class="ico">◎</span>Savings goals</button>
-    <button data-page="interest"><span class="ico">％</span>Interest Calculator</button>
+    <button data-page="goals" aria-label="Savings goals" title="Savings goals"><span class="ico">◎</span><span class="nav-text">Savings goals</span></button>
+    <button data-page="interest" aria-label="Interest Calculator" title="Interest Calculator"><span class="ico">％</span><span class="nav-text">Interest Calculator</span></button>
     
     
     
     
-    <button data-page="settings"><span class="ico">⚙</span>Settings & backup</button>
+    <button data-page="settings" aria-label="Settings & backup" title="Settings & backup"><span class="ico">⚙</span><span class="nav-text">Settings & backup</span></button>
   </nav></div>
   <div class="side-bottom"><strong>Small steps add up.</strong><p>Keep your goals in sight and your savings moving forward.</p></div>
 </aside>
@@ -6560,6 +6563,173 @@ body :where(
   }
 }
 </style>
+
+
+<style id="savely-collapsible-sidebar-css">
+/* Smooth desktop collapse/expand with an icon-only green navigation rail. */
+.app {
+  grid-template-columns: 245px minmax(0,1fr);
+  transition: grid-template-columns .22s ease;
+}
+.app > .sidebar {
+  position: relative !important;
+  min-width: 0;
+  overflow: visible !important;
+}
+#savelySidebarToggle {
+  position: absolute;
+  z-index: 20;
+  top: 50%;
+  right: -14px;
+  transform: translateY(-50%);
+  width: 29px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255,255,255,.34);
+  border-left: 0;
+  border-radius: 0 11px 11px 0;
+  background: #0f704f;
+  color: #fff;
+  box-shadow: 5px 3px 12px rgba(10,65,48,.18);
+  cursor: pointer;
+  transition: background .15s, width .15s, box-shadow .15s;
+}
+#savelySidebarToggle:hover {
+  width: 34px;
+  background: #0b6245;
+  box-shadow: 6px 4px 15px rgba(10,65,48,.24);
+}
+#savelySidebarToggle:focus-visible {
+  outline: 3px solid rgba(255,255,255,.65);
+  outline-offset: 2px;
+}
+#savelySidebarToggle span {
+  display: block;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1;
+  margin-top: -3px;
+}
+.app.sidebar-collapsed {
+  grid-template-columns: 76px minmax(0,1fr) !important;
+}
+.app.sidebar-collapsed > .sidebar {
+  align-items: center;
+  gap: 26px;
+  padding: 25px 9px;
+}
+.app.sidebar-collapsed > .sidebar .brand {
+  justify-content: center;
+  padding: 0;
+}
+.app.sidebar-collapsed > .sidebar .brand > div:nth-child(2),
+.app.sidebar-collapsed > .sidebar .nav-label,
+.app.sidebar-collapsed > .sidebar .side-bottom,
+.app.sidebar-collapsed > .sidebar .nav-text {
+  display: none !important;
+}
+.app.sidebar-collapsed > .sidebar #nav {
+  width: 100%;
+}
+.app.sidebar-collapsed > .sidebar #nav button {
+  width: 52px;
+  min-width: 52px;
+  min-height: 48px;
+  justify-content: center;
+  gap: 0;
+  padding: 11px 0;
+  margin: 0 auto;
+  border-radius: 12px;
+}
+.app.sidebar-collapsed > .sidebar #nav button .ico {
+  width: auto;
+  min-width: 0;
+  font-size: 19px;
+}
+.app.sidebar-collapsed #savelySidebarToggle {
+  right: -14px;
+}
+.app.sidebar-collapsed #savelySidebarToggle span {
+  transform: rotate(180deg);
+}
+@media(max-width:760px) {
+  .app {
+    transition: none;
+  }
+  #savelySidebarToggle {
+    right: 12px;
+    top: 50%;
+    width: 34px;
+    height: 42px;
+    border-left: 1px solid rgba(255,255,255,.34);
+    border-radius: 10px;
+  }
+  .app.sidebar-collapsed {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .app.sidebar-collapsed > .sidebar {
+    width: 100%;
+    min-height: 59px;
+    padding: 10px 14px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0;
+  }
+  .app.sidebar-collapsed > .sidebar > div:not(.brand) {
+    display: none !important;
+  }
+  .app.sidebar-collapsed > .sidebar .brand {
+    justify-content: flex-start;
+  }
+  .app.sidebar-collapsed > .sidebar .brand > div:nth-child(2) {
+    display: none !important;
+  }
+  .app.sidebar-collapsed #savelySidebarToggle {
+    right: 12px;
+    top: 50%;
+  }
+}
+</style>
+
+
+<script id="savely-collapsible-sidebar-js">
+(function(){
+  'use strict';
+  const app = document.querySelector('.app');
+  const sidebar = document.querySelector('.app > .sidebar');
+  const toggle = document.getElementById('savelySidebarToggle');
+  if(!app || !sidebar || !toggle) return;
+
+  const storageKey = 'savely_sidebar_collapsed_v1';
+
+  function applyState(collapsed, persist){
+    app.classList.toggle('sidebar-collapsed', !!collapsed);
+    toggle.setAttribute('aria-expanded', String(!collapsed));
+    toggle.setAttribute('aria-label', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
+    toggle.title = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
+    const icon = toggle.querySelector('span');
+    if(icon) icon.textContent = collapsed ? '›' : '‹';
+    if(persist){
+      try{ localStorage.setItem(storageKey, collapsed ? '1' : '0'); }catch(error){}
+    }
+    window.dispatchEvent(new Event('resize'));
+  }
+
+  let initiallyCollapsed = false;
+  try{ initiallyCollapsed = localStorage.getItem(storageKey) === '1'; }catch(error){}
+  applyState(initiallyCollapsed, false);
+
+  toggle.addEventListener('click', function(){
+    applyState(!app.classList.contains('sidebar-collapsed'), true);
+  });
+})();
+</script>
 
 </body>
 </html>
