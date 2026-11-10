@@ -1314,6 +1314,22 @@ html.theme-transitioning body *:not(svg):not(path):not(img):not(video):not(canva
 @media(max-width:600px){.debt-intro{align-items:flex-start}.debt-summary-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.debt-calendar-grid{gap:4px}.debt-day{min-height:72px;padding:5px;border-radius:8px}.debt-day-chip{font-size:7px;padding:3px}.debt-calendar-legend{gap:9px}.debt-item-card{align-items:flex-start;flex-direction:column}.debt-item-amount{text-align:left}.debt-item-actions{justify-content:flex-start}.debt-form-grid{grid-template-columns:1fr}.debt-form-grid .field.full{grid-column:auto}}
 </style>
 
+<style id="savely-debt-date-modal-styles">
+.debt-date-modal-shell{width:min(780px,100%);max-height:88vh;display:flex;flex-direction:column;overflow:hidden;padding:0}
+.debt-date-modal-head{padding:20px 22px 15px;border-bottom:1px solid var(--line);margin:0;flex:0 0 auto}
+.debt-date-modal-head h2{margin:0;font-size:18px;font-weight:850}
+.debt-date-modal-meta{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.45}
+.debt-date-modal-body{padding:12px 20px 8px;overflow-y:auto;min-height:80px}
+.debt-date-modal-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 20px 18px;border-top:1px solid var(--line);flex:0 0 auto}
+.debt-date-modal-footer .panel-sub{font-size:10px}
+.debt-date-modal-body .debt-item-card:first-child{margin-top:0}
+.debt-date-modal-body .debt-item-card:last-child{margin-bottom:4px}
+.debt-date-modal-body .debt-item-actions{justify-content:flex-start}
+.debt-date-modal-body .debt-item-actions button{font-size:10px;padding:7px 10px}
+.debt-mark-paid-button{background:var(--green)!important;border-color:var(--green)!important;color:#fff!important}
+@media(max-width:600px){.debt-date-modal-shell{max-height:92vh}.debt-date-modal-head{padding:16px}.debt-date-modal-body{padding:10px 12px 6px}.debt-date-modal-footer{padding:12px;align-items:stretch;flex-direction:column}.debt-date-modal-footer button{width:100%}.debt-date-modal-body .debt-item-card{padding:11px}}
+</style>
+
 <style id="savely-page-header-descriptions">
 .page-description{
   margin-top:6px;
@@ -1571,7 +1587,6 @@ body:has(#page-debt.active) #topbarAddDebtButton{display:inline-flex!important}
         <span><i class="debt-dot debt-dot-overdue"></i> Overdue</span>
         <span><i class="debt-dot debt-dot-paid"></i> Paid</span>
       </div>
-      <div id="debtSelectedDateDetails" class="debt-selected-date-details" aria-live="polite"></div>
     </section>
     <section class="panel debt-upcoming-panel">
       <div class="panel-head"><div><h2>Upcoming payments &amp; collections</h2><div class="panel-sub">Your next unpaid due dates, including overdue items.</div></div><span class="pill" id="debtUpcomingCount">0 records</span></div>
@@ -2274,7 +2289,13 @@ function saveDebtRecords(){
 function setDebtFilter(filter){debtDirectionFilter=filter;renderDebtPage();}
 function changeDebtMonth(delta){debtCalendarCursor.setMonth(debtCalendarCursor.getMonth()+delta);debtSelectedDate=debtLocalISO(new Date(debtCalendarCursor.getFullYear(),debtCalendarCursor.getMonth(),1));renderDebtPage();}
 function goToDebtToday(){const now=new Date();debtCalendarCursor=new Date(now.getFullYear(),now.getMonth(),1);debtSelectedDate=debtLocalISO(now);renderDebtPage();}
-function selectDebtDate(iso){debtSelectedDate=iso;renderDebtCalendar();renderDebtDateDetails();}
+function selectDebtDate(iso){
+ debtSelectedDate=iso;
+ const picked=debtDateFromISO(iso);
+ if(picked.getFullYear()!==debtCalendarCursor.getFullYear()||picked.getMonth()!==debtCalendarCursor.getMonth())debtCalendarCursor=new Date(picked.getFullYear(),picked.getMonth(),1);
+ renderDebtCalendar();
+ renderDebtDateDetails(true);
+}
 function renderDebtPage(){
  const root=document.getElementById('page-debt');if(!root)return;
  if(!Array.isArray(data.debtRecords))data.debtRecords=[];
@@ -2291,7 +2312,9 @@ function renderDebtPage(){
  byId('debtOverdueTotal').textContent=peso(overdue.reduce((s,x)=>s+debtRemaining(x),0));
  byId('debtOverdueCount').textContent=overdue.length?`${overdue.length} overdue record${overdue.length===1?'':'s'}`:'No overdue records';
  root.querySelectorAll('[data-debt-filter]').forEach(btn=>btn.classList.toggle('active',btn.dataset.debtFilter===debtDirectionFilter));
- renderDebtCalendar();renderDebtDateDetails();renderDebtUpcoming();
+ renderDebtCalendar();
+ if(document.getElementById('savelyDebtDateModal'))renderDebtDateDetails(false);
+ renderDebtUpcoming();
 }
 function renderDebtCalendar(){
  const grid=document.getElementById('debtCalendarGrid'),label=document.getElementById('debtCalendarMonthLabel');
@@ -2323,14 +2346,43 @@ function debtCard(item){
  const installment=item.totalInstallments>1?` · Installment ${item.installmentNumber}/${item.totalInstallments}`:'';
  const actions=st==='paid'
   ? `<button type="button" class="btn btn-light" onclick="viewDebtHistory('${esc(item.id)}')">Payment history</button><button type="button" class="btn btn-light" onclick="editDebtRecord('${esc(item.id)}')">Edit</button>`
-  : `<button type="button" class="btn btn-primary" style="background:var(--green);border-color:var(--green)" onclick="openDebtPayment('${esc(item.id)}')">${isOwed?'Record payment':'Record collection'}</button><button type="button" class="btn btn-light" onclick="editDebtRecord('${esc(item.id)}')">Edit</button><button type="button" class="btn btn-light" onclick="viewDebtHistory('${esc(item.id)}')">History</button>`;
+  : `<button type="button" class="btn btn-primary debt-mark-paid-button" onclick="markDebtAsPaid('${esc(item.id)}')">${isOwed?'Mark as paid':'Mark as collected'}</button><button type="button" class="btn btn-light" onclick="openDebtPayment('${esc(item.id)}')">${isOwed?'Partial payment':'Partial collection'}</button><button type="button" class="btn btn-light" onclick="editDebtRecord('${esc(item.id)}')">Edit</button><button type="button" class="btn btn-light" onclick="viewDebtHistory('${esc(item.id)}')">History</button>`;
  return `<article class="debt-item-card"><div class="debt-item-main"><div class="debt-item-top"><span class="debt-direction-tag${isOwed?'':' lent'}">${directionLabel}</span><span class="debt-status ${st}">${debtStatusLabel(st)}</span></div><div class="debt-item-title" style="margin-top:6px">${esc(item.title||'Debt record')}</div><div class="debt-item-sub">${esc(item.kind||'Other')}${person}${installment} · Due ${fmtDate(item.dueDate)} · Original ${peso(item.amount)}</div><div class="debt-item-actions">${actions}<button type="button" class="btn btn-light" onclick="deleteDebtRecord('${esc(item.id)}')">Delete</button></div></div><div><div class="debt-item-amount" style="color:${isOwed?'var(--red)':'var(--green)'}">${peso(debtRemaining(item))}</div><div class="debt-item-sub" style="text-align:right">Remaining</div></div></article>`;
 }
-function renderDebtDateDetails(){
- const box=document.getElementById('debtSelectedDateDetails');if(!box)return;
+function renderDebtDateDetails(openModal=false){
+ let modal=document.getElementById('savelyDebtDateModal');
+ if(openModal&&!modal){
+  modal=document.createElement('div');
+  modal.id='savelyDebtDateModal';
+  modal.className='modal-backdrop';
+  modal.style.cssText='display:flex;z-index:30000;align-items:center;justify-content:center;padding:18px';
+  modal.innerHTML=`<div class="modal debt-date-modal-shell" role="dialog" aria-modal="true" aria-labelledby="debtDateModalTitle">
+   <div class="debt-date-modal-head">
+    <div class="panel-head" style="margin:0;align-items:flex-start"><div style="min-width:0"><h2 id="debtDateModalTitle">Payment details</h2><div class="debt-date-modal-meta" id="debtDateModalMeta"></div></div><button type="button" class="btn btn-light" onclick="closeDebtDateModal()" aria-label="Close date details">✕</button></div>
+   </div>
+   <div class="debt-date-modal-body" id="debtDateModalBody" aria-live="polite"></div>
+   <div class="debt-date-modal-footer"><span class="panel-sub">Changes are saved to your Debt calendar.</span><button type="button" class="btn btn-primary" style="background:var(--green);border-color:var(--green)" id="debtDateModalAddButton">＋ Add for this date</button></div>
+  </div>`;
+  modal.addEventListener('click',e=>{if(e.target===modal)closeDebtDateModal();});
+  document.body.appendChild(modal);
+  modal.querySelector('#debtDateModalAddButton').addEventListener('click',()=>openDebtForm(null,debtSelectedDate));
+  modal._escapeHandler=e=>{if(e.key==='Escape')closeDebtDateModal();};
+  document.addEventListener('keydown',modal._escapeHandler);
+ }
+ if(!modal)return;
  const items=debtFilteredItems().filter(item=>item.dueDate===debtSelectedDate).sort((a,b)=>a.title.localeCompare(b.title));
  const dateLabel=debtDateFromISO(debtSelectedDate).toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
- box.innerHTML=`<div class="debt-selected-title">${esc(dateLabel)}</div>${items.length?items.map(debtCard).join(''):'<div class="debt-empty">No payments or collections scheduled for this date.</div>'}<div style="display:flex;justify-content:flex-end;margin-top:10px"><button type="button" class="btn btn-light" onclick="openDebtForm(null,'${debtSelectedDate}')">＋ Add for this date</button></div>`;
+ const remainingTotal=items.reduce((sum,item)=>sum+debtRemaining(item),0);
+ const meta=modal.querySelector('#debtDateModalMeta'),body=modal.querySelector('#debtDateModalBody'),title=modal.querySelector('#debtDateModalTitle');
+ if(title)title.textContent=dateLabel;
+ if(meta)meta.textContent=`${items.length} record${items.length===1?'':'s'} · ${peso(remainingTotal)} remaining`;
+ if(body)body.innerHTML=items.length?items.map(debtCard).join(''):'<div class="debt-empty">No payments or collections scheduled for this date.</div>';
+}
+function closeDebtDateModal(){
+ const modal=document.getElementById('savelyDebtDateModal');
+ if(!modal)return;
+ if(modal._escapeHandler)document.removeEventListener('keydown',modal._escapeHandler);
+ modal.remove();
 }
 function renderDebtUpcoming(){
  const list=document.getElementById('debtUpcomingList'),count=document.getElementById('debtUpcomingCount');if(!list||!count)return;
@@ -2338,56 +2390,88 @@ function renderDebtUpcoming(){
  count.textContent=`${items.length} record${items.length===1?'':'s'}`;
  list.innerHTML=items.length?items.map(debtCard).join(''):'<div class="debt-empty">No unpaid debt records yet. Add a bill, loan, installment, or money you lent to someone.</div>';
 }
-function openDebtForm(id=null,defaultDate=null){
+function openDebtSideChooser(defaultDate=null){
+ const existing=document.getElementById('savelyDebtSideModal');
+ if(existing)closeDebtSideChooser();
+ const modal=document.createElement('div');
+ modal.id='savelyDebtSideModal';modal.className='modal-backdrop';
+ modal.style.cssText='display:flex;z-index:30000;align-items:center;justify-content:center;padding:18px';
+ modal.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="debtSideTitle" style="width:min(540px,100%);max-height:92vh;overflow:auto;padding:24px">
+  <div class="panel-head" style="margin-bottom:6px"><div><h2 id="debtSideTitle">What would you like to track?</h2><div class="panel-sub">Choose one to open its dedicated form.</div></div><button type="button" class="btn btn-light" id="debtSideClose">✕ Close</button></div>
+  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px">
+   <button type="button" id="debtSideOwe" class="debt-side-choice" style="min-height:142px;text-align:left;padding:18px;border:1px solid #f0c5cb;border-radius:14px;background:rgba(220,70,85,.055);cursor:pointer;color:var(--text)">
+    <span style="display:block;font-size:25px;margin-bottom:10px;color:var(--red)">↗</span><strong style="display:block;font-size:15px;margin-bottom:5px">I owe</strong><span style="display:block;font-size:11px;line-height:1.5;color:var(--muted)">Payments you need to make, such as bills, loans, or installments.</span>
+   </button>
+   <button type="button" id="debtSideLent" class="debt-side-choice" style="min-height:142px;text-align:left;padding:18px;border:1px solid #b9dfd1;border-radius:14px;background:rgba(23,139,105,.055);cursor:pointer;color:var(--text)">
+    <span style="display:block;font-size:25px;margin-bottom:10px;color:var(--green)">↙</span><strong style="display:block;font-size:15px;margin-bottom:5px">Owed to me</strong><span style="display:block;font-size:11px;line-height:1.5;color:var(--muted)">Money you lent and are waiting to collect from someone.</span>
+   </button>
+  </div>
+ </div>`;
+ modal.addEventListener('click',e=>{if(e.target===modal)closeDebtSideChooser();});
+ document.body.appendChild(modal);
+ modal.querySelector('#debtSideClose').addEventListener('click',closeDebtSideChooser);
+ modal.querySelector('#debtSideOwe').addEventListener('click',()=>{closeDebtSideChooser();openDebtForm(null,defaultDate,'owed');});
+ modal.querySelector('#debtSideLent').addEventListener('click',()=>{closeDebtSideChooser();openDebtForm(null,defaultDate,'lent');});
+ modal._escapeHandler=e=>{if(e.key==='Escape')closeDebtSideChooser();};
+ document.addEventListener('keydown',modal._escapeHandler);
+}
+function closeDebtSideChooser(){
+ const modal=document.getElementById('savelyDebtSideModal');
+ if(!modal)return;
+ if(modal._escapeHandler)document.removeEventListener('keydown',modal._escapeHandler);
+ modal.remove();
+}
+function openDebtForm(id=null,defaultDate=null,directionChoice=null){
  const current=id?(data.debtRecords||[]).find(x=>String(x.id)===String(id)):null;
  if(id&&!current){toast('Debt record not found.');return;}
+ if(!current&&!['owed','lent'].includes(directionChoice)){openDebtSideChooser(defaultDate);return;}
+ const directionValue=current?current.direction:directionChoice;
+ const isOwed=directionValue==='owed';
  const modal=document.createElement('div');modal.id='savelyDebtFormModal';modal.className='modal-backdrop';
  modal.style.cssText='display:flex;z-index:30000;align-items:center;justify-content:center;padding:18px';
  const paid=current?debtPaidAmount(current):0;
+ const formTitle=current?`Edit ${isOwed?'payment':'collection'} record`:isOwed?'Add payment schedule':'Add money to collect';
+ const formSubtitle=isOwed?'Track a bill, loan, or installment that you need to pay.':'Track money you lent and the payments you expect to collect.';
+ const typeOptions=`<option>Shopee SPayLater</option><option>Lazada LazPayLater</option><option>Atome</option><option>GCash GLoan / GGives</option><option>Maya Easy Credit</option><option>SLoan / Billease</option><option>Home Credit</option><option>Tala / online lending app</option><option>Credit card</option><option>Bank / salary loan</option><option>SSS / Pag-IBIG loan</option><option>Utility / subscription bill</option><option>Personal loan / money lent</option><option>Other</option>`;
  modal.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="debtFormTitle" style="width:min(700px,100%);max-height:92vh;overflow:auto">
-  <div class="panel-head"><div><h2 id="debtFormTitle">${current?'Edit debt record':'Add debt or payment schedule'}</h2><div class="panel-sub">Track online installments, bills, loans, or money lent to someone.</div></div><button type="button" class="btn btn-light" onclick="closeDebtForm()">✕ Close</button></div>
+  <div class="panel-head"><div><h2 id="debtFormTitle">${formTitle}</h2><div class="panel-sub">${formSubtitle}</div></div><button type="button" class="btn btn-light" onclick="closeDebtForm()">✕ Close</button></div>
+  <div style="display:flex;align-items:center;gap:9px;margin:0 0 14px;padding:10px 12px;border-radius:9px;background:${isOwed?'rgba(220,70,85,.07)':'rgba(23,139,105,.07)'};color:${isOwed?'var(--red)':'var(--green)'};font-size:11px;font-weight:800"><span style="font-size:16px">${isOwed?'↗':'↙'}</span>${isOwed?'I OWE · PAYMENT TO MAKE':'OWED TO ME · MONEY TO COLLECT'}</div>
   <form id="savelyDebtForm">
    <div class="debt-form-grid">
-    <div class="field"><label for="debtDirection">Which side?</label><select id="debtDirection" required><option value="owed">I owe — payment I need to make</option><option value="lent">Owed to me — money I lent</option></select></div>
-    <div class="field"><label for="debtKind">Debt type</label><select id="debtKind" required>
-     <option>Shopee SPayLater</option><option>Lazada LazPayLater</option><option>Atome</option><option>GCash GLoan / GGives</option><option>Maya Easy Credit</option><option>SLoan / Billease</option><option>Home Credit</option><option>Tala / online lending app</option><option>Credit card</option><option>Bank / salary loan</option><option>SSS / Pag-IBIG loan</option><option>Utility / subscription bill</option><option>Personal loan / money lent</option><option>Other</option>
-    </select></div>
-    <div class="field full"><label for="debtTitle">Name / description</label><input id="debtTitle" maxlength="90" required placeholder="e.g. Shopee SPayLater · November bill"></div>
-    <div class="field full"><label for="debtCounterparty" id="debtCounterpartyLabel">Lender / platform</label><input id="debtCounterparty" maxlength="70" placeholder="e.g. Shopee, Lazada, GCash, bank, or person's name"></div>
-    <div class="field"><label for="debtTotalAmount">${current?'Scheduled amount (₱)':'Total amount to pay / collect (₱)'}</label><input id="debtTotalAmount" type="number" min="0.01" step="0.01" required value="${current?Number(current.amount).toFixed(2):''}" placeholder="e.g. 3500"></div>
-    <div class="field"><label for="debtFirstDue">First due date</label><input id="debtFirstDue" type="date" required value="${current?esc(current.dueDate):(defaultDate||debtLocalISO(new Date()))}"></div>
-    <div class="field"><label for="debtFrequency">Schedule</label><select id="debtFrequency"${current?' disabled':''}><option value="once">One-time payment</option><option value="weekly">Weekly</option><option value="biweekly">Every 2 weeks</option><option value="monthly">Monthly</option></select></div>
-    <div class="field"><label for="debtInstallments">Number of payments</label><input id="debtInstallments" type="number" min="2" max="48" value="3"${current?' disabled':''}><div class="debt-series-help">For installment plans, Savely splits the total amount across the selected dates.</div></div>
+    <div class="field full"><label for="debtKind">Debt type</label><select id="debtKind" required>${typeOptions}</select></div>
+    <div class="field full"><label for="debtTitle">${isOwed?'Bill / payment name':'Loan / collection name'}</label><input id="debtTitle" maxlength="90" required placeholder="${isOwed?'e.g. Shopee SPayLater · November bill':'e.g. Money lent to Juan'}"></div>
+    <div class="field full"><label for="debtCounterparty" id="debtCounterpartyLabel">${isOwed?'Lender / platform':'Borrower / person who owes you'}</label><input id="debtCounterparty" maxlength="70" placeholder="${isOwed?'e.g. Shopee, Lazada, GCash, or bank':'e.g. Friend, family member, or colleague'}"></div>
+    <div class="field"><label for="debtTotalAmount">${current?'Scheduled amount (₱)':isOwed?'Total amount to pay (₱)':'Total amount to collect (₱)'}</label><input id="debtTotalAmount" type="number" min="0.01" step="0.01" required value="${current?Number(current.amount).toFixed(2):''}" placeholder="e.g. 3500"></div>
+    <div class="field"><label for="debtFirstDue">${isOwed?'First due date':'Expected collection date'}</label><input id="debtFirstDue" type="date" required value="${current?esc(current.dueDate):(defaultDate||debtLocalISO(new Date()))}"></div>
+    <div class="field"><label for="debtFrequency">Schedule</label><select id="debtFrequency"${current?' disabled':''}><option value="once">One-time ${isOwed?'payment':'collection'}</option><option value="weekly">Weekly</option><option value="biweekly">Every 2 weeks</option><option value="monthly">Monthly</option></select></div>
+    <div class="field"><label for="debtInstallments">Number of ${isOwed?'payments':'collections'}</label><input id="debtInstallments" type="number" min="2" max="48" value="3"${current?' disabled':''}><div class="debt-series-help">For installment plans, Savely splits the total amount across the selected dates.</div></div>
    </div>
-   ${current&&paid>0?`<div class="notice" style="margin-top:10px">Already paid: ${peso(paid)}. The scheduled amount cannot be lower than payments already recorded.</div>`:''}
-   <div class="form-actions" style="justify-content:flex-end;margin-top:16px"><button type="button" class="btn btn-secondary" onclick="closeDebtForm()">Cancel</button><button type="submit" class="btn btn-primary" style="background:var(--green);border-color:var(--green)">${current?'Save changes':'Add to calendar'}</button></div>
+   ${current&&paid>0?`<div class="notice" style="margin-top:10px">Already ${isOwed?'paid':'collected'}: ${peso(paid)}. The scheduled amount cannot be lower than amounts already recorded.</div>`:''}
+   <div class="form-actions" style="justify-content:flex-end;margin-top:16px"><button type="button" class="btn btn-secondary" onclick="closeDebtForm()">Cancel</button><button type="submit" class="btn btn-primary" style="background:var(--green);border-color:var(--green)">${current?'Save changes':isOwed?'Add payment':'Add collection'}</button></div>
   </form>
  </div>`;
  modal.addEventListener('click',e=>{if(e.target===modal)closeDebtForm();});
  document.body.appendChild(modal);
- const direction=modal.querySelector('#debtDirection');
- direction.value=current?.direction||'owed';
  if(current){
   modal.querySelector('#debtKind').value=current.kind||'Other';
   modal.querySelector('#debtTitle').value=current.title||'';
   modal.querySelector('#debtCounterparty').value=current.counterparty||'';
  }
- const updateCounterparty=()=>{modal.querySelector('#debtCounterpartyLabel').textContent=direction.value==='owed'?'Lender / platform':'Borrower / person who owes you';modal.querySelector('#debtCounterparty').placeholder=direction.value==='owed'?"e.g. Shopee, Lazada, GCash, bank, or person's name":'e.g. Friend, family member, or colleague';};
- direction.addEventListener('change',updateCounterparty);updateCounterparty();
+ if(!current&&!isOwed)modal.querySelector('#debtKind').value='Personal loan / money lent';
  const frequency=modal.querySelector('#debtFrequency'),installments=modal.querySelector('#debtInstallments');
  const updateInstallments=()=>{if(!current){installments.disabled=frequency.value==='once';if(installments.disabled)installments.value='1';else if(Number(installments.value)<2)installments.value='3';}};
  frequency.addEventListener('change',updateInstallments);updateInstallments();
  modal.querySelector('#savelyDebtForm').addEventListener('submit',e=>{
   e.preventDefault();
-  const dir=direction.value,kind=modal.querySelector('#debtKind').value,title=modal.querySelector('#debtTitle').value.trim(),counterparty=modal.querySelector('#debtCounterparty').value.trim();
+  const dir=directionValue,kind=modal.querySelector('#debtKind').value,title=modal.querySelector('#debtTitle').value.trim(),counterparty=modal.querySelector('#debtCounterparty').value.trim();
   const amount=Number(modal.querySelector('#debtTotalAmount').value),dueDate=modal.querySelector('#debtFirstDue').value,repeat=frequency.value;
   const count=current?1:(repeat==='once'?1:Math.min(48,Math.max(2,Number(installments.value)||3)));
   if(!title){toast('Enter a name or description.');return;}
   if(!Number.isFinite(amount)||amount<=0){toast('Enter an amount greater than zero.');return;}
-  if(!dueDate){toast('Choose a due date.');return;}
+  if(!dueDate){toast('Choose a date.');return;}
   if(!current && Math.floor(amount*100)+0.000001<count){toast('The total amount is too small for that number of installments. Reduce the installment count.');return;}
   if(current){
-   if(amount+0.000001<paid){toast('Scheduled amount cannot be lower than the amount already paid.');return;}
+   if(amount+0.000001<paid){toast('Scheduled amount cannot be lower than amounts already recorded.');return;}
    const prev={...current};
    current.direction=dir;current.kind=kind;current.title=title;current.counterparty=counterparty;current.amount=amount;current.remainingAmount=Math.max(0,amount-paid);current.dueDate=dueDate;
    current.status=current.remainingAmount<=0.005?'paid':(paid>0?'partial':'unpaid');
@@ -2407,7 +2491,7 @@ function openDebtForm(id=null,defaultDate=null){
   data.debtRecords.push(...created);
   if(!saveDebtRecords()){data.debtRecords.splice(-created.length,created.length);return;}
   closeDebtForm();debtCalendarCursor=new Date(debtDateFromISO(dueDate).getFullYear(),debtDateFromISO(dueDate).getMonth(),1);debtSelectedDate=dueDate;renderDebtPage();
-  toast(count>1?`${count} installments added to your debt calendar.`:'Debt record added to your calendar.');
+  toast(count>1?`${count} ${isOwed?'payments':'collections'} added to your debt calendar.`:isOwed?'Payment added to your calendar.':'Collection added to your calendar.');
  });
 }
 function closeDebtForm(){const modal=document.getElementById('savelyDebtFormModal');if(modal)modal.remove();}
@@ -2419,6 +2503,31 @@ function deleteDebtRecord(id){
  if(!saveDebtRecords()){data.debtRecords.splice(idx,0,removed);return;}
  renderDebtPage();toast('Debt record deleted.');
 }
+function markDebtAsPaid(id){
+ const item=(data.debtRecords||[]).find(x=>String(x.id)===String(id));
+ if(!item)return;
+ const remaining=debtRemaining(item);
+ if(remaining<=0.005){toast('This debt record is already settled.');return;}
+ const isOwed=item.direction==='owed';
+ const action=isOwed?'payment':'collection';
+ const confirmation=isOwed?'mark this debt as fully paid':'mark this amount as fully collected';
+ if(!confirm(`Are you sure you want to ${confirmation}?\n\n${item.title||'Debt record'}\nRemaining balance: ${peso(remaining)}`))return;
+ const before={...item,payments:Array.isArray(item.payments)?item.payments.map(p=>({...p})):[]};
+ const now=Date.now(),date=debtLocalISO(new Date());
+ if(!Array.isArray(item.payments))item.payments=[];
+ item.payments.push({id:uid(),amount:remaining,date,at:now,note:`Marked as ${isOwed?'paid':'collected'}`});
+ item.remainingAmount=0;
+ item.status='paid';
+ item.paidAt=now;
+ if(!saveDebtRecords()){
+  Object.assign(item,before);
+  if(before.paidAt===undefined)delete item.paidAt;
+  return;
+ }
+ renderDebtPage();
+ toast(isOwed?'Debt marked as paid.':'Amount marked as collected.');
+}
+
 function openDebtPayment(id){
  const item=(data.debtRecords||[]).find(x=>String(x.id)===String(id));if(!item)return;
  const remaining=debtRemaining(item),isOwed=item.direction==='owed';
