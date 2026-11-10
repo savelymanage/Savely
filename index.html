@@ -6135,7 +6135,7 @@ body.dark-theme .app > .sidebar .nav button.active {
   if(!fab || !panel || !dragHandle || !display || !expressionDisplay) return;
 
   const eligiblePages = new Set(['page-financial-list','page-salary','page-debt']);
-  const positionKey = 'savely_floating_calculator_position_v2';
+  const positionKey = 'savely_floating_calculator_position_v3';
   let expression = '';
   let justEvaluated = false;
   let currentEntry = '0';
@@ -6749,6 +6749,192 @@ body :where(
   });
 })();
 </script>
+
+
+<style id="savely-sidebar-toggle-white-green-v2">
+#savelySidebarToggle {
+  background: #fff !important;
+  color: #168765 !important;
+  border: 1px solid #d8e9e1 !important;
+  border-left: 1px solid #d8e9e1 !important;
+  box-shadow: 4px 3px 12px rgba(15,76,55,.16) !important;
+}
+#savelySidebarToggle:hover {
+  background: #f3faf6 !important;
+  color: #0f704f !important;
+  border-color: #b9ddcc !important;
+}
+#savelySidebarToggle span {
+  color: #168765 !important;
+}
+.app.sidebar-collapsed #savelySidebarToggle {
+  background: #fff !important;
+  color: #168765 !important;
+}
+</style>
+
+
+<style id="savely-calculator-clean-large-v2">
+#savelyFloatingCalculator {
+  width: 350px !important;
+  max-width: min(350px,calc(100vw - 20px)) !important;
+  border-radius: 18px !important;
+  border: 1px solid #e2eae6 !important;
+  box-shadow: 0 20px 48px rgba(17,35,57,.19) !important;
+  background: #fff !important;
+}
+#savelyFloatingCalculator .savely-calc-header {
+  min-height: 48px !important;
+  padding: 12px 15px !important;
+  background: #fff !important;
+  color: #24352d !important;
+  border-bottom: 1px solid #edf1ef !important;
+  cursor: move;
+}
+#savelyFloatingCalculator .savely-calc-brand {
+  color: #24352d !important;
+  font-size: 14px !important;
+  font-weight: 750 !important;
+  gap: 9px !important;
+}
+#savelyFloatingCalculator .savely-calc-brand svg {
+  width: 19px !important;
+  height: 19px !important;
+  stroke: #168765 !important;
+}
+#savelyFloatingCalculator .savely-calc-drag-hint {
+  color: #84928b !important;
+  opacity: 1 !important;
+  font-size: 10px !important;
+}
+#savelyFloatingCalculator .savely-calc-close {
+  width: 30px !important;
+  height: 30px !important;
+  background: #f1f5f3 !important;
+  color: #53635b !important;
+  border: 1px solid #e5ece8 !important;
+  border-radius: 9px !important;
+  font-size: 19px !important;
+}
+#savelyFloatingCalculator .savely-calc-close:hover {
+  background: #e8f2ed !important;
+  color: #168765 !important;
+}
+#savelyFloatingCalculator .savely-calc-body {
+  padding: 15px !important;
+}
+#savelyFloatingCalculator .savely-calc-screen {
+  min-height: 84px !important;
+  padding: 13px 15px !important;
+  margin-bottom: 13px !important;
+  border-radius: 13px !important;
+  background: #f7faf8 !important;
+  border-color: #e5ece8 !important;
+}
+#savelyFloatingCalculator .savely-calc-expression {
+  font-size: 11px !important;
+}
+#savelyFloatingCalculator .savely-calc-result {
+  font-size: 32px !important;
+  font-weight: 750 !important;
+  letter-spacing: -.7px !important;
+  color: #1c3027 !important;
+}
+#savelyFloatingCalculator .savely-calc-keys {
+  gap: 8px !important;
+}
+#savelyFloatingCalculator .savely-calc-key {
+  min-height: 51px !important;
+  border-radius: 12px !important;
+  font-size: 16px !important;
+  font-weight: 650 !important;
+}
+#savelyFloatingCalculator .savely-calc-key.is-utility {
+  background: #f1f5f3 !important;
+  color: #53635b !important;
+  border-color: #e6ece9 !important;
+}
+#savelyFloatingCalculator .savely-calc-key.is-operator {
+  background: #edf6f1 !important;
+  color: #168765 !important;
+  border-color: #d8e9df !important;
+}
+#savelyFloatingCalculator .savely-calc-key.is-equals {
+  background: #168765 !important;
+  color: #fff !important;
+  border-color: #168765 !important;
+  font-size: 19px !important;
+}
+#savelyFloatingCalculator .savely-calc-foot {
+  margin-top: 11px !important;
+  font-size: 10px !important;
+  color: #87948e !important;
+}
+@media(max-width:720px) {
+  #savelyFloatingCalculator {
+    width: min(350px,calc(100vw - 30px)) !important;
+    right: 15px !important;
+  }
+  #savelyFloatingCalculator .savely-calc-key {
+    min-height: 47px !important;
+  }
+}
+@media(max-width:380px) {
+  #savelyFloatingCalculator {
+    width: calc(100vw - 20px) !important;
+    right: 10px !important;
+  }
+  #savelyFloatingCalculator .savely-calc-keys {
+    gap: 6px !important;
+  }
+  #savelyFloatingCalculator .savely-calc-key {
+    min-height: 44px !important;
+  }
+}
+</style>
+
+
+<style id="savely-global-total-number-size-v2">
+/* Smaller, calmer total figures with one consistent scale across all pages. */
+body :where(.stat-value,
+  #salaryMonthlyDisplay,
+  #salaryAnnualDisplay,
+  .interest-summary-grid .stat-value) {
+  font-size: 22px !important;
+  line-height: 1.2 !important;
+  font-weight: 800 !important;
+  letter-spacing: -.45px !important;
+}
+body :where(.goal-amount, .account-balance, .goal-bank-total strong,
+  .goal-bank-progress-amount) {
+  font-size: 20px !important;
+  line-height: 1.25 !important;
+  font-weight: 750 !important;
+  letter-spacing: -.3px !important;
+}
+#page-debt .debt-summary-cards .stat-value,
+#page-salary .salary-summary-cards .stat-value,
+#page-financial-list #financialCategoryStats .stat-value,
+#page-financial-list .financial-overall-total .stat-value,
+#page-interest .interest-summary-grid .stat-value {
+  font-size: 22px !important;
+  line-height: 1.2 !important;
+  font-weight: 800 !important;
+  letter-spacing: -.45px !important;
+}
+@media(max-width:700px) {
+  body :where(.stat-value,
+    #salaryMonthlyDisplay,
+    #salaryAnnualDisplay,
+    .interest-summary-grid .stat-value) {
+    font-size: 20px !important;
+  }
+  body :where(.goal-amount, .account-balance, .goal-bank-total strong,
+    .goal-bank-progress-amount) {
+    font-size: 19px !important;
+  }
+}
+</style>
 
 </body>
 </html>
