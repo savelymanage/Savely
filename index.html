@@ -2354,7 +2354,7 @@ function renderDebtCalendar(){
    return `<span class="debt-day-chip ${st}">${prefix} · ${esc(item.title||item.counterparty||'Debt')} · ${peso(debtRemaining(item))}</span>`;
   }).join('');
   const more=dayItems.length>2?`<span class="debt-day-more">+${dayItems.length-2} more</span>`:'';
-  cells.push(`<button type="button" role="gridcell" class="debt-day${outside?' is-outside':''}${iso===today?' is-today':''}${iso===debtSelectedDate?' is-selected':''}" onclick="selectDebtDate('${iso}')" aria-label="${new Date(y,m,d).toLocaleDateString('en-PH',{dateStyle:'full'})}, ${dayItems.length} debt records"><span class="debt-day-number"><span>${d}</span></span>${chips}${more}</button>`);
+  cells.push(`<button type="button" role="gridcell" class="debt-day${outside?' is-outside':''}${dayItems.length?' has-items':''}${iso===today?' is-today':''}${iso===debtSelectedDate?' is-selected':''}" onclick="selectDebtDate('${iso}')" aria-label="${new Date(y,m,d).toLocaleDateString('en-PH',{dateStyle:'full'})}, ${dayItems.length} debt records"><span class="debt-day-number"><span>${d}</span></span>${chips}${more}</button>`);
  }
  grid.innerHTML=cells.join('');
 }
@@ -5400,6 +5400,42 @@ body.dark-theme .nav button.active {
 .nav button.active svg {
   fill: #fff !important;
   stroke: #fff !important;
+}
+</style>
+
+
+<style id="savely-debt-calendar-red-highlights">
+/* Dates with at least one scheduled debt or collection use a red highlight. */
+.debt-day.has-items {
+  border-color: #dc4a4a !important;
+  background: #fff7f7 !important;
+}
+.debt-day.has-items .debt-day-number span {
+  background: #dc4a4a;
+  color: #fff;
+  border-radius: 50%;
+  width: 23px;
+  height: 23px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.debt-day.is-selected {
+  border: 1.5px solid #dc3030 !important;
+  box-shadow: 0 0 0 3px rgba(220, 48, 48, .14) !important;
+}
+.debt-day:hover,
+.debt-day:focus-visible {
+  border-color: #dc3030 !important;
+  box-shadow: 0 0 0 2px rgba(220, 48, 48, .15) !important;
+  outline: none;
+}
+.debt-day.is-today .debt-day-number span {
+  background: #dc3030;
+  color: #fff;
+}
+.debt-day.has-items.is-outside {
+  background: #fff1f1 !important;
 }
 </style>
 
