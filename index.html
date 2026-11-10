@@ -5880,49 +5880,53 @@ body.dark-theme .app > .sidebar .nav button.active {
 
 
 <style id="savely-floating-calculator-css">
+/* Minimal floating calculator launcher — anchored to the lower-right corner. */
 #savelyCalculatorFab {
   position: fixed;
-  left: 263px;
+  right: 22px;
+  left: auto;
   bottom: 22px;
   z-index: 20000;
-  width: 54px;
-  height: 54px;
+  width: 52px;
+  height: 52px;
   display: none;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255,255,255,.22);
-  border-radius: 18px;
-  background: #168765;
+  border: 1px solid rgba(255,255,255,.26);
+  border-radius: 17px;
+  background: linear-gradient(145deg,#1b9b75,#117653);
   color: #fff;
-  box-shadow: 0 8px 24px rgba(13,75,55,.28);
+  box-shadow: 0 7px 20px rgba(13,75,55,.24);
   cursor: pointer;
-  transition: transform .16s, box-shadow .16s, background .16s;
+  transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
 }
 #savelyCalculatorFab:hover {
-  background: #107553;
+  background: linear-gradient(145deg,#168765,#0f704f);
   transform: translateY(-2px);
-  box-shadow: 0 11px 28px rgba(13,75,55,.34);
+  box-shadow: 0 10px 25px rgba(13,75,55,.30);
 }
 #savelyCalculatorFab:focus-visible {
   outline: 3px solid rgba(22,135,101,.28);
   outline-offset: 3px;
 }
-#savelyCalculatorFab svg { width: 25px; height: 25px; stroke: currentColor; }
+#savelyCalculatorFab svg { width: 23px; height: 23px; stroke: currentColor; }
+
 #savelyFloatingCalculator {
   position: fixed;
-  left: 263px;
+  right: 22px;
+  left: auto;
   top: auto;
-  bottom: 88px;
+  bottom: 86px;
   z-index: 20001;
   display: none;
-  width: 310px;
+  width: 292px;
   max-width: calc(100vw - 24px);
   overflow: hidden;
-  border: 1px solid #dce6e2;
-  border-radius: 18px;
+  border: 1px solid #e1e9e5;
+  border-radius: 16px;
   background: #fff;
   color: #172033;
-  box-shadow: 0 18px 55px rgba(17,35,57,.22);
+  box-shadow: 0 16px 42px rgba(17,35,57,.18);
   user-select: none;
   touch-action: auto;
 }
@@ -5932,74 +5936,75 @@ body.dark-theme .app > .sidebar .nav button.active {
   align-items:center;
   justify-content:space-between;
   gap:10px;
-  padding:13px 14px;
+  min-height:45px;
+  padding:10px 13px;
   color:#fff;
-  background:linear-gradient(135deg,#168765,#0f704f);
+  background:#168765;
   cursor:move;
   touch-action:none;
 }
 #savelyFloatingCalculator .savely-calc-brand {
   display:flex;
   align-items:center;
-  gap:9px;
+  gap:8px;
   font-size:13px;
-  font-weight:850;
-  letter-spacing:.1px;
+  font-weight:750;
+  letter-spacing:0;
 }
 #savelyFloatingCalculator .savely-calc-brand svg {
-  width:19px;height:19px;stroke:currentColor;flex:0 0 auto;
+  width:17px;height:17px;stroke:currentColor;flex:0 0 auto;
 }
 #savelyFloatingCalculator .savely-calc-drag-hint {
   font-size:9px;
-  font-weight:650;
-  opacity:.78;
-  margin-left:4px;
+  font-weight:500;
+  opacity:.75;
+  margin-left:2px;
 }
 #savelyFloatingCalculator .savely-calc-close {
   border:0;
-  width:29px;height:29px;
+  width:27px;height:27px;
   display:grid;place-items:center;
   border-radius:8px;
   color:#fff;
   background:rgba(255,255,255,.15);
-  font-size:19px;
+  font-size:18px;
   line-height:1;
   cursor:pointer;
 }
 #savelyFloatingCalculator .savely-calc-close:hover { background:rgba(255,255,255,.25); }
-#savelyFloatingCalculator .savely-calc-body { padding:13px; }
+#savelyFloatingCalculator .savely-calc-body { padding:12px; }
 #savelyFloatingCalculator .savely-calc-screen {
-  min-height:83px;
+  min-height:72px;
   display:flex;
   flex-direction:column;
   align-items:flex-end;
   justify-content:flex-end;
-  gap:5px;
-  padding:12px 13px;
-  margin-bottom:12px;
-  border:1px solid #e4ece8;
-  border-radius:12px;
-  background:#f7faf9;
+  gap:4px;
+  padding:10px 12px;
+  margin-bottom:10px;
+  border:1px solid #e7eeea;
+  border-radius:11px;
+  background:#f7faf8;
   overflow:hidden;
 }
 #savelyFloatingCalculator .savely-calc-expression {
   width:100%;
-  color:#819087;
-  min-height:16px;
+  color:#8a9890;
+  min-height:14px;
   text-align:right;
-  font-size:11px;
+  font-size:10px;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 #savelyFloatingCalculator .savely-calc-result {
   width:100%;
-  color:#172033;
+  color:#172a22;
   text-align:right;
-  font-size:29px;
-  font-weight:850;
+  font-size:27px;
+  font-weight:750;
   line-height:1.15;
-  letter-spacing:-.8px;
+  letter-spacing:-.6px;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -6008,56 +6013,59 @@ body.dark-theme .app > .sidebar .nav button.active {
 #savelyFloatingCalculator .savely-calc-keys {
   display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:8px;
+  gap:7px;
 }
 #savelyFloatingCalculator .savely-calc-key {
   min-width:0;
-  min-height:47px;
-  border:1px solid #e4e9ed;
-  border-radius:11px;
+  min-height:43px;
+  border:1px solid #e7ecef;
+  border-radius:10px;
   background:#fff;
-  color:#263447;
-  font-size:16px;
-  font-weight:750;
+  color:#29384a;
+  font-size:14px;
+  font-weight:650;
   cursor:pointer;
   transition:background .12s,border-color .12s,transform .12s;
 }
 #savelyFloatingCalculator .savely-calc-key:hover {
-  background:#f1f7f4;
-  border-color:#b9d9cc;
+  background:#f4f8f6;
+  border-color:#c9ddd3;
 }
 #savelyFloatingCalculator .savely-calc-key:active { transform:scale(.97); }
 #savelyFloatingCalculator .savely-calc-key.is-utility {
-  background:#f1f5f4;
-  color:#52645c;
+  background:#f2f6f4;
+  color:#5b6c63;
 }
 #savelyFloatingCalculator .savely-calc-key.is-operator {
-  background:#e8f5ef;
+  background:#eaf5ef;
   color:#117653;
-  border-color:#d1e9dd;
+  border-color:#d9eade;
 }
 #savelyFloatingCalculator .savely-calc-key.is-equals {
   color:#fff;
   background:#168765;
   border-color:#168765;
-  font-size:19px;
+  font-size:17px;
 }
 #savelyFloatingCalculator .savely-calc-key.is-equals:hover { background:#107553; }
 #savelyFloatingCalculator .savely-calc-foot {
-  margin-top:10px;
-  color:#87938d;
+  margin-top:8px;
+  color:#8b9891;
   text-align:center;
   font-size:9px;
 }
 @media(max-width:720px) {
-  #savelyCalculatorFab { left:15px; bottom:16px; }
-  #savelyFloatingCalculator { left:15px; bottom:80px; width:min(310px,calc(100vw - 30px)); }
-  #savelyFloatingCalculator .savely-calc-key { min-height:45px; }
+  #savelyCalculatorFab { right:15px; left:auto; bottom:16px; }
+  #savelyFloatingCalculator {
+    right:15px; left:auto; bottom:78px;
+    width:min(292px,calc(100vw - 30px));
+  }
+  #savelyFloatingCalculator .savely-calc-key { min-height:42px; }
 }
 @media(max-width:380px) {
-  #savelyFloatingCalculator { width:calc(100vw - 20px); left:10px; }
+  #savelyFloatingCalculator { width:calc(100vw - 20px); right:10px; left:auto; }
   #savelyFloatingCalculator .savely-calc-keys { gap:6px; }
-  #savelyFloatingCalculator .savely-calc-key { min-height:43px; }
+  #savelyFloatingCalculator .savely-calc-key { min-height:41px; }
 }
 </style>
 
@@ -6127,7 +6135,7 @@ body.dark-theme .app > .sidebar .nav button.active {
   if(!fab || !panel || !dragHandle || !display || !expressionDisplay) return;
 
   const eligiblePages = new Set(['page-financial-list','page-salary','page-debt']);
-  const positionKey = 'savely_floating_calculator_position_v1';
+  const positionKey = 'savely_floating_calculator_position_v2';
   let expression = '';
   let justEvaluated = false;
   let currentEntry = '0';
@@ -6169,8 +6177,9 @@ body.dark-theme .app > .sidebar .nav button.active {
     if(saved && Number.isFinite(saved.left) && Number.isFinite(saved.top)){
       placePanel(saved.left,saved.top,false);
     }else{
-      const left = window.innerWidth <= 720 ? 15 : 263;
-      const top = Math.max(12,window.innerHeight - panel.offsetHeight - 88);
+      const rightGap = window.innerWidth <= 720 ? 15 : 22;
+      const left = Math.max(8,window.innerWidth - panel.offsetWidth - rightGap);
+      const top = Math.max(12,window.innerHeight - panel.offsetHeight - (window.innerWidth <= 720 ? 78 : 86));
       placePanel(left,top,false);
     }
   }
@@ -6410,16 +6419,26 @@ body.dark-theme .app > .sidebar .nav button.active {
       const rect=panel.getBoundingClientRect();
       placePanel(rect.left,rect.top,true);
     }
-    if(window.innerWidth<=720 && !panel.dataset.userMoved){
-      fab.style.left='15px';
-    }
+    fab.style.left='auto';
+    fab.style.right=(window.innerWidth<=720?'15px':'22px');
   });
 
-  const observer=new MutationObserver(syncVisibility);
-  observer.observe(document.body,{subtree:true,attributes:true,attributeFilter:['class']});
-  document.querySelectorAll('#nav button[data-page]').forEach(button=>{
-    button.addEventListener('click',()=>setTimeout(syncVisibility,0));
-  });
+  // Sync only when Savely navigates pages; do not observe every DOM class mutation.
+  // The old document-wide MutationObserver caused unnecessary work on complex pages.
+  const originalShowPage = window.showPage;
+  if(typeof originalShowPage === 'function' && !originalShowPage.__savelyCalculatorWrapped){
+    const wrappedShowPage = function(...args){
+      const result = originalShowPage.apply(this,args);
+      syncVisibility();
+      return result;
+    };
+    wrappedShowPage.__savelyCalculatorWrapped = true;
+    window.showPage = wrappedShowPage;
+  }
+  const nav = document.getElementById('nav');
+  if(nav){
+    nav.addEventListener('click',()=>requestAnimationFrame(syncVisibility),{passive:true});
+  }
   syncVisibility();
   updateDisplay();
 
