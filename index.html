@@ -7045,5 +7045,33 @@ body.dark-theme .app > .sidebar #nav button:not(.active):focus-visible * {
 }
 </style>
 
+
+<style id="savely-sidebar-active-white-green-v2">
+/* Selected and hovered navigation items share the same white/green treatment. */
+.app > .sidebar #nav button.active,
+.app > .sidebar #nav button.active:hover,
+.app > .sidebar #nav button.active:focus-visible,
+body.dark-theme .app > .sidebar #nav button.active {
+  background: #fff !important;
+  color: #168765 !important;
+  border-color: #fff !important;
+  box-shadow: 0 3px 11px rgba(8,67,48,.12) !important;
+}
+.app > .sidebar #nav button.active *,
+.app > .sidebar #nav button.active:hover *,
+.app > .sidebar #nav button.active:focus-visible *,
+body.dark-theme .app > .sidebar #nav button.active * {
+  color: #168765 !important;
+}
+.app > .sidebar #nav button.active .ico,
+.app > .sidebar #nav button.active:hover .ico {
+  color: #168765 !important;
+}
+.app.sidebar-collapsed > .sidebar #nav button.active {
+  background: #fff !important;
+  color: #168765 !important;
+}
+</style>
+
 </body>
 </html>
