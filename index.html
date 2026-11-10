@@ -1053,7 +1053,6 @@ button[draggable="true"],
   display:block!important; max-width:none!important; height:380px!important;
 }
 </style>
-\n
 <style id="savely-financial-trend-column-v2869">
 #savingsListTable table th.financial-trend-col,#savingsListTable table td.financial-trend-col{width:42px;min-width:42px;max-width:42px;text-align:center!important;padding-left:4px;padding-right:4px;white-space:nowrap}
 #savingsListTable table th.financial-trend-col{font-size:0}
@@ -5380,6 +5379,28 @@ function deleteAllSavingsItems(){
 .goal-transfer-amount{margin-top:4px;font-size:13px;font-weight:800;color:var(--green,#168765)}
 #savelyGoalBankTransferModal select{width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel,#fff);color:var(--text)}
 @media(max-width:540px){.goal-bank-progress-actions{gap:5px}.goal-bank-transfer-button{padding:5px 6px;font-size:9px}}
+</style>
+
+
+<style id="savely-sidebar-active-solid-green-white-v2">
+.sidebar .nav button.active,
+.nav button.active,
+body.dark-theme .sidebar .nav button.active,
+body.dark-theme .nav button.active {
+  background: var(--green, #168765) !important;
+  color: #fff !important;
+  border-color: var(--green, #168765) !important;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--green, #168765) 22%, transparent) !important;
+}
+.sidebar .nav button.active *,
+.nav button.active * {
+  color: #fff !important;
+}
+.sidebar .nav button.active svg,
+.nav button.active svg {
+  fill: #fff !important;
+  stroke: #fff !important;
+}
 </style>
 
 </body>
