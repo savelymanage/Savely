@@ -2634,9 +2634,71 @@ function goalBankCurrentBalance(bank){
  return Math.max(0,Number(linked?linked.amount:(typeof bank==='object'?(bank.amount??bank.balance??bank.value??0):0))||0);
 }
 function goalCurrentAmount(goal){
- if(goal&&Array.isArray(goal.banks)&&goal.banks.length)return goal.banks.reduce((sum,bank)=>sum+goalBankCurrentBalance(bank),0);
+ if(goal&&Array.isArray(goal.banks)&&(goal.banks.length||goal.bankAssignmentsConfigured))return goal.banks.reduce((sum,bank)=>sum+goalBankCurrentBalance(bank),0);
  const items=Array.isArray(data.savingsList)?data.savingsList:[];
  return items.filter(i=>['Savings','Salary','Income'].includes(i.category||'Savings')).reduce((sum,item)=>sum+Number(item.amount||0),0);
+}
+function goalEntryFinancialItemId(entry){
+ const explicit=entry&&typeof entry==='object'?(entry.financialItemId||entry.savingsItemId||entry.itemId||entry.sourceItemId):'';
+ if(explicit&&(data.savingsList||[]).some(item=>String(item.id)===String(explicit)))return String(explicit);
+ const name=typeof entry==='string'?entry:(entry?.name||entry?.bankName||entry?.bank||'');
+ const linked=savelyFindFinancialBankItem(name);
+ return linked?String(linked.id):'';
+}
+function openGoalBankTransfer(sourceGoalId,itemId){
+ const goals=Array.isArray(data.goals)?data.goals:[];
+ const source=goals.find(goal=>String(goal.id)===String(sourceGoalId));
+ const item=(Array.isArray(data.savingsList)?data.savingsList:[]).find(entry=>String(entry.id)===String(itemId));
+ if(!source||!item){toast('Savings item or source goal not found.');return;}
+ if(!Array.isArray(source.banks))source.banks=[];
+ const sourceIndex=source.banks.findIndex(entry=>goalEntryFinancialItemId(entry)===String(itemId));
+ if(sourceIndex<0){toast('This savings item is no longer assigned to that goal. Refresh and try again.');return;}
+ const destinations=goals.filter(goal=>String(goal.id)!==String(sourceGoalId));
+ if(!destinations.length){toast('Create another savings goal before transferring this item.');return;}
+ let modal=document.getElementById('savelyGoalBankTransferModal');
+ if(!modal){modal=document.createElement('div');modal.id='savelyGoalBankTransferModal';modal.className='modal-backdrop';modal.style.zIndex='10080';document.body.appendChild(modal);}
+ const safe=value=>String(value??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+ const formatMoney=value=>'₱'+Math.max(0,Number(value)||0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});
+ modal.innerHTML=`<div class="modal goal-transfer-modal" role="dialog" aria-modal="true" aria-labelledby="goalBankTransferTitle" style="width:min(480px,calc(100% - 30px));max-height:88vh;overflow:auto">
+  <div class="between" style="align-items:center;gap:12px"><div><h2 id="goalBankTransferTitle" style="margin:0">Transfer savings item</h2><p class="panel-sub" style="margin:6px 0 0">Move this item to another savings goal.</p></div><button type="button" class="btn btn-light" id="goalBankTransferClose">✕ Close</button></div>
+  <div class="goal-transfer-summary"><div class="panel-sub">SAVINGS ITEM</div><strong id="goalBankTransferItemName"></strong><div id="goalBankTransferAmount" class="goal-transfer-amount"></div></div>
+  <div class="field"><label for="goalBankTransferDestination">Transfer to goal</label><select id="goalBankTransferDestination" required>${destinations.map(goal=>`<option value="${safe(goal.id)}">${safe(goal.name||'Savings goal')}</option>`).join('')}</select></div>
+  <p class="panel-sub" style="margin:10px 0 0">The item will be removed from <strong>${safe(source.name||'the current goal')}</strong> and assigned to the selected goal. Your Financial List balance will not change.</p>
+  <div class="form-actions" style="justify-content:flex-end;margin-top:18px"><button type="button" class="btn btn-light" id="goalBankTransferCancel">Cancel</button><button type="button" class="btn btn-primary" id="goalBankTransferConfirm">⇄ Transfer item</button></div>
+ </div>`;
+ modal.querySelector('#goalBankTransferItemName').textContent=item.name||item.bankName||'Savings item';
+ modal.querySelector('#goalBankTransferAmount').textContent=formatMoney(item.amount);
+ const close=()=>{modal.style.display='none';};
+ modal.querySelector('#goalBankTransferClose').addEventListener('click',close);
+ modal.querySelector('#goalBankTransferCancel').addEventListener('click',close);
+ modal.onclick=event=>{if(event.target===modal)close();};
+ modal.querySelector('#goalBankTransferConfirm').addEventListener('click',()=>{
+  const destinationId=String(modal.querySelector('#goalBankTransferDestination').value||'');
+  const destination=goals.find(goal=>String(goal.id)===destinationId);
+  if(!destination||destination===source){toast('Please choose a different savings goal.');return;}
+  if(!Array.isArray(destination.banks))destination.banks=[];
+  const currentSourceIndex=source.banks.findIndex(entry=>goalEntryFinancialItemId(entry)===String(itemId));
+  if(currentSourceIndex<0){toast('This item is no longer assigned to the source goal.');close();return;}
+  if(destination.banks.some(entry=>goalEntryFinancialItemId(entry)===String(itemId))){toast('This item is already assigned to the selected goal.');return;}
+  const before=JSON.stringify(data.goals);
+  const previousEntry=source.banks[currentSourceIndex];
+  const movedEntry=previousEntry&&typeof previousEntry==='object'?{...previousEntry}:{name:String(item.name||'Savings'),amount:Math.max(0,Number(item.amount)||0)};
+  movedEntry.name=String(item.name||movedEntry.name||'Savings');
+  movedEntry.amount=Math.max(0,Number(item.amount)||0);
+  movedEntry.financialItemId=String(item.id);
+  movedEntry.history=Array.isArray(movedEntry.history)?movedEntry.history.slice():[];
+  movedEntry.history.push({label:`Transferred from ${source.name||'another goal'} to ${destination.name||'another goal'}`,at:Date.now(),amount:movedEntry.amount});
+  source.banks.splice(currentSourceIndex,1);
+  destination.banks.push(movedEntry);
+  source.bankAssignmentsConfigured=true;destination.bankAssignmentsConfigured=true;
+  source.updated=Date.now();destination.updated=Date.now();
+  try{localStorage.setItem(STORE,JSON.stringify(data));}
+  catch(error){try{data.goals=JSON.parse(before);}catch(restoreError){}console.error('Goal transfer failed:',error);toast('Could not save the transfer. Check browser storage settings.');return;}
+  close();
+  try{if(typeof render==='function')render();else renderGoals();}catch(error){try{renderGoals();}catch(e){}}
+  toast(`${item.name||'Savings item'} transferred to ${destination.name||'the selected goal'}.`);
+ });
+ modal.style.display='flex';
 }
 function renderGoals(){
  if(!Array.isArray(data.goals))data.goals=[];
@@ -2648,8 +2710,12 @@ function renderGoals(){
   const progress=banks.length?`<div class="goal-bank-progress-list" aria-label="Progress by bank">${banks.map(bank=>{
    const amount=goalBankCurrentBalance(bank);
    const bankPct=Number(g.target)>0?Math.min(100,Math.max(0,amount/Number(g.target)*100)):0;
-   const meta=bankOptions.find(b=>b.name===bank.name)||{short:String(bank.name||'').slice(0,2).toUpperCase(),color:'#168765'};
-   return `<div class="goal-bank-progress-item"><div class="goal-bank-progress-head"><span class="goal-bank-progress-label"><span class="goal-bank-progress-icon" style="background:${esc(meta.color)}">${esc(meta.short)}</span><span>${esc(bank.name)}</span></span><strong>${bankPct.toFixed(1)}%</strong></div><div class="progress goal-bank-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${bankPct.toFixed(1)}" aria-label="${esc(bank.name)} progress"><span style="width:${bankPct}%"></span></div><div class="goal-bank-progress-amount">${peso(amount)}</div></div>`;
+   const bankName=typeof bank==='string'?bank:(bank.name||bank.bankName||bank.bank||'Savings item');
+   const meta=bankOptions.find(b=>b.name===bankName)||{short:String(bankName||'').slice(0,2).toUpperCase(),color:'#168765'};
+   const linkedItemId=goalEntryFinancialItemId(bank);
+   const canTransfer=(data.goals||[]).some(otherGoal=>String(otherGoal.id)!==String(g.id));
+   const transferButton=linkedItemId&&canTransfer?`<button type="button" class="goal-bank-transfer-button" onclick="openGoalBankTransfer('${esc(String(g.id))}','${esc(linkedItemId)}')" aria-label="Transfer ${esc(bankName)} to another savings goal">⇄ Transfer</button>`:'';
+   return `<div class="goal-bank-progress-item"><div class="goal-bank-progress-head"><span class="goal-bank-progress-label"><span class="goal-bank-progress-icon" style="background:${esc(meta.color)}">${esc(meta.short)}</span><span>${esc(bankName)}</span></span><span class="goal-bank-progress-actions"><strong>${bankPct.toFixed(1)}%</strong>${transferButton}</span></div><div class="progress goal-bank-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${bankPct.toFixed(1)}" aria-label="${esc(bankName)} progress"><span style="width:${bankPct}%"></span></div><div class="goal-bank-progress-amount">${peso(amount)}</div></div>`;
   }).join('')}</div>`:`<div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p.toFixed(1)}" aria-label="Savings goal progress"><span style="width:${p}%"></span></div>`;
   return `<div class="goal-card"><div class="between"><span class="muted">SAVINGS GOAL</span><div style="display:flex;gap:8px;align-items:center"><button type="button" class="btn btn-light btn-sm" onclick="editGoal('${g.id}')">Edit</button><button type="button" class="delete-btn" onclick="deleteGoal('${g.id}')">Delete</button></div></div><h3 style="margin-top:12px">${esc(g.name)}</h3><div class="goal-amount">${peso(goalBal)}</div><div class="between"><span>Target: ${peso(g.target)}</span><strong>${p.toFixed(1)}%</strong></div>${progress}<div class="between"><span>${peso(Math.max(0,g.target-goalBal))} remaining</span><span>${g.due?'Due '+fmtDate(g.due):'No target date'}</span></div></div>`;
  }).join('')||'<div class="goals-empty-state-center"><div class="empty">No goals yet. Create one to start tracking.</div></div>';
@@ -5017,9 +5083,9 @@ accrueRealtimeInterest();
       if(editing){
         const existing=data.goals.find(entry=>String(entry.id)===String(id));
         if(!existing){alert('Savings goal not found. Please refresh and try again.');return;}
-        Object.assign(existing,{name,target,due,banks,updated:Date.now()});
+        Object.assign(existing,{name,target,due,banks,bankAssignmentsConfigured:true,updated:Date.now()});
       }else{
-        data.goals.push({id:typeof uid==='function'?uid():'goal-'+Date.now().toString(36),name,target,due,banks,created:typeof todayISO==='function'?todayISO():new Date().toISOString().slice(0,10)});
+        data.goals.push({id:typeof uid==='function'?uid():'goal-'+Date.now().toString(36),name,target,due,banks,bankAssignmentsConfigured:true,created:typeof todayISO==='function'?todayISO():new Date().toISOString().slice(0,10)});
       }
       try{
         localStorage.setItem('savely_html_v1',JSON.stringify(data));
@@ -5304,5 +5370,17 @@ function deleteAllSavingsItems(){
 .date-pill-clickable:hover{border-color:var(--green);box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 12%,transparent)}
 .date-pill-clickable:focus-visible{outline:3px solid color-mix(in srgb,var(--green) 35%,transparent);outline-offset:2px}
 </style>
+
+<style id="savely-goal-bank-transfer-v1">
+.goal-bank-progress-actions{display:inline-flex;align-items:center;justify-content:flex-end;gap:9px;flex:0 0 auto}
+.goal-bank-transfer-button{border:1px solid var(--line);background:var(--panel,#fff);color:var(--green,#168765);border-radius:8px;padding:5px 8px;font-size:10px;font-weight:750;line-height:1.2;white-space:nowrap;cursor:pointer}
+.goal-bank-transfer-button:hover{background:var(--green2,#e8f6f0);border-color:var(--green,#168765)}
+.goal-transfer-summary{margin:18px 0;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--soft,#f7fafc)}
+.goal-transfer-summary strong{display:block;margin-top:6px;font-size:15px;color:var(--text)}
+.goal-transfer-amount{margin-top:4px;font-size:13px;font-weight:800;color:var(--green,#168765)}
+#savelyGoalBankTransferModal select{width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel,#fff);color:var(--text)}
+@media(max-width:540px){.goal-bank-progress-actions{gap:5px}.goal-bank-transfer-button{padding:5px 6px;font-size:9px}}
+</style>
+
 </body>
 </html>
