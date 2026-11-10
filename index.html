@@ -2356,10 +2356,11 @@ function renderDebtCalendar(){
   const dayItems=items.filter(item=>item.dueDate===iso).sort((a,b)=>debtStatus(a).localeCompare(debtStatus(b)));
   const chips=dayItems.slice(0,2).map(item=>{
    const st=debtStatus(item),prefix=item.direction==='owed'?'PAY':'COLLECT';
-   return `<span class="debt-day-chip ${st}">${prefix} · ${esc(item.title||item.counterparty||'Debt')} · ${peso(debtRemaining(item))}</span>`;
+   const directionClass=item.direction==='lent'?'direction-lent':'direction-owed';
+   return `<span class="debt-day-chip ${st} ${directionClass}">${prefix} · ${esc(item.title||item.counterparty||'Debt')} · ${peso(debtRemaining(item))}</span>`;
   }).join('');
   const more=dayItems.length>2?`<span class="debt-day-more">+${dayItems.length-2} more</span>`:'';
-  cells.push(`<button type="button" role="gridcell" class="debt-day${outside?' is-outside':''}${dayItems.length?' has-items':''}${iso===today?' is-today':''}${iso===debtSelectedDate?' is-selected':''}" onclick="selectDebtDate('${iso}')" aria-label="${new Date(y,m,d).toLocaleDateString('en-PH',{dateStyle:'full'})}, ${dayItems.length} debt records"><span class="debt-day-number"><span>${d}</span></span>${chips}${more}</button>`);
+  cells.push(`<button type="button" role="gridcell" class="debt-day${outside?' is-outside':''}${dayItems.length?' has-items':''}${dayItems.some(item=>item.direction==='owed')?' has-owed':''}${dayItems.some(item=>item.direction==='lent')?' has-lent':''}${iso===today?' is-today':''}${iso===debtSelectedDate?' is-selected':''}" onclick="selectDebtDate('${iso}')" aria-label="${new Date(y,m,d).toLocaleDateString('en-PH',{dateStyle:'full'})}, ${dayItems.length} debt records"><span class="debt-day-number"><span>${d}</span></span>${chips}${more}</button>`);
  }
  grid.innerHTML=cells.join('');
 }
@@ -6970,6 +6971,77 @@ body.dark-theme .app > .sidebar #nav button:not(.active):focus-visible * {
 .app > .sidebar #nav button.active:hover *,
 .app > .sidebar #nav button.active:focus-visible * {
   color: #fff !important;
+}
+</style>
+
+
+<style id="savely-debt-direction-colors-v1">
+/* Debt calendar direction colors: I owe = red, Owed to me = green. */
+#page-debt .debt-day-chip.direction-owed {
+  background: #ffe7e7 !important;
+  color: #bd3030 !important;
+  border: 1px solid #ffcaca !important;
+}
+#page-debt .debt-day-chip.direction-lent {
+  background: #e2f7ed !important;
+  color: #08784f !important;
+  border: 1px solid #bce8d1 !important;
+}
+
+/* Calendar cells inherit their direction when they contain scheduled records. */
+#page-debt .debt-day.has-owed:not(.has-lent) {
+  border-color: #dc4a4a !important;
+  background: #fff7f7 !important;
+}
+#page-debt .debt-day.has-lent:not(.has-owed) {
+  border-color: #15966f !important;
+  background: #f3fbf6 !important;
+}
+#page-debt .debt-day.has-owed:not(.has-lent) .debt-day-number span {
+  background: #dc3030 !important;
+  color: #fff !important;
+}
+#page-debt .debt-day.has-lent:not(.has-owed) .debt-day-number span {
+  background: #15966f !important;
+  color: #fff !important;
+}
+
+/* Mixed due dates remain distinguishable for both directions. */
+#page-debt .debt-day.has-owed.has-lent {
+  border-color: #a66a72 !important;
+  background: linear-gradient(135deg,#fff1f1 0%,#fff8f8 49.5%,#f1fbf5 50.5%,#eaf8f0 100%) !important;
+}
+#page-debt .debt-day.has-owed.has-lent .debt-day-number span {
+  background: linear-gradient(135deg,#dc3030 0 50%,#15966f 50% 100%) !important;
+  color: #fff !important;
+}
+
+/* Keep direction-specific selected and hover outlines. */
+#page-debt .debt-day.has-owed:not(.has-lent).is-selected,
+#page-debt .debt-day.has-owed:not(.has-lent):hover,
+#page-debt .debt-day.has-owed:not(.has-lent):focus-visible {
+  border-color: #dc3030 !important;
+  box-shadow: 0 0 0 3px rgba(220,48,48,.13) !important;
+}
+#page-debt .debt-day.has-lent:not(.has-owed).is-selected,
+#page-debt .debt-day.has-lent:not(.has-owed):hover,
+#page-debt .debt-day.has-lent:not(.has-owed):focus-visible {
+  border-color: #15966f !important;
+  box-shadow: 0 0 0 3px rgba(21,150,111,.14) !important;
+}
+#page-debt .debt-day.has-owed.has-lent.is-selected,
+#page-debt .debt-day.has-owed.has-lent:hover,
+#page-debt .debt-day.has-owed.has-lent:focus-visible {
+  border-color: #a66a72 !important;
+  box-shadow: 0 0 0 3px rgba(166,106,114,.14) !important;
+}
+
+/* Today's date number follows its record direction, if any. */
+#page-debt .debt-day.is-today.has-lent:not(.has-owed) .debt-day-number span {
+  background: #15966f !important;
+}
+#page-debt .debt-day.is-today.has-owed:not(.has-lent) .debt-day-number span {
+  background: #dc3030 !important;
 }
 </style>
 
