@@ -7073,5 +7073,43 @@ body.dark-theme .app > .sidebar #nav button.active * {
 }
 </style>
 
+
+<style id="savely-bigger-calculator-green-page-titles-v1">
+/* Larger, easier-to-tap calculator launcher. */
+#savelyCalculatorFab {
+  width: 66px !important;
+  height: 66px !important;
+  border-radius: 21px !important;
+  right: 22px !important;
+  bottom: 22px !important;
+}
+#savelyCalculatorFab svg {
+  width: 32px !important;
+  height: 32px !important;
+}
+#savelyCalculatorFab:hover {
+  transform: translateY(-3px) scale(1.02);
+}
+@media(max-width:720px) {
+  #savelyCalculatorFab {
+    width: 60px !important;
+    height: 60px !important;
+    right: 15px !important;
+    bottom: 16px !important;
+    border-radius: 19px !important;
+  }
+  #savelyCalculatorFab svg {
+    width: 29px !important;
+    height: 29px !important;
+  }
+}
+
+/* Main page names use Savely green on every page. */
+#pageTitle,
+.page-title {
+  color: #168765 !important;
+}
+</style>
+
 </body>
 </html>
