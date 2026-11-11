@@ -1487,6 +1487,189 @@ body.dark-theme .debt-card-menu{background:var(--panel);border-color:var(--line)
 }
 </style>
 
+
+<style id="savely-savings-interest-ui-v3">
+/* Savings page: focused, modern green-gradient total card */
+#financialCategoryStats{margin-bottom:18px}
+#financialCategoryStats .savings-total-card{
+ position:relative;isolation:isolate;overflow:hidden;
+ min-height:142px;padding:24px 26px!important;
+ display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+ gap:7px;border:1px solid rgba(16,132,94,.32)!important;
+ border-radius:18px!important;
+ background:linear-gradient(118deg,#087b59 0%,#10966c 52%,#31b887 100%)!important;
+ box-shadow:0 12px 28px rgba(12,128,91,.13)!important;color:#fff!important;
+}
+#financialCategoryStats .savings-total-card::before{
+ content:"";position:absolute;z-index:-1;width:240px;height:240px;right:-88px;top:-148px;
+ border-radius:50%;background:rgba(255,255,255,.105);
+}
+#financialCategoryStats .savings-total-card::after{
+ content:"";position:absolute;z-index:-1;width:180px;height:180px;right:72px;bottom:-148px;
+ border-radius:50%;border:1px solid rgba(255,255,255,.12);
+}
+#financialCategoryStats .savings-total-card .stat-top{
+ color:rgba(255,255,255,.82)!important;font-size:12px;font-weight:700;letter-spacing:.025em
+}
+#financialCategoryStats .savings-total-card .stat-value{
+ color:#fff!important;font-size:clamp(27px,3vw,34px)!important;font-weight:850!important;
+ letter-spacing:-.045em;line-height:1.12;font-variant-numeric:tabular-nums
+}
+#financialCategoryStats .savings-total-card .stat-foot{
+ color:rgba(255,255,255,.78)!important;font-size:11px;line-height:1.45
+}
+#financialCategoryStats .savings-total-card .stat-foot[style*="font-weight:800"]{
+ color:#e2fff1!important
+}
+
+/* Consistent sizing for standard action buttons across the application. */
+:root{--savely-button-height:42px;--savely-button-radius:10px}
+button.btn,.btn,button.link-btn,.link-btn,
+.interest-bank-tab,.interest-period-card,
+.financial-tab,.debt-upcoming-filters button,
+.settings-tabs button,.interest-calc-action{
+ box-sizing:border-box;min-height:var(--savely-button-height);
+ border-radius:var(--savely-button-radius);
+ font-family:var(--font-ui,inherit);
+ font-size:12px;font-weight:700;line-height:1.15;
+}
+button.btn,.btn{
+ display:inline-flex;align-items:center;justify-content:center;gap:7px;
+ padding:0 16px!important;min-height:var(--savely-button-height)!important;
+ white-space:nowrap;
+}
+button.link-btn,.link-btn{
+ display:inline-flex;align-items:center;justify-content:center;
+ min-height:var(--savely-button-height);padding:0 13px;
+}
+.interest-bank-tab,.financial-tab,.debt-upcoming-filters button,.settings-tabs button{
+ min-height:var(--savely-button-height)!important;padding:0 16px!important;
+ display:inline-flex;align-items:center;justify-content:center;
+}
+button:focus-visible{outline:3px solid rgba(22,135,101,.22);outline-offset:2px}
+
+/* Interest calculator layout */
+#page-interest{display:flex;flex-direction:column;gap:16px}
+#page-interest>.panel:first-child{
+ padding:26px;border-radius:20px;
+ border:1px solid var(--line);box-shadow:0 8px 28px rgba(25,48,78,.045)
+}
+#page-interest>.panel:first-child>.panel-head{
+ align-items:flex-start;padding-bottom:18px;margin-bottom:20px;
+ border-bottom:1px solid var(--line)
+}
+#page-interest>.panel:first-child>.panel-head h2{
+ font-size:22px;letter-spacing:-.035em;margin:0 0 5px
+}
+#page-interest .interest-section-heading{margin-bottom:14px}
+#page-interest .interest-section-kicker{
+ display:inline-block;color:var(--green);font-size:9px;font-weight:850;
+ letter-spacing:.11em;margin-bottom:6px
+}
+#page-interest .interest-section-heading h3{
+ margin:0;color:var(--text);font-size:15px;font-weight:800;letter-spacing:-.02em
+}
+#page-interest .interest-section-heading p{
+ margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.5
+}
+#page-interest .interest-bank-section{
+ padding:18px;border:1px solid var(--line);border-radius:15px;
+ background:linear-gradient(180deg,rgba(246,250,249,.9),rgba(255,255,255,.65))
+}
+#page-interest .interest-bank-tabs{gap:8px;margin:12px 0}
+#page-interest .interest-bank-tab{
+ min-width:142px;border:1px solid var(--line);background:var(--card,#fff);
+ color:var(--muted);transition:background .16s,border-color .16s,box-shadow .16s
+}
+#page-interest .interest-bank-tab.active{
+ background:var(--green)!important;border-color:var(--green)!important;color:#fff!important;
+ box-shadow:0 5px 12px rgba(17,132,96,.16)
+}
+#page-interest .interest-bank-grid{
+ grid-template-columns:repeat(4,minmax(0,1fr));gap:10px
+}
+#page-interest .interest-bank-card{
+ min-height:66px;padding:12px 13px;border-radius:12px;
+ background:var(--card,#fff);border-color:var(--line);
+ transition:transform .16s,border-color .16s,box-shadow .16s
+}
+#page-interest .interest-bank-card:hover{
+ transform:translateY(-1px);border-color:rgba(22,135,101,.5);
+ box-shadow:0 5px 15px rgba(24,55,80,.06)
+}
+#page-interest .interest-bank-card.active{
+ background:#eff9f4;border-color:var(--green);
+ box-shadow:0 0 0 2px rgba(22,135,101,.10)
+}
+#page-interest .interest-bank-logo{width:36px;height:36px;flex-basis:36px;border-radius:11px}
+#page-interest .interest-bank-name{font-size:12px;font-weight:800}
+#page-interest .interest-bank-rate{font-size:10px}
+#page-interest .interest-selected-note{
+ margin-top:12px;padding:10px 12px;border-radius:10px;
+ background:var(--card,#fff);border:1px solid var(--line);font-size:11px;line-height:1.5
+}
+#page-interest .interest-input-section{
+ margin-top:16px;padding:20px;border:1px solid var(--line);
+ border-radius:15px;background:var(--card,#fff)
+}
+#page-interest .form-grid{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px
+}
+#page-interest .field{min-width:0}
+#page-interest .field label{
+ display:block;margin-bottom:7px;font-size:11px;font-weight:750;color:var(--text)
+}
+#page-interest input,#page-interest select{
+ min-height:46px;padding:11px 13px;border:1px solid var(--line);
+ border-radius:11px;background:var(--card,#fff);color:var(--text);
+ font-size:13px;transition:border-color .15s,box-shadow .15s
+}
+#page-interest input:focus,#page-interest select:focus{
+ outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(22,135,101,.10)
+}
+#page-interest .interest-period-grid{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px
+}
+#page-interest .interest-period-card{
+ min-height:96px!important;display:flex;flex-direction:column;align-items:flex-start;
+ justify-content:center;gap:7px;padding:14px 15px!important;
+ border:1px solid var(--line);background:var(--card,#fff);color:var(--text);
+ text-align:left;transition:border-color .15s,background .15s,box-shadow .15s
+}
+#page-interest .interest-period-card span{font-size:11px;color:var(--muted);font-weight:750}
+#page-interest .interest-period-card strong{font-size:15px;font-weight:850;font-variant-numeric:tabular-nums}
+#page-interest .interest-period-card small{font-size:10px;color:var(--muted)}
+#page-interest .interest-period-card.active{
+ border-color:var(--green);background:#f0faf5;
+ box-shadow:0 0 0 2px rgba(22,135,101,.10)
+}
+#page-interest .interest-result-card{
+ padding:24px 26px;border-radius:18px!important;
+ background:linear-gradient(120deg,#087b59 0%,#10966c 55%,#31b887 100%)!important;
+ border:1px solid rgba(16,132,94,.3)!important;
+ color:#fff!important;box-shadow:0 12px 28px rgba(12,128,91,.12)
+}
+#page-interest .interest-result-card .panel-sub,
+#page-interest .interest-result-card .footer-note{color:rgba(255,255,255,.82)!important}
+#page-interest .interest-result-card h2{color:#fff!important;font-size:clamp(28px,3vw,36px)!important;letter-spacing:-.04em}
+#page-interest .interest-result-card .footer-note{padding-top:12px;border-top:1px solid rgba(255,255,255,.18)}
+@media(max-width:900px){
+ #page-interest .interest-bank-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:650px){
+ #page-interest>.panel:first-child{padding:16px}
+ #page-interest .interest-bank-section,#page-interest .interest-input-section{padding:14px}
+ #page-interest .interest-bank-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #page-interest .form-grid{grid-template-columns:1fr}
+ #page-interest .interest-period-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #page-interest .interest-bank-tab{flex:1;min-width:0}
+ #financialCategoryStats .savings-total-card{min-height:128px;padding:20px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #page-interest .interest-bank-card,#page-interest .interest-bank-tab{transition:none}
+}
+</style>
+
 </head>
 <body>
 
@@ -1603,13 +1786,18 @@ body.dark-theme .debt-card-menu{background:var(--panel);border-color:var(--line)
   <section class="page" id="page-interest">
     <div class="panel">
       <div class="panel-head"><div><h2>Interest calculator</h2><div class="panel-sub">Compare Philippine bank and app-based savings rates (October 2026 snapshots).</div></div><span class="panel-sub" id="interestRateUpdated">October 2026 rate snapshots · verify with bank</span></div>
+      <div class="interest-bank-section">
+      <div class="interest-section-heading"><span class="interest-section-kicker">01 · CHOOSE A PROVIDER</span><h3>Compare savings rates</h3><p>Select a bank or digital wallet to load its listed base rate.</p></div>
       <div class="interest-bank-tabs" role="tablist" aria-label="Bank type">
         <button type="button" class="interest-bank-tab active" data-interest-group="Traditional">Traditional Banks</button>
         <button type="button" class="interest-bank-tab" data-interest-group="Digital">Digital Banks</button>
       </div>
       <div class="interest-bank-grid" id="interestBankGrid"></div>
       <div class="interest-selected-note" id="interestSelectedNote">Choose a bank to load its listed base rate.</div>
-      <div class="form-grid" style="max-width:900px;margin-top:18px">
+      </div>
+      <div class="interest-input-section">
+      <div class="interest-section-heading"><span class="interest-section-kicker">02 · YOUR SAVINGS</span><h3>Customize your estimate</h3><p>Adjust your balance, applicable rate, and withholding tax.</p></div>
+      <div class="form-grid" style="max-width:100%;margin-top:16px">
         <div class="field"><label for="interestCalcPrincipal">Starting balance (₱)</label><input id="interestCalcPrincipal" type="number" min="0" step="1" value="50000" placeholder="e.g. 50000"></div>
         <div class="field"><label for="interestCalcRate">Annual interest rate (% p.a.)</label><input id="interestCalcRate" type="number" min="0" max="100" step="0.01" value="0.0625" readonly aria-readonly="true"></div>
         <div class="field" id="interestCalcMayaBonusWrap" style="display:none"><label for="interestCalcMayaBonus">Maya bonus interest option</label><select id="interestCalcMayaBonus"><option value="3">3% p.a. — base rate, no bonus</option><option value="5">5% p.a. — +2% bonus</option><option value="6">6% p.a. — +3% bonus</option><option value="7">7% p.a. — +4% bonus</option><option value="8">8% p.a. — +5% bonus</option><option value="10">10% p.a. — +7% bonus</option><option value="12">12% p.a. — +9% bonus</option><option value="13">13% p.a. — eligible users only</option><option value="15">15% p.a. — maximum / eligibility required</option></select><div class="panel-sub">Choose the bonus rate currently shown in your Maya app. This changes the estimate only.</div></div>
@@ -1621,9 +1809,10 @@ body.dark-theme .debt-card-menu{background:var(--panel);border-color:var(--line)
           <button type="button" class="interest-period-card" data-interest-period="annually"><span>Annually</span><strong>₱0.00</strong><small>Estimated total</small></button>
         </div></div>
       </div>
-      <div class="footer-note" style="margin-top:10px">Estimates use simple interest and the selected rate. Promotional rates may require missions, balance tiers, or eligibility. Rates were checked against available October 2026 bank information where available. They are not live quotes; confirm the bank's official terms before depositing.</div>
+      </div>
+      <div class="footer-note" style="margin-top:16px">Estimates use simple interest and the selected rate. Promotional rates may require missions, balance tiers, or eligibility. Rates were checked against available October 2026 bank information where available. They are not live quotes; confirm the bank's official terms before depositing.</div>
     </div>
-    <div class="panel interest-summary-panel" style="margin-top:18px;background:linear-gradient(135deg,#e8f8ef 0%,#d7f3e3 100%);border:1px solid #9bd8b3;color:#14532d">
+    <div class="panel interest-summary-panel interest-result-card" style="margin-top:18px;background:linear-gradient(135deg,#e8f8ef 0%,#d7f3e3 100%);border:1px solid #9bd8b3;color:#14532d">
       <div class="panel-sub" id="interestCalcSelectedPeriodLabel" style="color:#26734d">Daily estimated total amount</div>
       <h2 id="interestCalcEnding" style="font-size:30px;margin-top:8px;color:#166534">₱50,000.00</h2>
       <div class="panel-sub" id="interestCalcSummary" style="color:#26734d">Includes estimated net interest after withholding tax.</div>
@@ -3931,7 +4120,7 @@ function renderSavingsList(){
   ? `<div class="stat-foot" style="color:var(--green);font-weight:800">＋ ${peso(Math.abs(savedDelta))} increase</div>`
   : `<div class="stat-foot" style="color:var(--muted)">No increase recorded</div>`;
  document.getElementById('financialCategoryStats').innerHTML=
-  `<div class="stat"><div class="stat-top">Savings total</div><div class="stat-value" style="color:var(--green)">${peso(savings)}</div><div class="stat-foot" id="financialSavingsAsOf" style="margin-top:5px;font-size:10px">As of —</div>${savingsChangeHtml}</div>`;
+  `<div class="stat savings-total-card"><div class="stat-top">Savings total</div><div class="stat-value" style="color:var(--green)">${peso(savings)}</div><div class="stat-foot" id="financialSavingsAsOf" style="margin-top:5px;font-size:10px">As of —</div>${savingsChangeHtml}</div>`;
  renderSavingsTrend();
  renderOverallTrend();
  const target=document.getElementById('savingsListTable');
