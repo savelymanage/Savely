@@ -2275,6 +2275,193 @@ button.link-btn{
 }
 </style>
 
+
+<style id="savely-button-dimension-alignment-v2">
+/* One measured size for regular action buttons across pages and popup forms */
+:root{
+  --savely-control-height:42px;
+  --savely-action-width:128px;
+}
+button.btn,
+a.btn,
+input[type="button"].btn,
+input[type="submit"].btn,
+input[type="reset"].btn{
+  box-sizing:border-box!important;
+  width:var(--savely-action-width);
+  min-width:var(--savely-action-width);
+  height:var(--savely-control-height)!important;
+  min-height:var(--savely-control-height)!important;
+  max-height:var(--savely-control-height)!important;
+  padding:0 12px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  line-height:1.1!important;
+  white-space:nowrap;
+}
+/* Every navigation item has the same full-row dimensions. */
+.app>.sidebar #nav button,
+.app>.sidebar .nav button{
+  width:100%!important;
+  min-width:0!important;
+  height:42px!important;
+  min-height:42px!important;
+  max-height:42px!important;
+  padding:0 14px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+}
+/* Equal-width tabs inside each selector group. */
+#bankPickerTabs,
+#goalBankTabs{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:8px!important;
+  width:100%!important;
+  max-width:100%!important;
+  overflow:visible!important;
+}
+#bankPickerTabs>.bank-picker-tab,
+#goalBankTabs>.goal-bank-tab{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:42px!important;
+  min-height:42px!important;
+  max-height:42px!important;
+  padding:0 8px!important;
+  justify-content:center!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+}
+.interest-bank-tabs{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  width:min(100%,360px)!important;
+  gap:8px!important;
+}
+.interest-bank-tabs>.interest-bank-tab{
+  width:100%!important;
+  min-width:0!important;
+  height:42px!important;
+  min-height:42px!important;
+  padding:0 10px!important;
+  justify-content:center!important;
+}
+.financial-tabs{
+  display:grid!important;
+  grid-auto-flow:column;
+  grid-auto-columns:minmax(0,1fr);
+  width:max-content;
+  max-width:100%;
+  gap:8px!important;
+}
+.financial-tabs>.financial-tab{
+  width:100%!important;
+  min-width:120px!important;
+  height:42px!important;
+  min-height:42px!important;
+  padding:0 12px!important;
+  text-align:center!important;
+  justify-content:center!important;
+}
+/* Equal-width Calendar and Debt filter buttons. */
+#page-holidays .holiday-filters{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  width:min(100%,760px);
+  gap:8px!important;
+}
+#page-holidays .holiday-filters button{
+  width:100%!important;
+  min-width:0!important;
+  height:42px!important;
+  min-height:42px!important;
+  padding:0 7px!important;
+  white-space:normal!important;
+  text-align:center!important;
+}
+.debt-upcoming-filters{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  width:min(100%,440px);
+  gap:8px!important;
+}
+.debt-upcoming-filters button{
+  width:100%!important;
+  min-width:0!important;
+  height:42px!important;
+  min-height:42px!important;
+  padding:0 8px!important;
+  text-align:center!important;
+}
+/* Bank selection tiles share the same row height and fill their grid cells. */
+#bankPicker .bank-option,
+#goalBankPicker .goal-bank-option,
+#interestBankGrid .interest-bank-card{
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  height:42px!important;
+  min-height:42px!important;
+  max-height:42px!important;
+}
+/* The small favorite star is an icon affordance, not a text action button. */
+#bankPicker .bank-favorite,
+#goalBankPicker .bank-favorite{
+  width:28px!important;
+  min-width:28px!important;
+  height:28px!important;
+  min-height:28px!important;
+  max-height:28px!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+}
+/* Modal action rows align and use the same button footprint. */
+.modal .panel-head>.btn,
+.modal .form-actions>.btn,
+.modal .form-actions>button.btn,
+.financial-edit-modal .panel-head>.btn,
+.financial-edit-modal .form-actions>.btn{
+  width:var(--savely-action-width)!important;
+  min-width:var(--savely-action-width)!important;
+  height:42px!important;
+  min-height:42px!important;
+  max-height:42px!important;
+}
+@media(max-width:760px){
+  #bankPickerTabs,#goalBankTabs{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  #page-holidays .holiday-filters{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .financial-tabs{
+    grid-auto-columns:minmax(116px,1fr);
+    overflow-x:auto;
+    width:100%;
+  }
+}
+@media(max-width:420px){
+  #bankPickerTabs,#goalBankTabs{
+    gap:6px!important;
+  }
+  #bankPickerTabs>.bank-picker-tab,
+  #goalBankTabs>.goal-bank-tab{
+    font-size:11px!important;
+    padding:0 5px!important;
+  }
+  button.btn{
+    width:116px;
+    min-width:116px;
+  }
+}
+</style>
+
 </head>
 <body>
 
