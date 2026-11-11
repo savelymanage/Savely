@@ -1670,7 +1670,7 @@ try{data=JSON.parse(localStorage.getItem(STORE))||seed();if(!Array.isArray(data.
 function save(){try{localStorage.setItem(STORE,JSON.stringify(data))}catch(e){toast('Browser storage is unavailable. Export a backup to keep your data safe.')}render()}
 
 function getTrackedDailyInterestRate(item){
- if(!item || (item.category||'Savings')!=='Savings')return null;
+ if(!item || item.isReceivable || (item.category||'Savings')!=='Savings')return null;
  const schedule=getInterestSchedule(item.name||'');
  if(!schedule || !/daily/i.test(String(schedule.frequency||'')))return null;
  if(isMayaInterestItem(item))return getMayaInterestRates(item).total;
@@ -1683,7 +1683,7 @@ function isRealtimeDailyInterestItem(item){
  return getTrackedDailyInterestRate(item)!==null;
 }
 function isMayaInterestItem(item){
- return !!item && (item.category||'Savings')==='Savings' && /maya/i.test(String(item.name||''));
+ return !!item && !item.isReceivable && (item.category||'Savings')==='Savings' && /maya/i.test(String(item.name||''));
 }
 function getMayaInterestRates(item){
  const base=Number.isFinite(Number(item?.mayaBaseRate))?Math.max(0,Number(item.mayaBaseRate)):3;
@@ -1784,8 +1784,9 @@ function closeSavingsTransfer(){
 function openSavingsTransfer(sourceId){
  const source=(data.savingsList||[]).find(item=>String(item.id)===String(sourceId));
  if(!source){toast('Source savings item not found.');return;}
+ if(source.isReceivable){toast('Money lent is linked to the Debt page. Record a collection to move it into a bank.');return;}
  if((source.category||'Savings')!=='Savings'){toast('Transfers are available for Savings items only.');return;}
- const destinations=(data.savingsList||[]).filter(item=>String(item.id)!==String(sourceId)&&(item.category||'Savings')==='Savings');
+ const destinations=(data.savingsList||[]).filter(item=>!item.isReceivable && String(item.id)!==String(sourceId)&&(item.category||'Savings')==='Savings');
  closeSavingsTransfer();
  let selectedDestinationId='';
  let selectedDestinationName='';
@@ -2309,6 +2310,252 @@ function saveDebtRecords(){
  try{localStorage.setItem(STORE,JSON.stringify(data));return true;}
  catch(error){toast('Could not save debt records. Browser storage may be full or blocked.');return false;}
 }
+
+function debtReceivableGroupKey(item){
+ return String(item.seriesId||('single-'+item.id));
+}
+function debtFindReceivableItem(item){
+ if(!item)return null;
+ const list=Array.isArray(data.savingsList)?data.savingsList:[];
+ const direct=item.receivableItemId?list.find(entry=>String(entry.id)===String(item.receivableItemId)&&entry.isReceivable):null;
+ if(direct)return direct;
+ const key=debtReceivableGroupKey(item);
+ return list.find(entry=>entry.isReceivable&&String(entry.receivableSeriesId)===key)||null;
+}
+function ensureDebtReceivableLinks(){
+ if(!Array.isArray(data.debtRecords)||!Array.isArray(data.savingsList))return false;
+ const groups=new Map();
+ data.debtRecords.forEach(item=>{
+  if(item.direction!=='lent'||debtRemaining(item)<=0.005)return;
+  const key=debtReceivableGroupKey(item);
+  if(!groups.has(key))groups.set(key,[]);
+  groups.get(key).push(item);
+ });
+ let changed=false;
+ groups.forEach((records,key)=>{
+  let receivable=records.map(record=>debtFindReceivableItem(record)).find(Boolean)||data.savingsList.find(entry=>entry.isReceivable&&String(entry.receivableSeriesId)===key);
+  if(!receivable){
+   const outstanding=Math.round(records.reduce((sum,record)=>sum+debtRemaining(record),0)*100)/100;
+   if(outstanding<=0.005)return;
+   const first=records[0],at=Date.now(),counterparty=first.counterparty||'',title=first.title||'Money lent';
+   receivable={
+    id:uid(),
+    name:`Money lent · ${counterparty||title}`,
+    amount:outstanding,
+    category:'Savings',
+    date:todayISO(),
+    isReceivable:true,
+    receivableSeriesId:key,
+    receivableTitle:title,
+    receivableCounterparty:counterparty,
+    receivableOriginalAmount:Math.round(records.reduce((sum,record)=>sum+Number(record.amount||0),0)*100)/100,
+    receivableStatus:'open',
+    createdAt:at,
+    graphHistory:[{at,amount:outstanding}],
+    changeHistory:[{at,oldName:`Money lent · ${counterparty||title}`,newName:`Money lent · ${counterparty||title}`,oldAmount:0,newAmount:outstanding,type:'receivable_migrated',label:'Linked existing Owed to me debt'}]
+   };
+   data.savingsList.push(receivable);
+   changed=true;
+  }
+  records.forEach(record=>{
+   if(String(record.receivableItemId||'')!==String(receivable.id)){record.receivableItemId=receivable.id;changed=true;}
+  });
+ });
+ if(changed){
+  try{localStorage.setItem(STORE,JSON.stringify(data));}
+  catch(error){toast('Could not link outstanding collections to Savings. Check browser storage.');}
+ }
+ return changed;
+}
+function debtDestinationGroup(item){
+ const normalize=value=>String(value||'').toLowerCase().replace(/\b(bank|digital bank|digital wallet)\b/g,'').replace(/[^a-z0-9]/g,'').trim();
+ const names=[item.name,item.bankName].filter(Boolean).map(normalize);
+ const option=(Array.isArray(bankOptions)?bankOptions:[]).find(bank=>names.includes(normalize(bank.name)));
+ if(option){
+  if(option.group==='Digital banks & wallets')return 'Digital Banks';
+  if(option.group==='Other')return 'Other';
+  return 'Traditional Banks';
+ }
+ return typeof isDigitalFinancialItem==='function'&&isDigitalFinancialItem(item)?'Digital Banks':'Other';
+}
+function debtSavingsDestinationItems(){
+ return (Array.isArray(data.savingsList)?data.savingsList:[])
+  .filter(item=>!item.isReceivable&&(item.category||'Savings')==='Savings')
+  .sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
+}
+function debtDestinationPickerHTML(prefix){
+ return `<div class="savely-debt-destination-picker" id="${prefix}Picker">
+  <div class="savely-debt-destination-tabs" role="tablist" aria-label="Destination account type">
+   <button type="button" class="active" data-debt-destination-tab="Traditional Banks">Traditional Banks</button>
+   <button type="button" data-debt-destination-tab="Digital Banks">Digital Banks</button>
+   <button type="button" data-debt-destination-tab="Other">Other</button>
+  </div>
+  <div class="savely-debt-destination-grid" id="${prefix}Grid"></div>
+  <input type="hidden" id="${prefix}Selected" value="">
+  <div class="savely-debt-destination-help">Choose the Savings item where the money was returned or deposited.</div>
+ </div>`;
+}
+function bindDebtDestinationPicker(prefix,onChoose){
+ const root=document.getElementById(prefix+'Picker');
+ const grid=document.getElementById(prefix+'Grid');
+ const hidden=document.getElementById(prefix+'Selected');
+ if(!root||!grid||!hidden)return null;
+ const groups=['Traditional Banks','Digital Banks','Other'];
+ const savedDestinations=debtSavingsDestinationItems();
+ let active=groups.find(group=>savedDestinations.some(item=>debtDestinationGroup(item)===group))||'Traditional Banks';
+ let selected='';
+ function renderOptions(){
+  root.querySelectorAll('[data-debt-destination-tab]').forEach(button=>button.classList.toggle('active',button.dataset.debtDestinationTab===active));
+  const choices=debtSavingsDestinationItems().filter(item=>debtDestinationGroup(item)===active);
+  if(!choices.length){
+   grid.innerHTML=`<div class="savely-debt-destination-empty">No saved ${active.toLowerCase()} items yet.<br><button type="button" data-debt-add-savings-item class="savely-debt-add-destination">＋ Add a Savings item</button></div>`;
+   return;
+  }
+  grid.innerHTML=choices.map(item=>{
+   const picked=String(item.id)===selected;
+   const short=String(item.name||'').trim().split(/\s+/).filter(Boolean).slice(0,2).map(word=>word[0]).join('').toUpperCase()||'₱';
+   return `<button type="button" class="savely-debt-destination-card${picked?' selected':''}" data-debt-destination-id="${esc(String(item.id))}" aria-pressed="${picked?'true':'false'}">
+    <span class="savely-debt-destination-logo">${esc(short)}</span>
+    <span class="savely-debt-destination-copy"><strong>${esc(item.name||'Savings item')}</strong><small>Current balance · ${peso(item.amount)}</small></span>
+    <span class="savely-debt-destination-check">${picked?'✓':''}</span>
+   </button>`;
+  }).join('');
+ }
+ root.addEventListener('click',event=>{
+  const addSavings=event.target.closest('[data-debt-add-savings-item]');
+  if(addSavings){
+   closeDebtCollectionDeposit();
+   closeDebtPayment();
+   showPage('financial-list');
+   if(typeof setFinancialCategory==='function')setFinancialCategory('Savings');
+   openFinancialAdd();
+   return;
+  }
+  const tab=event.target.closest('[data-debt-destination-tab]');
+  if(tab){active=tab.dataset.debtDestinationTab;renderOptions();return;}
+  const card=event.target.closest('[data-debt-destination-id]');
+  if(card){
+   const chosen=debtSavingsDestinationItems().find(item=>String(item.id)===String(card.dataset.debtDestinationId));
+   if(!chosen)return;
+   selected=String(chosen.id);hidden.value=selected;renderOptions();
+   if(typeof onChoose==='function')onChoose(chosen);
+  }
+ });
+ renderOptions();
+ return {
+  getSelectedId:()=>hidden.value,
+  refresh:renderOptions
+ };
+}
+function debtAppendFinancialHistory(item,newAmount,options={}){
+ const now=Number(options.at)||Date.now();
+ const oldAmount=Math.max(0,Number(item.amount)||0);
+ const nextAmount=Math.max(0,Math.round(Number(newAmount)*100)/100);
+ item.amount=nextAmount;
+ if(!Array.isArray(item.changeHistory))item.changeHistory=[];
+ if(!Array.isArray(item.graphHistory)||!item.graphHistory.length)item.graphHistory=[{at:now-1,amount:oldAmount}];
+ item.changeHistory.push({
+  at:now,
+  oldName:item.name||'Savings',
+  newName:item.name||'Savings',
+  oldAmount,
+  newAmount:nextAmount,
+  type:options.type||'transfer_in',
+  label:options.label||'Balance updated',
+  relatedItemId:options.relatedItemId||'',
+  relatedItemName:options.relatedItemName||'',
+  note:options.note||''
+ });
+ item.graphHistory.push({at:now,amount:nextAmount});
+ if(typeof isRealtimeDailyInterestItem==='function'&&isRealtimeDailyInterestItem(item)){
+  item.interestTracking={lastTickAt:now,dayStartBalance:nextAmount,lastHistoryDate:interestLocalDate(now)};
+ }
+ return {oldAmount,newAmount:nextAmount};
+}
+function debtCommitCollectionToSavings(id,amount,date,destinationId){
+ const beforeJSON=JSON.stringify(data);
+ const live=(data.debtRecords||[]).find(record=>String(record.id)===String(id));
+ const destination=debtSavingsDestinationItems().find(entry=>String(entry.id)===String(destinationId));
+ if(!live||live.direction!=='lent'){toast('This collection record could not be found.');return false;}
+ if(!destination){toast('Choose a valid Savings account or wallet.');return false;}
+ const remaining=debtRemaining(live),value=Math.round(Number(amount)*100)/100;
+ if(!Number.isFinite(value)||value<=0||value>remaining+0.000001){toast('Enter a valid collection amount not greater than the remaining balance.');return false;}
+ if(!date){toast('Choose the collection date.');return false;}
+ try{
+  const now=Date.now(),beforeDestination=Math.max(0,Number(destination.amount)||0);
+  const receivable=debtFindReceivableItem(live);
+  const beforeReceivable=receivable?Math.max(0,Number(receivable.amount)||0):0;
+  if(!Array.isArray(live.payments))live.payments=[];
+  live.payments.push({
+   id:uid(),amount:value,date,at:now,
+   note:`Received into ${destination.name}`,
+   destinationItemId:destination.id,
+   destinationName:destination.name
+  });
+  live.remainingAmount=Math.max(0,Math.round((remaining-value)*100)/100);
+  live.status=live.remainingAmount<=0.005?'paid':'partial';
+  if(live.status==='paid')live.paidAt=now;
+  if(receivable){
+   const nextReceivable=Math.max(0,Math.round((beforeReceivable-value)*100)/100);
+   debtAppendFinancialHistory(receivable,nextReceivable,{
+    at:now,type:'transfer_out',label:'Loan repayment collected',
+    relatedItemId:destination.id,relatedItemName:destination.name,
+    note:`Transferred to ${destination.name}`
+   });
+   receivable.receivableStatus=nextReceivable<=0.005?'collected':'open';
+   if(nextReceivable<=0.005)receivable.collectedAt=now;
+  }
+  debtAppendFinancialHistory(destination,beforeDestination+value,{
+   at:now,type:'transfer_in',label:'Money returned by borrower',
+   relatedItemId:receivable?receivable.id:live.receivableItemId||'',
+   relatedItemName:receivable?receivable.name:'Money lent',
+   note:`Collection from ${live.counterparty||live.title||'borrower'}`
+  });
+  localStorage.setItem(STORE,JSON.stringify(data));
+ }catch(error){
+  try{data=JSON.parse(beforeJSON);}catch(restoreError){}
+  toast('The collection transfer could not be saved. No balances were changed. Check browser storage and try again.');
+  return false;
+ }
+ render();
+ toast(live.remainingAmount<=0.005?`Fully collected and transferred to ${destination.name}.`:`Collection recorded and transferred to ${destination.name}.`);
+ return true;
+}
+function closeDebtCollectionDeposit(){
+ const modal=document.getElementById('savelyDebtCollectionDepositModal');
+ if(modal)modal.remove();
+}
+function openDebtCollectionDeposit(id){
+ ensureDebtReceivableLinks();
+ const item=(data.debtRecords||[]).find(record=>String(record.id)===String(id));
+ if(!item||item.direction!=='lent'){toast('Collection record not found.');return;}
+ const remaining=debtRemaining(item);
+ if(remaining<=0.005){toast('This collection is already completed.');return;}
+ closeDebtCollectionDeposit();
+ const modal=document.createElement('div');
+ modal.id='savelyDebtCollectionDepositModal';
+ modal.className='modal-backdrop';
+ modal.style.cssText='display:flex;z-index:100130;align-items:center;justify-content:center;padding:18px';
+ modal.innerHTML=`<div class="modal savely-debt-deposit-dialog" role="dialog" aria-modal="true" aria-labelledby="debtDepositTitle">
+  <div class="panel-head"><div><div class="savely-debt-kicker">COLLECTION COMPLETION</div><h2 id="debtDepositTitle">Where was the money returned?</h2><div class="panel-sub">${esc(item.counterparty||item.title||'Borrower')} · ${esc(item.title||'Money lent')}</div></div><button type="button" class="btn btn-light" onclick="closeDebtCollectionDeposit()">✕ Close</button></div>
+  <div class="savely-debt-deposit-summary"><span>Amount to transfer</span><strong>${peso(remaining)}</strong><small>This will move the amount from your linked receivable into the selected Savings item.</small></div>
+  <div class="field" style="margin:12px 0"><label for="debtDepositDate">Collection date</label><input id="debtDepositDate" type="date" value="${debtLocalISO(new Date())}" required></div>
+  <div class="field"><label>Deposit into</label>${debtDestinationPickerHTML('debtDepositDestination')}</div>
+  <div class="form-actions"><button type="button" class="btn btn-secondary" onclick="closeDebtCollectionDeposit()">Cancel</button><button type="button" class="btn btn-primary" id="debtDepositConfirm" disabled>Confirm collection &amp; transfer</button></div>
+ </div>`;
+ modal.addEventListener('click',event=>{if(event.target===modal)closeDebtCollectionDeposit();});
+ document.body.appendChild(modal);
+ bindDebtDestinationPicker('debtDepositDestination',()=>{modal.querySelector('#debtDepositConfirm').disabled=false;});
+ modal.querySelector('#debtDepositConfirm').addEventListener('click',()=>{
+  const destinationId=modal.querySelector('#debtDepositDestinationSelected').value;
+  const date=modal.querySelector('#debtDepositDate').value;
+  if(!destinationId){toast('Choose the bank or wallet where the money was returned.');return;}
+  if(debtCommitCollectionToSavings(id,remaining,date,destinationId))closeDebtCollectionDeposit();
+ });
+ modal._escapeHandler=event=>{if(event.key==='Escape')closeDebtCollectionDeposit();};
+ document.addEventListener('keydown',modal._escapeHandler);
+}
+
 function setDebtFilter(filter){debtDirectionFilter=filter;renderDebtPage();}
 function changeDebtMonth(delta){debtCalendarCursor.setMonth(debtCalendarCursor.getMonth()+delta);debtSelectedDate=debtLocalISO(new Date(debtCalendarCursor.getFullYear(),debtCalendarCursor.getMonth(),1));renderDebtPage();}
 function goToDebtToday(){const now=new Date();debtCalendarCursor=new Date(now.getFullYear(),now.getMonth(),1);debtSelectedDate=debtLocalISO(now);renderDebtPage();}
@@ -2446,6 +2693,7 @@ function closeDebtSideChooser(){
  modal.remove();
 }
 function openDebtForm(id=null,defaultDate=null,directionChoice=null){
+ ensureDebtReceivableLinks();
  const current=id?(data.debtRecords||[]).find(x=>String(x.id)===String(id)):null;
  if(id&&!current){toast('Debt record not found.');return;}
  if(!current&&!['owed','lent'].includes(directionChoice)){openDebtSideChooser(defaultDate);return;}
@@ -2462,7 +2710,7 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
   <div class="savely-debt-direction-banner ${isOwed?'is-owed':'is-lent'}"><span class="savely-debt-direction-icon">${isOwed?'↗':'↙'}</span><span>${isOwed?'I OWE · PAYMENT TO MAKE':'OWED TO ME · MONEY TO COLLECT'}</span></div>
   <form id="savelyDebtForm">
    <div class="debt-form-grid">
-    <div class="field full"><label for="debtKind">Debt type</label><select id="debtKind" required>${typeOptions}</select></div>
+    ${isOwed?`<div class="field full"><label for="debtKind">Debt type</label><select id="debtKind" required>${typeOptions}</select></div>`:`<div class="field full"><label>Debt type</label><div class="savely-debt-fixed-kind"><span class="savely-debt-fixed-kind-icon">↙</span><span><strong>Personal loan / money lent</strong><small>For money you lend directly to another person.</small></span></div></div>`}
     <div class="field full"><label for="debtTitle">${isOwed?'Bill / payment name':'Loan / collection name'}</label><input id="debtTitle" maxlength="90" required placeholder="${isOwed?'e.g. Shopee SPayLater · November bill':'e.g. Money lent to Juan'}"></div>
     <div class="field full"><label for="debtCounterparty" id="debtCounterpartyLabel">${isOwed?'Lender / platform':'Borrower / person who owes you'}</label><input id="debtCounterparty" maxlength="70" placeholder="${isOwed?'e.g. Shopee, Lazada, GCash, or bank':'e.g. Friend, family member, or colleague'}"></div>
     <div class="field"><label for="debtTotalAmount">${current?'Scheduled amount (₱)':isOwed?'Total amount to pay (₱)':'Total amount to collect (₱)'}</label><input id="debtTotalAmount" type="number" min="0.01" step="0.01" required value="${current?Number(current.amount).toFixed(2):''}" placeholder="e.g. 3500"></div>
@@ -2483,11 +2731,11 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
  modal.addEventListener('click',e=>{if(e.target===modal)closeDebtForm();});
  document.body.appendChild(modal);
  if(current){
-  modal.querySelector('#debtKind').value=current.kind||'Other';
+  if(isOwed){const kindSelect=modal.querySelector('#debtKind');if(kindSelect)kindSelect.value=current.kind||'Other';}
   modal.querySelector('#debtTitle').value=current.title||'';
   modal.querySelector('#debtCounterparty').value=current.counterparty||'';
  }
- if(!current&&!isOwed)modal.querySelector('#debtKind').value='Personal loan / money lent';
+ if(!current&&!isOwed){const kindSelect=modal.querySelector('#debtKind');if(kindSelect)kindSelect.value='Personal loan / money lent';}
  const frequency=modal.querySelector('#debtFrequency'),installments=modal.querySelector('#debtInstallments');
  const preview=modal.querySelector('#debtSchedulePreview');
  const amountField=modal.querySelector('#debtTotalAmount');
@@ -2559,7 +2807,7 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
  updateSchedulePreview();
  modal.querySelector('#savelyDebtForm').addEventListener('submit',e=>{
   e.preventDefault();
-  const dir=directionValue,kind=modal.querySelector('#debtKind').value,title=modal.querySelector('#debtTitle').value.trim(),counterparty=modal.querySelector('#debtCounterparty').value.trim();
+  const dir=directionValue,kind=isOwed?modal.querySelector('#debtKind').value:'Personal loan / money lent',title=modal.querySelector('#debtTitle').value.trim(),counterparty=modal.querySelector('#debtCounterparty').value.trim();
   const amount=Number(modal.querySelector('#debtTotalAmount').value),dueDate=modal.querySelector('#debtFirstDue').value;
   let repeat=frequency.value;
   const enteredCount=Number(installments.value);
@@ -2572,11 +2820,18 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
   if(!current && Math.floor(amount*100)+0.000001<count){toast('The total amount is too small for that number of installments. Reduce the installment count.');return;}
   if(current){
    if(amount+0.000001<paid){toast('Scheduled amount cannot be lower than amounts already recorded.');return;}
-   const prev={...current};
+   const editSnapshot=JSON.stringify(data);
+   const previousRemaining=debtRemaining(current);
    current.direction=dir;current.kind=kind;current.title=title;current.counterparty=counterparty;current.amount=amount;current.remainingAmount=Math.max(0,amount-paid);current.dueDate=dueDate;
    current.status=current.remainingAmount<=0.005?'paid':(paid>0?'partial':'unpaid');
-   if(!saveDebtRecords()){Object.assign(current,prev);return;}
-   closeDebtForm();renderDebtPage();toast('Debt record updated.');return;
+   const updatedReceivable=current.direction==='lent'?debtFindReceivableItem(current):null;
+   if(updatedReceivable){
+    debtAppendFinancialHistory(updatedReceivable,Math.max(0,(Number(updatedReceivable.amount)||0)+current.remainingAmount-previousRemaining),{
+     type:'receivable_adjustment',label:'Debt schedule updated',relatedItemId:current.id,relatedItemName:current.title
+    });
+   }
+   if(!saveDebtRecords()){try{data=JSON.parse(editSnapshot);}catch(error){}return;}
+   closeDebtForm();if(dir==='lent')render();else renderDebtPage();toast('Debt record updated.');return;
   }
   const seriesId='debt-'+uid(),base=Math.floor((amount/count)*100)/100,created=[];
   for(let i=0;i<count;i++){
@@ -2588,10 +2843,38 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
    created.push({id:uid(),seriesId,direction:dir,kind,title,counterparty,amount:part,remainingAmount:part,dueDate:date,frequency:repeat,installmentNumber:i+1,totalInstallments:count,status:'unpaid',payments:[],createdAt:Date.now()});
   }
   if(!Array.isArray(data.debtRecords))data.debtRecords=[];
+  let receivableItem=null;
+  if(dir==='lent'){
+   if(!Array.isArray(data.savingsList))data.savingsList=[];
+   const totalReceivable=created.reduce((sum,record)=>sum+Number(record.amount||0),0);
+   const receivableAt=Date.now();
+   receivableItem={
+    id:uid(),
+    name:`Money lent · ${counterparty||title}`,
+    amount:Math.round(totalReceivable*100)/100,
+    category:'Savings',
+    date:todayISO(),
+    isReceivable:true,
+    receivableSeriesId:seriesId,
+    receivableTitle:title,
+    receivableCounterparty:counterparty,
+    receivableOriginalAmount:Math.round(totalReceivable*100)/100,
+    receivableStatus:'open',
+    createdAt:receivableAt,
+    graphHistory:[{at:receivableAt,amount:Math.round(totalReceivable*100)/100}],
+    changeHistory:[{at:receivableAt,oldName:`Money lent · ${counterparty||title}`,newName:`Money lent · ${counterparty||title}`,oldAmount:0,newAmount:Math.round(totalReceivable*100)/100,type:'receivable_created',label:'Money lent to another person'}]
+   };
+   data.savingsList.push(receivableItem);
+   created.forEach(record=>{record.receivableItemId=receivableItem.id;});
+  }
   data.debtRecords.push(...created);
-  if(!saveDebtRecords()){data.debtRecords.splice(-created.length,created.length);return;}
-  closeDebtForm();debtCalendarCursor=new Date(debtDateFromISO(dueDate).getFullYear(),debtDateFromISO(dueDate).getMonth(),1);debtSelectedDate=dueDate;renderDebtPage();
-  toast(count>1?`${count} ${repeat==='monthly'?'monthly ':repeat==='weekly'?'weekly ':repeat==='biweekly'?'biweekly ':''}${isOwed?'payments':'collections'} added to your debt calendar.`:isOwed?'Payment added to your calendar.':'Collection added to your calendar.');
+  if(!saveDebtRecords()){
+   data.debtRecords.splice(-created.length,created.length);
+   if(receivableItem)data.savingsList=data.savingsList.filter(entry=>String(entry.id)!==String(receivableItem.id));
+   return;
+  }
+  closeDebtForm();debtCalendarCursor=new Date(debtDateFromISO(dueDate).getFullYear(),debtDateFromISO(dueDate).getMonth(),1);debtSelectedDate=dueDate;if(dir==='lent')render();else renderDebtPage();
+  toast(count>1?`${count} ${repeat==='monthly'?'monthly ':repeat==='weekly'?'weekly ':repeat==='biweekly'?'biweekly ':''}${isOwed?'payments added to your Debt calendar.':'collections added to Debt and linked to Savings.'}`:isOwed?'Payment added to your calendar.':'Collection added and linked to Savings.');
  });
 }
 function closeDebtForm(){const modal=document.getElementById('savelyDebtFormModal');if(modal)modal.remove();}
@@ -2599,23 +2882,36 @@ function editDebtRecord(id){openDebtForm(id);}
 function deleteDebtRecord(id){
  const item=(data.debtRecords||[]).find(x=>String(x.id)===String(id));if(!item)return;
  if(!confirm(`Delete "${item.title}" from your debt calendar?`))return;
- const idx=data.debtRecords.findIndex(x=>String(x.id)===String(id)),removed=data.debtRecords.splice(idx,1)[0];
- if(!saveDebtRecords()){data.debtRecords.splice(idx,0,removed);return;}
- renderDebtPage();toast('Debt record deleted.');
+ const snapshot=JSON.stringify(data);
+ const receivable=item.direction==='lent'?debtFindReceivableItem(item):null;
+ if(receivable){
+  const remaining=debtRemaining(item);
+  if(remaining>0.005)debtAppendFinancialHistory(receivable,Math.max(0,(Number(receivable.amount)||0)-remaining),{
+   type:'receivable_adjustment',label:'Linked debt record deleted',relatedItemId:item.id,relatedItemName:item.title
+  });
+ }
+ const idx=data.debtRecords.findIndex(x=>String(x.id)===String(id));
+ data.debtRecords.splice(idx,1);
+ try{localStorage.setItem(STORE,JSON.stringify(data));}
+ catch(error){try{data=JSON.parse(snapshot);}catch(e){}toast('Debt record could not be deleted. No changes were saved.');return;}
+ render();toast('Debt record deleted.');
 }
 function markDebtAsPaid(id){
  const item=(data.debtRecords||[]).find(x=>String(x.id)===String(id));
  if(!item)return;
  const remaining=debtRemaining(item);
  if(remaining<=0.005){toast('This debt record is already settled.');return;}
- const isOwed=item.direction==='owed';
- const action=isOwed?'payment':'collection';
- const confirmation=isOwed?'mark this debt as fully paid':'mark this amount as fully collected';
+ // Owed to me: collect it through the destination-account transfer flow.
+ if(item.direction==='lent'){
+  openDebtCollectionDeposit(id);
+  return;
+ }
+ const confirmation='mark this debt as fully paid';
  if(!confirm(`Are you sure you want to ${confirmation}?\n\n${item.title||'Debt record'}\nRemaining balance: ${peso(remaining)}`))return;
  const before={...item,payments:Array.isArray(item.payments)?item.payments.map(p=>({...p})):[]};
  const now=Date.now(),date=debtLocalISO(new Date());
  if(!Array.isArray(item.payments))item.payments=[];
- item.payments.push({id:uid(),amount:remaining,date,at:now,note:`Marked as ${isOwed?'paid':'collected'}`});
+ item.payments.push({id:uid(),amount:remaining,date,at:now,note:'Marked as paid'});
  item.remainingAmount=0;
  item.status='paid';
  item.paidAt=now;
@@ -2625,33 +2921,49 @@ function markDebtAsPaid(id){
   return;
  }
  renderDebtPage();
- toast(isOwed?'Debt marked as paid.':'Amount marked as collected.');
+ toast('Debt marked as paid.');
 }
 
 function openDebtPayment(id){
  const item=(data.debtRecords||[]).find(x=>String(x.id)===String(id));if(!item)return;
  const remaining=debtRemaining(item),isOwed=item.direction==='owed';
  const modal=document.createElement('div');modal.id='savelyDebtPaymentModal';modal.className='modal-backdrop';modal.style.cssText='display:flex;z-index:30000;align-items:center;justify-content:center;padding:18px';
- modal.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="debtPaymentTitle" style="width:min(480px,100%)">
-  <div class="panel-head"><div><h2 id="debtPaymentTitle">${isOwed?'Record payment':'Record collection'}</h2><div class="panel-sub">${esc(item.title)} · ${esc(item.counterparty||'No lender / borrower specified')}</div></div><button type="button" class="btn btn-light" onclick="closeDebtPayment()">✕ Close</button></div>
-  <div class="debt-review-box"><div class="panel-sub">Remaining balance</div><strong style="font-size:22px">${peso(remaining)}</strong></div>
-  <form id="debtPaymentForm" style="margin-top:14px"><div class="field"><label for="debtPaymentAmount">Amount ${isOwed?'paid':'collected'} (₱)</label><input id="debtPaymentAmount" type="number" min="0.01" max="${remaining.toFixed(2)}" step="0.01" value="${remaining.toFixed(2)}" required></div><div class="field" style="margin-top:10px"><label for="debtPaymentDate">Date</label><input id="debtPaymentDate" type="date" value="${debtLocalISO(new Date())}" required></div><div class="form-actions" style="justify-content:flex-end"><button type="button" class="btn btn-secondary" onclick="closeDebtPayment()">Cancel</button><button type="submit" class="btn btn-primary" style="background:var(--green);border-color:var(--green)">Save ${isOwed?'payment':'collection'}</button></div></form>
+ modal.innerHTML=`<div class="modal savely-debt-partial-dialog" role="dialog" aria-modal="true" aria-labelledby="debtPaymentTitle">
+  <div class="panel-head"><div><div class="savely-debt-kicker">${isOwed?'PAYMENT RECORD':'COLLECTION & TRANSFER'}</div><h2 id="debtPaymentTitle">${isOwed?'Record payment':'Record partial collection'}</h2><div class="panel-sub">${esc(item.title)} · ${esc(item.counterparty||'No lender / borrower specified')}</div></div><button type="button" class="btn btn-light" onclick="closeDebtPayment()">✕ Close</button></div>
+  <div class="debt-review-box"><div class="panel-sub">Remaining balance</div><strong>${peso(remaining)}</strong></div>
+  <form id="debtPaymentForm" style="margin-top:14px">
+   <div class="savely-debt-payment-grid">
+    <div class="field"><label for="debtPaymentAmount">Amount ${isOwed?'paid':'collected'} (₱)</label><input id="debtPaymentAmount" type="number" min="0.01" max="${remaining.toFixed(2)}" step="0.01" value="${remaining.toFixed(2)}" required></div>
+    <div class="field"><label for="debtPaymentDate">Date received</label><input id="debtPaymentDate" type="date" value="${debtLocalISO(new Date())}" required></div>
+   </div>
+   ${!isOwed?`<div class="field" style="margin-top:13px"><label>Deposit collected money into</label>${debtDestinationPickerHTML('debtPartialDestination')}</div><div class="savely-debt-collection-note">The collection will reduce the linked Money lent item and increase the Savings account you select.</div>`:''}
+   <div class="form-actions" style="justify-content:flex-end"><button type="button" class="btn btn-secondary" onclick="closeDebtPayment()">Cancel</button><button type="submit" class="btn btn-primary">Save ${isOwed?'payment':'collection & transfer'}</button></div>
+  </form>
  </div>`;
  modal.addEventListener('click',e=>{if(e.target===modal)closeDebtPayment();});document.body.appendChild(modal);
+ if(!isOwed)bindDebtDestinationPicker('debtPartialDestination');
  modal.querySelector('#debtPaymentForm').addEventListener('submit',e=>{
-  e.preventDefault();const amount=Number(modal.querySelector('#debtPaymentAmount').value),date=modal.querySelector('#debtPaymentDate').value;
+  e.preventDefault();
+  const amount=Number(modal.querySelector('#debtPaymentAmount').value),date=modal.querySelector('#debtPaymentDate').value;
   const live=(data.debtRecords||[]).find(x=>String(x.id)===String(id));if(!live)return;
-  const before={...live, payments:Array.isArray(live.payments)?live.payments.slice():[]};
   const remainingNow=debtRemaining(live);
   if(!Number.isFinite(amount)||amount<=0||amount>remainingNow+0.000001){toast('Enter a valid amount not greater than the remaining balance.');return;}
   if(!date){toast('Choose the payment date.');return;}
+  if(!isOwed){
+   const destinationId=modal.querySelector('#debtPartialDestinationSelected')?.value||'';
+   if(!destinationId){toast('Choose the bank or wallet where the money was received.');return;}
+   if(debtCommitCollectionToSavings(id,amount,date,destinationId))closeDebtPayment();
+   return;
+  }
+  const snapshot=JSON.stringify(data),now=Date.now();
   if(!Array.isArray(live.payments))live.payments=[];
-  live.payments.push({id:uid(),amount,date,at:Date.now()});
+  live.payments.push({id:uid(),amount,date,at:now,note:'Payment recorded'});
   live.remainingAmount=Math.max(0,Math.round((remainingNow-amount)*100)/100);
   live.status=live.remainingAmount<=0.005?'paid':'partial';
-  if(live.status==='paid')live.paidAt=Date.now();
-  if(!saveDebtRecords()){Object.assign(live,before);return;}
-  closeDebtPayment();renderDebtPage();toast(live.status==='paid'?'Debt marked as paid.':'Payment recorded. Remaining balance updated.');
+  if(live.status==='paid')live.paidAt=now;
+  try{localStorage.setItem(STORE,JSON.stringify(data));}
+  catch(error){try{data=JSON.parse(snapshot);}catch(e){}toast('Payment could not be saved. No balances were changed.');return;}
+  closeDebtPayment();render();toast(live.status==='paid'?'Debt marked as paid.':'Payment recorded. Remaining balance updated.');
  });
 }
 function closeDebtPayment(){const modal=document.getElementById('savelyDebtPaymentModal');if(modal)modal.remove();}
@@ -2659,12 +2971,12 @@ function viewDebtHistory(id){
  const item=(data.debtRecords||[]).find(x=>String(x.id)===String(id));if(!item)return;
  const payments=Array.isArray(item.payments)?item.payments:[];
  const modal=document.createElement('div');modal.id='savelyDebtHistoryModal';modal.className='modal-backdrop';modal.style.cssText='display:flex;z-index:30000;align-items:center;justify-content:center;padding:18px';
- modal.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="debtHistoryTitle" style="width:min(540px,100%);max-height:88vh;overflow:auto"><div class="panel-head"><div><h2 id="debtHistoryTitle">${esc(item.title)} · History</h2><div class="panel-sub">${esc(item.counterparty||'')}</div></div><button type="button" class="btn btn-light" onclick="closeDebtHistory()">✕ Close</button></div><div class="debt-review-box"><div class="panel-sub">Original amount · Paid · Remaining</div><strong>${peso(item.amount)} · ${peso(debtPaidAmount(item))} · ${peso(debtRemaining(item))}</strong></div>${payments.length?payments.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date))).map(p=>`<div class="debt-item-card"><div class="debt-item-main"><strong>${esc(fmtDate(p.date))}</strong><div class="debt-item-sub">Payment / collection record</div></div><strong style="color:var(--green)">${peso(p.amount)}</strong></div>`).join(''):'<div class="debt-empty">No payments or collections recorded yet.</div>'}</div>`;
+ modal.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="debtHistoryTitle" style="width:min(540px,100%);max-height:88vh;overflow:auto"><div class="panel-head"><div><h2 id="debtHistoryTitle">${esc(item.title)} · History</h2><div class="panel-sub">${esc(item.counterparty||'')}</div></div><button type="button" class="btn btn-light" onclick="closeDebtHistory()">✕ Close</button></div><div class="debt-review-box"><div class="panel-sub">Original amount · Paid · Remaining</div><strong>${peso(item.amount)} · ${peso(debtPaidAmount(item))} · ${peso(debtRemaining(item))}</strong></div>${payments.length?payments.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date))).map(p=>`<div class="debt-item-card"><div class="debt-item-main"><strong>${esc(fmtDate(p.date))}</strong><div class="debt-item-sub">Payment / collection record${p.destinationName?` · Deposited to ${esc(p.destinationName)}`:''}${p.note?` · ${esc(p.note)}`:''}</div></div><strong style="color:var(--green)">${peso(p.amount)}</strong></div>`).join(''):'<div class="debt-empty">No payments or collections recorded yet.</div>'}</div>`;
  modal.addEventListener('click',e=>{if(e.target===modal)closeDebtHistory();});document.body.appendChild(modal);
 }
 function closeDebtHistory(){const modal=document.getElementById('savelyDebtHistoryModal');if(modal)modal.remove();}
 
-function render(){updateLiveDateTime();renderDashboard();updateSavingsTotalAsOf();renderTransactions();renderAccounts();renderGoals();renderBudget();renderReports();renderRecurring();renderSavingsList();renderSalaryPage();renderDebtPage()}
+function render(){ensureDebtReceivableLinks();updateLiveDateTime();renderDashboard();updateSavingsTotalAsOf();renderTransactions();renderAccounts();renderGoals();renderBudget();renderReports();renderRecurring();renderSavingsList();renderSalaryPage();renderDebtPage()}
 function renderDashboard(){const bal=totalBalance(),goal=data.goals[0];const month=todayISO().slice(0,7);const inc=data.transactions.filter(t=>(t.type==='deposit'||t.type==='interest')&&t.date.slice(0,7)===month).reduce((s,t)=>s+ +t.amount,0);const out=data.transactions.filter(t=>(t.type==='expense'||t.type==='withdrawal')&&t.date.slice(0,7)===month).reduce((s,t)=>s+ +t.amount,0);
 const financialItems=Array.isArray(data.savingsList)?data.savingsList:[];
 const financialSum=cat=>financialItems.filter(item=>(item.category||'Savings')===cat).reduce((sum,item)=>sum+Number(item.amount||0),0);
@@ -2704,7 +3016,7 @@ function savelyFindFinancialBankItem(bankName){
  if(!key)return null;
  const list=Array.isArray(data.savingsList)?data.savingsList:[];
  return list.find(item=>{
-  if(!['Savings',''].includes(item.category||'Savings'))return false;
+  if(item.isReceivable || !['Savings',''].includes(item.category||'Savings'))return false;
   const itemKey=savelyNormalizeBankName(item.bankName||item.name||'');
   return itemKey===key || (itemKey&&key&&(itemKey.includes(key)||key.includes(itemKey)));
  })||null;
@@ -2717,7 +3029,7 @@ function goalBankCurrentBalance(bank){
 function goalCurrentAmount(goal){
  if(goal&&Array.isArray(goal.banks)&&(goal.banks.length||goal.bankAssignmentsConfigured))return goal.banks.reduce((sum,bank)=>sum+goalBankCurrentBalance(bank),0);
  const items=Array.isArray(data.savingsList)?data.savingsList:[];
- return items.filter(i=>['Savings','Salary','Income'].includes(i.category||'Savings')).reduce((sum,item)=>sum+Number(item.amount||0),0);
+ return items.filter(i=>!i.isReceivable && ['Savings','Salary','Income'].includes(i.category||'Savings')).reduce((sum,item)=>sum+Number(item.amount||0),0);
 }
 function goalEntryFinancialItemId(entry){
  const explicit=entry&&typeof entry==='object'?(entry.financialItemId||entry.savingsItemId||entry.itemId||entry.sourceItemId):'';
@@ -2966,7 +3278,7 @@ function renderSavingsTrend(){
  const legend=document.getElementById('savingsTrendLegend');
  const meta=document.getElementById('savingsTrendMeta');
  if(!panel||!canvas||!legend)return;
- const realSavingsItems=(data.savingsList||[]).filter(x=>(x.category||'Savings')==='Savings');
+ const realSavingsItems=(data.savingsList||[]).filter(x=>!x.isReceivable&&(x.category||'Savings')==='Savings');
  const goalGraphItems=(Array.isArray(data.goals)?data.goals:[]).flatMap(goal=>(Array.isArray(goal.banks)?goal.banks:Array.isArray(goal.selectedBanks)?goal.selectedBanks:[]).map(bank=>{
   const bankName=typeof bank==='string'?bank:(bank.name||bank.bankName||bank.bank||'Bank');
   const amount=typeof bank==='object'?Number(bank.amount??bank.balance??bank.value??0)||0:0;
@@ -3436,7 +3748,7 @@ function financialItemTrendIndicator(item){
 function renderSavingsList(){
  const items=Array.isArray(data.savingsList)?data.savingsList:[];
  const goalBankItems=(Array.isArray(data.goals)?data.goals:[]).flatMap(goal=>(Array.isArray(goal.banks)?goal.banks:Array.isArray(goal.selectedBanks)?goal.selectedBanks:[]).map((bank,index)=>{const bankName=typeof bank==='string'?bank:(bank.name||bank.bankName||bank.bank||'Bank');const linked=(bank&&typeof bank==='object'&&bank.financialItemId?(data.savingsList||[]).find(item=>String(item.id)===String(bank.financialItemId)):null)||savelyFindFinancialBankItem(bankName);const rawAmount=linked?linked.amount:(typeof bank==='object'?(bank.amount??bank.balance??bank.value??0):0);return {id:`goalalloc-${goal.id}-${encodeURIComponent(bankName)}`,name:`${goal.name||'Savings Goal'} · ${bankName}`,amount:Math.max(0,Number(rawAmount)||0),category:'Savings',date:goal.created||todayISO(),isGoalAllocation:true,goalId:goal.id,bankName,allocationIndex:index,financialItemId:linked?linked.id:null};})).filter(item=>!item.financialItemId);
- const categoryItems=items.filter(i=>(i.category||'Savings')===activeFinancialCategory);
+ const categoryItems=items.filter(i=>(i.category||'Savings')===activeFinancialCategory && (!i.isReceivable || Number(i.amount)>0.005));
  const selectedOrderKey='savelyFinancialListOrder_'+activeFinancialCategory;
  let savedOrder=[];try{savedOrder=JSON.parse(localStorage.getItem(selectedOrderKey)||'[]');if(!Array.isArray(savedOrder))savedOrder=[];}catch(e){}
  const orderIndex=new Map(savedOrder.map((id,index)=>[String(id),index]));
@@ -3480,11 +3792,17 @@ function renderSavingsList(){
  renderSavingsTrend();
  renderOverallTrend();
  const target=document.getElementById('savingsListTable');
- target.innerHTML=selected.length?`<table><thead><tr><th>Item / source</th><th>Date added</th><th class="financial-trend-col" aria-label="Balance trend"></th><th style="text-align:right">Amount</th>${activeFinancialCategory==='Savings'?'<th>Interest estimate</th>':''}<th></th></tr></thead><tbody>${selected.map(item=>`<tr data-financial-item-id="${esc(item.id)}" data-trend-bank="${esc(item.isGoalAllocation?item.name:(item.bankName||item.name))}" title="Click to focus this item on the graph" draggable="true" class="financial-draggable-row" style="cursor:pointer"><td><div class="tx-title" style="display:flex;align-items:center;min-width:180px">${financialBankLogo(item.bankName||item.name)}<span>${item.isGoalAllocation?`<span class="goal-linked-item">${esc(item.name)}</span><div class="footer-note">Linked from Savings Goals</div>`:esc(item.name)}</span></div></td><td>${fmtDate(item.date)}</td><td class="financial-trend-col" style="text-align:center;width:42px">${financialItemTrendIndicator(item)}</td><td style="text-align:right;font-weight:800;color:${item.category==='Debt'?'var(--red)':'var(--text)'}"><span style="display:inline-flex;align-items:center;justify-content:flex-end;gap:6px"><span>${item.category==='Debt'?'−':'+'}${peso(item.amount)}</span></span></td>${activeFinancialCategory==='Savings'?`<td>${(/^maya$/i.test(String(item.bankName||item.name||'').trim())||/maya savings/i.test(String(item.bankName||item.name||'')))?mayaInterestEstimate(item.amount,item.mayaBonusRate||3):(interestEstimate(item.amount,getInterestRate(item.bankName||item.name,item.category))||'<span class="muted">Rate unavailable</span>')}</td>`:''}<td style="text-align:right"><div class="savings-item-actions"><button type="button" class="savings-item-menu-button" aria-label="Savings item actions" aria-expanded="false" onclick="toggleSavingsItemMenu(event,'${esc(String(item.id))}')">⋯</button><div class="savings-item-menu" id="savings-item-menu-${esc(String(item.id))}">${item.isGoalAllocation?`<button type="button" class="apply-savings-goal-action is-disabled" disabled aria-disabled="true" title="This bank is already linked to a savings goal">Apply to savings goal ✓</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationInterest('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">View interest</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationHistory('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editGoal('${esc(String(item.goalId))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();removeGoalBankAllocation('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">Delete</button>`:`${activeFinancialCategory==='Savings'?`<button type="button" class="apply-savings-goal-action" data-savings-item-id="${esc(String(item.id))}" onclick="event.preventDefault();event.stopPropagation();closeSavingsItemMenus();askAddSavingsToGoal(this.dataset.savingsItemId)">Apply to savings goal</button><button type="button" onclick="closeSavingsItemMenus();openSavingsTransfer('${esc(String(item.id))}')">⇄ Transfer</button>`:''}${activeFinancialCategory==='Savings'&&!/^(cash|coins?|coins?\s*\(.*\)|₱1 coin.*|1 coin.*)$/i.test(String(item.name||'').trim())?`<button type="button" onclick="closeSavingsItemMenus();openSavingsInterest('${esc(String(item.id))}')">View interest</button>`:''}<button type="button" onclick="closeSavingsItemMenus();openSavingsHistory('${esc(String(item.id))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editFinancialItem('${esc(String(item.id))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();deleteSavingsItem('${esc(String(item.id))}')">Delete</button>`}</div></div></td></tr>`).join('')}</tbody></table><div class="between savely-items-updated-footer" style="margin-top:14px;justify-content:flex-end"><span style="color:var(--muted)">Last updated</span><strong id="savingsItemsLastUpdated" style="font-weight:700">${getSavingsItemsLastUpdatedLabel(selected)}</strong></div>`:`<div class="empty">No ${activeFinancialCategory.toLowerCase()} items yet. Click Add to create one.</div>`;
+ target.innerHTML=selected.length?`<table><thead><tr><th>Item / source</th><th>Date added</th><th class="financial-trend-col" aria-label="Balance trend"></th><th style="text-align:right">Amount</th>${activeFinancialCategory==='Savings'?'<th>Interest estimate</th>':''}<th></th></tr></thead><tbody>${selected.map(item=>`<tr data-financial-item-id="${esc(item.id)}" data-trend-bank="${esc(item.isGoalAllocation?item.name:(item.bankName||item.name))}" title="Click to focus this item on the graph" draggable="true" class="financial-draggable-row" style="cursor:pointer"><td><div class="tx-title" style="display:flex;align-items:center;min-width:180px">${financialBankLogo(item.bankName||item.name)}<span>${item.isGoalAllocation?`<span class="goal-linked-item">${esc(item.name)}</span><div class="footer-note">Linked from Savings Goals</div>`:esc(item.name)}</span>${item.isReceivable?`<div class="footer-note">Receivable · Money lent to ${esc(item.receivableCounterparty||'someone')}${item.receivableTitle?' · '+esc(item.receivableTitle):''} · Linked to Debt</div>`:''}</div></td><td>${fmtDate(item.date)}</td><td class="financial-trend-col" style="text-align:center;width:42px">${financialItemTrendIndicator(item)}</td><td style="text-align:right;font-weight:800;color:${item.category==='Debt'?'var(--red)':'var(--text)'}"><span style="display:inline-flex;align-items:center;justify-content:flex-end;gap:6px"><span>${item.category==='Debt'?'−':'+'}${peso(item.amount)}</span></span></td>${activeFinancialCategory==='Savings'?`<td>${item.isReceivable?'<span class="muted">Receivable · No bank interest</span>':(/^maya$/i.test(String(item.bankName||item.name||'').trim())||/maya savings/i.test(String(item.bankName||item.name||'')))?mayaInterestEstimate(item.amount,item.mayaBonusRate||3):(interestEstimate(item.amount,getInterestRate(item.bankName||item.name,item.category))||'<span class="muted">Rate unavailable</span>')}</td>`:''}<td style="text-align:right"><div class="savings-item-actions"><button type="button" class="savings-item-menu-button" aria-label="Savings item actions" aria-expanded="false" onclick="toggleSavingsItemMenu(event,'${esc(String(item.id))}')">⋯</button><div class="savings-item-menu" id="savings-item-menu-${esc(String(item.id))}">${item.isGoalAllocation?`<button type="button" class="apply-savings-goal-action is-disabled" disabled aria-disabled="true" title="This bank is already linked to a savings goal">Apply to savings goal ✓</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationInterest('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">View interest</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationHistory('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editGoal('${esc(String(item.goalId))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();removeGoalBankAllocation('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">Delete</button>`:`${activeFinancialCategory==='Savings'?`<button type="button" class="apply-savings-goal-action" data-savings-item-id="${esc(String(item.id))}" onclick="event.preventDefault();event.stopPropagation();closeSavingsItemMenus();askAddSavingsToGoal(this.dataset.savingsItemId)">Apply to savings goal</button><button type="button" onclick="closeSavingsItemMenus();openSavingsTransfer('${esc(String(item.id))}')">⇄ Transfer</button>`:''}${activeFinancialCategory==='Savings'&&!/^(cash|coins?|coins?\s*\(.*\)|₱1 coin.*|1 coin.*)$/i.test(String(item.name||'').trim())?`<button type="button" onclick="closeSavingsItemMenus();openSavingsInterest('${esc(String(item.id))}')">View interest</button>`:''}<button type="button" onclick="closeSavingsItemMenus();openSavingsHistory('${esc(String(item.id))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editFinancialItem('${esc(String(item.id))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();deleteSavingsItem('${esc(String(item.id))}')">Delete</button>`}</div></div></td></tr>`).join('')}</tbody></table><div class="between savely-items-updated-footer" style="margin-top:14px;justify-content:flex-end"><span style="color:var(--muted)">Last updated</span><strong id="savingsItemsLastUpdated" style="font-weight:700">${getSavingsItemsLastUpdatedLabel(selected)}</strong></div>`:`<div class="empty">No ${activeFinancialCategory.toLowerCase()} items yet. Click Add to create one.</div>`;
  // Clicking a savings row focuses the growth graph on that bank; clicking it again restores all banks.
  const tbody=target.querySelector('tbody');
  if(tbody){
   tbody.querySelectorAll('tr[data-financial-item-id]').forEach(row=>{
+   const rowItem=items.find(item=>String(item.id)===String(row.dataset.financialItemId));
+   if(rowItem&&rowItem.isReceivable){
+    row.classList.add('is-receivable-row');
+    const actions=row.querySelector('.savings-item-actions');
+    if(actions)actions.innerHTML='<span class="savely-receivable-linked-badge">LINKED TO DEBT</span>';
+   }
    row.addEventListener('click',event=>{
     if(event.target.closest('button,a,input,select,textarea,.drag-handle'))return;
     const name=String(row.dataset.trendBank||'').trim();
@@ -3624,7 +3942,7 @@ function startCreateGoalFromSavings(){
 }
 
 function applySavingsItemToGoal(item,goal){
- if(!item||!goal)return false;
+ if(!item||!goal||item.isReceivable)return false;
  if(!Array.isArray(goal.banks))goal.banks=[];
  const itemId=String(item.id||''),bankName=String(item.name||'Savings').trim();
  const alreadyInAnotherGoal=(data.goals||[]).some(other=>String(other.id)!==String(goal.id)&&(other.banks||[]).some(bank=>String(bank.financialItemId||'')===itemId||(!bank.financialItemId&&savelyNormalizeBankName(bank.name)===savelyNormalizeBankName(bankName))));
@@ -3815,6 +4133,7 @@ function exportFinancialCSV(){
 function editFinancialItem(id){
  const item=(data.savingsList||[]).find(x=>x.id===id);
  if(!item)return toast('Financial item not found.');
+ if(item.isReceivable)return toast('Money lent is managed from the Debt page.');
  document.getElementById('editFinancialId').value=item.id;
  document.getElementById('editFinancialName').value=item.name||'';
  document.getElementById('editFinancialAmount').value=Number(item.amount)||0;
@@ -3950,7 +4269,7 @@ function openAllSavingsHistory(){
 }
 
 function closeSavingsHistory(){document.getElementById('savingsHistoryBackdrop').style.display='none';if(window.__savelyHistoryInterestTimer){clearInterval(window.__savelyHistoryInterestTimer);window.__savelyHistoryInterestTimer=null;}}
-function deleteSavingsItem(id){data.savingsList=data.savingsList.filter(item=>item.id!==id);try{localStorage.setItem(STORE,JSON.stringify(data))}catch(e){}renderSavingsList();toast('Financial item removed.')}
+function deleteSavingsItem(id){const item=(data.savingsList||[]).find(x=>String(x.id)===String(id));if(item&&item.isReceivable){toast('This receivable is linked to a Debt record. Manage it from the Debt page.');return;}data.savingsList=data.savingsList.filter(item=>item.id!==id);try{localStorage.setItem(STORE,JSON.stringify(data))}catch(e){}renderSavingsList();toast('Financial item removed.')}
 function clearSavingsList(){if(confirm('Clear every item from your savings?')){data.savingsList=[];try{localStorage.setItem(STORE,JSON.stringify(data))}catch(e){}renderSavingsList();toast('Financial list cleared.')}}
 
 function renderRecurring(){let el=document.getElementById('recurringList');if(!data.recurring.length){el.innerHTML='<div class="empty">No recurring deposit schedules yet.</div>';return}el.innerHTML=data.recurring.map(r=>`<div class="account"><div class="account-icon">↻</div><div class="account-info"><strong>${peso(r.amount)} · ${esc(r.frequency)}</strong><small>${esc(r.name)} · Next: ${fmtDate(r.next)}</small></div><button class="delete-btn" onclick="deleteRecurring('${r.id}')">Delete</button></div>`).join('')}
@@ -4868,6 +5187,7 @@ accrueRealtimeInterest();
     const list=Array.isArray(data.savingsList)?data.savingsList:[];
     const item=list.find(x=>String(x.id)===String(itemId));
     if(!item){ if(typeof toast==='function')toast('Could not find that savings item. Refresh the Savings and try again.'); return; }
+    if(item.isReceivable){if(typeof toast==='function')toast('Money lent is tracked in Debt and cannot be assigned to a savings goal.');return;}
     pendingGoalSavingsItemId=String(item.id);
     let layer=document.getElementById('applyGoalStandaloneBackdrop');
     if(!layer){
@@ -5048,7 +5368,7 @@ accrueRealtimeInterest();
     if(editing&&!goal)throw new Error('The selected savings goal could not be found');
     const safe=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
     const money=v=>'₱'+Math.max(0,Number(v)||0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});
-    const savingsItems=(Array.isArray(data.savingsList)?data.savingsList:[]).filter(item=>(item.category||'Savings')==='Savings');
+    const savingsItems=(Array.isArray(data.savingsList)?data.savingsList:[]).filter(item=>!item.isReceivable&&(item.category||'Savings')==='Savings');
     const currentEntries=Array.isArray(goal?.banks)?goal.banks:(Array.isArray(goal?.selectedBanks)?goal.selectedBanks:[]);
     const options=Array.isArray(window.bankOptions)?window.bankOptions:(typeof bankOptions!=='undefined'?bankOptions:[]);
     const normalize=value=>String(value||'').toLowerCase().replace(/\b(bank|digital bank|digital wallet)\b/g,'').replace(/[^a-z0-9]/g,'').trim();
@@ -7452,6 +7772,128 @@ body.dark-theme .app > .sidebar #nav button.active * {
   .savely-debt-form-dialog .debt-form-grid,
   .savely-debt-plan-grid{grid-template-columns:1fr !important;gap:11px !important}
   .savely-debt-plan-card{padding:13px !important}
+}
+</style>
+
+
+<style id="savely-debt-receivable-transfer-ui-v1">
+.savely-debt-fixed-kind{
+ display:flex;align-items:center;gap:10px;min-height:46px;padding:10px 12px;
+ border:1px solid #d8ebe1;border-radius:11px;background:#f1faf5;color:#176f4e;
+}
+.savely-debt-fixed-kind-icon{
+ width:27px;height:27px;display:grid;place-items:center;flex:0 0 27px;
+ border-radius:8px;background:#ddf3e7;color:#12835b;font-size:15px;font-weight:800;
+}
+.savely-debt-fixed-kind strong{display:block;font-size:12px;font-weight:800}
+.savely-debt-fixed-kind small{display:block;margin-top:2px;color:#6a8678;font-size:10px}
+.savely-receivable-linked-badge{
+ display:inline-flex;align-items:center;padding:6px 8px;border-radius:8px;
+ background:#eff8f3;color:#168765;font-size:9px;font-weight:850;letter-spacing:.25px;
+ white-space:nowrap;
+}
+.is-receivable-row{background:#fbfefc}
+.is-receivable-row:hover{background:#f0f8f3}
+.savely-debt-deposit-dialog,.savely-debt-partial-dialog{
+ width:min(650px,calc(100vw - 28px)) !important;
+ max-height:92vh !important;overflow:auto !important;padding:22px !important;
+ border-radius:20px !important;background:#fff !important;
+ box-shadow:0 24px 70px rgba(15,30,48,.24) !important;
+}
+.savely-debt-deposit-dialog h2,.savely-debt-partial-dialog h2{
+ margin:0;color:#168765;font-size:20px;font-weight:800;letter-spacing:-.35px;
+}
+.savely-debt-deposit-summary{
+ display:grid;gap:5px;margin:15px 0;padding:15px 16px;
+ border:1px solid #cfe9db;border-radius:13px;background:#f0faf4;color:#176f4e;
+}
+.savely-debt-deposit-summary span{font-size:11px;font-weight:750}
+.savely-debt-deposit-summary strong{font-size:25px;font-weight:850;line-height:1.2}
+.savely-debt-deposit-summary small{font-size:10px;line-height:1.45;color:#6e8d7c}
+.savely-debt-destination-picker{
+ padding:13px;border:1px solid #e1ebe5;border-radius:14px;background:#fbfdfc;
+}
+.savely-debt-destination-tabs{
+ display:flex;gap:6px;flex-wrap:wrap;margin-bottom:11px;
+}
+.savely-debt-destination-tabs button{
+ padding:8px 11px;border:1px solid #e1eae5;border-radius:9px;
+ background:#fff;color:#65756d;font-size:10px;font-weight:750;cursor:pointer;
+}
+.savely-debt-destination-tabs button.active{
+ background:#168765;color:#fff;border-color:#168765;
+}
+.savely-debt-destination-grid{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;
+}
+.savely-debt-destination-card{
+ display:flex;align-items:center;gap:9px;min-width:0;padding:10px;
+ border:1px solid #e2ebe6;border-radius:11px;background:#fff;text-align:left;
+ color:#24362d;cursor:pointer;transition:border-color .14s,background .14s,box-shadow .14s;
+}
+.savely-debt-destination-card:hover{
+ border-color:#90c9ad;background:#f5fbf7;
+}
+.savely-debt-destination-card.selected{
+ border-color:#168765;background:#eaf7ef;box-shadow:0 0 0 1px rgba(22,135,101,.16);
+}
+.savely-debt-destination-logo{
+ display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;
+ border-radius:10px;background:#168765;color:#fff;font-size:10px;font-weight:850;
+}
+.savely-debt-destination-copy{display:grid;gap:3px;min-width:0;flex:1}
+.savely-debt-destination-copy strong{
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:800;
+}
+.savely-debt-destination-copy small{color:#829088;font-size:9px;line-height:1.3}
+.savely-debt-destination-check{
+ display:grid;place-items:center;width:19px;height:19px;flex:0 0 19px;
+ border-radius:50%;background:#e9f3ed;color:#168765;font-size:11px;font-weight:900;
+}
+.savely-debt-destination-card.selected .savely-debt-destination-check{background:#168765;color:#fff}
+.savely-debt-destination-empty{
+ grid-column:1/-1;padding:18px 12px;text-align:center;border:1px dashed #d7e3dc;
+ border-radius:10px;color:#819087;font-size:11px;line-height:1.5;
+}
+.savely-debt-destination-help{
+ margin-top:9px;color:#809087;font-size:10px;line-height:1.45;
+}
+.savely-debt-add-destination{
+ margin-top:9px;padding:8px 12px;border:1px solid #cfe5d8;border-radius:9px;
+ background:#fff;color:#168765;font-size:11px;font-weight:800;cursor:pointer;
+}
+.savely-debt-add-destination:hover{background:#eff9f3}
+.savely-debt-collection-note{
+ margin-top:9px;padding:10px 12px;border-radius:10px;background:#f0faf4;color:#52836a;
+ font-size:10px;line-height:1.45;
+}
+.savely-debt-payment-grid{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+}
+.savely-debt-partial-dialog .debt-review-box{
+ border:1px solid #e0ebe5;background:#f6faf8;border-radius:12px;padding:13px 15px;
+}
+.savely-debt-partial-dialog .debt-review-box strong{font-size:22px;color:#168765}
+.savely-debt-deposit-dialog .field label,.savely-debt-partial-dialog .field label{
+ display:block;margin-bottom:7px;color:#62746b;font-size:11px;font-weight:750;
+}
+.savely-debt-deposit-dialog input,.savely-debt-partial-dialog input{
+ width:100%;min-height:43px;padding:10px 12px;border:1px solid #dce7e1;
+ border-radius:10px;background:#fff;color:#24352d;font-size:13px;
+}
+.savely-debt-deposit-dialog input:focus,.savely-debt-partial-dialog input:focus{
+ outline:none;border-color:#70bb9b;box-shadow:0 0 0 3px rgba(22,135,101,.10);
+}
+.savely-debt-deposit-dialog .form-actions,.savely-debt-partial-dialog .form-actions{
+ display:flex;justify-content:flex-end;gap:9px;margin-top:18px;padding-top:14px;
+ border-top:1px solid #edf1ee;
+}
+.savely-debt-deposit-dialog .form-actions .btn:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:560px){
+ .savely-debt-deposit-dialog,.savely-debt-partial-dialog{padding:16px !important;border-radius:16px !important}
+ .savely-debt-destination-grid{grid-template-columns:1fr}
+ .savely-debt-payment-grid{grid-template-columns:1fr}
+ .savely-debt-destination-tabs button{flex:1}
 }
 </style>
 
