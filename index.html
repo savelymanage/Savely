@@ -1808,6 +1808,33 @@ main.main > #page-interest.page.active{
 }
 </style>
 
+
+<style id="savely-sidebar-toggle-visible-and-menu-cleanup">
+@media (min-width:761px){
+ .app>.sidebar{
+  overflow-x:visible!important;
+  overflow-y:auto!important;
+ }
+ #savelySidebarToggle{
+  position:fixed!important;
+  top:50%!important;
+  left:244px!important;
+  right:auto!important;
+  transform:translateY(-50%)!important;
+  z-index:700!important;
+  clip-path:none!important;
+ }
+ .app.sidebar-collapsed #savelySidebarToggle{
+  left:75px!important;
+  right:auto!important;
+ }
+}
+/* Slightly roomier track-type chooser modal. */
+@media(max-width:760px){
+ #debtSideTitle{font-size:19px}
+}
+</style>
+
 </head>
 <body>
 
@@ -3034,9 +3061,9 @@ function debtCard(item){
  const menu=`<div class="debt-card-menu-wrap">
   <button type="button" class="debt-card-menu-button" aria-label="More options for ${esc(item.title||'debt record')}" aria-haspopup="true" aria-expanded="false" onclick="toggleDebtCardMenu(event,'${id}')">⋯</button>
   <div class="debt-card-menu" data-debt-menu="${id}">
-   ${st!=='paid'?`<button type="button" onclick="markDebtAsPaid('${id}');closeDebtCardMenus()">✓ ${isOwed?'Mark as paid':'Mark as collected'}</button><button type="button" onclick="openDebtPayment('${id}');closeDebtCardMenus()">＋ ${isOwed?'Partial payment':'Partial collection'}</button><div class="menu-divider"></div>`:''}
-   <button type="button" onclick="editDebtRecord('${id}');closeDebtCardMenus()">✎ Edit record</button>
-   <button type="button" onclick="viewDebtHistory('${id}');closeDebtCardMenus()">◷ ${st==='paid'?'Payment history':'View history'}</button>
+   ${st!=='paid'?`<button type="button" onclick="markDebtAsPaid('${id}');closeDebtCardMenus()">${isOwed?'Mark as paid':'Mark as collected'}</button><button type="button" onclick="openDebtPayment('${id}');closeDebtCardMenus()">${isOwed?'Partial payment':'Partial collection'}</button><div class="menu-divider"></div>`:''}
+   <button type="button" onclick="editDebtRecord('${id}');closeDebtCardMenus()">Edit record</button>
+   <button type="button" onclick="viewDebtHistory('${id}');closeDebtCardMenus()">${st==='paid'?'Payment history':'View history'}</button>
    <div class="menu-divider"></div>
    <button type="button" class="menu-danger" onclick="deleteDebtRecord('${id}');closeDebtCardMenus()">Delete record</button>
   </div>
@@ -3135,7 +3162,7 @@ function openDebtSideChooser(defaultDate=null){
  const modal=document.createElement('div');
  modal.id='savelyDebtSideModal';modal.className='modal-backdrop';
  modal.style.cssText='display:flex;z-index:30000;align-items:center;justify-content:center;padding:18px';
- modal.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="debtSideTitle" style="width:min(540px,100%);max-height:92vh;overflow:auto;padding:24px">
+ modal.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="debtSideTitle" style="width:min(700px,94vw);max-width:700px;max-height:90vh;overflow:auto;padding:30px">
   <div class="panel-head" style="margin-bottom:6px"><div><h2 id="debtSideTitle">What would you like to track?</h2><div class="panel-sub">Choose one to open its dedicated form.</div></div><button type="button" class="btn btn-light" id="debtSideClose">✕ Close</button></div>
   <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px">
    <button type="button" id="debtSideOwe" class="debt-side-choice" style="min-height:142px;text-align:left;padding:18px;border:1px solid #f0c5cb;border-radius:14px;background:rgba(220,70,85,.055);cursor:pointer;color:var(--text)">
@@ -4262,7 +4289,7 @@ function renderSavingsList(){
  renderSavingsTrend();
  renderOverallTrend();
  const target=document.getElementById('savingsListTable');
- target.innerHTML=selected.length?`<table><thead><tr><th>Item / source</th><th>Date added</th><th class="financial-trend-col" aria-label="Balance trend"></th><th style="text-align:right">Amount</th>${activeFinancialCategory==='Savings'?'<th>Interest estimate</th>':''}<th></th></tr></thead><tbody>${selected.map(item=>`<tr data-financial-item-id="${esc(item.id)}" data-trend-bank="${esc(item.isGoalAllocation?item.name:(item.bankName||item.name))}" title="Click to focus this item on the graph" draggable="true" class="financial-draggable-row" style="cursor:pointer"><td><div class="tx-title" style="display:flex;align-items:center;min-width:180px">${financialBankLogo(item.bankName||item.name)}<span>${item.isGoalAllocation?`<span class="goal-linked-item">${esc(item.name)}</span><div class="footer-note">Linked from Savings Goals</div>`:esc(item.name)}</span></div></td><td>${fmtDate(item.date)}</td><td class="financial-trend-col" style="text-align:center;width:42px">${financialItemTrendIndicator(item)}</td><td style="text-align:right;font-weight:800;color:${item.category==='Debt'?'var(--red)':'var(--text)'}"><span style="display:inline-flex;align-items:center;justify-content:flex-end;gap:6px"><span>${item.category==='Debt'?'−':'+'}${peso(item.amount)}</span></span></td>${activeFinancialCategory==='Savings'?`<td>${item.isReceivable?'<span class="muted">Receivable · No bank interest</span>':(/^maya$/i.test(String(item.bankName||item.name||'').trim())||/maya savings/i.test(String(item.bankName||item.name||'')))?mayaInterestEstimate(item.amount,item.mayaBonusRate||3):(interestEstimate(item.amount,getInterestRate(item.bankName||item.name,item.category))||'<span class="muted">Rate unavailable</span>')}</td>`:''}<td style="text-align:right"><div class="savings-item-actions"><button type="button" class="savings-item-menu-button" aria-label="Savings item actions" aria-expanded="false" onclick="toggleSavingsItemMenu(event,'${esc(String(item.id))}')">⋯</button><div class="savings-item-menu" id="savings-item-menu-${esc(String(item.id))}">${item.isGoalAllocation?`<button type="button" class="apply-savings-goal-action is-disabled" disabled aria-disabled="true" title="This bank is already linked to a savings goal">Apply to savings goal ✓</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationInterest('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">View interest</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationHistory('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editGoal('${esc(String(item.goalId))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();removeGoalBankAllocation('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">Delete</button>`:`${activeFinancialCategory==='Savings'?`<button type="button" class="apply-savings-goal-action" data-savings-item-id="${esc(String(item.id))}" onclick="event.preventDefault();event.stopPropagation();closeSavingsItemMenus();askAddSavingsToGoal(this.dataset.savingsItemId)">Apply to savings goal</button><button type="button" onclick="closeSavingsItemMenus();openSavingsTransfer('${esc(String(item.id))}')">⇄ Transfer</button>`:''}${activeFinancialCategory==='Savings'&&!/^(cash|coins?|coins?\s*\(.*\)|₱1 coin.*|1 coin.*)$/i.test(String(item.name||'').trim())?`<button type="button" onclick="closeSavingsItemMenus();openSavingsInterest('${esc(String(item.id))}')">View interest</button>`:''}<button type="button" onclick="closeSavingsItemMenus();openSavingsHistory('${esc(String(item.id))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editFinancialItem('${esc(String(item.id))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();deleteSavingsItem('${esc(String(item.id))}')">Delete</button>`}</div></div></td></tr>`).join('')}</tbody></table><div class="between savely-items-updated-footer" style="margin-top:14px;justify-content:flex-end"><span style="color:var(--muted)">Last updated</span><strong id="savingsItemsLastUpdated" style="font-weight:700">${getSavingsItemsLastUpdatedLabel(selected)}</strong></div>`:`<div class="empty">No ${activeFinancialCategory.toLowerCase()} items yet. Click Add to create one.</div>`;
+ target.innerHTML=selected.length?`<table><thead><tr><th>Item / source</th><th>Date added</th><th class="financial-trend-col" aria-label="Balance trend"></th><th style="text-align:right">Amount</th>${activeFinancialCategory==='Savings'?'<th>Interest estimate</th>':''}<th></th></tr></thead><tbody>${selected.map(item=>`<tr data-financial-item-id="${esc(item.id)}" data-trend-bank="${esc(item.isGoalAllocation?item.name:(item.bankName||item.name))}" title="Click to focus this item on the graph" draggable="true" class="financial-draggable-row" style="cursor:pointer"><td><div class="tx-title" style="display:flex;align-items:center;min-width:180px">${financialBankLogo(item.bankName||item.name)}<span>${item.isGoalAllocation?`<span class="goal-linked-item">${esc(item.name)}</span><div class="footer-note">Linked from Savings Goals</div>`:esc(item.name)}</span></div></td><td>${fmtDate(item.date)}</td><td class="financial-trend-col" style="text-align:center;width:42px">${financialItemTrendIndicator(item)}</td><td style="text-align:right;font-weight:800;color:${item.category==='Debt'?'var(--red)':'var(--text)'}"><span style="display:inline-flex;align-items:center;justify-content:flex-end;gap:6px"><span>${item.category==='Debt'?'−':'+'}${peso(item.amount)}</span></span></td>${activeFinancialCategory==='Savings'?`<td>${item.isReceivable?'<span class="muted">Receivable · No bank interest</span>':(/^maya$/i.test(String(item.bankName||item.name||'').trim())||/maya savings/i.test(String(item.bankName||item.name||'')))?mayaInterestEstimate(item.amount,item.mayaBonusRate||3):(interestEstimate(item.amount,getInterestRate(item.bankName||item.name,item.category))||'<span class="muted">Rate unavailable</span>')}</td>`:''}<td style="text-align:right"><div class="savings-item-actions"><button type="button" class="savings-item-menu-button" aria-label="Savings item actions" aria-expanded="false" onclick="toggleSavingsItemMenu(event,'${esc(String(item.id))}')">⋯</button><div class="savings-item-menu" id="savings-item-menu-${esc(String(item.id))}">${item.isGoalAllocation?`<button type="button" class="apply-savings-goal-action is-disabled" disabled aria-disabled="true" title="This bank is already linked to a savings goal">Apply to savings goal ✓</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationInterest('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">View interest</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationHistory('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editGoal('${esc(String(item.goalId))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();removeGoalBankAllocation('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">Delete</button>`:`${activeFinancialCategory==='Savings'?`<button type="button" class="apply-savings-goal-action" data-savings-item-id="${esc(String(item.id))}" onclick="event.preventDefault();event.stopPropagation();closeSavingsItemMenus();askAddSavingsToGoal(this.dataset.savingsItemId)">Apply to savings goal</button><button type="button" onclick="closeSavingsItemMenus();openSavingsTransfer('${esc(String(item.id))}')">Transfer</button>`:''}${activeFinancialCategory==='Savings'&&!/^(cash|coins?|coins?\s*\(.*\)|₱1 coin.*|1 coin.*)$/i.test(String(item.name||'').trim())?`<button type="button" onclick="closeSavingsItemMenus();openSavingsInterest('${esc(String(item.id))}')">View interest</button>`:''}<button type="button" onclick="closeSavingsItemMenus();openSavingsHistory('${esc(String(item.id))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editFinancialItem('${esc(String(item.id))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();deleteSavingsItem('${esc(String(item.id))}')">Delete</button>`}</div></div></td></tr>`).join('')}</tbody></table><div class="between savely-items-updated-footer" style="margin-top:14px;justify-content:flex-end"><span style="color:var(--muted)">Last updated</span><strong id="savingsItemsLastUpdated" style="font-weight:700">${getSavingsItemsLastUpdatedLabel(selected)}</strong></div>`:`<div class="empty">No ${activeFinancialCategory.toLowerCase()} items yet. Click Add to create one.</div>`;
  // Clicking a savings row focuses the growth graph on that bank; clicking it again restores all banks.
  const tbody=target.querySelector('tbody');
  if(tbody){
