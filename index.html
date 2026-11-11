@@ -1472,6 +1472,21 @@ body.dark-theme .debt-card-menu{background:var(--panel);border-color:var(--line)
 .debt-date-modal-body{overflow-y:auto!important}
 </style>
 
+
+<style id="savely-receivables-graph-and-fixed-sidebar">
+/* Money lent is an asset that originated in Savings; keep the navigation fixed while the document scrolls. */
+@media(min-width:761px){
+ .app{align-items:start!important;min-height:100vh}
+ .sidebar{
+  position:sticky!important;top:0!important;align-self:start!important;
+  height:100vh!important;min-height:100vh!important;max-height:100vh!important;
+  overflow-y:auto!important;overflow-x:hidden!important;
+  overscroll-behavior:contain;scrollbar-width:thin;
+ }
+ .main{min-width:0;min-height:100vh}
+}
+</style>
+
 </head>
 <body>
 
@@ -3405,14 +3420,16 @@ function renderSavingsTrend(){
  const meta=document.getElementById('savingsTrendMeta');
  if(!panel||!canvas||!legend)return;
  const realSavingsItems=(data.savingsList||[]).filter(x=>!x.isReceivable&&(x.category||'Savings')==='Savings');
+ const receivableSavingsItems=(data.savingsList||[]).filter(x=>x.isReceivable&&(x.category||'Savings')==='Savings');
  const goalGraphItems=(Array.isArray(data.goals)?data.goals:[]).flatMap(goal=>(Array.isArray(goal.banks)?goal.banks:Array.isArray(goal.selectedBanks)?goal.selectedBanks:[]).map(bank=>{
   const bankName=typeof bank==='string'?bank:(bank.name||bank.bankName||bank.bank||'Bank');
   const amount=typeof bank==='object'?Number(bank.amount??bank.balance??bank.value??0)||0:0;
   return {id:`goalalloc-${goal.id}-${encodeURIComponent(bankName)}`,name:`${goal.name||'Savings Goal'} · ${bankName}`,bankName,amount:Math.max(0,amount),isGoalAllocation:true,graphHistory:[{at:Date.parse(goal.updated||goal.created||todayISO())||Date.now(),amount:Math.max(0,amount)}]};
  }));
  const uniqueGoalGraphItems=goalGraphItems.filter(goalItem=>!savelyFindFinancialBankItem(goalItem.bankName));
- const allSavingsItems=[...realSavingsItems,...uniqueGoalGraphItems];
- // Include real Savings savings and bank allocations linked from Savings Goals.
+ const allSavingsItems=[...realSavingsItems,...receivableSavingsItems,...uniqueGoalGraphItems];
+ // Money lent is still part of the user's savings/assets: include its receivable balance and collection history in the combined savings graph.
+ // Include real Savings items, receivables, and bank allocations linked from Savings Goals.
  const items=allSavingsItems;
  panel.style.display=activeFinancialCategory==='Savings'?'block':'none';
  if(activeFinancialCategory!=='Savings')return;
