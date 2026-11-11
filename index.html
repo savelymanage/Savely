@@ -299,6 +299,14 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 @media(max-width:900px){#page-holidays .holiday-hero{grid-template-columns:1fr}#page-holidays .holiday-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#page-holidays .holiday-row{grid-template-columns:90px minmax(0,1fr) minmax(130px,.8fr)}#page-holidays .holiday-row .holiday-countdown-cell{grid-column:2/4}}
 @media(max-width:600px){#page-holidays .holiday-page-heading h2{font-size:22px}#page-holidays .holiday-hero{padding:18px}#page-holidays .holiday-countdown{gap:5px}#page-holidays .holiday-countdown>div{padding:9px 2px}#page-holidays .holiday-stat-grid{gap:8px}#page-holidays .holiday-stat{padding:11px;gap:8px}#page-holidays .holiday-stat-icon{flex-basis:34px;height:34px}#page-holidays .holiday-row{grid-template-columns:72px minmax(0,1fr);gap:7px 10px;padding:12px}#page-holidays .holiday-row .holiday-type-cell,#page-holidays .holiday-row .holiday-countdown-cell{grid-column:2}#page-holidays .holiday-filter-row{align-items:flex-start}#page-holidays .holiday-filters button{min-height:35px;padding:0 10px;font-size:11px}}
 
+
+#page-holidays .holiday-month-jumps{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-3px 0 13px;color:var(--muted);font-size:11px;font-weight:750}
+#page-holidays .holiday-month-jumps button{border:1px solid #b9e5d1;background:#effaf4;color:#087a55;border-radius:8px;padding:7px 11px;font-size:11px;font-weight:800;cursor:pointer}
+#page-holidays .holiday-month-group{scroll-margin-top:24px}
+#page-holidays .holiday-month-group+.holiday-month-group{margin-top:20px}
+#page-holidays .holiday-month-group h3{display:flex;align-items:center;justify-content:space-between;margin:5px 0 9px;padding:0 2px;color:var(--text);font-size:14px;font-weight:850}
+#page-holidays .holiday-month-group h3 span{font-size:10px;color:var(--muted);font-weight:650}
+
 </style>
 
 <style id="savely-v205-settings-cleanup">
@@ -2185,6 +2193,11 @@ main.main > #page-interest.page.active{
           <option value="2026">2026</option><option value="2027" selected>2027</option><option value="2028">2028</option>
         </select>
       </label>
+    </div>
+    <div class="holiday-month-jumps" id="holidayMonthJumps" aria-label="Jump to month">
+      <span>Jump to:</span>
+      <button type="button" onclick="jumpToHolidayMonth(11)">November</button>
+      <button type="button" onclick="jumpToHolidayMonth(12)">December</button>
     </div>
     <section class="panel holiday-list-panel">
       <div class="panel-head holiday-list-head">
@@ -4920,7 +4933,7 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape'){const updat
 /* Philippine holiday calendar: proclamation-backed dates with periodic public-calendar sync. */
 const SAVELY_PH_HOLIDAYS={
 2026:[
-['2026-01-01',"New Year's Day",'regular','New Year celebration'],['2026-02-17','Chinese New Year','special','Additional special non-working day'],['2026-02-25','EDSA People Power Revolution Anniversary','working','Special working day'],['2026-04-02','Maundy Thursday','regular','Holy Week'],['2026-04-03','Good Friday','regular','Holy Week'],['2026-04-04','Black Saturday','special','Additional special non-working day'],['2026-04-09','Araw ng Kagitingan','regular','Day of Valor'],['2026-05-01','Labor Day','regular','Labor Day'],['2026-06-12','Independence Day','regular','Philippine Independence Day'],['2026-08-21','Ninoy Aquino Day','special','Special non-working day'],['2026-08-31','National Heroes Day','regular','Last Monday of August'],['2026-11-01',"All Saints' Day",'special','Special non-working day'],['2026-11-02',"All Souls' Day",'special','Additional special non-working day'],['2026-11-30','Bonifacio Day','regular','Commemoration of Andres Bonifacio'],['2026-12-08','Feast of the Immaculate Conception of Mary','special','Special non-working day'],['2026-12-24','Christmas Eve','special','Additional special non-working day'],['2026-12-25','Christmas Day','regular','Christmas Day'],['2026-12-30','Rizal Day','regular','Commemoration of Dr. Jose Rizal'],['2026-12-31','Last Day of the Year','special','Special non-working day'],['2026-11-16','NCR special non-working day','regional','Special non-working day in the National Capital Region · Proclamation No. 1449'],['2026-11-17','NCR special non-working day','regional','Special non-working day in the National Capital Region · Proclamation No. 1449'],['2026-11-18','NCR special non-working day','regional','Special non-working day in the National Capital Region · Proclamation No. 1449']
+['2026-01-01',"New Year's Day",'regular','New Year celebration'],['2026-02-17','Chinese New Year','special','Additional special non-working day'],['2026-02-25','EDSA People Power Revolution Anniversary','working','Special working day'],['2026-04-02','Maundy Thursday','regular','Holy Week'],['2026-04-03','Good Friday','regular','Holy Week'],['2026-04-04','Black Saturday','special','Additional special non-working day'],['2026-04-09','Araw ng Kagitingan','regular','Day of Valor'],['2026-05-01','Labor Day','regular','Labor Day'],['2026-06-12','Independence Day','regular','Philippine Independence Day'],['2026-08-21','Ninoy Aquino Day','special','Special non-working day'],['2026-08-31','National Heroes Day','regular','Last Monday of August'],['2026-11-01',"All Saints' Day",'special','Special non-working day'],['2026-11-02',"All Souls' Day",'special','Additional special non-working day'],['2026-11-30','Bonifacio Day','regular','Commemoration of Andres Bonifacio'],['2026-12-08','Feast of the Immaculate Conception of Mary','special','Special non-working day'],['2026-12-24','Christmas Eve','special','Additional special non-working day'],['2026-12-25','Christmas Day','regular','Christmas Day'],['2026-12-30','Rizal Day','regular','Commemoration of Dr. Jose Rizal'],['2026-12-31','Last Day of the Year','special','Special non-working day'],['2026-11-16','ASEAN Summit – NCR special non-working day','regional','Special non-working day in the National Capital Region for the 49th ASEAN Summit · Proclamation No. 1447'],['2026-11-17','ASEAN Summit – NCR special non-working day','regional','Special non-working day in the National Capital Region for the 49th ASEAN Summit · Proclamation No. 1447'],['2026-11-18','ASEAN Summit – NCR special non-working day','regional','Special non-working day in the National Capital Region for the 49th ASEAN Summit · Proclamation No. 1447']
 ].map(x=>({date:x[0],name:x[1],type:x[2],desc:x[3],source:'Proclamation No. 1006'})),
 2027:[
 ['2027-01-01',"New Year's Day",'regular','New Year celebration'],['2027-02-06','Chinese New Year','special','Additional special non-working day'],['2027-02-25','EDSA People Power Revolution Anniversary','working','Special working day'],['2027-03-25','Maundy Thursday','regular','Holy Week'],['2027-03-26','Good Friday','regular','Holy Week'],['2027-03-27','Black Saturday','special','Additional special non-working day'],['2027-04-09','Araw ng Kagitingan','regular','Day of Valor'],['2027-05-01','Labor Day','regular','Labor Day'],['2027-06-12','Independence Day','regular','Philippine Independence Day'],['2027-08-21','Ninoy Aquino Day','special','Special non-working day'],['2027-08-30','National Heroes Day','regular','Last Monday of August'],['2027-11-01',"All Saints' Day",'special','Special non-working day'],['2027-11-02',"All Souls' Day",'special','Additional special non-working day'],['2027-11-30','Bonifacio Day','regular','Commemoration of Andres Bonifacio'],['2027-12-08','Feast of the Immaculate Conception of Mary','special','Special non-working day'],['2027-12-24','Christmas Eve','special','Additional special non-working day'],['2027-12-25','Christmas Day','regular','Christmas Day'],['2027-12-30','Rizal Day','regular','Commemoration of Dr. Jose Rizal'],['2027-12-31','Last Day of the Year','special','Special non-working day']
@@ -4934,7 +4947,27 @@ function phHolidayRemaining(iso){return phHolidayDate(iso).getTime()-Date.now();
 function phNextHoliday(){const now=Date.now();return Object.keys(SAVELY_PH_HOLIDAYS).flatMap(y=>SAVELY_PH_HOLIDAYS[y]||[]).filter(h=>h.type!=='regional'&&phHolidayDate(h.date).getTime()+86400000>now).sort((a,b)=>a.date.localeCompare(b.date))[0]||null;}
 function phCountdownParts(ms){let sec=Math.max(0,Math.floor(ms/1000)),days=Math.floor(sec/86400);sec%=86400;let hours=Math.floor(sec/3600);sec%=3600;let mins=Math.floor(sec/60);sec%=60;return [days,String(hours).padStart(2,'0'),String(mins).padStart(2,'0'),String(sec).padStart(2,'0')];}
 function phHolidayType(type){return type==='regular'?'Regular holiday':type==='special'?'Special non-working':type==='working'?'Special working day':type==='regional'?'Regional / local':'Public holiday · verify';}
+
+function ensure2026NovDecHolidays(){
+ const rows=[
+  ['2026-11-01',"All Saints' Day",'special','Special non-working holiday · Proclamation No. 1006'],
+  ['2026-11-02',"All Souls' Day",'special','Additional special non-working day · Proclamation No. 1006'],
+  ['2026-11-30','Bonifacio Day','regular','Regular holiday · Proclamation No. 1006'],
+  ['2026-12-08','Feast of the Immaculate Conception of Mary','special','Special non-working holiday · Proclamation No. 1006'],
+  ['2026-12-24','Christmas Eve','special','Additional special non-working day · Proclamation No. 1006'],
+  ['2026-12-25','Christmas Day','regular','Regular holiday · Proclamation No. 1006'],
+  ['2026-12-30','Rizal Day','regular','Regular holiday · Proclamation No. 1006'],
+  ['2026-12-31','Last Day of the Year','special','Special non-working holiday · Proclamation No. 1006']
+ ];
+ const arr=SAVELY_PH_HOLIDAYS[2026]||(SAVELY_PH_HOLIDAYS[2026]=[]);
+ rows.forEach(([date,name,type,desc])=>{
+  const existing=arr.find(h=>h.date===date&&(h.name===name||h.name.toLowerCase()===name.toLowerCase()));
+  if(existing){existing.type=type;existing.desc=desc;existing.source='Proclamation No. 1006';}
+  else arr.push({date,name,type,desc,source:'Proclamation No. 1006'});
+ });
+}
 function renderHolidayPage(){
+ ensure2026NovDecHolidays();
  const yearItems=SAVELY_PH_HOLIDAYS[savelyHolidayYear]||[],next=phNextHoliday();
  const name=document.getElementById('holidayNextName'),meta=document.getElementById('holidayNextMeta');
  if(name)name.textContent=next?next.name:'No upcoming holidays listed';
@@ -4943,9 +4976,17 @@ function renderHolidayPage(){
  if(stat)stat.innerHTML=`<div class="holiday-stat"><span class="holiday-stat-icon">▦</span><div><strong>${yearItems.length}</strong><small>Holidays listed · ${savelyHolidayYear}</small></div></div><div class="holiday-stat"><span class="holiday-stat-icon">✓</span><div><strong>${yearItems.filter(h=>h.type==='regular').length}</strong><small>Regular holidays</small></div></div><div class="holiday-stat"><span class="holiday-stat-icon">☆</span><div><strong>${yearItems.filter(h=>h.type==='special').length}</strong><small>Special non-working</small></div></div><div class="holiday-stat"><span class="holiday-stat-icon">◷</span><div><strong>${next?Math.max(0,Math.ceil(phHolidayRemaining(next.date)/86400000))+' days':'—'}</strong><small>Until next holiday</small></div></div>`;
  const title=document.getElementById('holidayListTitle');if(title)title.textContent=`${savelyHolidayYear} holiday calendar`;
  const sub=document.getElementById('holidayListSubtitle');if(sub)sub.textContent=`${yearItems.length} nationwide holidays and special days currently listed`;
- const filtered=yearItems.filter(h=>savelyHolidayFilter==='all'||(savelyHolidayFilter==='regular'&&h.type==='regular')||(savelyHolidayFilter==='special'&&h.type==='special')||(savelyHolidayFilter==='working'&&h.type==='working')||(savelyHolidayFilter==='regional'&&h.type==='regional')).sort((a,b)=>a.date.localeCompare(b.date));
+ const filtered=yearItems.filter(h=>savelyHolidayFilter==='all'||(savelyHolidayFilter==='regular'&&h.type==='regular')||(savelyHolidayFilter==='special'&&(h.type==='special'||h.type==='regional'))||(savelyHolidayFilter==='working'&&h.type==='working')||(savelyHolidayFilter==='regional'&&h.type==='regional')).sort((a,b)=>a.date.localeCompare(b.date));
  const list=document.getElementById('holidayList');
- if(list)list.innerHTML=filtered.length?filtered.map(h=>{const ms=phHolidayRemaining(h.date),isNext=next&&next.date===h.date&&next.name===h.name;return `<div class="holiday-row ${isNext?'next':''}"><div class="holiday-date">${phHolidayLabel(h.date,{month:'short',day:'numeric',year:'numeric'})}<small>${phHolidayLabel(h.date,{weekday:'long'})}</small></div><div><div class="holiday-name">${esc(h.name)}</div><div class="holiday-description">${esc(h.desc||'Philippine holiday')}</div></div><div class="holiday-type-cell"><span class="holiday-type ${h.type}">${phHolidayType(h.type)}</span></div><div class="holiday-countdown-cell holiday-countdown-text ${ms<=0?'passed':''}" data-holiday-countdown="${h.date}">${ms<=0?'Holiday date reached':`${Math.floor(ms/86400000)} days remaining`}</div></div>`}).join(''):'<div class="holiday-empty">No holidays in this category for the selected year.</div>';
+ if(list){
+  const months={};
+  filtered.forEach(h=>{const key=h.date.slice(0,7);(months[key]||(months[key]=[])).push(h);});
+  list.innerHTML=filtered.length?Object.keys(months).sort().map(key=>{
+   const [yy,mm]=key.split('-'),monthName=new Intl.DateTimeFormat('en-PH',{month:'long',year:'numeric',timeZone:'Asia/Manila'}).format(new Date(`${key}-01T00:00:00+08:00`));
+   const rows=months[key].map(h=>{const ms=phHolidayRemaining(h.date),isNext=next&&next.date===h.date&&next.name===h.name;return `<div class="holiday-row ${isNext?'next':''}"><div class="holiday-date">${phHolidayLabel(h.date,{month:'short',day:'numeric',year:'numeric'})}<small>${phHolidayLabel(h.date,{weekday:'long'})}</small></div><div><div class="holiday-name">${esc(h.name)}</div><div class="holiday-description">${esc(h.desc||'Philippine holiday')}</div></div><div class="holiday-type-cell"><span class="holiday-type ${h.type}">${phHolidayType(h.type)}</span></div><div class="holiday-countdown-cell holiday-countdown-text ${ms<=0?'passed':''}" data-holiday-countdown="${h.date}">${ms<=0?'Holiday date reached':`${Math.floor(ms/86400000)} days remaining`}</div></div>`}).join('');
+   return `<section class="holiday-month-group" id="holiday-month-${yy}-${mm}"><h3>${monthName}<span>${months[key].length} ${months[key].length===1?'holiday':'holidays'}</span></h3>${rows}</section>`;
+  }).join(''):'<div class="holiday-empty">No holidays in this category for the selected year.</div>';
+ }
  document.querySelectorAll('[data-holiday-filter]').forEach(b=>b.classList.toggle('active',b.dataset.holidayFilter===savelyHolidayFilter));
  const ys=document.getElementById('holidayYearSelect');if(ys)ys.value=String(savelyHolidayYear);
  updateHolidayCountdowns();
@@ -4957,6 +4998,7 @@ function updateHolidayCountdowns(){
 }
 function setHolidayFilter(v){savelyHolidayFilter=v;renderHolidayPage();}
 function setHolidayYear(v){savelyHolidayYear=Number(v)||2027;renderHolidayPage();}
+function jumpToHolidayMonth(month){const el=document.getElementById(`holiday-month-${savelyHolidayYear}-${String(month).padStart(2,'0')}`);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});else toast('No holidays listed for that month in the selected year.');}
 function openHolidaysPage(){showPage('holidays');renderHolidayPage();if(!window.__savelyHolidaySyncStarted)refreshPhilippineHolidays(false);}
 function holidaySyncStatus(v){const e=document.getElementById('holidaySyncStatus');if(e)e.textContent=v;}
 
