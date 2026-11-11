@@ -2162,6 +2162,119 @@ body:has(#page-holidays.active) #holidayRefreshButton{display:inline-flex}
 }
 </style>
 
+
+<style id="savely-global-button-consistency-v1">
+/* Site-wide button system: consistent control height, type, alignment and spacing */
+:root{
+  --savely-button-height:42px;
+  --savely-button-radius:10px;
+}
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+[role="button"]{
+  box-sizing:border-box!important;
+  min-height:var(--savely-button-height)!important;
+  height:var(--savely-button-height)!important;
+  padding:0 16px!important;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  line-height:1.15!important;
+  font-family:inherit!important;
+  font-size:12px!important;
+  font-weight:750!important;
+  border-radius:var(--savely-button-radius)!important;
+  vertical-align:middle;
+  white-space:nowrap;
+}
+button:disabled,
+input[type="button"]:disabled,
+input[type="submit"]:disabled,
+input[type="reset"]:disabled{
+  cursor:not-allowed;
+}
+/* Sidebar navigation: equal-height rows while retaining full-width menu layout */
+.sidebar .nav button,
+.sidebar nav button,
+#nav button{
+  width:100%!important;
+  min-width:0!important;
+  height:42px!important;
+  min-height:42px!important;
+  padding:0 15px!important;
+  justify-content:flex-start!important;
+  border-radius:11px!important;
+  gap:11px!important;
+}
+/* Sidebar collapse handle remains a compact square control */
+#savelySidebarToggle{
+  width:42px!important;
+  min-width:42px!important;
+  height:42px!important;
+  min-height:42px!important;
+  padding:0!important;
+  justify-content:center!important;
+}
+/* Icon-only actions and overflow menus use a consistent square footprint */
+button[aria-label]:not([data-page]),
+button[title]:not([data-page]){
+  min-width:42px;
+}
+button[aria-label="Close"],
+button[aria-label="close"],
+button[title="Close"],
+button[title="close"],
+button.icon-btn,
+button.icon-button,
+button.dots-btn,
+button.more-btn,
+button[data-action="more"]{
+  width:42px!important;
+  min-width:42px!important;
+  padding:0!important;
+  justify-content:center!important;
+}
+/* Dialog and popup form actions share the same control height */
+.modal button,
+[role="dialog"] button,
+.popup button,
+.form-actions button,
+.modal-actions button,
+.modal-footer button{
+  height:42px!important;
+  min-height:42px!important;
+}
+/* Keep full-width submit/action controls full width without changing their height */
+button.block,
+button.btn-block,
+.modal button[type="submit"],
+[role="dialog"] button[type="submit"]{
+  min-height:42px!important;
+}
+/* Segmented controls and filter groups align to the same button baseline */
+button.interest-bank-tab,
+button.interest-period-card,
+button.holiday-header-refresh,
+button.link-btn{
+  min-height:42px!important;
+  height:42px!important;
+}
+/* Small screens retain the same touch-friendly height */
+@media(max-width:680px){
+  button,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  [role="button"]{
+    min-height:42px!important;
+    height:42px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
