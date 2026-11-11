@@ -1670,6 +1670,75 @@ button:focus-visible{outline:3px solid rgba(22,135,101,.22);outline-offset:2px}
 }
 </style>
 
+
+<style id="savely-dashboard-greeting-sidebar-fixed-v1">
+/* Dashboard greeting: keep the greeting itself neutral black; username styling remains separate. */
+body:has(#page-dashboard.active) #pageTitle{
+ color:#111827!important;
+}
+
+/* Desktop: pin the navigation to the viewport; only the main document scrolls. */
+@media(min-width:761px){
+ .app{
+  display:grid!important;
+  grid-template-columns:245px minmax(0,1fr)!important;
+  align-items:start!important;
+  min-height:100vh;
+ }
+ .app>.sidebar{
+  position:fixed!important;
+  top:0!important;left:0!important;bottom:0!important;
+  width:245px!important;height:100vh!important;height:100dvh!important;
+  min-height:0!important;max-height:100vh!important;max-height:100dvh!important;
+  box-sizing:border-box!important;
+  overflow-y:auto!important;overflow-x:hidden!important;
+  overscroll-behavior:contain;
+  align-self:stretch!important;
+  z-index:100!important;
+ }
+ .app>.main{
+  grid-column:2!important;
+  min-width:0!important;
+  min-height:100vh;
+ }
+ .app.sidebar-collapsed{
+  grid-template-columns:76px minmax(0,1fr)!important;
+ }
+ .app.sidebar-collapsed>.sidebar{
+  width:76px!important;
+ }
+}
+
+/* Keep the existing compact top-navigation behavior on phones and tablets. */
+@media(max-width:760px){
+ .app>.sidebar{
+  position:relative!important;
+  inset:auto!important;
+  width:auto!important;height:auto!important;
+  min-height:0!important;max-height:none!important;
+  overflow:visible!important;
+ }
+ .app>.main{grid-column:auto!important}
+}
+</style>
+
+
+<style id="savely-page-isolation-fix-v1">
+/* Keep every routed page isolated: inactive pages must never leak into the current view.
+   The Interest Calculator has its own ID-based layout styles, so explicitly restore its
+   hidden/active states with matching ID specificity. */
+main.main > .page:not(.active){
+  display:none!important;
+}
+main.main > .page.active{
+  display:block!important;
+}
+main.main > #page-interest.page.active{
+  display:flex!important;
+  flex-direction:column!important;
+}
+</style>
+
 </head>
 <body>
 
