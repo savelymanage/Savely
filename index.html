@@ -2451,15 +2451,15 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
  if(!current&&!['owed','lent'].includes(directionChoice)){openDebtSideChooser(defaultDate);return;}
  const directionValue=current?current.direction:directionChoice;
  const isOwed=directionValue==='owed';
- const modal=document.createElement('div');modal.id='savelyDebtFormModal';modal.className='modal-backdrop';
+ const modal=document.createElement('div');modal.id='savelyDebtFormModal';modal.className='modal-backdrop savely-debt-form-backdrop';
  modal.style.cssText='display:flex;z-index:30000;align-items:center;justify-content:center;padding:18px';
  const paid=current?debtPaidAmount(current):0;
  const formTitle=current?`Edit ${isOwed?'payment':'collection'} record`:isOwed?'Add payment schedule':'Add money to collect';
  const formSubtitle=isOwed?'Track a bill, loan, or installment that you need to pay.':'Track money you lent and the payments you expect to collect.';
  const typeOptions=`<option>Shopee SPayLater</option><option>Lazada LazPayLater</option><option>Atome</option><option>GCash GLoan / GGives</option><option>Maya Easy Credit</option><option>SLoan / Billease</option><option>Home Credit</option><option>Tala / online lending app</option><option>Credit card</option><option>Bank / salary loan</option><option>SSS / Pag-IBIG loan</option><option>Utility / subscription bill</option><option>Personal loan / money lent</option><option>Other</option>`;
- modal.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="debtFormTitle" style="width:min(700px,100%);max-height:92vh;overflow:auto">
-  <div class="panel-head"><div><h2 id="debtFormTitle">${formTitle}</h2><div class="panel-sub">${formSubtitle}</div></div><button type="button" class="btn btn-light" onclick="closeDebtForm()">✕ Close</button></div>
-  <div style="display:flex;align-items:center;gap:9px;margin:0 0 14px;padding:10px 12px;border-radius:9px;background:${isOwed?'rgba(220,70,85,.07)':'rgba(23,139,105,.07)'};color:${isOwed?'var(--red)':'var(--green)'};font-size:11px;font-weight:800"><span style="font-size:16px">${isOwed?'↗':'↙'}</span>${isOwed?'I OWE · PAYMENT TO MAKE':'OWED TO ME · MONEY TO COLLECT'}</div>
+ modal.innerHTML=`<div class="modal savely-debt-form-dialog" role="dialog" aria-modal="true" aria-labelledby="debtFormTitle" style="width:min(760px,100%);max-height:92vh;overflow:auto">
+  <div class="panel-head savely-debt-form-header"><div><div class="savely-debt-kicker">DEBT SCHEDULE</div><h2 id="debtFormTitle">${formTitle}</h2><div class="panel-sub">${formSubtitle}</div></div><button type="button" class="btn btn-light" onclick="closeDebtForm()">✕ Close</button></div>
+  <div class="savely-debt-direction-banner ${isOwed?'is-owed':'is-lent'}"><span class="savely-debt-direction-icon">${isOwed?'↗':'↙'}</span><span>${isOwed?'I OWE · PAYMENT TO MAKE':'OWED TO ME · MONEY TO COLLECT'}</span></div>
   <form id="savelyDebtForm">
    <div class="debt-form-grid">
     <div class="field full"><label for="debtKind">Debt type</label><select id="debtKind" required>${typeOptions}</select></div>
@@ -2467,8 +2467,14 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
     <div class="field full"><label for="debtCounterparty" id="debtCounterpartyLabel">${isOwed?'Lender / platform':'Borrower / person who owes you'}</label><input id="debtCounterparty" maxlength="70" placeholder="${isOwed?'e.g. Shopee, Lazada, GCash, or bank':'e.g. Friend, family member, or colleague'}"></div>
     <div class="field"><label for="debtTotalAmount">${current?'Scheduled amount (₱)':isOwed?'Total amount to pay (₱)':'Total amount to collect (₱)'}</label><input id="debtTotalAmount" type="number" min="0.01" step="0.01" required value="${current?Number(current.amount).toFixed(2):''}" placeholder="e.g. 3500"></div>
     <div class="field"><label for="debtFirstDue">${isOwed?'First due date':'Expected collection date'}</label><input id="debtFirstDue" type="date" required value="${current?esc(current.dueDate):(defaultDate||debtLocalISO(new Date()))}"></div>
-    <div class="field"><label for="debtFrequency">Schedule</label><select id="debtFrequency"${current?' disabled':''}><option value="once">One-time ${isOwed?'payment':'collection'}</option><option value="weekly">Weekly</option><option value="biweekly">Every 2 weeks</option><option value="monthly">Monthly</option></select></div>
-    <div class="field"><label for="debtInstallments">Number of ${isOwed?'payments':'collections'}</label><input id="debtInstallments" type="number" min="2" max="48" value="3"${current?' disabled':''}><div class="debt-series-help">For installment plans, Savely splits the total amount across the selected dates.</div></div>
+    <div class="savely-debt-plan-card field full">
+     <div class="savely-debt-plan-heading"><div><strong>Repayment plan</strong><span>Choose how often the payment or collection should happen.</span></div><span class="savely-debt-plan-badge">SCHEDULE</span></div>
+     <div class="savely-debt-plan-grid">
+      <div class="field"><label for="debtFrequency">Payment frequency</label><select id="debtFrequency"${current?' disabled':''}><option value="once">One-time</option><option value="weekly">Weekly</option><option value="biweekly">Every 2 weeks</option><option value="monthly">Monthly</option></select></div>
+      <div class="field"><label for="debtInstallments">Number of ${isOwed?'payments':'collections'}</label><div class="savely-debt-count-control"><button type="button" class="savely-debt-count-step" data-debt-count-step="-1" aria-label="Decrease number of payments"${current?' disabled':''}>−</button><input id="debtInstallments" type="number" inputmode="numeric" min="1" max="48" step="1" value="${current?Number(current.totalInstallments||1):1}" required${current?' disabled':''} aria-describedby="debtInstallmentHelp"><button type="button" class="savely-debt-count-step" data-debt-count-step="1" aria-label="Increase number of payments"${current?' disabled':''}>+</button></div><div class="debt-series-help" id="debtInstallmentHelp">Enter 12 for 12 payments. If One-time is selected, Savely switches to Monthly automatically.</div></div>
+     </div>
+     <div class="savely-debt-schedule-preview" id="debtSchedulePreview" aria-live="polite"></div>
+    </div>
    </div>
    ${current&&paid>0?`<div class="notice" style="margin-top:10px">Already ${isOwed?'paid':'collected'}: ${peso(paid)}. The scheduled amount cannot be lower than amounts already recorded.</div>`:''}
    <div class="form-actions" style="justify-content:flex-end;margin-top:16px"><button type="button" class="btn btn-secondary" onclick="closeDebtForm()">Cancel</button><button type="submit" class="btn btn-primary" style="background:var(--green);border-color:var(--green)">${current?'Save changes':isOwed?'Add payment':'Add collection'}</button></div>
@@ -2483,16 +2489,86 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
  }
  if(!current&&!isOwed)modal.querySelector('#debtKind').value='Personal loan / money lent';
  const frequency=modal.querySelector('#debtFrequency'),installments=modal.querySelector('#debtInstallments');
- const updateInstallments=()=>{if(!current){installments.disabled=frequency.value==='once';if(installments.disabled)installments.value='1';else if(Number(installments.value)<2)installments.value='3';}};
- frequency.addEventListener('change',updateInstallments);updateInstallments();
+ const preview=modal.querySelector('#debtSchedulePreview');
+ const amountField=modal.querySelector('#debtTotalAmount');
+ const dueField=modal.querySelector('#debtFirstDue');
+ if(current){
+  frequency.value=current.frequency||'once';
+  installments.value=String(Math.max(1,Number(current.totalInstallments)||1));
+ }
+ const scheduleDateAt=(start,repeat,index)=>{
+  if(repeat==='weekly'||repeat==='biweekly'){
+   const date=debtDateFromISO(start);
+   date.setDate(date.getDate()+index*(repeat==='weekly'?7:14));
+   return debtLocalISO(date);
+  }
+  if(repeat==='monthly')return debtAddMonths(start,index);
+  return start;
+ };
+ const updateSchedulePreview=()=>{
+  if(!preview)return;
+  const raw=String(installments.value||'').trim();
+  const count=Number(raw);
+  const start=dueField.value;
+  const amount=Number(amountField.value);
+  const repeat=frequency.value;
+  if(!raw||!Number.isInteger(count)||count<1||count>48){
+   preview.innerHTML='<span class="savely-debt-preview-muted">Enter a whole number from 1 to 48.</span>';
+   return;
+  }
+  if(!start){
+   preview.innerHTML='<span class="savely-debt-preview-muted">Choose the first due date to preview your schedule.</span>';
+   return;
+  }
+  const lastDate=scheduleDateAt(start,repeat,count-1);
+  const dateLabel=date=>new Intl.DateTimeFormat('en-PH',{year:'numeric',month:'short',day:'numeric'}).format(debtDateFromISO(date));
+  const each=Number.isFinite(amount)&&amount>0?Math.floor((amount/count)*100)/100:0;
+  const frequencyLabel=repeat==='once'?'one-time':repeat==='weekly'?'weekly':repeat==='biweekly'?'every 2 weeks':'monthly';
+  const countLabel=count===1?'1 scheduled payment':`${count} ${isOwed?'payments':'collections'}`;
+  preview.innerHTML=`<span class="savely-debt-preview-icon">✓</span><span><strong>${countLabel} · ${frequencyLabel}</strong><small>${count>1?`From ${dateLabel(start)} to ${dateLabel(lastDate)}${each?` · About ${peso(each)} each`:''}`:`Due ${dateLabel(start)}${amount>0?` · ${peso(amount)}`:''}`}</small></span>`;
+ };
+ const syncInstallmentInput=()=>{
+  if(current){updateSchedulePreview();return;}
+  const raw=String(installments.value||'').trim();
+  const count=Number(raw);
+  if(raw&&Number.isInteger(count)&&count>1&&frequency.value==='once'){
+   frequency.value='monthly';
+  }
+  updateSchedulePreview();
+ };
+ if(!current){
+  frequency.addEventListener('change',()=>{
+   if(frequency.value==='once')installments.value='1';
+   updateSchedulePreview();
+  });
+  installments.addEventListener('input',syncInstallmentInput);
+  installments.addEventListener('change',()=>{
+   const value=Number(installments.value);
+   if(!Number.isInteger(value)||value<1)installments.value='1';
+   else if(value>48)installments.value='48';
+   syncInstallmentInput();
+  });
+  modal.querySelectorAll('[data-debt-count-step]').forEach(button=>button.addEventListener('click',()=>{
+   const delta=Number(button.dataset.debtCountStep)||0;
+   const value=Math.max(1,Math.min(48,(Number(installments.value)||1)+delta));
+   installments.value=String(value);
+   syncInstallmentInput();
+  }));
+  [amountField,dueField].forEach(field=>field.addEventListener('input',updateSchedulePreview));
+ }
+ updateSchedulePreview();
  modal.querySelector('#savelyDebtForm').addEventListener('submit',e=>{
   e.preventDefault();
   const dir=directionValue,kind=modal.querySelector('#debtKind').value,title=modal.querySelector('#debtTitle').value.trim(),counterparty=modal.querySelector('#debtCounterparty').value.trim();
-  const amount=Number(modal.querySelector('#debtTotalAmount').value),dueDate=modal.querySelector('#debtFirstDue').value,repeat=frequency.value;
-  const count=current?1:(repeat==='once'?1:Math.min(48,Math.max(2,Number(installments.value)||3)));
+  const amount=Number(modal.querySelector('#debtTotalAmount').value),dueDate=modal.querySelector('#debtFirstDue').value;
+  let repeat=frequency.value;
+  const enteredCount=Number(installments.value);
+  if(!current&&repeat==='once'&&Number.isInteger(enteredCount)&&enteredCount>1){repeat='monthly';frequency.value='monthly';}
+  const count=current?1:(repeat==='once'?1:enteredCount);
   if(!title){toast('Enter a name or description.');return;}
   if(!Number.isFinite(amount)||amount<=0){toast('Enter an amount greater than zero.');return;}
   if(!dueDate){toast('Choose a date.');return;}
+  if(!current&&(!Number.isInteger(count)||count<1||count>48)){toast('Enter a whole number of payments from 1 to 48.');installments.focus();return;}
   if(!current && Math.floor(amount*100)+0.000001<count){toast('The total amount is too small for that number of installments. Reduce the installment count.');return;}
   if(current){
    if(amount+0.000001<paid){toast('Scheduled amount cannot be lower than amounts already recorded.');return;}
@@ -2515,7 +2591,7 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
   data.debtRecords.push(...created);
   if(!saveDebtRecords()){data.debtRecords.splice(-created.length,created.length);return;}
   closeDebtForm();debtCalendarCursor=new Date(debtDateFromISO(dueDate).getFullYear(),debtDateFromISO(dueDate).getMonth(),1);debtSelectedDate=dueDate;renderDebtPage();
-  toast(count>1?`${count} ${isOwed?'payments':'collections'} added to your debt calendar.`:isOwed?'Payment added to your calendar.':'Collection added to your calendar.');
+  toast(count>1?`${count} ${repeat==='monthly'?'monthly ':repeat==='weekly'?'weekly ':repeat==='biweekly'?'biweekly ':''}${isOwed?'payments':'collections'} added to your debt calendar.`:isOwed?'Payment added to your calendar.':'Collection added to your calendar.');
  });
 }
 function closeDebtForm(){const modal=document.getElementById('savelyDebtFormModal');if(modal)modal.remove();}
@@ -7108,6 +7184,274 @@ body.dark-theme .app > .sidebar #nav button.active * {
 #pageTitle,
 .page-title {
   color: #168765 !important;
+}
+</style>
+
+
+<style id="savely-debt-installment-form-ui-v2">
+.savely-debt-form-backdrop{
+  padding:22px !important;
+  background:rgba(17,28,42,.52) !important;
+  backdrop-filter:blur(5px);
+}
+.savely-debt-form-dialog{
+  width:min(760px,100%) !important;
+  max-height:min(92vh,900px) !important;
+  padding:24px !important;
+  border:1px solid rgba(255,255,255,.82) !important;
+  border-radius:22px !important;
+  background:#fff !important;
+  box-shadow:0 26px 80px rgba(15,30,48,.24) !important;
+}
+.savely-debt-form-header{
+  align-items:flex-start !important;
+  gap:16px !important;
+  margin-bottom:18px !important;
+}
+.savely-debt-kicker{
+  margin-bottom:5px;
+  color:#168765;
+  font-size:10px;
+  font-weight:850;
+  letter-spacing:.9px;
+}
+.savely-debt-form-header h2{
+  margin:0 !important;
+  font-size:21px !important;
+  line-height:1.25 !important;
+  font-weight:800 !important;
+  letter-spacing:-.45px !important;
+  color:#172b22 !important;
+}
+.savely-debt-form-header .panel-sub{
+  margin-top:5px !important;
+  font-size:12px !important;
+  line-height:1.5 !important;
+  color:#718078 !important;
+}
+.savely-debt-form-header .btn{
+  flex:0 0 auto;
+  min-height:39px;
+  padding:8px 12px !important;
+  border-radius:10px !important;
+  font-size:12px !important;
+}
+.savely-debt-direction-banner{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0 0 18px;
+  padding:12px 14px;
+  border:1px solid transparent;
+  border-radius:13px;
+  font-size:11px;
+  line-height:1.4;
+  font-weight:850;
+  letter-spacing:.35px;
+}
+.savely-debt-direction-banner.is-owed{
+  color:#c83c46;
+  background:#fff3f3;
+  border-color:#ffe0e0;
+}
+.savely-debt-direction-banner.is-lent{
+  color:#0b8058;
+  background:#effaf4;
+  border-color:#d7f1e2;
+}
+.savely-debt-direction-icon{
+  display:grid;
+  place-items:center;
+  width:28px;height:28px;
+  flex:0 0 28px;
+  border-radius:9px;
+  background:rgba(255,255,255,.85);
+  font-size:16px;
+}
+.savely-debt-form-dialog .debt-form-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:15px !important;
+}
+.savely-debt-form-dialog .debt-form-grid > .field{
+  min-width:0;
+}
+.savely-debt-form-dialog .field label{
+  display:block;
+  margin-bottom:7px;
+  color:#65756d !important;
+  font-size:11px !important;
+  line-height:1.35 !important;
+  font-weight:750 !important;
+}
+.savely-debt-form-dialog .field input,
+.savely-debt-form-dialog .field select{
+  width:100%;
+  min-width:0;
+  min-height:45px;
+  padding:10px 13px !important;
+  border:1px solid #dce7e1 !important;
+  border-radius:11px !important;
+  background:#fff !important;
+  color:#1c3027 !important;
+  font-size:13px !important;
+  outline:none;
+  box-shadow:0 1px 2px rgba(20,40,30,.025);
+  transition:border-color .15s,box-shadow .15s;
+}
+.savely-debt-form-dialog .field input:focus,
+.savely-debt-form-dialog .field select:focus{
+  border-color:#69b99a !important;
+  box-shadow:0 0 0 3px rgba(22,135,101,.11) !important;
+}
+.savely-debt-form-dialog .field input:disabled,
+.savely-debt-form-dialog .field select:disabled{
+  color:#68776f !important;
+  background:#f3f6f4 !important;
+  cursor:not-allowed;
+}
+.savely-debt-plan-card{
+  padding:16px !important;
+  border:1px solid #dfeae4;
+  border-radius:15px;
+  background:linear-gradient(145deg,#fbfefc 0%,#f5faf7 100%);
+}
+.savely-debt-plan-heading{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:13px;
+}
+.savely-debt-plan-heading strong{
+  display:block;
+  color:#1c3027;
+  font-size:14px;
+  font-weight:800;
+}
+.savely-debt-plan-heading span:not(.savely-debt-plan-badge){
+  display:block;
+  margin-top:3px;
+  color:#77877f;
+  font-size:11px;
+  line-height:1.4;
+}
+.savely-debt-plan-badge{
+  flex:0 0 auto;
+  padding:5px 8px;
+  border-radius:7px;
+  background:#e5f4ec;
+  color:#168765;
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:.55px;
+}
+.savely-debt-plan-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:13px;
+}
+.savely-debt-count-control{
+  display:grid;
+  grid-template-columns:38px minmax(0,1fr) 38px;
+  gap:6px;
+}
+.savely-debt-count-control input{
+  text-align:center;
+  font-size:15px !important;
+  font-weight:800 !important;
+  font-variant-numeric:tabular-nums;
+}
+.savely-debt-count-step{
+  display:grid;
+  place-items:center;
+  min-width:0;
+  min-height:45px;
+  border:1px solid #dce7e1;
+  border-radius:10px;
+  background:#fff;
+  color:#168765;
+  font-size:19px;
+  font-weight:700;
+  cursor:pointer;
+  transition:background .15s,border-color .15s;
+}
+.savely-debt-count-step:hover:not(:disabled){
+  background:#e9f6ef;
+  border-color:#a8d8c0;
+}
+.savely-debt-count-step:disabled{opacity:.45;cursor:not-allowed}
+.savely-debt-form-dialog .debt-series-help{
+  min-height:30px;
+  margin-top:6px !important;
+  color:#7a8982 !important;
+  font-size:10px !important;
+  line-height:1.45 !important;
+}
+.savely-debt-schedule-preview{
+  display:flex;
+  align-items:flex-start;
+  gap:9px;
+  margin-top:13px;
+  padding:11px 12px;
+  border:1px solid #d6eee1;
+  border-radius:11px;
+  background:#edf8f2;
+  color:#176f4e;
+}
+.savely-debt-preview-icon{
+  display:grid;
+  place-items:center;
+  width:21px;height:21px;
+  flex:0 0 21px;
+  border-radius:50%;
+  background:#d7f0e2;
+  color:#08784f;
+  font-size:12px;
+  font-weight:900;
+}
+.savely-debt-schedule-preview strong{
+  display:block;
+  color:#176f4e;
+  font-size:11px;
+  line-height:1.4;
+  font-weight:850;
+}
+.savely-debt-schedule-preview small{
+  display:block;
+  margin-top:3px;
+  color:#698579;
+  font-size:10px;
+  line-height:1.45;
+}
+.savely-debt-preview-muted{
+  color:#7b8982;
+  font-size:10px;
+  line-height:1.4;
+}
+.savely-debt-form-dialog .form-actions{
+  gap:9px !important;
+  margin-top:18px !important;
+  padding-top:15px;
+  border-top:1px solid #edf1ee;
+}
+.savely-debt-form-dialog .form-actions .btn{
+  min-height:43px;
+  padding:10px 17px !important;
+  border-radius:11px !important;
+  font-size:12px !important;
+  font-weight:800 !important;
+}
+@media(max-width:640px){
+  .savely-debt-form-backdrop{padding:10px !important}
+  .savely-debt-form-dialog{
+    padding:17px !important;
+    border-radius:17px !important;
+    max-height:95vh !important;
+  }
+  .savely-debt-form-header h2{font-size:18px !important}
+  .savely-debt-form-dialog .debt-form-grid,
+  .savely-debt-plan-grid{grid-template-columns:1fr !important;gap:11px !important}
+  .savely-debt-plan-card{padding:13px !important}
 }
 </style>
 
