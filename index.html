@@ -242,6 +242,63 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
  body:has(#page-salary.active) #salaryDetailsOpenButton{font-size:11px;padding:8px 10px}
 }
 
+
+/* Philippine Holidays page */
+#page-holidays{max-width:100%;color:var(--text)}
+#page-holidays .holiday-page-top{display:flex;align-items:flex-start;gap:18px;margin-bottom:18px;flex-wrap:wrap}
+#page-holidays .holiday-page-heading{flex:1;min-width:220px}
+#page-holidays .holiday-page-heading h2{font-size:26px;letter-spacing:-.7px;margin:4px 0 5px;color:var(--text)}
+#page-holidays .holiday-page-heading p{font-size:13px;color:var(--muted);margin:0}
+#page-holidays .holiday-kicker{font-size:10px;font-weight:850;letter-spacing:1px;color:#138765}
+#page-holidays .holiday-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.9fr);gap:24px;align-items:center;padding:25px 28px;margin-bottom:17px;border:1px solid #bce8d4;border-radius:20px;background:radial-gradient(circle at 88% 5%,#ffffff55 0 95px,transparent 96px),linear-gradient(115deg,#e7f8ef 0%,#d5f4e5 52%,#bcebd7 100%);box-shadow:0 12px 28px #0f8a5e12}
+#page-holidays .holiday-eyebrow{display:inline-flex;padding:6px 10px;border-radius:999px;background:#d0f3e1;color:#087a55;font-size:10px;font-weight:850;letter-spacing:.5px}
+#page-holidays .holiday-next-name{font-size:clamp(24px,3vw,34px);font-weight:900;letter-spacing:-1px;color:#102c23;margin:10px 0 5px}
+#page-holidays .holiday-next-meta{font-size:13px;color:#46695c}
+#page-holidays .holiday-countdown-wrap{padding:16px;border:1px solid #ffffffa6;border-radius:16px;background:#ffffff80;backdrop-filter:blur(8px)}
+#page-holidays .holiday-countdown-title{font-size:12px;font-weight:800;color:#274b3d;margin-bottom:10px}
+#page-holidays .holiday-countdown{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+#page-holidays .holiday-countdown>div{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:12px;background:#ffffffd9}
+#page-holidays .holiday-countdown strong{font-size:clamp(20px,2vw,27px);line-height:1.1;color:#087a55;font-variant-numeric:tabular-nums}
+#page-holidays .holiday-countdown span{font-size:10px;color:#527566;font-weight:700}
+#page-holidays .holiday-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:17px}
+#page-holidays .holiday-stat{display:flex;align-items:center;gap:12px;padding:15px;border:1px solid var(--line);border-radius:15px;background:var(--card,#fff);box-shadow:0 6px 18px #1c2b4207}
+#page-holidays .holiday-stat-icon{display:grid;place-items:center;flex:0 0 40px;height:40px;border-radius:12px;background:#e8f8f1;color:#0b8a61;font-size:19px;font-weight:900}
+#page-holidays .holiday-stat strong{display:block;font-size:19px;font-weight:850;line-height:1.15}
+#page-holidays .holiday-stat small{display:block;margin-top:3px;color:var(--muted);font-size:11px}
+#page-holidays .holiday-filter-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:4px 0 14px}
+#page-holidays .holiday-filters{display:flex;gap:7px;flex-wrap:wrap}
+#page-holidays .holiday-filters button{min-height:38px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:var(--card,#fff);color:var(--muted);font-size:12px;font-weight:750;cursor:pointer}
+#page-holidays .holiday-filters button.active{background:#128765;color:#fff;border-color:#128765;box-shadow:0 4px 12px #12876520}
+#page-holidays .holiday-year-label{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);font-weight:750}
+#page-holidays .holiday-year-label select{min-height:38px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--card,#fff);color:var(--text);font-weight:750}
+#page-holidays .holiday-list-panel{padding:20px}
+#page-holidays .holiday-list-head{align-items:center;flex-wrap:wrap}
+#page-holidays .holiday-list-head h2{margin:0;font-size:18px}
+#page-holidays .holiday-sync-status{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:11px}
+#page-holidays .holiday-live-dot{width:8px;height:8px;border-radius:50%;background:#16a36e;box-shadow:0 0 0 4px #16a36e1b}
+#page-holidays .holiday-list{display:grid;gap:8px}
+#page-holidays .holiday-row{display:grid;grid-template-columns:105px minmax(180px,1.4fr) minmax(145px,.8fr) minmax(150px,1fr);gap:14px;align-items:center;padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card,#fff)}
+#page-holidays .holiday-row.next{border-color:#a9e4c8;background:linear-gradient(90deg,#effaf4,#fff)}
+#page-holidays .holiday-date{font-size:12px;font-weight:850;color:var(--text)}
+#page-holidays .holiday-date small{display:block;margin-top:3px;color:var(--muted);font-size:10px;font-weight:600}
+#page-holidays .holiday-name{font-size:13px;font-weight:850;color:var(--text)}
+#page-holidays .holiday-description{font-size:11px;color:var(--muted);margin-top:3px}
+#page-holidays .holiday-type{display:inline-flex;align-items:center;justify-content:center;width:max-content;max-width:100%;padding:6px 9px;border-radius:999px;background:#e7f8ef;color:#087a55;font-size:10px;font-weight:800}
+#page-holidays .holiday-type.special{background:#eaf1ff;color:#245ecb}
+#page-holidays .holiday-type.working{background:#fff4e5;color:#b65b00}
+#page-holidays .holiday-type.regional{background:#f2eaff;color:#7042b8}
+#page-holidays .holiday-countdown-text{font-size:11px;color:#087a55;font-weight:750;font-variant-numeric:tabular-nums}
+#page-holidays .holiday-countdown-text.passed{color:var(--muted);font-weight:600}
+#page-holidays .holiday-source-note{display:grid;gap:7px;margin-top:17px;padding:14px 15px;border:1px solid #e6edf4;border-radius:12px;background:#f8fafc;color:var(--muted);font-size:11px;line-height:1.55}
+#page-holidays .holiday-source-note strong{font-size:12px;color:var(--text)}
+#page-holidays .holiday-source-links{display:flex;gap:14px;flex-wrap:wrap}
+#page-holidays .holiday-source-links a{color:#0b8962;font-weight:750;text-decoration:none}
+#page-holidays .holiday-source-links a:hover{text-decoration:underline}
+#page-holidays .holiday-pending-note{margin-top:12px;padding:12px 14px;border:1px solid #f5dfb6;border-radius:11px;background:#fff9ed;color:#875514;font-size:11px;line-height:1.5}
+#page-holidays .holiday-empty{padding:26px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;font-size:13px}
+@media(max-width:900px){#page-holidays .holiday-hero{grid-template-columns:1fr}#page-holidays .holiday-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#page-holidays .holiday-row{grid-template-columns:90px minmax(0,1fr) minmax(130px,.8fr)}#page-holidays .holiday-row .holiday-countdown-cell{grid-column:2/4}}
+@media(max-width:600px){#page-holidays .holiday-page-heading h2{font-size:22px}#page-holidays .holiday-hero{padding:18px}#page-holidays .holiday-countdown{gap:5px}#page-holidays .holiday-countdown>div{padding:9px 2px}#page-holidays .holiday-stat-grid{gap:8px}#page-holidays .holiday-stat{padding:11px;gap:8px}#page-holidays .holiday-stat-icon{flex-basis:34px;height:34px}#page-holidays .holiday-row{grid-template-columns:72px minmax(0,1fr);gap:7px 10px;padding:12px}#page-holidays .holiday-row .holiday-type-cell,#page-holidays .holiday-row .holiday-countdown-cell{grid-column:2}#page-holidays .holiday-filter-row{align-items:flex-start}#page-holidays .holiday-filters button{min-height:35px;padding:0 10px;font-size:11px}}
+
 </style>
 
 <style id="savely-v205-settings-cleanup">
@@ -1923,7 +1980,7 @@ main.main > #page-interest.page.active{
   <div class="side-bottom"><strong>Small steps add up.</strong><p>Keep your goals in sight and your savings moving forward.</p></div>
 </aside>
 <main class="main">
-  <header class="topbar"><div><div class="eyebrow" id="eyebrow">YOUR MONEY, IN FOCUS</div><h1 class="page-title" id="pageTitle">Good afternoon 👋</h1><div id="dashboardUsername" class="dashboard-username" hidden></div><div class="page-description" id="pageDescription">A clear view of your savings, income, and financial progress.</div></div><div class="top-actions"><div class="weather-pill" id="savelyWeather" title="Live weather · Click to view satellite imagery" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="savelySatelliteBackdrop" style="cursor:pointer"><span class="weather-icon" id="savelyWeatherIcon">🌤️</span><span class="weather-copy"><strong id="savelyWeatherTemp">Loading…</strong><small id="savelyWeatherDesc">Current weather</small></span></div><div class="date-pill date-pill-clickable" id="today" role="button" tabindex="0" aria-label="Open Date &amp; Time settings" title="Open Date &amp; Time settings" onclick="openDateTimeSettingsPage()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDateTimeSettingsPage()}">
+  <header class="topbar"><div><div class="eyebrow" id="eyebrow">YOUR MONEY, IN FOCUS</div><h1 class="page-title" id="pageTitle">Good afternoon 👋</h1><div id="dashboardUsername" class="dashboard-username" hidden></div><div class="page-description" id="pageDescription">A clear view of your savings, income, and financial progress.</div></div><div class="top-actions"><div class="weather-pill" id="savelyWeather" title="Live weather · Click to view satellite imagery" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="savelySatelliteBackdrop" style="cursor:pointer"><span class="weather-icon" id="savelyWeatherIcon">🌤️</span><span class="weather-copy"><strong id="savelyWeatherTemp">Loading…</strong><small id="savelyWeatherDesc">Current weather</small></span></div><div class="date-pill date-pill-clickable" id="today" role="button" tabindex="0" aria-label="Open Philippine holidays and countdowns" title="View Philippine holidays and countdowns" onclick="openHolidaysPage()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openHolidaysPage()}">
 
 </div><button type="button" class="btn btn-primary" id="topbarAddDebtButton" onclick="openDebtForm()" style="display:none;background:var(--green);border-color:var(--green);white-space:nowrap">＋ Add debt</button><button type="button" class="btn btn-primary salary-amount-top-button" id="salaryDetailsOpenButton" onclick="toggleSalaryDetails(true)" style="background:var(--green);border-color:var(--green);white-space:nowrap">＋ Add salary amount</button><button id="topbarAddSavingsButton" class="btn btn-primary" style="background:var(--green);border-color:var(--green)" onclick="openFinancialAdd()">＋ <span class="desktop-label">Add Savings</span><span class="mobile-label">Add Savings</span></button><div class="avatar">S</div><div class="auth-user-chip" id="savely-auth-user-chip" hidden><span class="auth-user-email" id="savely-auth-user-email"></span></div></div></header>
   <section class="page active" id="page-dashboard">
@@ -2090,6 +2147,64 @@ main.main > #page-interest.page.active{
 <button type="button" class="financial-tab" data-settings-tab="security">Local Security</button>
 <button type="button" class="financial-tab" data-settings-tab="account">Account</button><button type="button" class="financial-tab" data-settings-tab="themes">Themes</button><button type="button" class="financial-tab" data-settings-tab="version-history">Version History</button>
 </div><div class="section-grid"><div class="panel" id="settingsDateTimePanel" data-settings-panel="datetime"><div class="panel-head"><div><h2>Live date &amp; time</h2><div class="panel-sub">Current local time in the Philippines, updated every second.</div></div><button class="btn btn-secondary btn-sm" type="button" onclick="openDateTimeSettings()">✎ Edit</button><span class="pill">LIVE</span></div><div id="settingsLiveDateTime" aria-live="off" style="padding:18px 0 8px"><div style="font-size:30px;font-weight:800;font-variant-numeric:tabular-nums">Loading time…</div><div class="muted">Loading date…</div></div><div class="panel-sub" id="dateTimeZoneLabel">Timezone: Asia/Manila (UTC+8)</div><div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--line)" id="weatherLocationSettings"><div class="panel-head" style="margin-bottom:8px"><div><h3 style="margin:0;font-size:14px">Weather location</h3><div class="panel-sub">Choose a Philippine region, province, city/municipality, and barangay.</div></div><button class="btn btn-secondary btn-sm" type="button" onclick="openWeatherLocationSettings()">✎ Edit location</button></div><div id="weatherLocationSummary" class="muted" style="font-size:13px">Using device location when available</div></div></div><div class="panel" id="settingsBackupPanel" data-settings-panel="backup"><div class="panel-head"><div><h2>Data backup</h2><div class="panel-sub">Save a copy of your records or restore a backup.</div></div></div><p class="muted">Your data is stored locally and synced to your signed-in account when Supabase database setup is complete. Export a backup regularly.</p><div class="form-actions" style="justify-content:flex-start"><button class="btn btn-primary" onclick="backupJSON()">↓ Download backup</button><label class="btn btn-light">↑ Restore backup<input type="file" accept=".json,application/json" onchange="restoreJSON(event)" hidden></label><button class="btn btn-danger" type="button" onclick="deleteAllRecords()">Delete all your records</button></div></div><div class="panel" id="settingsRecurringPanel" data-settings-panel="recurring"><div class="panel-head"><div><h2>Recurring deposits</h2><div class="panel-sub">Track planned deposits. This file does not execute bank transfers.</div></div><button class="btn btn-primary" onclick="openModal('recurring')">＋ Add schedule</button></div><div id="recurringList"></div></div><div class="panel" id="settingsSecurityPanel" data-settings-panel="security"><div class="panel-head"><div><h2>Local security</h2></div></div><p class="muted">Savely uses Supabase email one-time-code authentication. Cloud financial-data sync requires the savely_user_data table and row-level security policies to be configured.</p><button class="btn btn-danger" onclick="resetData()">Reset all local data</button></div><div class="panel" id="settingsThemesPanel" data-settings-panel="themes"><div class="panel-head"><div><h2>Themes</h2><div class="panel-sub">Personalize the appearance of Savely on this device.</div></div></div><div class="theme-choice-card"><div class="theme-choice-copy"><div class="theme-choice-icon" id="themeModeIcon">🌗</div><div><strong>Day &amp; night mode</strong><p class="muted" style="margin:4px 0 0">Automatically switches to a dark UI at night and returns to the white UI in the morning.</p></div></div><div class="field" style="min-width:180px;max-width:220px"><label for="themeModeSelect">Theme mode</label><select id="themeModeSelect" aria-label="Theme mode"><option value="auto">Automatic (Day &amp; Night)</option><option value="light">Light mode</option><option value="dark">Dark mode</option></select></div></div><div class="panel-sub" id="themeStatus" style="margin-top:12px">Automatic mode: light from 6:00 AM to 5:59 PM, dark from 6:00 PM to 5:59 AM.</div></div><div class="panel" id="settingsVersionHistoryPanel" data-settings-panel="version-history"><div class="panel-head"><div><h2>Version history</h2><div class="panel-sub">Review Savely updates by version and importance.</div></div></div><div class="version-history-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px"><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.47</strong><span class="pill">MINOR</span></div><ul style="line-height:1.8;padding-left:22px"><li>Click the live weather badge to open the Zoom Earth satellite viewer.</li><li>Viewer tries to center on the selected weather city and includes a full-site fallback.</li></ul></div><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.48</strong><span class="pill">MINOR</span></div><ul style="line-height:1.8;padding-left:22px"><li>Replaced the blocked Zoom Earth iframe with an embedded Esri World Imagery satellite map.</li><li>Centers the map on the saved weather city when geocoding is available; Zoom Earth remains available in a separate tab for weather overlays.</li></ul></div><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.45</strong><span class="pill" style="background:#e5f7ef;color:#087f5b">MAJOR</span></div><ul style="line-height:1.8;padding-left:22px"><li>Set email confirmation redirects to the Savely GitHub Pages project URL.</li><li>Enabled real Supabase email/password sign-up and login instead of local testing-mode access.</li><li>New accounts are created in Supabase Auth; authenticated sessions are used for account-scoped savings sync.</li></ul></div><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.40</strong><span class="pill">MINOR</span></div><ul style="line-height:1.8;padding-left:22px"><li>Reorganized Version History into a side-by-side two-column layout for easier comparison of major and minor releases.</li><li>Updated the startup popup to show only the newest patch updates instead of repeating previous release notes.</li></ul></div><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.40</strong><strong>v2.8.38</strong><span class="pill">MINOR</span></div><ul style="line-height:1.8;padding-left:22px"><li>Added a warning confirmation before changing date, time, or timezone.</li><li>Added a confirmation dialog before logging out.</li></ul></div><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.37</strong><span class="pill">MINOR</span></div><ul style="line-height:1.8;padding-left:22px"><li>Restyled Sort by and placed it beside Overall History and Export list.</li><li>Improved responsive layout for narrow screens.</li></ul></div><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.36</strong><span class="pill" style="background:#e5f7ef;color:#087f5b">MAJOR</span></div><ul style="line-height:1.8;padding-left:22px"><li>Added Savings sorting by amount and institution type.</li><li>Added a View savings graph control to expand the graph.</li><li>Removed the extra monthly/yearly interest estimate description under the rate.</li><li>Updated the startup updates popup with major and minor labels.</li><li>Added version history in Settings.</li></ul></div><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.35</strong><span class="pill">MINOR</span></div><p class="muted">Removed zoom behavior from candle endpoint clicks while preserving bank history selection.</p></div><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.34</strong><span class="pill">MINOR</span></div><p class="muted">Moved the graph timestamp to the right-most endpoint and refreshed the updates popup.</p></div></div></div><div class="panel" id="settingsAccountPanel" data-settings-panel="account"><div class="panel-head"><div><h2>Account &amp; session</h2><div class="panel-sub">Manage your current Savely session.</div></div><span class="pill">ACCOUNT</span></div><p class="muted">Log out to return to the Savely welcome screen. Your locally saved savings data will remain in this browser unless you reset or clear it.</p><div class="form-actions" style="justify-content:flex-start"><button class="btn btn-danger" type="button" id="settingsLogoutButton">↪ Log out</button></div></div></div></div></section>
+
+  <section class="page" id="page-holidays" aria-label="Philippine holidays">
+    <div class="holiday-page-top">
+      <button class="btn btn-light" type="button" onclick="showPage('dashboard')">← Back to overview</button>
+      <div class="holiday-page-heading">
+        <div class="holiday-kicker">PLAN AHEAD · PHILIPPINES</div>
+        <h2>Philippine holidays</h2>
+        <p>Regular holidays, special non-working days, and official holiday announcements.</p>
+      </div>
+      <button class="btn btn-secondary" id="holidayRefreshButton" type="button" onclick="refreshPhilippineHolidays(true)">↻ Check for updates</button>
+    </div>
+    <div class="holiday-hero">
+      <div class="holiday-hero-copy">
+        <span class="holiday-eyebrow">NEXT UPCOMING HOLIDAY</span>
+        <div class="holiday-next-name" id="holidayNextName">Loading holidays…</div>
+        <div class="holiday-next-meta" id="holidayNextMeta">Checking the latest calendar</div>
+      </div>
+      <div class="holiday-countdown-wrap">
+        <div class="holiday-countdown-title">Time until the next holiday</div>
+        <div class="holiday-countdown" id="holidayHeroCountdown" aria-live="off">
+          <div><strong>—</strong><span>Days</span></div><div><strong>—</strong><span>Hours</span></div><div><strong>—</strong><span>Minutes</span></div><div><strong>—</strong><span>Seconds</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="holiday-stat-grid" id="holidayStats"></div>
+    <div class="holiday-filter-row">
+      <div class="holiday-filters" role="group" aria-label="Filter holidays">
+        <button type="button" class="active" data-holiday-filter="all" onclick="setHolidayFilter('all')">All holidays</button>
+        <button type="button" data-holiday-filter="regular" onclick="setHolidayFilter('regular')">Regular</button>
+        <button type="button" data-holiday-filter="special" onclick="setHolidayFilter('special')">Special non-working</button>
+        <button type="button" data-holiday-filter="working" onclick="setHolidayFilter('working')">Special working</button>
+        <button type="button" data-holiday-filter="regional" onclick="setHolidayFilter('regional')">Regional / local</button>
+      </div>
+      <label class="holiday-year-label">Year
+        <select id="holidayYearSelect" onchange="setHolidayYear(this.value)">
+          <option value="2026">2026</option><option value="2027" selected>2027</option><option value="2028">2028</option>
+        </select>
+      </label>
+    </div>
+    <section class="panel holiday-list-panel">
+      <div class="panel-head holiday-list-head">
+        <div><h2 id="holidayListTitle">2027 holiday calendar</h2><div class="panel-sub" id="holidayListSubtitle">Nationwide holidays and special days</div></div>
+        <div class="holiday-sync-status"><span class="holiday-live-dot"></span><span id="holidaySyncStatus">Checking public holiday feed…</span></div>
+      </div>
+      <div id="holidayList" class="holiday-list" aria-live="polite"></div>
+      <div class="holiday-source-note">
+        <strong>Official-source note</strong>
+        <span>Dates are based on Presidential proclamations. The calendar checks a public holiday feed periodically; additional special or local days are displayed when confirmed by official announcements. Verify last-minute changes with government sources.</span>
+        <div class="holiday-source-links">
+          <a href="https://pco.gov.ph/documents-issuances/" target="_blank" rel="noopener">Presidential Communications Office</a>
+          <a href="https://officialgazette.gov.ph/section/executive-issuances/proclamations/" target="_blank" rel="noopener">Official Gazette proclamations</a>
+          <a href="https://elibrary.judiciary.gov.ph/" target="_blank" rel="noopener">Supreme Court E-Library</a>
+        </div>
+      </div>
+    </section>
+    <div class="holiday-pending-note">Eid’l Fitr and Eid’l Adha dates are announced separately after official dates are determined. Local or regional special days may also be declared separately.</div>
+  </section>
+
 </main>
 </div>
 <div class="modal-backdrop" id="savelyUpdatesBackdrop" role="dialog" aria-modal="true" aria-labelledby="savelyUpdatesTitle" style="z-index:9999" onclick="if(event.target===this)closeSavelyUpdates()"><div class="modal" style="max-width:520px"><div class="panel-head"><div><div class="pill" style="display:inline-flex;margin-bottom:10px">SAVELY UPDATES</div><h2 id="savelyUpdatesTitle">What’s new in Savely</h2></div></div><p class="muted">Version 2.8.68 · Latest patch</p><div style="display:grid;gap:12px"><div><span class="pill" style="background:#e5f7ef;color:#087f5b">MINOR UPDATE · v2.8.68</span><ul style="line-height:1.8;padding-left:22px;margin-top:8px"><li>Refined email OTP authentication flow for sign-up and login.</li><li>Requests Supabase email OTP through the Auth OTP endpoint and verifies the entered code.</li><li>Verified accounts use Supabase Authentication sessions for account-scoped cloud sync.</li><li>Updated account and privacy messaging to explain authentication and cloud data setup.</li><li>Added an embedded satellite map that opens from the live weather badge, with Zoom Earth available for weather layers.</li><li>Fixed the selected-bank savings graph height so it stays compact and fits inside the Savings panel.</li><li>Satellite map uses Esri World Imagery and centers on the selected weather city when available; Zoom Earth opens separately for weather layers.</li></ul></div></div><div class="form-actions" style="justify-content:flex-end"><button type="button" class="btn btn-primary" onclick="closeSavelyUpdates()">Okay</button></div></div></div>
@@ -4801,7 +4916,120 @@ function closeSavelyUpdates(){const el=document.getElementById('savelyUpdatesBac
 document.addEventListener('DOMContentLoaded',()=>{const el=document.getElementById('savelyUpdatesBackdrop');if(el)el.style.display='none';});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'){const updates=document.getElementById('savelyUpdatesBackdrop');if(updates&&getComputedStyle(updates).display!=='none')closeSavelyUpdates();}});
 
-function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard')setTimeout(renderOverallTrend,50);document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Budget & expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Plan your spending and keep monthly expenses within your limits.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:''};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
+
+/* Philippine holiday calendar: proclamation-backed dates with periodic public-calendar sync. */
+const SAVELY_PH_HOLIDAYS={
+2026:[
+['2026-01-01',"New Year's Day",'regular','New Year celebration'],['2026-02-17','Chinese New Year','special','Additional special non-working day'],['2026-02-25','EDSA People Power Revolution Anniversary','working','Special working day'],['2026-04-02','Maundy Thursday','regular','Holy Week'],['2026-04-03','Good Friday','regular','Holy Week'],['2026-04-04','Black Saturday','special','Additional special non-working day'],['2026-04-09','Araw ng Kagitingan','regular','Day of Valor'],['2026-05-01','Labor Day','regular','Labor Day'],['2026-06-12','Independence Day','regular','Philippine Independence Day'],['2026-08-21','Ninoy Aquino Day','special','Special non-working day'],['2026-08-31','National Heroes Day','regular','Last Monday of August'],['2026-11-01',"All Saints' Day",'special','Special non-working day'],['2026-11-02',"All Souls' Day",'special','Additional special non-working day'],['2026-11-30','Bonifacio Day','regular','Commemoration of Andres Bonifacio'],['2026-12-08','Feast of the Immaculate Conception of Mary','special','Special non-working day'],['2026-12-24','Christmas Eve','special','Additional special non-working day'],['2026-12-25','Christmas Day','regular','Christmas Day'],['2026-12-30','Rizal Day','regular','Commemoration of Dr. Jose Rizal'],['2026-12-31','Last Day of the Year','special','Special non-working day'],['2026-11-16','NCR special non-working day','regional','Special non-working day in the National Capital Region · Proclamation No. 1449'],['2026-11-17','NCR special non-working day','regional','Special non-working day in the National Capital Region · Proclamation No. 1449'],['2026-11-18','NCR special non-working day','regional','Special non-working day in the National Capital Region · Proclamation No. 1449']
+].map(x=>({date:x[0],name:x[1],type:x[2],desc:x[3],source:'Proclamation No. 1006'})),
+2027:[
+['2027-01-01',"New Year's Day",'regular','New Year celebration'],['2027-02-06','Chinese New Year','special','Additional special non-working day'],['2027-02-25','EDSA People Power Revolution Anniversary','working','Special working day'],['2027-03-25','Maundy Thursday','regular','Holy Week'],['2027-03-26','Good Friday','regular','Holy Week'],['2027-03-27','Black Saturday','special','Additional special non-working day'],['2027-04-09','Araw ng Kagitingan','regular','Day of Valor'],['2027-05-01','Labor Day','regular','Labor Day'],['2027-06-12','Independence Day','regular','Philippine Independence Day'],['2027-08-21','Ninoy Aquino Day','special','Special non-working day'],['2027-08-30','National Heroes Day','regular','Last Monday of August'],['2027-11-01',"All Saints' Day",'special','Special non-working day'],['2027-11-02',"All Souls' Day",'special','Additional special non-working day'],['2027-11-30','Bonifacio Day','regular','Commemoration of Andres Bonifacio'],['2027-12-08','Feast of the Immaculate Conception of Mary','special','Special non-working day'],['2027-12-24','Christmas Eve','special','Additional special non-working day'],['2027-12-25','Christmas Day','regular','Christmas Day'],['2027-12-30','Rizal Day','regular','Commemoration of Dr. Jose Rizal'],['2027-12-31','Last Day of the Year','special','Special non-working day']
+].map(x=>({date:x[0],name:x[1],type:x[2],desc:x[3],source:'Proclamation No. 1427'})),
+2028:[]
+};
+let savelyHolidayFilter='all',savelyHolidayYear=2027;
+function phHolidayDate(iso){return new Date(iso+'T00:00:00+08:00');}
+function phHolidayLabel(iso,opts){return new Intl.DateTimeFormat('en-PH',Object.assign({weekday:'long',month:'long',day:'numeric',year:'numeric',timeZone:'Asia/Manila'},opts||{})).format(phHolidayDate(iso));}
+function phHolidayRemaining(iso){return phHolidayDate(iso).getTime()-Date.now();}
+function phNextHoliday(){const now=Date.now();return Object.keys(SAVELY_PH_HOLIDAYS).flatMap(y=>SAVELY_PH_HOLIDAYS[y]||[]).filter(h=>h.type!=='regional'&&phHolidayDate(h.date).getTime()+86400000>now).sort((a,b)=>a.date.localeCompare(b.date))[0]||null;}
+function phCountdownParts(ms){let sec=Math.max(0,Math.floor(ms/1000)),days=Math.floor(sec/86400);sec%=86400;let hours=Math.floor(sec/3600);sec%=3600;let mins=Math.floor(sec/60);sec%=60;return [days,String(hours).padStart(2,'0'),String(mins).padStart(2,'0'),String(sec).padStart(2,'0')];}
+function phHolidayType(type){return type==='regular'?'Regular holiday':type==='special'?'Special non-working':type==='working'?'Special working day':type==='regional'?'Regional / local':'Public holiday · verify';}
+function renderHolidayPage(){
+ const yearItems=SAVELY_PH_HOLIDAYS[savelyHolidayYear]||[],next=phNextHoliday();
+ const name=document.getElementById('holidayNextName'),meta=document.getElementById('holidayNextMeta');
+ if(name)name.textContent=next?next.name:'No upcoming holidays listed';
+ if(meta)meta.textContent=next?`${phHolidayType(next.type)} · ${phHolidayLabel(next.date)}`:'Check back for the next official proclamation';
+ const stat=document.getElementById('holidayStats');
+ if(stat)stat.innerHTML=`<div class="holiday-stat"><span class="holiday-stat-icon">▦</span><div><strong>${yearItems.length}</strong><small>Holidays listed · ${savelyHolidayYear}</small></div></div><div class="holiday-stat"><span class="holiday-stat-icon">✓</span><div><strong>${yearItems.filter(h=>h.type==='regular').length}</strong><small>Regular holidays</small></div></div><div class="holiday-stat"><span class="holiday-stat-icon">☆</span><div><strong>${yearItems.filter(h=>h.type==='special').length}</strong><small>Special non-working</small></div></div><div class="holiday-stat"><span class="holiday-stat-icon">◷</span><div><strong>${next?Math.max(0,Math.ceil(phHolidayRemaining(next.date)/86400000))+' days':'—'}</strong><small>Until next holiday</small></div></div>`;
+ const title=document.getElementById('holidayListTitle');if(title)title.textContent=`${savelyHolidayYear} holiday calendar`;
+ const sub=document.getElementById('holidayListSubtitle');if(sub)sub.textContent=`${yearItems.length} nationwide holidays and special days currently listed`;
+ const filtered=yearItems.filter(h=>savelyHolidayFilter==='all'||(savelyHolidayFilter==='regular'&&h.type==='regular')||(savelyHolidayFilter==='special'&&h.type==='special')||(savelyHolidayFilter==='working'&&h.type==='working')||(savelyHolidayFilter==='regional'&&h.type==='regional')).sort((a,b)=>a.date.localeCompare(b.date));
+ const list=document.getElementById('holidayList');
+ if(list)list.innerHTML=filtered.length?filtered.map(h=>{const ms=phHolidayRemaining(h.date),isNext=next&&next.date===h.date&&next.name===h.name;return `<div class="holiday-row ${isNext?'next':''}"><div class="holiday-date">${phHolidayLabel(h.date,{month:'short',day:'numeric',year:'numeric'})}<small>${phHolidayLabel(h.date,{weekday:'long'})}</small></div><div><div class="holiday-name">${esc(h.name)}</div><div class="holiday-description">${esc(h.desc||'Philippine holiday')}</div></div><div class="holiday-type-cell"><span class="holiday-type ${h.type}">${phHolidayType(h.type)}</span></div><div class="holiday-countdown-cell holiday-countdown-text ${ms<=0?'passed':''}" data-holiday-countdown="${h.date}">${ms<=0?'Holiday date reached':`${Math.floor(ms/86400000)} days remaining`}</div></div>`}).join(''):'<div class="holiday-empty">No holidays in this category for the selected year.</div>';
+ document.querySelectorAll('[data-holiday-filter]').forEach(b=>b.classList.toggle('active',b.dataset.holidayFilter===savelyHolidayFilter));
+ const ys=document.getElementById('holidayYearSelect');if(ys)ys.value=String(savelyHolidayYear);
+ updateHolidayCountdowns();
+}
+function updateHolidayCountdowns(){
+ const next=phNextHoliday(),hero=document.getElementById('holidayHeroCountdown');
+ if(hero){if(next){const p=phCountdownParts(phHolidayRemaining(next.date));hero.innerHTML=p.map((v,i)=>`<div><strong>${v}</strong><span>${['Days','Hours','Minutes','Seconds'][i]}</span></div>`).join('');}else hero.innerHTML='<div><strong>—</strong><span>Days</span></div><div><strong>—</strong><span>Hours</span></div><div><strong>—</strong><span>Minutes</span></div><div><strong>—</strong><span>Seconds</span></div>';}
+ document.querySelectorAll('[data-holiday-countdown]').forEach(el=>{const ms=phHolidayRemaining(el.dataset.holidayCountdown);el.textContent=ms<=0?'Holiday date reached':`${Math.floor(ms/86400000)} days · ${Math.floor(ms%86400000/3600000)}h ${Math.floor(ms%3600000/60000)}m remaining`;el.classList.toggle('passed',ms<=0);});
+}
+function setHolidayFilter(v){savelyHolidayFilter=v;renderHolidayPage();}
+function setHolidayYear(v){savelyHolidayYear=Number(v)||2027;renderHolidayPage();}
+function openHolidaysPage(){showPage('holidays');renderHolidayPage();if(!window.__savelyHolidaySyncStarted)refreshPhilippineHolidays(false);}
+function holidaySyncStatus(v){const e=document.getElementById('holidaySyncStatus');if(e)e.textContent=v;}
+
+function parseOfficialHolidayTitle(rawTitle,sourceUrl){
+ const title=String(rawTitle||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+ if(!/holiday|non.?working day/i.test(title))return [];
+ const months='January|February|March|April|May|June|July|August|September|October|November|December';
+ let match=title.match(new RegExp(`\\b(\\d{1,2})(?:\\s*[–-]\\s*(\\d{1,2}))?\\s+(${months})\\s+(20\\d{2})\\b`,'i'));
+ let startDay,endDay,month,year;
+ if(match){startDay=Number(match[1]);endDay=Number(match[2]||match[1]);month=match[3];year=Number(match[4]);}
+ else{
+  match=title.match(new RegExp(`\\b(${months})\\s+(\\d{1,2})(?:\\s*[–-]\\s*(\\d{1,2}))?,?\\s+(20\\d{2})\\b`,'i'));
+  if(!match)return [];
+  month=match[1];startDay=Number(match[2]);endDay=Number(match[3]||match[2]);year=Number(match[4]);
+ }
+ const monthNum=new Date(`${month} 1, ${year}`).getMonth()+1;
+ const type=/special\s*\(?non.?working/i.test(title)?(/municipality|city|province|region|ncr/i.test(title)?'regional':'special'):/special\s*working/i.test(title)?'working':/regular\\s*holiday/i.test(title)?'regular':'unverified';
+ const label=type==='regional'?'Regional special non-working day':type==='special'?'Special non-working day':type==='working'?'Special working day':type==='regular'?'Regular holiday':'Official holiday announcement';
+ const result=[];
+ for(let day=startDay;day<=Math.min(endDay,startDay+30);day++){
+  const date=`${year}-${String(monthNum).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+  if(phHolidayDate(date).getMonth()!==monthNum-1)continue;
+  result.push({date,name:label,type,desc:title,source:sourceUrl||'Official government proclamation'});
+ }
+ return result;
+}
+async function syncOfficialHolidayAnnouncements(){
+ const endpoints=[
+  'https://officialgazette.gov.ph/wp-json/wp/v2/search?search=holiday&per_page=100',
+  'https://pco.gov.ph/wp-json/wp/v2/search?search=holiday&per_page=100'
+ ];
+ let added=0,success=false;
+ const results=await Promise.allSettled(endpoints.map(url=>fetch(url,{cache:'no-store',headers:{Accept:'application/json'}})));
+ for(let i=0;i<results.length;i++){
+  const r=results[i];if(r.status!=='fulfilled'||!r.value.ok)continue;
+  try{
+   const rows=await r.value.json();success=true;
+   (Array.isArray(rows)?rows:[]).forEach(row=>{
+    const title=typeof row.title==='string'?row.title:(row.title&&row.title.rendered)||'';
+    parseOfficialHolidayTitle(title,row.url||endpoints[i]).forEach(item=>{
+     const year=Number(item.date.slice(0,4)),arr=SAVELY_PH_HOLIDAYS[year]||(SAVELY_PH_HOLIDAYS[year]=[]);
+     if(!arr.some(h=>h.date===item.date&&h.name===item.name)){arr.push(item);added++;}
+    });
+   });
+  }catch(e){}
+ }
+ return {success,added};
+}
+async function refreshPhilippineHolidays(manual){
+ if(window.__savelyHolidaySyncBusy)return;window.__savelyHolidaySyncBusy=true;window.__savelyHolidaySyncStarted=true;
+ const button=document.getElementById('holidayRefreshButton');if(button){button.disabled=true;button.textContent='↻ Checking…';}
+ holidaySyncStatus('Checking public holiday feed…');let added=0,success=false;
+ for(const year of [2026,2027,2028]){
+  try{const r=await fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/PH`,{cache:'no-store'});if(!r.ok)throw new Error('Feed unavailable');const items=await r.json();const arr=SAVELY_PH_HOLIDAYS[year]||(SAVELY_PH_HOLIDAYS[year]=[]);
+   items.forEach(x=>{const date=String(x.date||'').slice(0,10),name=String(x.localName||x.name||'').trim();if(!date||!name||arr.some(h=>h.date===date&&h.name.toLowerCase()===name.toLowerCase()))return;arr.push({date,name,type:'unverified',desc:'Listed in the public holiday feed; confirm its Philippine legal classification.',source:'Nager.Date public holiday feed'});added++;});success=true;
+  }catch(e){}
+ }
+ const official=await syncOfficialHolidayAnnouncements();added+=official.added;success=success||official.success;
+ try{localStorage.setItem('savelyPhHolidayCache',JSON.stringify({data:SAVELY_PH_HOLIDAYS,checkedAt:Date.now()}));}catch(e){}
+ const checked=new Intl.DateTimeFormat('en-PH',{timeZone:'Asia/Manila',dateStyle:'medium',timeStyle:'short'}).format(new Date());
+ holidaySyncStatus(success?`Sources checked ${checked} PHT · ${added?added+' new item(s) found':'No new entries'}`:'Saved official proclamation dates · live feed unavailable');
+ if(button){button.disabled=false;button.textContent='↻ Check for updates';}
+ renderHolidayPage();window.__savelyHolidaySyncBusy=false;
+ if(manual)toast(success?(added?`Calendar checked. ${added} new feed item(s) added for verification.`:'Calendar checked. No new feed entries found.'):'Could not reach the public feed. Showing the saved proclamation calendar.');
+}
+(function initSavelyHolidayCalendar(){
+ try{const cache=JSON.parse(localStorage.getItem('savelyPhHolidayCache')||'null');if(cache&&cache.data)Object.keys(cache.data).forEach(y=>(cache.data[y]||[]).forEach(h=>{const a=SAVELY_PH_HOLIDAYS[y]||(SAVELY_PH_HOLIDAYS[y]=[]);if(!a.some(x=>x.date===h.date&&x.name===h.name))a.push(h);}));}catch(e){}
+ if(!window.__savelyHolidayTick)window.__savelyHolidayTick=setInterval(updateHolidayCountdowns,1000);
+ setTimeout(()=>{if(!window.__savelyHolidaySyncStarted)refreshPhilippineHolidays(false);},2500);
+ setInterval(()=>refreshPhilippineHolidays(false),24*60*60*1000);
+})();
+
+function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard')setTimeout(renderOverallTrend,50);document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Budget & expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],holidays:['PLAN AHEAD · PHILIPPINES','Philippine holidays']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Plan your spending and keep monthly expenses within your limits.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'',holidays:'View Philippine regular holidays, special non-working days, and live countdowns.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
 document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
 function openModal(kind,goalToEdit=null){const form=document.getElementById('modalForm'),title=document.getElementById('modalTitle'),desc=document.getElementById('modalDesc');let accountOptions=data.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');let field=(label,name,type='text',value='',extra='')=>`<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let select=(label,name,opts)=>`<div class="field"><label>${label}</label><select name="${name}">${opts}</select></div>`;let fullfield=(label,name,type='text',value='',extra='')=>`<div class="field full"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let body='';
 if(kind==='transaction'){title.textContent='Add transaction';desc.textContent='Record a deposit, withdrawal, interest credit, or expense.';body=`<div class="form-grid">${fullfield('Description','description','text','','required maxlength="100"')}${select('Transaction type','type','<option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option><option value="expense">Expense</option><option value="interest">Interest credit</option>')}${select('Account','accountId',accountOptions)}${field('Amount (₱)','amount','number','','required min=".01" step=".01"')}${field('Date','date','date',todayISO(),'required')}${field('Category','category','text','General','maxlength="60"')}</div>`}
