@@ -1439,6 +1439,39 @@ body.dark-theme .debt-card-menu{background:var(--panel);border-color:var(--line)
 }
 </style>
 
+
+<style id="savely-savings-gradient-weather-hover-v2">
+/* Give the Savings total its own clear green-gradient emphasis. */
+#stats>.stat:nth-child(2){
+ background:linear-gradient(135deg,#117a59 0%,#16966d 52%,#35b887 100%)!important;
+ border-color:#168765!important;
+ color:#fff!important;
+ box-shadow:0 10px 26px rgba(22,135,101,.16)!important;
+ position:relative;overflow:hidden;
+}
+#stats>.stat:nth-child(2)::after{
+ content:"";position:absolute;width:150px;height:150px;border-radius:50%;
+ right:-72px;top:-100px;background:rgba(255,255,255,.10);pointer-events:none;
+}
+#stats>.stat:nth-child(2) .stat-top,
+#stats>.stat:nth-child(2) .stat-foot,
+#stats>.stat:nth-child(2) .stat-value,
+#stats>.stat:nth-child(2) .savings-total-asof{color:#fff!important;position:relative;z-index:1}
+#stats>.stat:nth-child(2) .stat-foot{opacity:.88}
+#stats>.stat:nth-child(2) .stat-icon{background:rgba(255,255,255,.18)!important;color:#fff!important}
+#stats>.stat:nth-child(2) .stat-foot[style*="color:var(--red)"],
+#stats>.stat:nth-child(2) .stat-foot[style*="color: var(--red)"]{color:#fff!important}
+.weather-pill{position:relative;overflow:hidden;transition:border-color .18s ease,box-shadow .18s ease}
+.weather-pill::after{content:"";position:absolute;left:12px;right:12px;bottom:0;height:2px;border-radius:99px;background:var(--green);transform:scaleX(0);transform-origin:center;transition:transform .2s ease}
+.weather-pill:hover,.weather-pill:focus-visible{border-color:var(--green);box-shadow:0 3px 12px rgba(22,135,101,.09);outline:none}
+.weather-pill:hover::after,.weather-pill:focus-visible::after{transform:scaleX(1)}
+/* Dropdown is portalled to the document so the date modal's scroll area cannot clip it. */
+.debt-card-menu.is-floating{display:grid!important;position:fixed!important;z-index:40050!important;max-height:calc(100vh - 24px);overflow-y:auto;overscroll-behavior:contain}
+.debt-date-modal-body{overflow:visible!important}
+.debt-date-modal-shell{overflow:visible!important}
+.debt-date-modal-body{overflow-y:auto!important}
+</style>
+
 </head>
 <body>
 
@@ -2669,17 +2702,43 @@ function debtCard(item){
  return `<article class="debt-item-card"><div class="debt-item-main"><div class="debt-item-top"><span class="debt-direction-tag${isOwed?'':' lent'}">${directionLabel}</span><span class="debt-status ${st}">${debtStatusLabel(st)}</span></div><div class="debt-item-title" style="margin-top:6px">${esc(item.title||'Debt record')}</div><div class="debt-item-sub">${esc(item.kind||'Other')}${person}${installment} · Due ${fmtDate(item.dueDate)} · Original ${peso(item.amount)}</div></div><div><div class="debt-item-amount" style="color:${isOwed?'var(--red)':'var(--green)'}">${peso(debtRemaining(item))}</div><div class="debt-item-sub" style="text-align:right">Remaining</div>${menu}</div></article>`;
 }
 function closeDebtCardMenus(){
+ document.querySelectorAll('.debt-card-menu.is-floating').forEach(menu=>{
+  const home=menu._debtMenuHome;
+  if(home)home.appendChild(menu);
+  menu.classList.remove('open','is-floating');
+  menu.removeAttribute('style');
+  const button=menu._debtMenuButton;
+  if(button)button.setAttribute('aria-expanded','false');
+  menu._debtMenuHome=null;menu._debtMenuButton=null;
+ });
  document.querySelectorAll('.debt-card-menu.open').forEach(menu=>menu.classList.remove('open'));
  document.querySelectorAll('.debt-card-menu-button[aria-expanded="true"]').forEach(button=>button.setAttribute('aria-expanded','false'));
 }
 function toggleDebtCardMenu(event,id){
  event.preventDefault();event.stopPropagation();
+ const button=event.currentTarget;
  const target=[...document.querySelectorAll('.debt-card-menu')].find(menu=>menu.dataset.debtMenu===String(id));
- const button=event.currentTarget,wasOpen=target?.classList.contains('open');
+ const wasOpen=button.getAttribute('aria-expanded')==='true';
  closeDebtCardMenus();
- if(target&&!wasOpen){target.classList.add('open');button.setAttribute('aria-expanded','true');}
+ if(!target||wasOpen)return;
+ target._debtMenuHome=target.parentElement;
+ target._debtMenuButton=button;
+ target.classList.add('open','is-floating');
+ document.body.appendChild(target);
+ const rect=button.getBoundingClientRect(),menuWidth=200,menuHeight=Math.min(target.scrollHeight||220,window.innerHeight-24);
+ const left=Math.max(12,Math.min(window.innerWidth-menuWidth-12,rect.right-menuWidth));
+ let top=rect.bottom+7;
+ if(top+menuHeight>window.innerHeight-12)top=Math.max(12,rect.top-menuHeight-7);
+ target.style.position='fixed';target.style.left=left+'px';target.style.top=top+'px';
+ target.style.right='auto';target.style.zIndex='40050';target.style.maxHeight='calc(100vh - 24px)';target.style.overflowY='auto';target.style.minWidth=menuWidth+'px';
+ button.setAttribute('aria-expanded','true');
 }
-document.addEventListener('click',event=>{if(!event.target.closest('.debt-card-menu-wrap'))closeDebtCardMenus();});
+document.addEventListener('click',event=>{
+ if(!event.target.closest('.debt-card-menu-wrap')&&!event.target.closest('.debt-card-menu'))closeDebtCardMenus();
+});
+document.addEventListener('keydown',event=>{if(event.key==='Escape')closeDebtCardMenus();});
+window.addEventListener('resize',closeDebtCardMenus);
+document.addEventListener('scroll',event=>{if(event.target.closest?.('.debt-date-modal-body'))closeDebtCardMenus();},true);
 function renderDebtDateDetails(openModal=false){
  let modal=document.getElementById('savelyDebtDateModal');
  if(openModal&&!modal){
