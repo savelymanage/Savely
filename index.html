@@ -2536,14 +2536,40 @@ function updateLiveDateTime(){
 function updateFinancialSavingsAsOf(){
  const el=document.getElementById('financialSavingsAsOf');
  if(!el)return;
- const now=getDisplayedDateTime();
+ const now=new Date(Number(data.savingsLastUpdatedAt)||Date.now());
  const timezone=(dateTimePrefs&&dateTimePrefs.timezone)||'Asia/Manila';
  try{
-  const time=new Intl.DateTimeFormat('en-PH',{timeZone:timezone,hour:'numeric',minute:'2-digit',second:'2-digit',hour12:dateTimePrefs.format!=='24'}).format(now);
+  const time=new Intl.DateTimeFormat('en-PH',{timeZone:timezone,hour:'numeric',minute:'2-digit',second:'2-digit',hour12:!dateTimePrefs||dateTimePrefs.format!=='24'}).format(now);
   const date=new Intl.DateTimeFormat('en-PH',{timeZone:timezone,month:'short',day:'numeric',year:'numeric'}).format(now);
   el.textContent=`As of ${date} · ${time}${timezone==='Asia/Manila'?' PHT':''}`;
-  el.title=`Savings savings total timestamp · ${timezone}`;
- }catch(err){el.textContent='As of '+new Date().toLocaleString('en-PH');}
+  el.title=`Last savings update · ${timezone}`;
+ }catch(err){el.textContent='As of '+now.toLocaleString('en-PH');}
+}
+function watchSavingsChanges(){
+ const list=Array.isArray(data.savingsList)?data.savingsList:[];
+ const signature=JSON.stringify(list.map(item=>({
+  id:item.id,name:item.name,amount:item.amount,category:item.category,date:item.date,
+  isReceivable:item.isReceivable,updatedAt:item.updatedAt,
+  changeCount:Array.isArray(item.changeHistory)?item.changeHistory.length:0,
+  lastChange:Array.isArray(item.changeHistory)?item.changeHistory[item.changeHistory.length-1]:null,
+  lastGraph:Array.isArray(item.graphHistory)?item.graphHistory[item.graphHistory.length-1]:null
+ })));
+ if(window.__savelySavingsObservedSignature===undefined){
+  window.__savelySavingsObservedSignature=signature;
+  if(!Number(data.savingsLastUpdatedAt)){
+   data.savingsLastUpdatedAt=Date.now();
+   try{localStorage.setItem(STORE,JSON.stringify(data));}catch(error){}
+  }
+  updateFinancialSavingsAsOf();
+  return;
+ }
+ if(signature!==window.__savelySavingsObservedSignature){
+  window.__savelySavingsObservedSignature=signature;
+  data.savingsLastUpdatedAt=Date.now();
+  try{localStorage.setItem(STORE,JSON.stringify(data));}catch(error){}
+  updateFinancialSavingsAsOf();
+  updateSavingsTotalAsOf();
+ }
 }
 function updateSavingsTotalAsOf(){
  const el=document.getElementById('savingsTotalAsOf');
@@ -4958,7 +4984,7 @@ function updateMariBankLivePanel(){
 updateMariBankLivePanel();
 updateLiveDateTime();
 setInterval(()=>{try{updateLiveDateTime();}catch(err){console.error('Savely live clock update failed:',err);}},1000);
-setInterval(()=>{try{updateSavingsTotalAsOf();updateFinancialSavingsAsOf();}catch(err){console.error('Savings total timestamp update failed:',err);}},1000);
+setInterval(()=>{try{watchSavingsChanges();updateSavingsTotalAsOf();updateFinancialSavingsAsOf();}catch(err){console.error('Savings total timestamp update failed:',err);}},500);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){try{updateLiveDateTime();updateSavingsTotalAsOf();updateFinancialSavingsAsOf();updateMariBankLivePanel();}catch(err){console.error('Savely live clock refresh failed:',err);}}});
 setInterval(()=>{try{updateMariBankLivePanel();}catch(err){console.error('MariBank live estimate update failed:',err);}},1000);
 setInterval(accrueRealtimeInterest,30000);
