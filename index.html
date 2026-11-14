@@ -3894,7 +3894,42 @@ main.main > .page:not(.active) { display: none !important; }
   <div class="expenses-calendar-legend"><span><i></i> Expense recorded</span><span>Choose any day to add an expense</span></div>
  </div>
 </section>
-  <section class="page" id="page-interest"><div class="section-grid"><div class="panel"><div class="panel-head"><div><h2>Interest calculator</h2><div class="panel-sub">Estimate growth using a fixed annual rate.</div></div></div><form id="interestForm"><div class="form-grid"><div class="field full"><label>Principal amount (₱)</label><input id="principal" type="number" min="0" step=".01" value="50000" required></div><div class="field"><label>Annual interest rate (%)</label><input id="rate" type="number" min="0" step=".01" value="6" required></div><div class="field"><label>Duration (days)</label><input id="days" type="number" min="1" value="30" required></div><div class="field full"><label>Compounding</label><select id="compound"><option value="simple">Simple interest</option><option value="daily">Daily compounding (estimate)</option></select></div></div><div class="form-actions"><button class="btn btn-primary">Calculate interest</button></div></form><div id="interestResult" style="margin-top:18px"></div></div><div class="panel"><h2>How this estimate works</h2><p class="panel-sub" style="line-height:1.8">This calculator estimates interest before tax, fees, and provider-specific rules. Actual bank or e-wallet earnings may differ. It does not connect to a financial institution.</p><div class="notice" style="margin-top:18px">Interest is not automatically added to your account. Record credited interest as a transaction when it arrives.</div></div></div></section>
+  <section class="page" id="page-interest">
+    <div class="panel">
+      <div class="panel-head"><div><h2>Interest calculator</h2><div class="panel-sub">Compare Philippine bank and app-based savings rates (October 2026 snapshots).</div></div><span class="panel-sub" id="interestRateUpdated">October 2026 rate snapshots · verify with bank</span></div>
+      <div class="interest-bank-section">
+      <div class="interest-section-heading"><span class="interest-section-kicker">01 · CHOOSE A PROVIDER</span><h3>Compare savings rates</h3><p>Select a bank or digital wallet to load its listed base rate.</p></div>
+      <div class="interest-bank-tabs" role="tablist" aria-label="Bank type">
+        <button type="button" class="interest-bank-tab active" data-interest-group="Traditional">Traditional Banks</button>
+        <button type="button" class="interest-bank-tab" data-interest-group="Digital">Digital Banks</button>
+      </div>
+      <div class="interest-bank-grid" id="interestBankGrid"></div>
+      <div class="interest-selected-note" id="interestSelectedNote">Choose a bank to load its listed base rate.</div>
+      </div>
+      <div class="interest-input-section">
+      <div class="interest-section-heading"><span class="interest-section-kicker">02 · YOUR SAVINGS</span><h3>Customize your estimate</h3><p>Adjust your balance, applicable rate, and withholding tax.</p></div>
+      <div class="form-grid" style="max-width:100%;margin-top:16px">
+        <div class="field"><label for="interestCalcPrincipal">Starting balance (₱)</label><input id="interestCalcPrincipal" type="number" min="0" step="1" value="50000" placeholder="e.g. 50000"></div>
+        <div class="field"><label for="interestCalcRate">Annual interest rate (% p.a.)</label><input id="interestCalcRate" type="number" min="0" max="100" step="0.01" value="0.0625" readonly aria-readonly="true"></div>
+        <div class="field" id="interestCalcMayaBonusWrap" style="display:none"><label for="interestCalcMayaBonus">Maya bonus interest option</label><select id="interestCalcMayaBonus"><option value="3">3% p.a. — base rate, no bonus</option><option value="5">5% p.a. — +2% bonus</option><option value="6">6% p.a. — +3% bonus</option><option value="7">7% p.a. — +4% bonus</option><option value="8">8% p.a. — +5% bonus</option><option value="10">10% p.a. — +7% bonus</option><option value="12">12% p.a. — +9% bonus</option><option value="13">13% p.a. — eligible users only</option><option value="15">15% p.a. — maximum / eligibility required</option></select><div class="panel-sub">Choose the bonus rate currently shown in your Maya app. This changes the estimate only.</div></div>
+        <div class="field"><label for="interestCalcTax">Withholding tax (%)</label><input id="interestCalcTax" type="number" min="0" max="100" step="0.01" value="20"></div>
+        <div class="field full"><label>Interest period</label><div class="interest-period-grid" id="interestPeriodCards" role="group" aria-label="Choose interest period">
+          <button type="button" class="interest-period-card active" data-interest-period="daily"><span>Daily</span><strong>₱0.00</strong><small>Estimated total</small></button>
+          <button type="button" class="interest-period-card" data-interest-period="monthly"><span>Monthly</span><strong>₱0.00</strong><small>Estimated total</small></button>
+          <button type="button" class="interest-period-card" data-interest-period="quarterly"><span>Quarterly</span><strong>₱0.00</strong><small>Estimated total</small></button>
+          <button type="button" class="interest-period-card" data-interest-period="annually"><span>Annually</span><strong>₱0.00</strong><small>Estimated total</small></button>
+        </div></div>
+      </div>
+      </div>
+      <div class="footer-note" style="margin-top:16px">Estimates use simple interest and the selected rate. Promotional rates may require missions, balance tiers, or eligibility. Rates were checked against available October 2026 bank information where available. They are not live quotes; confirm the bank's official terms before depositing.</div>
+    </div>
+    <div class="panel interest-summary-panel interest-result-card" style="margin-top:18px;background:linear-gradient(135deg,#e8f8ef 0%,#d7f3e3 100%);border:1px solid #9bd8b3;color:#14532d">
+      <div class="panel-sub" id="interestCalcSelectedPeriodLabel" style="color:#26734d">Daily estimated total amount</div>
+      <h2 id="interestCalcEnding" style="font-size:30px;margin-top:8px;color:#166534">₱50,000.00</h2>
+      <div class="panel-sub" id="interestCalcSummary" style="color:#26734d">Includes estimated net interest after withholding tax.</div>
+      <div class="footer-note" style="margin-top:10px;color:#26734d">Interest is estimated using simple interest, with the selected bank rate and withholding tax.</div>
+    </div>
+  </section>
   <section class="page" id="page-reports"><div class="cards" id="reportStats"></div><div class="panel"><div class="panel-head"><div><h2>Transaction report</h2><div class="panel-sub">Filter a date range and export a CSV file.</div></div><button class="btn btn-light" onclick="exportCSV()">↓ Export CSV</button></div><div class="form-grid" style="margin-bottom:18px"><div class="field"><label>From date</label><input id="reportFrom" type="date"></div><div class="field"><label>To date</label><input id="reportTo" type="date"></div></div><div class="table-wrap" id="reportTable"></div></div></section>
   <section class="page" id="page-settings"><div class="settings-tabs-wrap"><div class="settings-tabs" role="tablist" aria-label="Settings sections" style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;padding-bottom:12px;border-bottom:1px solid var(--line)">
 <button type="button" class="financial-tab active" data-settings-tab="datetime">Date &amp; Time</button>
