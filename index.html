@@ -3241,6 +3241,12 @@ button.link-btn{
 }
 </style>
 
+
+<style id="savely-weather-cache-status-style">
+#savelyForecastLoading{line-height:1.55}
+#savelyForecastLoading[style*="display: block"]{color:var(--muted)}
+</style>
+
 </head>
 <body>
 
@@ -4339,6 +4345,12 @@ function debtAddMonths(iso,months){
  return debtLocalISO(new Date(first.getFullYear(),first.getMonth(),Math.min(day,last)));
 }
 function debtRemaining(item){return Math.max(0,Number(item.remainingAmount??item.amount)||0);}
+function getOutstandingOwedTotal(){
+ const records=Array.isArray(data.debtRecords)?data.debtRecords:[];
+ return Math.round(records
+  .filter(item=>item&&item.direction==='owed'&&debtRemaining(item)>0.005)
+  .reduce((sum,item)=>sum+debtRemaining(item),0)*100)/100;
+}
 function debtPaidAmount(item){return (Array.isArray(item.payments)?item.payments:[]).reduce((sum,p)=>sum+Math.max(0,Number(p.amount)||0),0);}
 function debtStatus(item){
  if(debtRemaining(item)<=0.005)return 'paid';
@@ -4618,7 +4630,7 @@ function renderDebtPage(){
  const root=document.getElementById('page-debt');if(!root)return;
  if(!Array.isArray(data.debtRecords))data.debtRecords=[];
  const records=data.debtRecords;
- const owe=records.filter(x=>x.direction==='owed'&&debtRemaining(x)>0.005).reduce((s,x)=>s+debtRemaining(x),0);
+ const owe=getOutstandingOwedTotal();
  const lent=records.filter(x=>x.direction==='lent'&&debtRemaining(x)>0.005).reduce((s,x)=>s+debtRemaining(x),0);
  const now=new Date(),month=debtLocalISO(new Date(now.getFullYear(),now.getMonth(),1)).slice(0,7);
  const dueMonth=records.filter(x=>String(x.dueDate||'').slice(0,7)===month&&debtRemaining(x)>0.005).reduce((s,x)=>s+debtRemaining(x),0);
@@ -5744,12 +5756,12 @@ function render(){ensureDebtReceivableLinks();updateLiveDateTime();renderDashboa
 function renderDashboard(){const bal=totalBalance(),goal=data.goals[0];const month=todayISO().slice(0,7);const inc=data.transactions.filter(t=>(t.type==='deposit'||t.type==='interest')&&t.date.slice(0,7)===month).reduce((s,t)=>s+ +t.amount,0);const out=data.transactions.filter(t=>(t.type==='expense'||t.type==='withdrawal')&&t.date.slice(0,7)===month).reduce((s,t)=>s+ +t.amount,0);
 const financialItems=Array.isArray(data.savingsList)?data.savingsList:[];
 const financialSum=cat=>financialItems.filter(item=>(item.category||'Savings')===cat).reduce((sum,item)=>sum+Number(item.amount||0),0);
-const savingsTotal=financialSum('Savings'),salaryTotal=financialSum('Salary'),debtTotal=financialSum('Debt');
+const savingsTotal=financialSum('Savings'),salaryTotal=financialSum('Salary'),debtTotal=getOutstandingOwedTotal();
 const categoryDelta=cat=>financialItems.filter(i=>(i.category||'Savings')===cat).reduce((sum,item)=>{const hist=Array.isArray(item.changeHistory)?item.changeHistory:[];if(!hist.length)return sum;const latest=hist.reduce((a,b)=>(Number(b.at)||0)>(Number(a.at)||0)?b:a,hist[0]);return sum+Number(latest.newAmount||0)-Number(latest.oldAmount||0);},0);
 const savingsDelta=categoryDelta('Savings'),salaryDelta=categoryDelta('Salary'),debtDelta=categoryDelta('Debt'),overallDelta=savingsDelta+salaryDelta-debtDelta;
 const deltaHtml=d=>Math.abs(d)<0.005?'':`<div class="stat-foot" style="color:${d>0?'var(--green)':'var(--red)'};font-weight:800">${d>0?'+':'−'} ${peso(Math.abs(d))}</div>`;
 const savingsAndSalaryTotal=savingsTotal+salaryTotal;const goalBalance=goal&&Array.isArray(goal.banks)&&goal.banks.length?goalCurrentAmount(goal):savingsAndSalaryTotal;const prog=goal?Math.min(100,Math.max(0,goalBalance/goal.target*100)):0;
-document.getElementById('stats').innerHTML=`<div class="stat"><div class="stat-top">Savings total <span class="stat-icon" style="background:#e5f7ef;color:#169b70">₱</span></div><div class="stat-value" style="color:var(--green)">${peso(savingsTotal)}</div><div class="stat-foot">Savings savings</div><div class="stat-foot savings-total-asof" id="savingsTotalAsOf" style="margin-top:5px;font-size:10px">As of —</div>${deltaHtml(savingsDelta)}</div><div class="stat"><div class="stat-top">Salary / income total <span class="stat-icon" style="background:#edf1ff;color:#536be0">↗</span></div><div class="stat-value" style="color:var(--blue)">${peso(salaryTotal)}</div><div class="stat-foot">Savings income</div>${deltaHtml(salaryDelta)}</div><div class="stat"><div class="stat-top">Debt total <span class="stat-icon" style="background:#fff1e7;color:#e64b5b">−</span></div><div class="stat-value" style="color:var(--red)">${peso(debtTotal)}</div><div class="stat-foot">Savings debt</div>${deltaHtml(debtDelta)}</div>`;
+document.getElementById('stats').innerHTML=`<div class="stat"><div class="stat-top">Savings total <span class="stat-icon" style="background:#e5f7ef;color:#169b70">₱</span></div><div class="stat-value" style="color:var(--green)">${peso(savingsTotal)}</div><div class="stat-foot">Savings savings</div><div class="stat-foot savings-total-asof" id="savingsTotalAsOf" style="margin-top:5px;font-size:10px">As of —</div>${deltaHtml(savingsDelta)}</div><div class="stat"><div class="stat-top">Salary / income total <span class="stat-icon" style="background:#edf1ff;color:#536be0">↗</span></div><div class="stat-value" style="color:var(--blue)">${peso(salaryTotal)}</div><div class="stat-foot">Savings income</div>${deltaHtml(salaryDelta)}</div><div class="stat"><div class="stat-top">Debt total <span class="stat-icon" style="background:#fff1e7;color:#e64b5b">−</span></div><div class="stat-value" style="color:var(--red)">${peso(debtTotal)}</div><div class="stat-foot">I owe · remaining balance</div></div>`;
 document.getElementById('mainGoal').innerHTML=goal?`<div class="between"><span>${esc(goal.name)}</span><span>${prog.toFixed(1)}%</span></div><div class="goal-amount">${peso(goalBalance)} <span style="font-size:13px;color:var(--muted);font-weight:600">of ${peso(goal.target)}</span></div><div class="progress"><span style="width:${prog}%"></span></div><div class="between"><span>Current savings + salary / income total</span><strong style="color:var(--text)">${peso(Math.max(0,goal.target-goalBalance))} remaining</strong></div><div class="goal-meta"><div class="mini">✦</div><div><strong>${goalBalance>=goal.target?'Goal reached — amazing work!':'You are building a great habit.'}</strong><small>${goal.due?'Target date: '+fmtDate(goal.due):'Every deposit gets you closer.'}</small></div></div>`:'<div class="empty">Create your first savings goal.</div>';
 const vals=[];for(let i=5;i>=0;i--){let d=new Date();d.setDate(1);d.setMonth(d.getMonth()-i);let m=d.toISOString().slice(0,7);let net=data.transactions.filter(t=>t.date.slice(0,7)===m).reduce((s,t)=>s+((t.type==='deposit'||t.type==='interest')?+t.amount:- +t.amount),0);vals.push({m,label:d.toLocaleDateString('en-PH',{month:'short'}),v:net})}let max=Math.max(1,...vals.map(v=>Math.abs(v.v)));document.getElementById('chart').innerHTML=vals.map((v,i)=>`<div class="bar-wrap" title="${esc(v.m)}: ${peso(v.v)}"><div class="bar ${i===5?'current':''}" style="height:${Math.max(4,Math.abs(v.v)/max*78)}%"></div><div class="bar-label">${v.label}</div></div>`).join('');
 const financialHistory=[];
@@ -7316,7 +7328,7 @@ async function refreshPhilippineHolidays(manual){
  setInterval(()=>refreshPhilippineHolidays(false),24*60*60*1000);
 })();
 
-function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard')setTimeout(renderOverallTrend,50);document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Location.');if(p==='live-location')setTimeout(()=>{
+function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard'){renderDashboard();setTimeout(renderOverallTrend,50);}document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Location.');if(p==='live-location')setTimeout(()=>{
  setSavelyLiveMapMode('traffic');
  initSavelyLiveLocationMap();
  if(savelyLiveLocationMap){
@@ -8320,7 +8332,8 @@ accrueRealtimeInterest();
 
 <script id="savely-live-weather">
 (function(){
-  const $=id=>document.getElementById(id), STORE_KEY='savely_weather_location_v1';
+  const $=id=>document.getElementById(id), STORE_KEY='savely_weather_location_v1', CURRENT_CACHE_KEY='savely_weather_current_cache_v2';
+  let currentWeatherLoading=false;
   const labels={0:['☀️','Sunny'],1:['🌤️','Mostly clear'],2:['⛅','Partly cloudy'],3:['☁️','Cloudy'],45:['🌫️','Foggy'],48:['🌫️','Foggy'],51:['🌦️','Light drizzle'],53:['🌦️','Drizzle'],55:['🌧️','Heavy drizzle'],56:['🌧️','Freezing drizzle'],57:['🌧️','Freezing drizzle'],61:['🌧️','Light rain'],63:['🌧️','Rain'],65:['🌧️','Heavy rain'],66:['🌧️','Freezing rain'],67:['🌧️','Heavy freezing rain'],71:['🌨️','Light snow'],73:['🌨️','Snow'],75:['❄️','Heavy snow'],77:['🌨️','Snow grains'],80:['🌦️','Rain showers'],81:['🌧️','Rain showers'],82:['⛈️','Heavy showers'],85:['🌨️','Snow showers'],86:['❄️','Snow showers'],95:['⛈️','Thunderstorm'],96:['⛈️','Thunderstorm with hail'],99:['⛈️','Severe thunderstorm']};
 
   function readLocation(){
@@ -8330,11 +8343,27 @@ accrueRealtimeInterest();
     if($('savelyWeatherDesc'))$('savelyWeatherDesc').textContent=message;
     if($('savelyWeather'))$('savelyWeather').title=message;
   }
+  function readCurrentCache(){
+    try{
+      const cached=JSON.parse(localStorage.getItem(CURRENT_CACHE_KEY)||'null');
+      if(cached&&Number.isFinite(Number(cached.temperature))&&Number.isFinite(Number(cached.updatedAt)))return cached;
+    }catch(e){}
+    return null;
+  }
   function render(temp,code,place){
     const v=labels[Number(code)]||['🌡️','Current conditions'];
     if($('savelyWeatherIcon'))$('savelyWeatherIcon').textContent=v[0];
     if($('savelyWeatherTemp'))$('savelyWeatherTemp').textContent=Math.round(Number(temp))+'°C';
     setStatus(v[1]+(place?' · '+place:''));
+  }
+  function renderCachedCurrent(){
+    const cached=readCurrentCache();if(!cached)return false;
+    const v=labels[Number(cached.code)]||['🌡️','Saved conditions'];
+    if($('savelyWeatherIcon'))$('savelyWeatherIcon').textContent=v[0];
+    if($('savelyWeatherTemp'))$('savelyWeatherTemp').textContent=Math.round(Number(cached.temperature))+'°C';
+    const stamp=new Date(Number(cached.updatedAt)).toLocaleString('en-PH',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+    setStatus('Saved weather · updated '+stamp+(cached.place?' · '+cached.place:''));
+    return true;
   }
   async function fetchJson(url,timeoutMs=11000){
     const controller=new AbortController();
@@ -8355,19 +8384,27 @@ accrueRealtimeInterest();
     });
     const url='https://api.open-meteo.com/v1/forecast?'+params.toString();
     let lastError=null;
-    for(let attempt=0;attempt<2;attempt++){
+    for(let attempt=0;attempt<3;attempt++){
       try{
-        const d=await fetchJson(url,12000);
+        const d=await fetchJson(url,16000);
         if(!d.current||!Number.isFinite(Number(d.current.temperature_2m)))throw new Error('Current weather data was empty');
         render(d.current.temperature_2m,d.current.weather_code,place);
+        try{
+          localStorage.setItem(CURRENT_CACHE_KEY,JSON.stringify({
+            temperature:Number(d.current.temperature_2m),code:Number(d.current.weather_code),
+            place:String(place||''),latitude:Number(lat),longitude:Number(lon),updatedAt:Date.now()
+          }));
+        }catch(e){}
         return true;
       }catch(error){
         lastError=error;
-        if(attempt===0)await new Promise(resolve=>setTimeout(resolve,650));
+        if(attempt<2)await new Promise(resolve=>setTimeout(resolve,500*(attempt+1)));
       }
     }
-    setStatus('Weather unavailable · '+(lastError&&lastError.name==='AbortError'?'request timed out':'service connection failed'));
-    if($('savelyWeatherTemp'))$('savelyWeatherTemp').textContent='—';
+    if(!renderCachedCurrent()){
+      setStatus('Weather unavailable · '+(lastError&&lastError.name==='AbortError'?'request timed out':'service connection failed'));
+      if($('savelyWeatherTemp'))$('savelyWeatherTemp').textContent='—';
+    }
     return false;
   }
   function normalizeCity(value){
@@ -8409,18 +8446,26 @@ accrueRealtimeInterest();
     });
   }
   async function start(){
-    if($('savelyWeatherTemp'))$('savelyWeatherTemp').textContent='Loading…';
-    setStatus('Loading current weather…');
-    const saved=readLocation();
-    let place=saved&&saved.city?await geocodeSaved(saved):null;
-    if(!place)place=await getDevicePosition();
-    // A city-level fallback keeps the weather card useful if location permission
-    // is declined or the saved city is temporarily unavailable in the geocoder.
-    if(!place)place={lat:14.5995,lon:120.9842,label:'Manila, Philippines'};
-    const ok=await load(place.lat,place.lon,place.label);
-    if(!ok&&place.label!=='Manila, Philippines'){
-      await load(14.5995,120.9842,'Manila, Philippines');
+    if(currentWeatherLoading)return;
+    currentWeatherLoading=true;
+    const hadCache=renderCachedCurrent();
+    if(!hadCache){
+      if($('savelyWeatherTemp'))$('savelyWeatherTemp').textContent='Loading…';
+      setStatus('Loading current weather…');
     }
+    try{
+      const saved=readLocation();
+      let place=saved&&saved.city?await geocodeSaved(saved):null;
+      if(!place)place=await getDevicePosition();
+      // Use a neutral city fallback only when no saved city or device position is available.
+      if(!place)place={lat:14.5995,lon:120.9842,label:'Manila, Philippines'};
+      await load(place.lat,place.lon,place.label);
+    }catch(error){
+      if(!renderCachedCurrent()){
+        setStatus('Weather unavailable · '+(error&&error.message?error.message:'location lookup failed'));
+        if($('savelyWeatherTemp'))$('savelyWeatherTemp').textContent='—';
+      }
+    }finally{currentWeatherLoading=false;}
   }
   window.savelyReloadWeather=start;
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
@@ -8669,8 +8714,15 @@ accrueRealtimeInterest();
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script id="savely-hourly-daily-weather">
 (function(){
- const $=id=>document.getElementById(id), KEY='savely_weather_location_v1';
- let forecastCache=null, activeTab='hourly', loadingRequest=false;
+ const $=id=>document.getElementById(id), KEY='savely_weather_location_v1', FORECAST_CACHE_KEY='savely_weather_forecast_cache_v2';
+ const FORECAST_FRESH_MS=45*60*1000;
+ let forecastCache=null, forecastCacheMeta=null, activeTab='hourly', loadingRequest=false;
+ try{
+  const cached=JSON.parse(localStorage.getItem(FORECAST_CACHE_KEY)||'null');
+  if(cached&&cached.data&&cached.data.hourly&&Array.isArray(cached.data.hourly.time)&&cached.data.daily&&Array.isArray(cached.data.daily.time)){
+   forecastCache=cached.data;forecastCacheMeta=cached;
+  }
+ }catch(e){}
  const codeLabels={
   0:['☀️','Clear sky'],1:['🌤️','Mainly clear'],2:['⛅','Partly cloudy'],3:['☁️','Overcast'],
   45:['🌫️','Fog'],48:['🌫️','Depositing rime fog'],51:['🌦️','Light drizzle'],53:['🌦️','Drizzle'],
@@ -8684,14 +8736,18 @@ accrueRealtimeInterest();
  function weather(code){return codeLabels[Number(code)]||['🌡️','Weather conditions unavailable'];}
  function savedLocation(){try{return JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){return null}}
  function normalizeCity(value){return String(value||'').replace(/^(?:city of|municipality of|municipality)\s+/i,'').replace(/\s+/g,' ').trim();}
- async function fetchJson(url,timeoutMs=14000){
+ async function fetchJson(url,timeoutMs=18000){
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);
   try{
-   const r=await fetch(url,{cache:'no-store',signal:controller.signal});
-   if(!r.ok)throw new Error('HTTP '+r.status);
-   const data=await r.json();
-   if(data&&data.error)throw new Error(data.reason||'Weather API error');
+   const r=await fetch(url,{cache:'no-store',signal:controller.signal,headers:{Accept:'application/json'}});
+   const data=await r.json().catch(()=>null);
+   if(!r.ok)throw new Error('Weather service returned HTTP '+r.status);
+   if(!data)throw new Error('Weather service returned an unreadable response');
+   if(data.error)throw new Error(data.reason||'Weather API error');
    return data;
+  }catch(error){
+   if(error&&error.name==='AbortError')throw error;
+   throw error instanceof Error?error:new Error('Weather network request failed');
   }finally{clearTimeout(timer);}
  }
  async function geocodeSaved(loc){
@@ -8773,34 +8829,61 @@ accrueRealtimeInterest();
   });
   params.set('hourly',simplified?'temperature_2m,weather_code,wind_speed_10m':'temperature_2m,relative_humidity_2m,precipitation_probability,weather_code,wind_speed_10m');
   params.set('daily',simplified?'weather_code,temperature_2m_max,temperature_2m_min':'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset');
-  const data=await fetchJson('https://api.open-meteo.com/v1/forecast?'+params.toString(),15000);
+  const data=await fetchJson('https://api.open-meteo.com/v1/forecast?'+params.toString(),18000);
   if(!data.hourly||!Array.isArray(data.hourly.time)||!data.hourly.time.length||!data.daily||!Array.isArray(data.daily.time)||!data.daily.time.length){
    throw new Error('The weather service returned incomplete hourly/daily data.');
   }
   return data;
  }
+ function formatCacheTime(timestamp){
+  try{return new Intl.DateTimeFormat('en-PH',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}).format(new Date(timestamp));}
+  catch(e){return 'previously saved';}
+ }
+ function showCachedForecast(){
+  if(!forecastCache)return false;
+  renderHourly(forecastCache);renderDaily(forecastCache);window.showSavelyForecastTab(activeTab);
+  return true;
+ }
  window.loadSavelyForecast=async function(force){
   const loading=$('savelyForecastLoading');
   if(loading){loading.style.display='block';loading.textContent='Loading weather forecast…';}
   if(loadingRequest)return;
-  if(!force&&forecastCache){
-   renderHourly(forecastCache);renderDaily(forecastCache);
+  const hadCache=showCachedForecast();
+  const cachedAt=Number(forecastCacheMeta&&forecastCacheMeta.fetchedAt)||0;
+  const cacheFresh=cachedAt>0&&(Date.now()-cachedAt)<FORECAST_FRESH_MS;
+  if(hadCache&&!force&&cacheFresh){
    if(loading)loading.style.display='none';
-   window.showSavelyForecastTab(activeTab);return;
+   const place=$('savelySatellitePlace');
+   if(place&&forecastCacheMeta.place)place.textContent='Hourly & daily forecast · '+forecastCacheMeta.place;
+   return;
+  }
+  if(hadCache&&loading){
+   loading.textContent='Showing your last saved forecast · updated '+formatCacheTime(cachedAt)+'. Refreshing…';
   }
   loadingRequest=true;
   try{
    const loc=await resolveCoordinates();
    const place=$('savelySatellitePlace');if(place)place.textContent='Hourly & daily forecast · '+loc.label;
-   let data;
+   let data,lastError;
    try{data=await requestForecast(loc.lat,loc.lon,false);}
-   catch(fullError){data=await requestForecast(loc.lat,loc.lon,true);}
+   catch(fullError){
+    lastError=fullError;
+    data=await requestForecast(loc.lat,loc.lon,true);
+   }
    forecastCache=data;
+   forecastCacheMeta={fetchedAt:Date.now(),latitude:loc.lat,longitude:loc.lon,place:loc.label};
+   try{localStorage.setItem(FORECAST_CACHE_KEY,JSON.stringify({...forecastCacheMeta,data}));}catch(e){}
    renderHourly(data);renderDaily(data);
    if(loading)loading.style.display='none';
    window.showSavelyForecastTab(activeTab);
   }catch(error){
-   if(loading){
+   if(hadCache){
+    showCachedForecast();
+    if(loading){
+     loading.style.display='block';
+     loading.textContent='Could not refresh right now. Showing your saved forecast from '+formatCacheTime(cachedAt)+'. Check your connection and try again.';
+    }
+   }else if(loading){
     loading.style.display='block';
     const detail=error&&error.name==='AbortError'?'The weather service timed out.':(error&&error.message?error.message:'Unknown weather error.');
     loading.textContent='Could not load forecast: '+detail+' Try Refresh forecast.';
