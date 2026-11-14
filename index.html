@@ -2751,6 +2751,36 @@ button.link-btn{
 }
 </style>
 
+
+<style id="savely-debt-auto-interest-computation-v1">
+.savely-auto-interest-card{
+ padding:15px!important;border:1px solid #dcece3!important;border-radius:15px!important;
+ background:linear-gradient(180deg,#fbfefc 0%,#f4faf6 100%)!important;
+}
+.savely-auto-rate-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.savely-auto-rate-head>strong{font-size:12px;color:#264536;font-weight:850}
+.savely-auto-rate-pill{display:inline-flex;align-items:center;justify-content:center;min-height:24px;padding:4px 9px;border-radius:999px;background:#ddf5e8;color:#0b8058;font-size:9px;font-weight:900;letter-spacing:.06em}
+.savely-auto-rate-pill.neutral{background:#edf1f5;color:#687789}
+.savely-auto-interest-summary{margin-top:12px;padding:13px;border:1px solid #deebe3;border-radius:12px;background:#fff}
+.savely-auto-rate-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.savely-auto-rate-metrics>div{padding:9px 10px;border-radius:9px;background:#f7faf8}
+.savely-auto-rate-metrics small{display:block;color:#75857c;font-size:10px}
+.savely-auto-rate-metrics strong{display:block;margin-top:3px;color:#1b7554;font-size:12px}
+.savely-auto-rate-breakdown{display:grid;gap:7px}
+.savely-auto-rate-breakdown>div{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#728078;font-size:11px}
+.savely-auto-rate-breakdown>div strong{color:#273d32;font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
+.savely-auto-rate-breakdown>div.total{margin-top:3px;padding-top:9px;border-top:1px solid #e8efeb;color:#146d4d;font-weight:850}
+.savely-auto-rate-breakdown>div.total strong{color:#07845d;font-size:16px}
+.savely-auto-rate-breakdown>div.per-installment{padding:9px 10px;border-radius:9px;background:#edf8f1;color:#35664e;font-weight:750}
+.savely-auto-rate-breakdown>div.per-installment strong{color:#087c56}
+.savely-auto-rate-note{margin:10px 0 0;color:#7a8981;font-size:10px;line-height:1.5}
+.savely-auto-rate-note a{color:#087c58;font-weight:800;text-decoration:none}
+.savely-auto-rate-note a:hover{text-decoration:underline}
+.savely-auto-interest-summary>p{margin:0;color:#738278;font-size:10px;line-height:1.5}
+#debtPrincipalLabel{display:block;margin-bottom:6px}
+@media(max-width:600px){.savely-auto-rate-metrics{grid-template-columns:1fr}}
+</style>
+
 </head>
 <body>
 
@@ -4333,8 +4363,9 @@ const SAVELY_DEBT_PROVIDER_GROUPS={
   {name:'Other bank',short:'+',color:'#758097',kind:'Bank / salary loan'}
  ],
  'Digital Banks':[
-  {name:'GCash',short:'G',color:'#007dff',kind:'GCash GLoan / GGives'},
+  {name:'GCash',short:'G',color:'#007dff',kind:'GLoan'},
   {name:'Maya',short:'M',color:'#00a878',kind:'Maya Easy Credit'},
+  {name:'Maya Personal Loan',short:'MP',color:'#087c9b',kind:'Maya Personal Loan'},
   {name:'GoTyme Bank',short:'GT',color:'#e45b3c',kind:'Digital bank loan'},
   {name:'MariBank',short:'MB',color:'#f58220',kind:'Digital bank loan'},
   {name:'CIMB Bank',short:'CIMB',color:'#7b2c91',kind:'Digital bank loan'},
@@ -4352,10 +4383,10 @@ const SAVELY_DEBT_PROVIDER_GROUPS={
   {name:'MariCredit',short:'MC',color:'#f58220',kind:'MariCredit'},
   {name:'MariCard Credit',short:'MC',color:'#f58220',kind:'MariCard Credit'},
   {name:'Shopee SPayLater',short:'S',color:'#ee4d2d',kind:'Shopee SPayLater'},
-  {name:'Shopee SLoan',short:'SL',color:'#ee4d2d',kind:'SLoan / Billease'},
+  {name:'Shopee SLoan',short:'SL',color:'#ee4d2d',kind:'SLoan'},
   {name:'Lazada LazPayLater',short:'L',color:'#f04b8b',kind:'Lazada LazPayLater'},
   {name:'Atome',short:'A',color:'#29264a',kind:'Atome'},
-  {name:'BillEase',short:'BE',color:'#6540a5',kind:'SLoan / Billease'},
+  {name:'BillEase',short:'BE',color:'#6540a5',kind:'BillEase'},
   {name:'Home Credit',short:'HC',color:'#c51f36',kind:'Home Credit'},
   {name:'Akulaku',short:'AK',color:'#e24e42',kind:'Akulaku'},
   {name:'Kredivo PH',short:'K',color:'#283b81',kind:'Kredivo PH'},
@@ -4384,8 +4415,8 @@ const SAVELY_DEBT_PROVIDER_GROUPS={
 };
 const SAVELY_DEBT_KIND_BY_GROUP={
  'Banks':['Bank / salary loan','Credit card'],
- 'Digital Banks':['Digital bank loan','GCash GLoan / GGives','Maya Easy Credit','Credit card'],
- 'E-commerce / PayLater':['MariLoan','MariCredit','MariCard Credit','Shopee SPayLater','Lazada LazPayLater','Atome','SLoan / Billease','Home Credit','Akulaku','Kredivo PH','Plentina','TendoPay','Cashalo','Tala','JuanHand','Skyro','Salmon Finance','ACOM','CashMart','MoneyCat','CashMe','GrabFinance','Bukas','Other'],
+ 'Digital Banks':['Digital bank loan','GLoan','GGives','GCredit','Maya Easy Credit','Maya Personal Loan','Credit card'],
+ 'E-commerce / PayLater':['MariLoan','MariCredit','MariCard Credit','Shopee SPayLater','Lazada LazPayLater','Atome','SLoan','BillEase','SLoan / Billease','Home Credit','Akulaku','Kredivo PH','Plentina','TendoPay','Cashalo','Tala','JuanHand','Skyro','Salmon Finance','ACOM','CashMart','MoneyCat','CashMe','GrabFinance','Bukas','Other'],
  'Other':['SSS / Pag-IBIG loan','Tala / online lending app','Utility / subscription bill','Personal loan / money lent','Other']
 };
 function savelyDebtProviderGroup(kind,counterparty){
@@ -4441,8 +4472,14 @@ function renderDebtProviderPicker(modal,group,selectedKind='',selectedCounterpar
  grid.querySelectorAll('[data-debt-provider]').forEach(button=>button.addEventListener('click',()=>{
   const providerName=button.dataset.debtProvider;
   const mappedKind=button.dataset.debtKind;
-  if(counterpartyInput)counterpartyInput.value=providerName==='Other bank'||providerName==='Other digital lender'||providerName==='Other PayLater'||providerName==='Other'?'':providerName;
-  if(kindOptions.includes(mappedKind))kindSelect.value=mappedKind;
+  if(counterpartyInput){
+   counterpartyInput.value=providerName==='Other bank'||providerName==='Other digital lender'||providerName==='Other PayLater'||providerName==='Other'?'':providerName;
+   counterpartyInput.dispatchEvent(new Event('input',{bubbles:true}));
+  }
+  if(kindOptions.includes(mappedKind)){
+   kindSelect.value=mappedKind;
+   kindSelect.dispatchEvent(new Event('change',{bubbles:true}));
+  }
   updateDebtInterestProviderHint(modal,providerName+' '+mappedKind);
   grid.querySelectorAll('.savely-debt-provider-option').forEach(item=>{
    item.classList.toggle('selected',item===button);
@@ -4455,6 +4492,8 @@ function renderDebtProviderPicker(modal,group,selectedKind='',selectedCounterpar
   const nextKinds=SAVELY_DEBT_KIND_BY_GROUP[next]||['Other'];
   const preserved=nextKinds.includes(kindSelect.value)?kindSelect.value:nextKinds[0];
   renderDebtProviderPicker(modal,next,preserved,'');
+  if(counterpartyInput)counterpartyInput.dispatchEvent(new Event('input',{bubbles:true}));
+  kindSelect.dispatchEvent(new Event('change',{bubbles:true}));
  });
  if(counterpartyInput && !counterpartyInput.dataset.debtProviderManualBound){
   counterpartyInput.addEventListener('input',()=>{
@@ -4474,6 +4513,72 @@ function renderDebtProviderPicker(modal,group,selectedKind='',selectedCounterpar
  }
 }
 
+
+const SAVELY_DEBT_AUTO_RATE_PRESETS = [
+ {match:/mari.?loan/i, rate:0.95, basis:'monthly', feeRate:0, label:'0.95% monthly add-on', source:'MariBank says rates start as low as 0.95% monthly for selected customers.', url:'https://www.maribank.ph/product/mari-loan', mode:'estimate'},
+ {match:/mari.?card/i, rate:3, basis:'monthly', feeRate:0, label:'3.00% monthly', source:'MariBank publishes a 3% monthly interest rate; 0% may apply when the statement is paid in full by the due date.', url:'https://www.maribank.ph/product/maricard-credit', mode:'estimate'},
+ {match:/mari.?credit/i, rate:2.95, basis:'monthly', feeRate:0, label:'2.95% monthly add-on', source:'MariBank Credit product disclosure sheet lists a 2.95% monthly add-on rate.', url:'https://banking-aka-storage.maribank.ph/maribank/ph/cmps-website/file-hosting/MariBank-Credit-Product-Disclosure-Sheet.pdf', mode:'estimate'},
+ {match:/spaylater|shopee.*paylater/i, rate:3.95, basis:'monthly', feeRate:0, label:'Up to 3.95% monthly', source:'Shopee lists up to 3.95% monthly interest. Its separate 0%–7% processing fee is not included because the exact fee is offer-specific.', url:'https://help.shopee.ph/portal/4/article/81098', mode:'estimate'},
+ {match:/sloan/i, rate:3.30, basis:'monthly', feeRate:0, label:'3.30% monthly reference midpoint', source:'Shopee SLoan publishes 2.15%–4.45% monthly; this uses the range midpoint as an estimate, not a guaranteed offer.', url:'https://help.shopee.ph/portal/4/article/83225-What%20are%20the%20fees%20related%20to%20SLoan?seo=1', mode:'estimate'},
+ {match:/atome/i, rate:2, basis:'monthly', feeRate:3, label:'2% interest + 3% monthly fee (example)', source:'Atome’s published example uses 2% monthly interest and a 3% monthly facilitation fee. Actual offer and applicable fees vary.', url:'https://help.atome.ph/hc/en-gb/articles/54871283707417-What-fees-will-I-be-charged', mode:'estimate'},
+ {match:/home.?credit/i, rate:3.80, basis:'monthly', feeRate:0, label:'3.80% monthly sample reference', source:'Home Credit’s disclosure shows a 1.49%–8.99% nominal monthly range for Cash Loan; 3.80% is the example rate used in its representative EIR calculation. Actual offer varies.', url:'https://www.homecredit.ph/disclosures', mode:'estimate'},
+ {match:/^.*\b(gloan)\b.*$/i, rate:4.29, basis:'monthly', feeRate:0, label:'4.29% monthly reference midpoint', source:'GCash lists 1.59%–6.99% monthly depending on eligibility and term. This uses the range midpoint; processing fees are excluded because they are deducted from proceeds.', url:'https://help.gcash.com/hc/en-us/articles/6145865592985-GLoan-fees-and-interest-rate', mode:'estimate'},
+ {match:/ggives/i, rate:2.745, basis:'monthly', feeRate:0, label:'2.745% monthly reference midpoint', source:'GCash lists 0%–5.49% monthly depending on eligibility and term. This uses the range midpoint as an estimate.', url:'https://help.gcash.com/hc/en-us/articles/4409088901017-GGives-fees-and-interest-rates', mode:'estimate'},
+ {match:/gcredit/i, rate:6, basis:'flat', feeRate:0, label:'6% prorated reference midpoint', source:'GCash lists 5%–7% prorated interest. This midpoint is a rough reference; statement totals are preferable.', url:'https://gcash.com/terms-and-conditions/fees', mode:'estimate'},
+ {match:/maya.*easy.?credit|easy.?credit.*maya/i, rate:0, basis:'flat', feeRate:4.0516, label:'3.99% service fee + approx. 0.0616% DST', source:'Maya’s sample uses a 3.99% service fee plus DST computed at 0.75% × 30/365. Actual service fee is user-specific.', url:'https://www.mayabank.ph/credit/', mode:'estimate'},
+ {match:/maya.*personal.?loan|personal.?loan.*maya/i, rate:0.77, basis:'monthly', feeRate:0, label:'As low as 0.77% monthly add-on', source:'Maya publishes an add-on rate as low as 0.77% monthly for a 24-month term. Actual approved rate is shown in the app.', url:'https://www.mayabank.ph/borrow/', mode:'estimate'}
+];
+function getSavelyDebtAutoPreset(kind,counterparty){
+ const value=`${String(kind||'')} ${String(counterparty||'')}`.trim();
+ // Match directly against the ordered provider catalog. Product-specific patterns precede brand-level patterns.
+ return SAVELY_DEBT_AUTO_RATE_PRESETS.find(item=>item.match.test(value))||null;
+}
+function getSavelyDebtTermMonths(frequency,count){
+ const n=Math.max(1,Number(count)||1);
+ if(frequency==='weekly')return n/4.345;
+ if(frequency==='biweekly')return n/2.1725;
+ if(frequency==='monthly')return n;
+ return 1;
+}
+function calculateSavelyDebtQuote(principal,preset,frequency,count){
+ const amount=Math.max(0,Number(principal)||0);
+ if(!preset||!amount)return {principal:amount,interest:0,fees:0,total:amount,months:getSavelyDebtTermMonths(frequency,count),preset:null};
+ const months=getSavelyDebtTermMonths(frequency,count);
+ const interest=preset.basis==='monthly'?amount*(preset.rate/100)*months:amount*(preset.rate/100);
+ const fees=preset.feeRate?(preset.basis==='monthly'?amount*(preset.feeRate/100)*months:amount*(preset.feeRate/100)):0;
+ return {principal:amount,interest,fees,total:amount+interest+fees,months,preset};
+}
+function updateSavelyDebtAutoQuote(modal){
+ if(!modal)return null;
+ const principalField=modal.querySelector('#debtPrincipalAmount');
+ const amountField=modal.querySelector('#debtTotalAmount');
+ const kindSelect=modal.querySelector('#debtKind');
+ const counterparty=modal.querySelector('#debtCounterparty');
+ const frequency=modal.querySelector('#debtFrequency');
+ const installments=modal.querySelector('#debtInstallments');
+ const summary=modal.querySelector('#debtAutoInterestSummary');
+ const principalLabel=modal.querySelector('#debtPrincipalLabel');
+ if(!principalField||!amountField)return null;
+ const preset=getSavelyDebtAutoPreset(kindSelect&&kindSelect.value,counterparty&&counterparty.value);
+ const count=Number(installments&&installments.value)||1;
+ const quote=calculateSavelyDebtQuote(Number(principalField.value),preset,frequency&&frequency.value||'once',count);
+ if(!preset){
+  if(principalLabel)principalLabel.textContent='Total repayment amount from lender / credit app (₱)';
+  amountField.value=principalField.value||'';
+  if(summary)summary.innerHTML='<div class="savely-auto-rate-head"><strong>No universal public rate for this product</strong><span class="savely-auto-rate-pill neutral">Offer-specific</span></div><p>Enter the total repayment amount shown in your lender app or billing statement. Savely will schedule that total without asking you to enter an interest rate.</p>';
+ }else{
+  if(principalLabel)principalLabel.textContent='Principal / amount borrowed (₱)';
+  amountField.value=Number.isFinite(quote.total)?quote.total.toFixed(2):'';
+  const money=value=>peso(Math.round((Number(value)||0)*100)/100);
+  const rateLabel=preset.label;
+  const sourceLink=preset.url?`<a href="${preset.url}" target="_blank" rel="noopener">Provider details</a>`:'';
+  const note=preset.source||'Public reference rate. Your approved offer may differ.';
+  const ratio=quote.principal?Math.round((quote.interest+quote.fees)/quote.principal*10000)/100:0;
+  if(summary)summary.innerHTML=`<div class="savely-auto-rate-head"><strong>Automatic interest estimate</strong><span class="savely-auto-rate-pill">AUTO RATE</span></div><div class="savely-auto-rate-metrics"><div><small>Rate reference</small><strong>${rateLabel}</strong></div><div><small>Estimated term</small><strong>${quote.months.toFixed(1)} month(s)</strong></div></div><div class="savely-auto-rate-breakdown"><div><span>Principal</span><strong>${money(quote.principal)}</strong></div><div><span>Interest</span><strong>${money(quote.interest)}</strong></div><div><span>Additional service fees</span><strong>${money(quote.fees)}</strong></div><div class="total"><span>Estimated total repayment</span><strong>${money(quote.total)}</strong></div><div class="per-installment"><span>Approx. each payment (${count})</span><strong>${money(quote.total/count)}</strong></div></div><p class="savely-auto-rate-note">${note} ${sourceLink} Calculation uses a simple add-on estimate; confirm against your lender's actual disclosure.</p>`;
+ }
+ return quote;
+}
+
 function openDebtForm(id=null,defaultDate=null,directionChoice=null){
  ensureDebtReceivableLinks();
  const current=id?(data.debtRecords||[]).find(x=>String(x.id)===String(id)):null;
@@ -4486,7 +4591,7 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
  const paid=current?debtPaidAmount(current):0;
  const formTitle=current?`Edit ${isOwed?'payment':'collection'} record`:isOwed?'Add payment schedule':'Add money to collect';
  const formSubtitle=isOwed?'Track a bill, loan, or installment that you need to pay.':'Track money you lent and the payments you expect to collect.';
- const typeOptions=`<option>Digital bank loan</option><option>MariLoan</option><option>MariCredit</option><option>MariCard Credit</option><option>Akulaku</option><option>Kredivo PH</option><option>Plentina</option><option>TendoPay</option><option>Cashalo</option><option>JuanHand</option><option>Skyro</option><option>Salmon Finance</option><option>ACOM</option><option>CashMart</option><option>MoneyCat</option><option>CashMe</option><option>GrabFinance</option><option>Bukas</option><option>Shopee SPayLater</option><option>Lazada LazPayLater</option><option>Atome</option><option>GCash GLoan / GGives</option><option>Maya Easy Credit</option><option>SLoan / Billease</option><option>Home Credit</option><option>Tala / online lending app</option><option>Credit card</option><option>Bank / salary loan</option><option>SSS / Pag-IBIG loan</option><option>Utility / subscription bill</option><option>Personal loan / money lent</option><option>Other</option>`;
+ const typeOptions=`<option>Digital bank loan</option><option>MariLoan</option><option>MariCredit</option><option>MariCard Credit</option><option>Akulaku</option><option>Kredivo PH</option><option>Plentina</option><option>TendoPay</option><option>Cashalo</option><option>JuanHand</option><option>Skyro</option><option>Salmon Finance</option><option>ACOM</option><option>CashMart</option><option>MoneyCat</option><option>CashMe</option><option>GrabFinance</option><option>Bukas</option><option>Shopee SPayLater</option><option>Lazada LazPayLater</option><option>Atome</option><option>GLoan</option><option>GGives</option><option>GCredit</option><option>GCash GLoan / GGives</option><option>Maya Easy Credit</option><option>Maya Personal Loan</option><option>SLoan</option><option>BillEase</option><option>SLoan / Billease</option><option>Home Credit</option><option>Tala / online lending app</option><option>Credit card</option><option>Bank / salary loan</option><option>SSS / Pag-IBIG loan</option><option>Utility / subscription bill</option><option>Personal loan / money lent</option><option>Other</option>`;
  modal.innerHTML=`<div class="modal savely-debt-form-dialog" role="dialog" aria-modal="true" aria-labelledby="debtFormTitle" style="width:min(760px,100%);max-height:92vh;overflow:auto">
   <div class="panel-head savely-debt-form-header"><div><div class="savely-debt-kicker">DEBT SCHEDULE</div><h2 id="debtFormTitle">${formTitle}</h2><div class="panel-sub">${formSubtitle}</div></div><button type="button" class="btn btn-light" onclick="closeDebtForm()">✕ Close</button></div>
   <div class="savely-debt-direction-banner ${isOwed?'is-owed':'is-lent'}"><span class="savely-debt-direction-icon">${isOwed?'↗':'↙'}</span><span>${isOwed?'I OWE · PAYMENT TO MAKE':'OWED TO ME · MONEY TO COLLECT'}</span></div>
@@ -4506,17 +4611,16 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
      <div class="field full"><label for="debtKind">Debt product / type</label><select id="debtKind" required>${typeOptions}</select></div>`:`<div class="field full"><label>Debt type</label><div class="savely-debt-fixed-kind"><span class="savely-debt-fixed-kind-icon">↙</span><span><strong>Personal loan / money lent</strong><small>For money you lend directly to another person.</small></span></div></div>`}
     <div class="field full"><label for="debtTitle">${isOwed?'Bill / payment name (optional)':'Loan / collection name (optional)'}</label><input id="debtTitle" maxlength="90" placeholder="${isOwed?'Optional · e.g. Shopee SPayLater November bill':'Optional · e.g. Money lent to Juan'}"></div>
     <div class="field full"><label for="debtCounterparty" id="debtCounterpartyLabel">${isOwed?'Lender / platform':'Borrower / person who owes you'}</label><input id="debtCounterparty" maxlength="70" placeholder="${isOwed?'e.g. Shopee, Lazada, GCash, or bank':'e.g. Friend, family member, or colleague'}"></div>
-    ${isOwed?`<div class="field full savely-debt-interest-card">
-      <div class="savely-debt-interest-head"><div><strong>Interest &amp; lender charges</strong><small>Optional · record the rate and charges shown in your loan or credit offer.</small></div><span class="savely-debt-interest-tag">LOAN DETAILS</span></div>
-      <div class="savely-debt-interest-grid">
-       <div class="field"><label for="debtInterestRate">Interest / service rate (%)</label><input id="debtInterestRate" type="number" min="0" max="100" step="0.0001" value="${current&&current.interestRate!==undefined&&current.interestRate!==null?Number(current.interestRate):''}" placeholder="e.g. 3.95"></div>
-       <div class="field"><label for="debtInterestBasis">Rate basis</label><select id="debtInterestBasis"><option value="monthly"${current&&current.interestBasis==='monthly'?' selected':''}>Per month</option><option value="annual"${current&&current.interestBasis==='annual'?' selected':''}>Per year (p.a.)</option><option value="daily"${current&&current.interestBasis==='daily'?' selected':''}>Per day</option><option value="flat"${current&&current.interestBasis==='flat'?' selected':''}>Flat / one-time</option><option value="service"${current&&current.interestBasis==='service'?' selected':''}>Service fee</option></select></div>
-       <div class="field full"><label for="debtInterestCharges">Additional interest / fees (₱)</label><input id="debtInterestCharges" type="number" min="0" step="0.01" value="${current&&current.interestCharges!==undefined?Number(current.interestCharges):''}" placeholder="e.g. 150.00"></div>
-      </div>
-      <div class="savely-debt-interest-reference" id="debtInterestProviderHint">Select a source to see any available published reference. Enter the exact terms from your own approved offer.</div>
-      <div class="savely-debt-interest-note">Use the full repayment amount below, including interest and fees. These reference fields are for tracking only and are not added a second time.</div>
+    ${isOwed&&!current?`<div class="field full savely-auto-interest-card">
+      <div class="savely-auto-rate-head"><strong>Automatic interest &amp; repayment estimate</strong><span class="savely-auto-rate-pill">AUTO RATE</span></div>
+      <div class="field"><label for="debtPrincipalLabel" id="debtPrincipalLabel">Principal / amount borrowed (₱)</label><input id="debtPrincipalAmount" type="number" min="0.01" step="0.01" required placeholder="e.g. 3500"></div>
+      <input id="debtTotalAmount" type="hidden" value="">
+      <div id="debtAutoInterestSummary" class="savely-auto-interest-summary" aria-live="polite"></div>
+     </div>`:isOwed&&current?`<div class="field full savely-auto-interest-card">
+      <div class="savely-auto-rate-head"><strong>Recorded loan details</strong><span class="savely-auto-rate-pill neutral">SAVED</span></div>
+      <p class="savely-auto-rate-note">This is an existing scheduled installment. Its amount already includes any interest recorded when it was created. Editing this amount will not apply interest a second time.</p>
      </div>`:''}
-    <div class="field"><label for="debtTotalAmount">${current?'Scheduled amount (₱)':isOwed?'Total amount to pay (₱)':'Total amount to collect (₱)'}</label><input id="debtTotalAmount" type="number" min="0.01" step="0.01" required value="${current?Number(current.amount).toFixed(2):''}" placeholder="e.g. 3500"></div>
+    ${!(isOwed&&!current)?`<div class="field"><label for="debtTotalAmount">${current?'Scheduled amount (₱)':isOwed?'Total amount to pay (₱)':'Total amount to collect (₱)'}</label><input id="debtTotalAmount" type="number" min="0.01" step="0.01" required value="${current?Number(current.amount).toFixed(2):''}" placeholder="e.g. 3500"></div>`:''}
     <div class="field"><label for="debtFirstDue">${isOwed?'First due date':'Expected collection date'}</label><input id="debtFirstDue" type="date" required value="${current?esc(current.dueDate):(defaultDate||debtLocalISO(new Date()))}"></div>
     <div class="savely-debt-plan-card field full">
      <div class="savely-debt-plan-heading"><div><strong>Repayment plan</strong><span>Choose how often the payment or collection should happen.</span></div><span class="savely-debt-plan-badge">SCHEDULE</span></div>
@@ -4548,6 +4652,7 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
  const frequency=modal.querySelector('#debtFrequency'),installments=modal.querySelector('#debtInstallments');
  const preview=modal.querySelector('#debtSchedulePreview');
  const amountField=modal.querySelector('#debtTotalAmount');
+ const principalField=modal.querySelector('#debtPrincipalAmount');
  const dueField=modal.querySelector('#debtFirstDue');
  if(current){
   frequency.value=current.frequency||'once';
@@ -4613,25 +4718,38 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
   }));
   [amountField,dueField].forEach(field=>field.addEventListener('input',updateSchedulePreview));
  }
+ if(isOwed&&!current&&principalField){
+  const refreshAutoQuote=()=>{
+   updateSavelyDebtAutoQuote(modal);
+   updateSchedulePreview();
+  };
+  [principalField,frequency,installments,modal.querySelector('#debtKind'),modal.querySelector('#debtCounterparty')].filter(Boolean).forEach(field=>{
+   field.addEventListener('input',refreshAutoQuote);
+   field.addEventListener('change',refreshAutoQuote);
+  });
+  updateSavelyDebtAutoQuote(modal);
+ }
  updateSchedulePreview();
  modal.querySelector('#savelyDebtForm').addEventListener('submit',e=>{
   e.preventDefault();
   const dir=directionValue,kind=isOwed?modal.querySelector('#debtKind').value:'Personal loan / money lent',counterparty=modal.querySelector('#debtCounterparty').value.trim();
   let title=modal.querySelector('#debtTitle').value.trim();
   if(!title)title=counterparty||kind||(isOwed?'Debt payment':'Money lent');
-  const interestRaw=String(modal.querySelector('#debtInterestRate')?.value||'').trim();
-  const interestRate=interestRaw===''?null:Number(interestRaw);
-  const interestBasis=modal.querySelector('#debtInterestBasis')?.value||'monthly';
-  const interestCharges=Math.max(0,Number(modal.querySelector('#debtInterestCharges')?.value)||0);
-  const amount=Number(modal.querySelector('#debtTotalAmount').value),dueDate=modal.querySelector('#debtFirstDue').value;
+  const autoPreset=isOwed&&!current?getSavelyDebtAutoPreset(modal.querySelector('#debtKind')?.value,modal.querySelector('#debtCounterparty')?.value):null;
+  const principalAmount=principalField?Number(principalField.value):Number(modal.querySelector('#debtTotalAmount').value);
+  const autoQuote=principalField?calculateSavelyDebtQuote(principalAmount,autoPreset,frequency.value,Number(installments.value)||1):null;
+  const interestRate=autoPreset?Number(autoPreset.rate):((current&&current.interestRate!==undefined)?Number(current.interestRate):null);
+  const interestBasis=autoPreset?autoPreset.basis:((current&&current.interestBasis)||'monthly');
+  const interestAmount=autoQuote?Math.round(autoQuote.interest*100)/100:Math.max(0,Number(current&&current.interestAmount)||0);
+  const interestCharges=autoQuote?Math.round(autoQuote.fees*100)/100:Math.max(0,Number(current&&current.interestCharges)||0);
+  const amount=principalField?Math.round(autoQuote.total*100)/100:Number(modal.querySelector('#debtTotalAmount').value);
+  const dueDate=modal.querySelector('#debtFirstDue').value;
   let repeat=frequency.value;
   const enteredCount=Number(installments.value);
   if(!current&&repeat==='once'&&Number.isInteger(enteredCount)&&enteredCount>1){repeat='monthly';frequency.value='monthly';}
   const count=current?1:(repeat==='once'?1:enteredCount);
   if(!title){toast('Enter a name or description.');return;}
   if(!Number.isFinite(amount)||amount<=0){toast('Enter an amount greater than zero.');return;}
-  if(interestRate!==null&&(!Number.isFinite(interestRate)||interestRate<0||interestRate>100)){toast('Enter a valid interest rate from 0 to 100%.');return;}
-  if(!Number.isFinite(interestCharges)||interestCharges<0){toast('Enter a valid additional interest / fee amount.');return;}
   if(!dueDate){toast('Choose a date.');return;}
   if(!current&&(!Number.isInteger(count)||count<1||count>48)){toast('Enter a whole number of payments from 1 to 48.');installments.focus();return;}
   if(!current && Math.floor(amount*100)+0.000001<count){toast('The total amount is too small for that number of installments. Reduce the installment count.');return;}
@@ -4651,13 +4769,22 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
    closeDebtForm();if(dir==='lent')render();else renderDebtPage();toast('Debt record updated.');return;
   }
   const seriesId='debt-'+uid(),base=Math.floor((amount/count)*100)/100,created=[];
+  const principalTotal=principalField&&autoQuote?Math.round(principalAmount*100)/100:amount;
+  const totalInterest=principalField&&autoQuote?Math.round(interestAmount*100)/100:0;
+  const totalFees=principalField&&autoQuote?Math.round(interestCharges*100)/100:0;
+  const principalBase=Math.floor((principalTotal/count)*100)/100;
+  const interestBase=Math.floor((totalInterest/count)*100)/100;
+  const feeBase=Math.floor((totalFees/count)*100)/100;
   for(let i=0;i<count;i++){
    let date=dueDate;
    if(repeat==='weekly'||repeat==='biweekly'){
     const dt=debtDateFromISO(dueDate);dt.setDate(dt.getDate()+i*(repeat==='weekly'?7:14));date=debtLocalISO(dt);
    }else if(repeat==='monthly')date=debtAddMonths(dueDate,i);
    const part=i===count-1?Math.round((amount-base*(count-1))*100)/100:base;
-   created.push({id:uid(),seriesId,direction:dir,kind,title,counterparty,interestRate,interestBasis,interestCharges,amount:part,remainingAmount:part,dueDate:date,frequency:repeat,installmentNumber:i+1,totalInstallments:count,status:'unpaid',payments:[],createdAt:Date.now()});
+   const principalPart=i===count-1?Math.round((principalTotal-principalBase*(count-1))*100)/100:principalBase;
+   const interestPart=i===count-1?Math.round((totalInterest-interestBase*(count-1))*100)/100:interestBase;
+   const feePart=i===count-1?Math.round((totalFees-feeBase*(count-1))*100)/100:feeBase;
+   created.push({id:uid(),seriesId,direction:dir,kind,title,counterparty,interestRate,interestBasis,interestAmount:interestPart,interestCharges:feePart,principalAmount:principalPart,ratePresetLabel:autoPreset?autoPreset.label:null,amount:part,remainingAmount:part,dueDate:date,frequency:repeat,installmentNumber:i+1,totalInstallments:count,status:'unpaid',payments:[],createdAt:Date.now()});
   }
   if(!Array.isArray(data.debtRecords))data.debtRecords=[];
   let receivableItem=null;
