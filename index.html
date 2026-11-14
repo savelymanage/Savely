@@ -3044,6 +3044,66 @@ button.link-btn{
 #page-live-location .leaflet-control-attribution{font-size:9px!important;background:rgba(255,255,255,.86)!important}
 </style>
 
+
+<style id="savely-overview-three-cards-goal-menu-debt-spacing-v1">
+/* Overview has three summary metrics; let them fill the complete row. */
+#stats.cards{grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%}
+@media(max-width:1050px){#stats.cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:560px){#stats.cards{grid-template-columns:minmax(0,1fr)!important}}
+
+/* Align the repayment-plan controls and keep their gap compact. */
+.savely-debt-plan-grid{
+ display:grid!important;
+ grid-template-columns:minmax(0,.96fr) minmax(0,1.04fr)!important;
+ gap:8px!important;
+ align-items:start!important;
+}
+.savely-debt-plan-grid>.field{
+ min-width:0!important;
+ width:100%!important;
+ margin:0!important;
+}
+.savely-debt-plan-grid>.field>label{
+ display:block!important;
+ min-height:16px;
+ margin-bottom:8px!important;
+}
+.savely-debt-plan-grid select,
+.savely-debt-plan-grid .savely-debt-count-control{
+ width:100%!important;
+ min-width:0!important;
+}
+.savely-debt-count-control{gap:5px!important;grid-template-columns:36px minmax(0,1fr) 36px!important}
+@media(max-width:640px){
+ .savely-debt-plan-grid{grid-template-columns:minmax(0,1fr)!important;gap:12px!important}
+}
+
+/* Savings-goal actions live inside one compact three-dot menu. */
+.goal-card{position:relative}
+.goal-card-menu{position:relative;flex:0 0 auto}
+.goal-card-menu>summary{
+ list-style:none;display:grid;place-items:center;width:38px;height:38px;
+ border:1px solid var(--line);border-radius:10px;background:var(--panel,#fff);
+ color:var(--muted);font-size:22px;line-height:1;font-weight:800;cursor:pointer;
+}
+.goal-card-menu>summary::-webkit-details-marker{display:none}
+.goal-card-menu>summary:hover,
+.goal-card-menu[open]>summary{border-color:var(--green);color:var(--green);background:var(--green2)}
+.goal-card-menu-popover{
+ position:absolute;right:0;top:calc(100% + 7px);z-index:12000;
+ display:grid;gap:3px;min-width:148px;padding:6px;
+ border:1px solid var(--line);border-radius:12px;background:var(--panel,#fff);
+ box-shadow:0 12px 30px rgba(20,35,50,.14);
+}
+.goal-card-menu-popover button{
+ width:100%;min-height:36px;padding:8px 10px;border:0;border-radius:8px;
+ background:transparent;color:var(--text);text-align:left;font:inherit;
+ font-size:12px;font-weight:750;cursor:pointer;
+}
+.goal-card-menu-popover button:hover{background:var(--soft,#f4f7fa)}
+.goal-card-menu-popover button.goal-menu-delete{color:var(--red)}
+</style>
+
 </head>
 <body>
 
@@ -4816,7 +4876,7 @@ function renderDebtProviderPicker(modal,group,selectedKind='',selectedCounterpar
 
 
 const SAVELY_DEBT_AUTO_RATE_PRESETS = [
- {match:/mari.?loan/i, rate:0.95, basis:'monthly', feeRate:0, label:'0.95% monthly add-on', source:'MariBank says rates start as low as 0.95% monthly for selected customers.', url:'https://www.maribank.ph/product/mari-loan', mode:'estimate'},
+ {match:/mari.?loan/i, rate:2.95, basis:'monthly', feeRate:0, label:'2.95% monthly add-on', source:'MariLoan interest rate set to 2.95% monthly as requested. Confirm your actual rate and total repayment amount in your loan agreement.', url:'https://www.maribank.ph/product/mari-loan', mode:'estimate'},
  {match:/mari.?card/i, rate:3, basis:'monthly', feeRate:0, label:'3.00% monthly', source:'MariBank publishes a 3% monthly interest rate; 0% may apply when the statement is paid in full by the due date.', url:'https://www.maribank.ph/product/maricard-credit', mode:'estimate'},
  {match:/mari.?credit/i, rate:2.95, basis:'monthly', feeRate:0, label:'2.95% monthly add-on', source:'MariBank Credit product disclosure sheet lists a 2.95% monthly add-on rate.', url:'https://banking-aka-storage.maribank.ph/maribank/ph/cmps-website/file-hosting/MariBank-Credit-Product-Disclosure-Sheet.pdf', mode:'estimate'},
  {match:/spaylater|shopee.*paylater/i, rate:3.95, basis:'monthly', feeRate:0, label:'Up to 3.95% monthly', source:'Shopee lists up to 3.95% monthly interest. Its separate 0%–7% processing fee is not included because the exact fee is offer-specific.', url:'https://help.shopee.ph/portal/4/article/81098', mode:'estimate'},
@@ -5486,7 +5546,7 @@ function renderGoals(){
    const transferButton=linkedItemId&&canTransfer?`<button type="button" class="goal-bank-transfer-button" onclick="openGoalBankTransfer('${esc(String(g.id))}','${esc(linkedItemId)}')" aria-label="Transfer ${esc(bankName)} to another savings goal">⇄ Transfer</button>`:'';
    return `<div class="goal-bank-progress-item"><div class="goal-bank-progress-head"><span class="goal-bank-progress-label"><span class="goal-bank-progress-icon" style="background:${esc(meta.color)}">${esc(meta.short)}</span><span>${esc(bankName)}</span></span><span class="goal-bank-progress-actions"><strong>${bankPct.toFixed(1)}%</strong>${transferButton}</span></div><div class="progress goal-bank-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${bankPct.toFixed(1)}" aria-label="${esc(bankName)} progress"><span style="width:${bankPct}%"></span></div><div class="goal-bank-progress-amount">${peso(amount)}</div></div>`;
   }).join('')}</div>`:`<div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p.toFixed(1)}" aria-label="Savings goal progress"><span style="width:${p}%"></span></div>`;
-  return `<div class="goal-card"><div class="between"><span class="muted">SAVINGS GOAL</span><div style="display:flex;gap:8px;align-items:center"><button type="button" class="btn btn-light btn-sm" onclick="editGoal('${g.id}')">Edit</button><button type="button" class="delete-btn" onclick="deleteGoal('${g.id}')">Delete</button></div></div><h3 style="margin-top:12px">${esc(g.name)}</h3><div class="goal-amount">${peso(goalBal)}</div><div class="between"><span>Target: ${peso(g.target)}</span><strong>${p.toFixed(1)}%</strong></div>${progress}<div class="between"><span>${peso(Math.max(0,g.target-goalBal))} remaining</span><span>${g.due?'Due '+fmtDate(g.due):'No target date'}</span></div></div>`;
+  return `<div class="goal-card"><div class="between"><span class="muted">SAVINGS GOAL</span><details class="goal-card-menu"><summary aria-label="Savings goal options" title="Goal options">⋯</summary><div class="goal-card-menu-popover"><button type="button" onclick="this.closest('details').open=false;editGoal('${esc(String(g.id))}')">Edit</button><button type="button" class="goal-menu-delete" onclick="this.closest('details').open=false;deleteGoal('${esc(String(g.id))}')">Delete</button></div></details></div><h3 style="margin-top:12px">${esc(g.name)}</h3><div class="goal-amount">${peso(goalBal)}</div><div class="between"><span>Target: ${peso(g.target)}</span><strong>${p.toFixed(1)}%</strong></div>${progress}<div class="between"><span>${peso(Math.max(0,g.target-goalBal))} remaining</span><span>${g.due?'Due '+fmtDate(g.due):'No target date'}</span></div></div>`;
  }).join('')||'<div class="goals-empty-state-center"><div class="empty">No goals yet. Create one to start tracking.</div></div>';
 }
 
@@ -10821,5 +10881,17 @@ document.addEventListener('visibilitychange',()=>{
  if(document.visibilityState==='hidden'&&window.__savelyLiveLocationWatchId!==null)stopSavelyLiveLocation('Tracking paused because this browser tab is hidden.');
 });
 </script>
+
+<script id="savely-goal-menu-dismiss-v1">
+document.addEventListener('click',function(event){
+ document.querySelectorAll('.goal-card-menu[open]').forEach(function(menu){
+  if(!menu.contains(event.target))menu.open=false;
+ });
+});
+document.addEventListener('keydown',function(event){
+ if(event.key==='Escape')document.querySelectorAll('.goal-card-menu[open]').forEach(function(menu){menu.open=false;});
+});
+</script>
+
 </body>
 </html>
