@@ -3141,35 +3141,8 @@ button.link-btn{
 .savely-live-map-mode-switch button{min-height:34px;padding:0 13px;border:0;border-radius:8px;background:transparent;color:#718078;font:inherit;font-size:10px;font-weight:850;cursor:pointer;white-space:nowrap}
 .savely-live-map-mode-switch button.active{background:#138765;color:#fff;box-shadow:0 2px 7px rgba(19,135,101,.18)}
 .savely-waze-traffic-view{width:100%;height:clamp(560px,76vh,900px);min-height:560px;overflow:hidden;border:1px solid #e2eaf0;border-radius:15px;background:#eef3f1}
-.savely-waze-traffic-view[hidden],.savely-railway-live-view[hidden],.savely-live-location-map[hidden],.live-location-map-controls[hidden],.live-location-map-footer[hidden],.savely-waze-map-note[hidden]{display:none!important}
+.savely-waze-traffic-view[hidden],.savely-live-location-map[hidden],.live-location-map-controls[hidden],.live-location-map-footer[hidden],.savely-waze-map-note[hidden]{display:none!important}
 .savely-waze-traffic-view iframe{display:block;width:100%;height:100%;min-height:560px;border:0;background:#eef3f1}
-.savely-railway-live-view{width:100%;padding:16px;border:1px solid #e2eaf0;border-radius:15px;background:#fff}
-.savely-railway-live-view[hidden]{display:none!important}
-.savely-railway-live-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px}
-.savely-railway-live-head h3{margin:4px 0;font-size:18px;color:var(--text)}
-.savely-railway-live-head p{margin:0;color:var(--muted);font-size:11px}
-.savely-railway-live-head>a{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 13px;border:1px solid #cfe5da;border-radius:9px;background:#f4faf7;color:#087b5b;text-decoration:none;font-size:11px;font-weight:800;white-space:nowrap}
-.savely-railway-access-panel{min-height:300px;display:flex;align-items:center;justify-content:center;padding:34px 22px;border:1px solid #e2eaf0;border-radius:12px;background:linear-gradient(135deg,#f5faf7,#edf5f1);text-align:center}
-.savely-railway-access-inner{width:min(520px,100%);display:flex;flex-direction:column;align-items:center;gap:12px}
-.savely-railway-access-icon{width:58px;height:58px;display:grid;place-items:center;border-radius:18px;background:#dff3e9;color:#087b5b;font-size:28px}
-.savely-railway-access-inner h4{margin:0;color:var(--text);font-size:17px}
-.savely-railway-access-inner p{max-width:440px;margin:0;color:var(--muted);font-size:12px;line-height:1.6}
-.savely-railway-open-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 18px;border:1px solid #087b5b;border-radius:10px;background:#087b5b;color:#fff;text-decoration:none;font-size:12px;font-weight:850;box-shadow:0 5px 14px rgba(8,123,91,.15)}
-.savely-railway-open-button:hover{background:#06694e}
-.savely-railway-live-note{margin-top:10px;color:var(--muted);font-size:10px;line-height:1.55}
-.savely-railway-live-note strong{color:var(--text)}
-.savely-waze-map-controls{top:16px;right:16px}
-.savely-waze-map-note{margin-top:10px;color:var(--muted);font-size:10px;line-height:1.5}
-@media(max-width:650px){
- .savely-live-map-heading{align-items:flex-start}
- .savely-live-map-heading-actions{width:100%;justify-content:space-between}
- .savely-live-map-mode-switch{flex:1}
- .savely-live-map-mode-switch button{flex:1;padding:0 8px}
- .savely-waze-traffic-view,.savely-waze-traffic-view iframe{height:68vh;min-height:440px}
- .savely-railway-live-view{padding:10px}
- .savely-railway-access-panel{min-height:280px;padding:24px 16px}
- .savely-railway-live-head{align-items:flex-start;flex-direction:column}
-}
 </style>
 
 
@@ -3515,16 +3488,17 @@ button.link-btn{
  .savely-cctv-featured-foot{flex-direction:column}
 }
 </style>
-
-
-<style id="savely-geops-railway-embed-test-v1">
-.savely-geops-map-wrap{width:100%;height:clamp(560px,76vh,860px);min-height:560px;overflow:hidden;border:1px solid #dfe8e3;border-radius:13px;background:#eef2f4}
-.savely-geops-map-wrap iframe{display:block;width:100%;height:100%;min-height:560px;border:0;background:#eef2f4}
-.savely-trenligtas-map-wrap{width:100%;height:clamp(560px,76vh,900px);min-height:560px;overflow:hidden;border:1px solid #e2eaf0;border-radius:12px;background:#eef2f4}
-.savely-trenligtas-map-wrap iframe{display:block;width:100%;height:100%;min-height:560px;border:0;background:#eef2f4}
-.savely-railway-secondary-link{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding:11px 13px;border:1px solid var(--line,#e2eaf0);border-radius:10px;font-size:11px;color:var(--muted)}
-.savely-railway-secondary-link a{color:var(--green,#087b5b);font-weight:800;text-decoration:none;white-space:nowrap}
-@media(max-width:650px){.savely-geops-map-wrap,.savely-geops-map-wrap iframe{height:68vh;min-height:440px}.savely-trenligtas-map-wrap,.savely-trenligtas-map-wrap iframe{height:68vh;min-height:440px}.savely-railway-secondary-link{align-items:flex-start;flex-direction:column}}
+<style id="savely-construction-project-map-v1">
+.construction-map-legend{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 12px;color:var(--muted);font-size:11px}
+.construction-map-legend>span:first-child{display:flex;align-items:center;gap:7px;font-weight:750;color:var(--text)}
+.construction-map-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;background:#168765;box-shadow:0 0 0 3px #16876520}
+.construction-map-frame-wrap{position:relative;width:100%;height:clamp(560px,76vh,900px);min-height:500px;overflow:hidden;border:1px solid var(--line);border-radius:13px;background:#edf2f5}
+.construction-map-frame-wrap iframe{display:block;width:100%;height:100%;border:0;background:#edf2f5}
+.construction-map-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:28px;text-align:center;background:#f7faf9;color:var(--text)}
+.construction-map-fallback[hidden]{display:none!important}
+.construction-map-fallback span{max-width:480px;color:var(--muted);font-size:12px}
+.construction-map-fallback a{color:var(--green);font-weight:800;text-decoration:none}
+@media(max-width:650px){.construction-map-frame-wrap{height:70vh;min-height:460px}}
 </style>
 </head>
 <body>
@@ -3611,6 +3585,7 @@ button.link-btn{
     
     
     <button data-page="live-location" aria-label="Live Location" title="Live Location"><span class="ico">⌖</span><span class="nav-text">Live Location</span></button>
+    <button data-page="construction-map" aria-label="Construction Map" title="Construction Map"><span class="ico">🏗</span><span class="nav-text">Construction Map</span></button>
     <button data-page="radio" aria-label="Radio" title="Radio"><span class="ico">📻</span><span class="nav-text">Radio</span></button>
     <button data-page="settings" aria-label="Settings & backup" title="Settings & backup"><span class="ico">⚙</span><span class="nav-text">Settings & backup</span></button>
   </nav></div>
@@ -3643,6 +3618,24 @@ button.link-btn{
   
   <section class="page" id="page-cards" aria-label="Cards"></section>
   <section class="page" id="page-radio" aria-label="Radio"></section>
+  <section class="page" id="page-construction-map" aria-label="Construction Project Map">
+    <div class="panel" style="padding:18px">
+      <div class="panel-head" style="align-items:flex-start;flex-wrap:wrap">
+        <div><h2>Philippines Construction Project Map</h2><div class="panel-sub">Explore public works projects recorded by DPWH. Select a marker on the map to view project information.</div></div>
+        <a class="btn btn-light" href="https://proyektoph.com/map" target="_blank" rel="noopener noreferrer">Open full map ↗</a>
+      </div>
+      <div class="construction-map-legend"><span><i></i> DPWH project locations</span><span class="construction-map-source">Source: ProyektoPH · DPWH data</span></div>
+      <div class="construction-map-frame-wrap">
+        <iframe id="savelyConstructionMapFrame" title="Interactive DPWH construction project map of the Philippines" src="https://proyektoph.com/map" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        <div class="construction-map-fallback" id="savelyConstructionMapFallback" hidden>
+          <strong>The project map could not be displayed inside Savely.</strong>
+          <span>The source website may restrict iframe embedding or the map may be temporarily unavailable.</span>
+          <a href="https://proyektoph.com/map" target="_blank" rel="noopener noreferrer">Open ProyektoPH project map ↗</a>
+        </div>
+      </div>
+      <div class="footer-note">Project records and map pins are based on DPWH-published data. Coverage depends on whether a project has recorded coordinates. Data is not a live construction camera or independently verified site progress. <a href="https://proyektoph.com/developers" target="_blank" rel="noopener noreferrer">API and data notes</a>.</div>
+    </div>
+  </section>
   <section class="page" id="page-live-location" aria-label="Live Location">
     <div class="live-location-consent">
       <div class="live-location-consent-icon">⌖</div>
@@ -3665,7 +3658,6 @@ button.link-btn{
          <button type="button" class="active" data-savely-map-mode="location" role="tab" aria-selected="true" onclick="setSavelyLiveMapMode('location')">My location</button>
          <button type="button" data-savely-map-mode="traffic" role="tab" aria-selected="false" onclick="setSavelyLiveMapMode('traffic')">Live traffic</button>
          <button type="button" data-savely-map-mode="cctv" role="tab" aria-selected="false" onclick="setSavelyLiveMapMode('cctv')">Public CCTV</button>
-         <button type="button" data-savely-map-mode="railway" role="tab" aria-selected="false" onclick="setSavelyLiveMapMode('railway')">Railway Live</button>
         </div>
         <span class="live-location-local-badge">This tab only</span>
        </div>
@@ -3675,18 +3667,7 @@ button.link-btn{
        <div id="savelyWazeTrafficView" class="savely-waze-traffic-view" role="region" aria-label="Waze live traffic map" hidden>
         <iframe id="savelyWazeTrafficFrame" title="Waze Live Map traffic view" src="https://embed.waze.com/iframe?zoom=5&amp;lat=12.8797&amp;lon=121.7740&amp;pin=1" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
        </div>
-       <section id="savelyRailwayLiveView" class="savely-railway-live-view" role="region" aria-label="TRENLigtas Metro Manila live train map" hidden>
-        <div class="savely-railway-live-head">
-         <div><span class="savely-cctv-eyebrow">PUBLIC METRO MANILA TRAIN TRACKER · PROJECTLIGTAS</span><h3>TRENLigtas Live Train Map</h3><p>LRT-1 · LRT-2 · MRT-3 · Predicted train positions and community-reported station ETAs</p></div>
-         <a href="https://projectligtas.com/commute" target="_blank" rel="noopener noreferrer">Open TRENLigtas ↗</a>
-        </div>
-        <div class="savely-geops-map-wrap savely-trenligtas-map-wrap">
-         <iframe id="savelyTrenligtasFrame" title="TRENLigtas Live Train Map — Metro Manila" src="https://projectligtas.com/commute" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
-        </div>
-        <div class="savely-railway-live-note"><strong>Embedding test:</strong> If the map loads here, the public page allows this third-party iframe. TRENLigtas describes its train markers as predicted positions refreshed every five seconds; station ETAs are based on community reports. These are not confirmed continuous onboard GPS positions. If the panel is blank or says the site refused to connect, use Open TRENLigtas above.</div>
-        <div class="savely-railway-secondary-link"><span>Other Metro Manila train tracker</span><a href="https://rail.trainsight.app/" target="_blank" rel="noopener noreferrer">Open TrainSight ↗</a></div>
-       </section>
-       <div id="savelyPublicCCTVView" class="savely-public-cctv-view" role="region" aria-label="Metro Manila public CCTV directory" hidden>
+<div id="savelyPublicCCTVView" class="savely-public-cctv-view" role="region" aria-label="Metro Manila public CCTV directory" hidden>
         <aside class="savely-cctv-city-sidebar">
          <div class="savely-cctv-sidebar-heading"><span>METRO MANILA</span><strong>Choose a city</strong><small>1 city currently available</small></div>
                   <nav id="savelyCCTVCityList" class="savely-cctv-city-list" aria-label="Available CCTV city"></nav>
@@ -7952,7 +7933,7 @@ function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavin
   savelyLiveLocationMap.invalidateSize();
  }
   if(window.__savelyLiveLocationWatchId===null||window.__savelyLiveLocationWatchId===undefined)startSavelyLiveLocation();
-},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LOCATION TOOLS','Live Location'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['CALENDAR · PHILIPPINES','Calendar']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','radio':'',holidays:'View Philippine regular holidays, special non-working days, and live countdowns.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
+},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LOCATION TOOLS','Live Location'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['CALENDAR · PHILIPPINES','Calendar']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:'View Philippine regular holidays, special non-working days, and live countdowns.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
 document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
 function openModal(kind,goalToEdit=null){const form=document.getElementById('modalForm'),title=document.getElementById('modalTitle'),desc=document.getElementById('modalDesc');let accountOptions=data.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');let field=(label,name,type='text',value='',extra='')=>`<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let select=(label,name,opts)=>`<div class="field"><label>${label}</label><select name="${name}">${opts}</select></div>`;let fullfield=(label,name,type='text',value='',extra='')=>`<div class="field full"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let body='';
 if(kind==='transaction'){title.textContent='Add transaction';desc.textContent='Record a deposit, withdrawal, interest credit, or expense.';body=`<div class="form-grid">${fullfield('Description','description','text','','required maxlength="100"')}${select('Transaction type','type','<option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option><option value="expense">Expense</option><option value="interest">Interest credit</option>')}${select('Account','accountId',accountOptions)}${field('Amount (₱)','amount','number','','required min=".01" step=".01"')}${field('Date','date','date',todayISO(),'required')}${field('Category','category','text','General','maxlength="60"')}</div>`}
@@ -11869,11 +11850,10 @@ function refreshSavelyWazeTraffic(force=false){
  savelyWazeLastCenterUrl=url;frame.src=url;
 }
 function setSavelyLiveMapMode(mode){
- savelyLiveMapMode=['traffic','cctv','railway'].includes(mode)?mode:'location';
- const location=savelyLiveMapMode==='location',traffic=savelyLiveMapMode==='traffic',cctv=savelyLiveMapMode==='cctv',railway=savelyLiveMapMode==='railway';
+ savelyLiveMapMode=['traffic','cctv'].includes(mode)?mode:'location';
+ const location=savelyLiveMapMode==='location',traffic=savelyLiveMapMode==='traffic',cctv=savelyLiveMapMode==='cctv';
  const gpsMap=document.getElementById('savelyLiveLocationMap');
  const trafficView=document.getElementById('savelyWazeTrafficView');
- const railwayView=document.getElementById('savelyRailwayLiveView');
  const cctvView=document.getElementById('savelyPublicCCTVView');
  const gpsControls=document.getElementById('savelyGpsMapControls');
  const trafficControls=document.getElementById('savelyWazeMapControls');
@@ -11883,14 +11863,13 @@ function setSavelyLiveMapMode(mode){
  const subtitle=document.getElementById('liveLocationMapSubtitle');
  if(gpsMap)gpsMap.hidden=!location;
  if(trafficView)trafficView.hidden=!traffic;
- if(railwayView)railwayView.hidden=!railway;
  if(cctvView)cctvView.hidden=!cctv;
  if(gpsControls)gpsControls.hidden=!location;
  if(trafficControls)trafficControls.hidden=!traffic;
  if(gpsFooter)gpsFooter.hidden=!location;
  if(trafficNote)trafficNote.hidden=!traffic;
- if(title)title.textContent=location?'Live movement map':traffic?'Live traffic':cctv?'Metro Manila Public CCTV':'Railway Live';
- if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Real-time traffic information in a separate Waze Live Map.':cctv?'View the available Quezon City public webcam.':'Testing the public TRENLigtas Live Train Map for LRT-1, LRT-2, and MRT-3.';
+ if(title)title.textContent=location?'Live movement map':traffic?'Live traffic':'Metro Manila Public CCTV';
+ if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Real-time traffic information in a separate Waze Live Map.':'View the available Quezon City public webcam.';
  document.querySelectorAll('[data-savely-map-mode]').forEach(button=>{
   const active=button.dataset.savelyMapMode===savelyLiveMapMode;
   button.classList.toggle('active',active);button.setAttribute('aria-selected',active?'true':'false');
@@ -12317,25 +12296,24 @@ try{localStorage.removeItem(['savely','TomTomTrafficKey'].join(''));}catch(e){}
   if(event.target&&event.target.id==='savelyCCTVRoadSearch')renderRoads();
  });
  window.setSavelyLiveMapMode=function(mode){
-  const next=['traffic','cctv','railway'].includes(mode)?mode:'location';
+  const next=['traffic','cctv'].includes(mode)?mode:'location';
   savelyLiveMapMode=next;
-  const location=next==='location',traffic=next==='traffic',cctv=next==='cctv',railway=next==='railway';
+  const location=next==='location',traffic=next==='traffic',cctv=next==='cctv';
   const page=$('page-live-location');
-  const gpsMap=$('savelyLiveLocationMap'),trafficView=$('savelyWazeTrafficView'),railwayView=$('savelyRailwayLiveView'),cctvView=$('savelyPublicCCTVView');
+  const gpsMap=$('savelyLiveLocationMap'),trafficView=$('savelyWazeTrafficView'),cctvView=$('savelyPublicCCTVView');
   const gpsControls=$('savelyGpsMapControls'),trafficControls=$('savelyWazeMapControls');
   const gpsFooter=$('savelyGpsMapFooter'),trafficNote=$('savelyWazeMapNote');
   const title=$('savelyLiveMapTitle'),subtitle=$('liveLocationMapSubtitle');
   if(page)page.classList.toggle('savely-cctv-active',cctv);
   if(gpsMap)gpsMap.hidden=!location;
   if(trafficView)trafficView.hidden=!traffic;
-  if(railwayView)railwayView.hidden=!railway;
-  if(cctvView)cctvView.hidden=!cctv;
+   if(cctvView)cctvView.hidden=!cctv;
   if(gpsControls)gpsControls.hidden=!location;
   if(trafficControls)trafficControls.hidden=!traffic;
   if(gpsFooter)gpsFooter.hidden=!location;
   if(trafficNote)trafficNote.hidden=!traffic;
-  if(title)title.textContent=location?'Live movement map':traffic?'Live traffic':cctv?'Metro Manila Public CCTV':'Railway Live';
-  if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Real-time traffic information in a separate Waze Live Map.':cctv?'View the available Quezon City public webcam.':'Testing the public TRENLigtas Live Train Map for LRT-1, LRT-2, and MRT-3.';
+  if(title)title.textContent=location?'Live movement map':traffic?'Live traffic':'Metro Manila Public CCTV';
+  if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Real-time traffic information in a separate Waze Live Map.':'View the available Quezon City public webcam.';
   document.querySelectorAll('[data-savely-map-mode]').forEach(button=>{
    const active=button.dataset.savelyMapMode===next;
    button.classList.toggle('active',active);button.setAttribute('aria-selected',active?'true':'false');
@@ -12351,5 +12329,16 @@ try{localStorage.removeItem(['savely','TomTomTrafficKey'].join(''));}catch(e){}
 })();
 </script>
 
+
+<script id="savely-construction-map-embed-fallback">
+(()=>{
+ const frame=document.getElementById('savelyConstructionMapFrame');
+ const fallback=document.getElementById('savelyConstructionMapFallback');
+ if(!frame||!fallback)return;
+ let loaded=false;
+ frame.addEventListener('load',()=>{loaded=true;fallback.hidden=true;});
+ window.setTimeout(()=>{if(!loaded)fallback.hidden=false;},12000);
+})();
+</script>
 </body>
 </html>
