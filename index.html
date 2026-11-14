@@ -2275,6 +2275,105 @@ button.link-btn{
 }
 </style>
 
+
+<style id="savely-debt-side-chooser-responsive-fix">
+/* The two debt direction choices are large selectable cards, not standard action buttons. */
+#savelyDebtSideModal{
+  box-sizing:border-box!important;
+  overflow-x:hidden!important;
+}
+#savelyDebtSideModal .debt-side-chooser-dialog{
+  box-sizing:border-box!important;
+  width:min(700px,calc(100vw - 32px))!important;
+  max-width:700px!important;
+  max-height:calc(100dvh - 32px)!important;
+  padding:clamp(20px,3vw,30px)!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+}
+#savelyDebtSideModal .panel-head{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  flex-wrap:wrap!important;
+  gap:12px!important;
+}
+#savelyDebtSideModal .debt-side-choice-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:14px!important;
+  width:100%!important;
+  min-width:0!important;
+  margin-top:18px!important;
+}
+#savelyDebtSideModal .debt-side-choice{
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  gap:0!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:auto!important;
+  min-height:146px!important;
+  max-height:none!important;
+  padding:18px!important;
+  text-align:left!important;
+  white-space:normal!important;
+  overflow:hidden!important;
+  overflow-wrap:anywhere!important;
+  line-height:1.45!important;
+}
+#savelyDebtSideModal .debt-side-choice > span,
+#savelyDebtSideModal .debt-side-choice > strong{
+  box-sizing:border-box!important;
+  min-width:0!important;
+  max-width:100%!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+  text-align:left!important;
+}
+#savelyDebtSideModal .debt-side-choice > span:first-child{
+  width:auto!important;
+  margin:0 0 9px!important;
+  line-height:1.1!important;
+}
+#savelyDebtSideModal .debt-side-choice > strong{
+  display:block!important;
+  width:100%!important;
+  margin:0 0 5px!important;
+  font-size:15px!important;
+}
+#savelyDebtSideModal .debt-side-choice > span:last-child{
+  display:block!important;
+  width:100%!important;
+  font-size:12px!important;
+  line-height:1.5!important;
+  color:var(--muted)!important;
+}
+#savelyDebtSideModal #debtSideClose{
+  flex:0 0 auto!important;
+  min-width:108px!important;
+}
+@media(max-width:560px){
+  #savelyDebtSideModal .debt-side-chooser-dialog{
+    width:calc(100vw - 24px)!important;
+    max-height:calc(100dvh - 24px)!important;
+    padding:20px!important;
+  }
+  #savelyDebtSideModal .debt-side-choice-grid{
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:10px!important;
+  }
+  #savelyDebtSideModal .debt-side-choice{
+    min-height:126px!important;
+    padding:16px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -3678,9 +3777,9 @@ function openDebtSideChooser(defaultDate=null){
  const modal=document.createElement('div');
  modal.id='savelyDebtSideModal';modal.className='modal-backdrop';
  modal.style.cssText='display:flex;z-index:30000;align-items:center;justify-content:center;padding:18px';
- modal.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="debtSideTitle" style="width:min(700px,94vw);max-width:700px;max-height:90vh;overflow:auto;padding:30px">
+ modal.innerHTML=`<div class="modal debt-side-chooser-dialog" role="dialog" aria-modal="true" aria-labelledby="debtSideTitle" style="width:min(700px,94vw);max-width:700px;max-height:90vh;overflow:auto;padding:30px">
   <div class="panel-head" style="margin-bottom:6px"><div><h2 id="debtSideTitle">What would you like to track?</h2><div class="panel-sub">Choose one to open its dedicated form.</div></div><button type="button" class="btn btn-light" id="debtSideClose">✕ Close</button></div>
-  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px">
+  <div class="debt-side-choice-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px">
    <button type="button" id="debtSideOwe" class="debt-side-choice" style="min-height:142px;text-align:left;padding:18px;border:1px solid #f0c5cb;border-radius:14px;background:rgba(220,70,85,.055);cursor:pointer;color:var(--text)">
     <span style="display:block;font-size:25px;margin-bottom:10px;color:var(--red)">↗</span><strong style="display:block;font-size:15px;margin-bottom:5px">I owe</strong><span style="display:block;font-size:11px;line-height:1.5;color:var(--muted)">Payments you need to make, such as bills, loans, or installments.</span>
    </button>
