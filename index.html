@@ -3104,6 +3104,23 @@ button.link-btn{
 .goal-card-menu-popover button.goal-menu-delete{color:var(--red)}
 </style>
 
+
+<style id="savely-location-history-v2-styles">
+.savely-location-history-panel{margin-top:14px!important}
+.savely-location-history-actions{display:flex;gap:7px;flex-wrap:wrap}
+.savely-location-history-actions .danger-text,.savely-location-history-item-actions .danger-text{color:#d83d4e!important}
+.savely-location-history-tabs{display:flex;gap:7px;padding:5px;background:var(--soft,#f3f6f8);border:1px solid var(--line);border-radius:12px;width:max-content;max-width:100%;margin:0 0 12px}
+.savely-location-history-tabs button{border:0;background:transparent;color:var(--muted);font:inherit;font-size:12px;font-weight:800;padding:9px 14px;border-radius:9px;cursor:pointer}
+.savely-location-history-tabs button.active{background:#fff;color:var(--green);box-shadow:0 1px 5px rgba(20,35,50,.09)}
+.savely-location-history-item{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 14px;border:1px solid var(--line);border-radius:12px;margin:8px 0;background:var(--panel,#fff)}
+.savely-location-history-item-main{display:grid;gap:4px;min-width:0}
+.savely-location-history-item-main strong{font-size:13px;color:var(--text)}
+.savely-location-history-item-main small,.savely-location-history-item-main span{font-size:11px;color:var(--muted)}
+.savely-location-history-item-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.savely-location-history-item-actions .btn{white-space:nowrap}
+@media(max-width:700px){.savely-location-history-item{align-items:flex-start;flex-direction:column}.savely-location-history-item-actions{justify-content:flex-start}.savely-location-history-actions{margin-top:8px}}
+</style>
+
 </head>
 <body>
 
@@ -3224,7 +3241,7 @@ button.link-btn{
       <div class="live-location-consent-icon">⌖</div>
       <div class="live-location-consent-copy">
         <strong>Location sharing stays under your control</strong>
-        <span>Opening this page requests browser location permission and starts tracking automatically when allowed. Tracking runs only while this page is open and visible. Points stay in this browser tab and are not sent to Savely. Refreshing or closing the tab clears the route.</span>
+        <span>Opening Live Location requests browser permission and starts tracking automatically when allowed. Tracking runs while this page is open and visible. Routes and visited places are saved locally in this browser on this device; they are not uploaded to a Savely server. Background tracking is not guaranteed when the tab is hidden or the phone is locked.</span>
       </div>
     </div>
     <div class="live-location-stat-grid">
@@ -3241,13 +3258,22 @@ button.link-btn{
         <div class="live-location-map-live-state"><span class="live-location-status-dot" id="liveLocationStatusDot"></span><span><strong id="liveLocationStatus">Connecting to GPS</strong><small id="liveLocationStatusHelp">Waiting for browser permission.</small></span></div>
         <button type="button" class="live-location-map-action" id="liveLocationStop" onclick="stopSavelyLiveLocation('Tracking stopped by you.')" disabled>Stop tracking</button>
         <button type="button" class="live-location-map-action" onclick="centerSavelyLiveLocation()">Recenter</button>
-        <button type="button" class="live-location-map-action danger" id="liveLocationClear" onclick="clearSavelyLocationTrail()">Clear trail</button>
+        <button type="button" class="live-location-map-action" id="liveLocationTrafficToggle" onclick="toggleSavelyTraffic()">Traffic: Off</button>
+        <button type="button" class="live-location-map-action danger" id="liveLocationClear" onclick="clearSavelyLocationTrail()">Clear current route</button>
        </div>
       </div>
       <div class="live-location-map-footer"><span><i class="live-location-legend-dot current"></i> Current / last position</span><span><i class="live-location-legend-line"></i> Recorded movement trail</span><span id="liveLocationLastUpdate">No location update yet</span></div>
     </section>
+    <section class="panel savely-location-history-panel">
+      <div class="panel-head"><div><h2>Location history</h2><div class="panel-sub">Your saved routes and places visited on this device.</div></div><div class="savely-location-history-actions"><button type="button" class="btn btn-light btn-sm" onclick="exportSavelyLocationHistory()">Export</button><button type="button" class="btn btn-light btn-sm danger-text" onclick="deleteSavelyLocationHistory()">Delete history</button></div></div>
+      <div class="savely-location-history-tabs" role="tablist" aria-label="Location history type">
+       <button type="button" class="active" data-location-history-tab="routes" onclick="setSavelyLocationHistoryTab('routes')">Routes</button>
+       <button type="button" data-location-history-tab="places" onclick="setSavelyLocationHistoryTab('places')">Visited places</button>
+      </div>
+      <div id="savelyLocationHistoryContent"><div class="live-location-empty">Your saved routes and visited places will appear here after GPS tracking records movement.</div></div>
+    </section>
     <section class="panel live-location-history-panel">
-      <div class="panel-head"><div><h2>Recent location points</h2><div class="panel-sub">Latest points from this tracking session.</div></div><span class="pill" id="liveLocationPointCount">0 points</span></div>
+      <div class="panel-head"><div><h2>Recent location points</h2><div class="panel-sub">Latest GPS points from the current tracking session.</div></div><span class="pill" id="liveLocationPointCount">0 points</span></div>
       <div id="liveLocationRecentPoints" class="live-location-recent-points"><div class="live-location-empty">No location points yet. Open Live Location and allow browser permission to begin.</div></div>
     </section>
   </section>
@@ -10736,65 +10762,208 @@ body.dark-theme .app > .sidebar #nav button.active * {
 </style>
 
 <script id="savely-live-location-runtime">
-/* Live Location: opt-in, foreground-only browser geolocation. No server upload or persistent trail. */
+/* Savely Live Location v2: foreground GPS, IndexedDB route history, visit detection, optional TomTom traffic overlay. */
 window.__savelyLiveLocationWatchId=null;
-let savelyLiveLocationMap=null,savelyLiveLocationMarker=null,savelyLiveLocationTrail=null;
+let savelyLiveLocationMap=null,savelyLiveLocationMarker=null,savelyLiveLocationTrail=null,savelyTrafficLayer=null;
 let savelyLiveLocationPoints=[],savelyLiveLocationDistance=0,savelyLiveLocationHasCentered=false;
-function initSavelyLiveLocationMap(){
- const el=document.getElementById('savelyLiveLocationMap');if(!el)return;
- if(!window.L){el.innerHTML='<div class="live-location-empty">The map library could not be loaded. Check your internet connection and refresh the page.</div>';return;}
- if(!savelyLiveLocationMap){
-  const lastKnown=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
-  savelyLiveLocationMap=L.map(el,{zoomControl:true,preferCanvas:true,scrollWheelZoom:true});
-  if(lastKnown){
-   savelyLiveLocationMap.setView([lastKnown.lat,lastKnown.lng],17);
-   savelyLiveLocationHasCentered=true;
-  }else{
-   // Start at a useful Philippines overview until the user grants GPS access.
-   savelyLiveLocationMap.setView([12.8797,121.7740],6);
-   savelyLiveLocationHasCentered=false;
-  }
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
-   maxZoom:19,
-   maxNativeZoom:19,
-   attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors',
-   crossOrigin:true
-  }).addTo(savelyLiveLocationMap);
-  savelyLiveLocationTrail=L.polyline([],{color:'#128765',weight:5,opacity:.8,lineCap:'round',lineJoin:'round'}).addTo(savelyLiveLocationMap);
- }
- setTimeout(()=>savelyLiveLocationMap&&savelyLiveLocationMap.invalidateSize(),120);
- renderSavelyLiveLocationPoints();
+let savelyLocationDb=null,savelyActiveSession=null,savelyStopCandidate=null,savelyActiveVisit=null;
+let savelyLocationHistoryTab='routes',savelyTrafficEnabled=false,savelyLastReverseLookup=0;
+const SAVELY_LOCATION_DB='savely_location_history_v2',SAVELY_LOCATION_DB_VERSION=1;
+const SAVELY_VISIT_RADIUS=75,SAVELY_VISIT_MIN_DWELL=7*60*1000,SAVELY_VISIT_EXIT_RADIUS=130;
+function savelyLocationId(){return 'loc_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);}
+function savelyEscapeHtml(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+function savelyOpenLocationDb(){
+ if(savelyLocationDb)return Promise.resolve(savelyLocationDb);
+ return new Promise((resolve,reject)=>{
+  if(!('indexedDB' in window)){reject(new Error('IndexedDB is unavailable in this browser.'));return;}
+  const req=indexedDB.open(SAVELY_LOCATION_DB,SAVELY_LOCATION_DB_VERSION);
+  req.onupgradeneeded=()=>{
+   const db=req.result;
+   if(!db.objectStoreNames.contains('sessions'))db.createObjectStore('sessions',{keyPath:'id'});
+   if(!db.objectStoreNames.contains('places'))db.createObjectStore('places',{keyPath:'id'});
+  };
+  req.onsuccess=()=>{savelyLocationDb=req.result;resolve(savelyLocationDb);};
+  req.onerror=()=>reject(req.error||new Error('Could not open local location history.'));
+ });
 }
-function setSavelyLiveLocationMarkerState(isLive){
- if(!savelyLiveLocationMarker)return;
- const element=savelyLiveLocationMarker.getElement();
- const pin=element&&element.querySelector('.savely-location-pin');
- if(pin)pin.classList.toggle('is-live',!!isLive);
+async function savelyDbPut(storeName,value){
+ const db=await savelyOpenLocationDb();
+ return new Promise((resolve,reject)=>{
+  const tx=db.transaction(storeName,'readwrite');tx.objectStore(storeName).put(value);
+  tx.oncomplete=()=>resolve(true);tx.onerror=()=>reject(tx.error||new Error('Save failed.'));
+ });
 }
-function savelyLocationSetStatus(title,detail,live=false){
- const t=document.getElementById('liveLocationStatus'),d=document.getElementById('liveLocationStatusHelp'),dot=document.getElementById('liveLocationStatusDot');
- if(t)t.textContent=title;if(d)d.textContent=detail;if(dot)dot.classList.toggle('is-live',!!live);
- const start=document.getElementById('liveLocationStart'),stop=document.getElementById('liveLocationStop');
- if(start)start.disabled=!!live;if(stop)stop.disabled=!live;
+async function savelyDbDelete(storeName,key){
+ const db=await savelyOpenLocationDb();
+ return new Promise((resolve,reject)=>{
+  const tx=db.transaction(storeName,'readwrite');tx.objectStore(storeName).delete(key);
+  tx.oncomplete=()=>resolve(true);tx.onerror=()=>reject(tx.error||new Error('Delete failed.'));
+ });
 }
+async function savelyDbGetAll(storeName){
+ const db=await savelyOpenLocationDb();
+ return new Promise((resolve,reject)=>{
+  const tx=db.transaction(storeName,'readonly'),req=tx.objectStore(storeName).getAll();
+  req.onsuccess=()=>resolve(req.result||[]);req.onerror=()=>reject(req.error||new Error('Could not read history.'));
+ });
+}
+async function savelyDbClear(storeName){
+ const db=await savelyOpenLocationDb();
+ return new Promise((resolve,reject)=>{
+  const tx=db.transaction(storeName,'readwrite');tx.objectStore(storeName).clear();
+  tx.oncomplete=()=>resolve(true);tx.onerror=()=>reject(tx.error||new Error('Could not clear history.'));
+ });
+}
+function savelyPersistCurrentSession(){
+ if(!savelyActiveSession)return;
+ const snapshot={...savelyActiveSession,points:savelyLiveLocationPoints.slice(-12000),distance:savelyLiveLocationDistance,updatedAt:Date.now()};
+ savelyDbPut('sessions',snapshot).catch(err=>console.warn('Savely location history save failed:',err));
+}
+function savelyFormatDateTime(ts){
+ if(!ts)return '—';
+ return new Intl.DateTimeFormat('en-PH',{timeZone:'Asia/Manila',month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}).format(new Date(ts));
+}
+function savelyFormatDate(ts){
+ if(!ts)return '—';
+ return new Intl.DateTimeFormat('en-PH',{timeZone:'Asia/Manila',month:'long',day:'numeric',year:'numeric'}).format(new Date(ts));
+}
+function savelyFormatDuration(ms){const mins=Math.max(0,Math.round((ms||0)/60000));if(mins<60)return mins+' min';const hours=Math.floor(mins/60),rest=mins%60;return hours+'h'+(rest?' '+rest+'m':'');}
 function savelyDistanceMeters(a,b){
- const rad=x=>x*Math.PI/180,R=6371000;
- const dLat=rad(b.lat-a.lat),dLon=rad(b.lng-a.lng);
+ const rad=x=>x*Math.PI/180,R=6371000,dLat=rad(b.lat-a.lat),dLon=rad(b.lng-a.lng);
  const q=Math.sin(dLat/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLon/2)**2;
  return 2*R*Math.asin(Math.sqrt(q));
 }
 function savelyFormatDistance(m){return m>=1000?(m/1000).toFixed(2)+' km':Math.round(m)+' m';}
 function savelyFormatSpeed(mps){if(!Number.isFinite(mps)||mps<0)return '—';return (mps*3.6).toFixed(1)+' km/h';}
 function savelyFormatClock(ts){return new Intl.DateTimeFormat('en-PH',{timeZone:'Asia/Manila',hour:'numeric',minute:'2-digit',second:'2-digit'}).format(new Date(ts));}
+function savelyLocationSetStatus(title,detail,live=false){
+ const t=document.getElementById('liveLocationStatus'),d=document.getElementById('liveLocationStatusHelp'),dot=document.getElementById('liveLocationStatusDot');
+ if(t)t.textContent=title;if(d)d.textContent=detail;if(dot)dot.classList.toggle('is-live',!!live);
+ const stop=document.getElementById('liveLocationStop');if(stop)stop.disabled=!live;
+}
+function setSavelyLiveLocationMarkerState(isLive){
+ if(!savelyLiveLocationMarker)return;
+ const element=savelyLiveLocationMarker.getElement(),pin=element&&element.querySelector('.savely-location-pin');
+ if(pin)pin.classList.toggle('is-live',!!isLive);
+}
+function savelyMakeLocationIcon(){
+ return L.divIcon({className:'savely-location-marker-host',html:'<div class="savely-location-pin is-live" role="img" aria-label="Your live current location"><span class="savely-location-pulse"></span><svg viewBox="0 0 44 52" width="44" height="52" aria-hidden="true"><path d="M22 2.5C11.6 2.5 3.5 10.4 3.5 20.1c0 13.1 18.5 29.2 18.5 29.2s18.5-16.1 18.5-29.2C40.5 10.4 32.4 2.5 22 2.5Z" fill="#07885f" stroke="#ffffff" stroke-width="2.8" stroke-linejoin="round"/><circle cx="22" cy="19.5" r="7.2" fill="#ffffff"/><circle cx="22" cy="19.5" r="3.1" fill="#07885f"/></svg></div>',iconSize:[44,52],iconAnchor:[22,49],popupAnchor:[0,-44]});
+}
+function initSavelyLiveLocationMap(){
+ const el=document.getElementById('savelyLiveLocationMap');if(!el)return;
+ if(!window.L){el.innerHTML='<div class="live-location-empty">The map library could not be loaded. Check your internet connection and refresh the page.</div>';return;}
+ if(!savelyLiveLocationMap){
+  const lastKnown=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
+  savelyLiveLocationMap=L.map(el,{zoomControl:true,preferCanvas:true,scrollWheelZoom:true});
+  savelyLiveLocationMap.setView(lastKnown?[lastKnown.lat,lastKnown.lng]:[12.8797,121.7740],lastKnown?17:6);
+  savelyLiveLocationHasCentered=!!lastKnown;
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,maxNativeZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors',crossOrigin:true}).addTo(savelyLiveLocationMap);
+  savelyLiveLocationTrail=L.polyline([],{color:'#128765',weight:5,opacity:.82,lineCap:'round',lineJoin:'round'}).addTo(savelyLiveLocationMap);
+  const last=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
+  if(last){savelyLiveLocationMarker=L.marker([last.lat,last.lng],{icon:savelyMakeLocationIcon(),keyboard:true,title:'Your last recorded location'}).addTo(savelyLiveLocationMap);}
+ }
+ setTimeout(()=>savelyLiveLocationMap&&savelyLiveLocationMap.invalidateSize(),150);
+ if(savelyLiveLocationTrail)savelyLiveLocationTrail.setLatLngs(savelyLiveLocationPoints.map(p=>[p.lat,p.lng]));
+ renderSavelyLiveLocationPoints();
+}
+function savelyTomTomKey(){return localStorage.getItem('savelyTomTomTrafficKey')||'';}
+function setSavelyTrafficButton(){const b=document.getElementById('liveLocationTrafficToggle');if(b)b.textContent=savelyTrafficEnabled?'Traffic: On':'Traffic: Off';}
+function toggleSavelyTraffic(){
+ if(!savelyLiveLocationMap)initSavelyLiveLocationMap();
+ if(savelyTrafficEnabled){
+  if(savelyTrafficLayer&&savelyLiveLocationMap)savelyLiveLocationMap.removeLayer(savelyTrafficLayer);
+  savelyTrafficLayer=null;savelyTrafficEnabled=false;setSavelyTrafficButton();return;
+ }
+ let key=savelyTomTomKey();
+ if(!key){
+  key=window.prompt('Paste your TomTom Traffic API key to enable live traffic. The key is saved only in this browser on this device.','');
+  if(!key)return;
+  key=key.trim();if(!key)return;
+  localStorage.setItem('savelyTomTomTrafficKey',key);
+ }
+ if(!savelyLiveLocationMap)return;
+ const url='https://api.tomtom.com/traffic/map/4/tile/flow/relative0/{z}/{x}/{y}.png?key='+encodeURIComponent(key);
+ savelyTrafficLayer=L.tileLayer(url,{opacity:.78,maxZoom:22,maxNativeZoom:22,attribution:'Traffic data &copy; <a href="https://www.tomtom.com/" target="_blank" rel="noopener noreferrer">TomTom</a>'});
+ savelyTrafficLayer.on('tileerror',()=>{
+  if(savelyTrafficLayer&&savelyLiveLocationMap)savelyLiveLocationMap.removeLayer(savelyTrafficLayer);
+  savelyTrafficLayer=null;savelyTrafficEnabled=false;setSavelyTrafficButton();
+  toast('Traffic tiles could not load. Check your TomTom API key and traffic API access.');
+ });
+ savelyTrafficLayer.addTo(savelyLiveLocationMap);savelyTrafficEnabled=true;setSavelyTrafficButton();
+}
+function savelyStartNewSession(){
+ if(savelyActiveSession)return;
+ savelyLiveLocationPoints=[];savelyLiveLocationDistance=0;savelyStopCandidate=null;savelyActiveVisit=null;
+ savelyActiveSession={id:savelyLocationId(),startedAt:Date.now(),endedAt:null,points:[],distance:0,visitIds:[]};
+ if(savelyLiveLocationTrail)savelyLiveLocationTrail.setLatLngs([]);
+ renderSavelyLiveLocationPoints();
+}
+async function savelyResolvePlaceName(lat,lng){
+ const now=Date.now();
+ if(now-savelyLastReverseLookup<1100)return null;
+ savelyLastReverseLookup=now;
+ try{
+  // One reverse lookup per confirmed stop, never continuous GPS polling.
+  const url='https://photon.komoot.io/reverse?lat='+encodeURIComponent(lat)+'&lon='+encodeURIComponent(lng)+'&lang=en';
+  const response=await fetch(url,{headers:{'Accept':'application/json'}});
+  if(!response.ok)throw new Error('Place lookup unavailable');
+  const data=await response.json(),f=data&&data.features&&data.features[0],p=f&&f.properties;
+  if(!p)return null;
+  return [p.name,p.street,p.district,p.city,p.state].filter(Boolean).filter((v,i,a)=>a.indexOf(v)===i).slice(0,3).join(', ')||null;
+ }catch(e){console.warn('Place name lookup unavailable:',e);return null;}
+}
+async function savelyCreateVisit(candidate){
+ if(!candidate||!savelyActiveSession)return;
+ const visit={id:savelyLocationId(),sessionId:savelyActiveSession.id,lat:candidate.lat,lng:candidate.lng,startedAt:candidate.startedAt,endedAt:null,durationMs:Date.now()-candidate.startedAt,name:'Saved place',status:'active'};
+ try{
+  const name=await savelyResolvePlaceName(visit.lat,visit.lng);if(name)visit.name=name;
+  if(!savelyActiveSession)return;
+  savelyActiveVisit=visit;savelyActiveSession.visitIds.push(visit.id);
+  await savelyDbPut('places',visit);savelyPersistCurrentSession();renderSavelyLocationHistory();
+ }catch(e){console.warn('Could not save visited place:',e);}
+}
+async function savelyFinishVisit(at=Date.now()){
+ if(!savelyActiveVisit)return;
+ const visit={...savelyActiveVisit,endedAt:at,durationMs:Math.max(0,at-savelyActiveVisit.startedAt),status:'complete'};
+ savelyActiveVisit=null;
+ try{await savelyDbPut('places',visit);renderSavelyLocationHistory();}catch(e){console.warn('Could not update visited place:',e);}
+}
+function savelyUpdateVisitDetection(point){
+ const speed=Number.isFinite(point.speed)?point.speed:0;
+ if(savelyActiveVisit){
+  const d=savelyDistanceMeters({lat:savelyActiveVisit.lat,lng:savelyActiveVisit.lng},point);
+  if(d>SAVELY_VISIT_EXIT_RADIUS||speed>2.5)savelyFinishVisit(point.at);
+  else{savelyActiveVisit.durationMs=point.at-savelyActiveVisit.startedAt;savelyDbPut('places',{...savelyActiveVisit,durationMs:savelyActiveVisit.durationMs}).catch(()=>{});}
+ }
+ if(savelyActiveVisit)return;
+ if(!savelyStopCandidate){
+  savelyStopCandidate={lat:point.lat,lng:point.lng,startedAt:point.at,lastAt:point.at,count:1};
+  return;
+ }
+ const d=savelyDistanceMeters(savelyStopCandidate,point);
+ if(d<=SAVELY_VISIT_RADIUS&&speed<=2.5){
+  savelyStopCandidate.count++;savelyStopCandidate.lastAt=point.at;
+  if(point.at-savelyStopCandidate.startedAt>=SAVELY_VISIT_MIN_DWELL&&savelyStopCandidate.count>=3){
+   const candidate=savelyStopCandidate;savelyStopCandidate=null;savelyCreateVisit(candidate);
+  }
+ }else{
+  savelyStopCandidate={lat:point.lat,lng:point.lng,startedAt:point.at,lastAt:point.at,count:1};
+ }
+}
 function updateSavelyLiveLocation(position){
- const c=position.coords,point={lat:c.latitude,lng:c.longitude,accuracy:c.accuracy||0,speed:c.speed,at:position.timestamp||Date.now()};
+ const c=position.coords,point={lat:c.latitude,lng:c.longitude,accuracy:c.accuracy||0,speed:c.speed,heading:c.heading,at:position.timestamp||Date.now()};
+ if(point.accuracy>100){savelyLocationSetStatus('Weak GPS signal','Location accuracy is over 100 m. Waiting for a better fix.',true);return;}
  const last=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
  if(last){
   const moved=savelyDistanceMeters(last,point);
-  if(moved>=5||point.at-last.at>=15000){savelyLiveLocationDistance+=moved;savelyLiveLocationPoints.push(point);}
-  else{last.lat=point.lat;last.lng=point.lng;last.accuracy=point.accuracy;last.speed=point.speed;last.at=point.at;}
+  const elapsed=Math.max(1,(point.at-last.at)/1000);
+  if(moved>=5||point.at-last.at>=15000){
+   if(moved/elapsed<55){savelyLiveLocationDistance+=moved;savelyLiveLocationPoints.push(point);}
+  }else{Object.assign(last,point);}
  }else savelyLiveLocationPoints.push(point);
- if(savelyLiveLocationPoints.length>500)savelyLiveLocationPoints=savelyLiveLocationPoints.slice(-500);
+ if(savelyLiveLocationPoints.length>12000)savelyLiveLocationPoints=savelyLiveLocationPoints.slice(-12000);
+ if(savelyActiveSession){savelyActiveSession.distance=savelyLiveLocationDistance;savelyActiveSession.points=savelyLiveLocationPoints.slice(-12000);savelyActiveSession.updatedAt=point.at;}
+ savelyUpdateVisitDetection(point);
  const coords=document.getElementById('liveLocationCoordinates'),accuracy=document.getElementById('liveLocationAccuracy'),speed=document.getElementById('liveLocationSpeed'),distance=document.getElementById('liveLocationDistance'),update=document.getElementById('liveLocationLastUpdate'),subtitle=document.getElementById('liveLocationMapSubtitle');
  if(coords)coords.textContent=`${point.lat.toFixed(6)}, ${point.lng.toFixed(6)}`;
  if(accuracy)accuracy.textContent=point.accuracy?`±${Math.round(point.accuracy)} m`:'—';
@@ -10804,82 +10973,141 @@ function updateSavelyLiveLocation(position){
  if(subtitle)subtitle.textContent='Your current position and movement trail are updating while tracking is active.';
  if(savelyLiveLocationMap){
   const latlng=[point.lat,point.lng];
-  if(!savelyLiveLocationMarker){
-   const locationIcon=L.divIcon({
-    className:'savely-location-marker-host',
-    html:'<div class="savely-location-pin is-live" role="img" aria-label="Your live current location"><span class="savely-location-pulse"></span><svg viewBox="0 0 44 52" width="44" height="52" aria-hidden="true"><path d="M22 2.5C11.6 2.5 3.5 10.4 3.5 20.1c0 13.1 18.5 29.2 18.5 29.2s18.5-16.1 18.5-29.2C40.5 10.4 32.4 2.5 22 2.5Z" fill="#07885f" stroke="#ffffff" stroke-width="2.8" stroke-linejoin="round"/><circle cx="22" cy="19.5" r="7.2" fill="#ffffff"/><circle cx="22" cy="19.5" r="3.1" fill="#07885f"/></svg></div>',
-    iconSize:[44,52],
-    iconAnchor:[22,49],
-    popupAnchor:[0,-44]
-   });
-   savelyLiveLocationMarker=L.marker(latlng,{icon:locationIcon,keyboard:true,title:'Your current location',alt:'Your current location'}).addTo(savelyLiveLocationMap).bindPopup('<strong>Your current location</strong><br>Updated while tracking is active.');
-  }else savelyLiveLocationMarker.setLatLng(latlng);
-  setSavelyLiveLocationMarkerState(window.__savelyLiveLocationWatchId!==null);
+  if(!savelyLiveLocationMarker)savelyLiveLocationMarker=L.marker(latlng,{icon:savelyMakeLocationIcon(),keyboard:true,title:'Your current location',alt:'Your current location'}).addTo(savelyLiveLocationMap).bindPopup('<strong>Your current location</strong><br>Updated while tracking is active.');
+  else savelyLiveLocationMarker.setLatLng(latlng);
+  setSavelyLiveLocationMarkerState(true);
   if(savelyLiveLocationTrail)savelyLiveLocationTrail.setLatLngs(savelyLiveLocationPoints.map(p=>[p.lat,p.lng]));
-  if(!savelyLiveLocationHasCentered){
-   savelyLiveLocationMap.setView(latlng,17,{animate:false});
-   savelyLiveLocationHasCentered=true;
-  }else if(savelyLiveLocationMap.getZoom()<16){
-   savelyLiveLocationMap.setView(latlng,17,{animate:true});
-  }else{
-   savelyLiveLocationMap.panTo(latlng,{animate:true,duration:.5});
-  }
+  if(!savelyLiveLocationHasCentered){savelyLiveLocationMap.setView(latlng,17,{animate:false});savelyLiveLocationHasCentered=true;}
+  else if(savelyLiveLocationMap.getZoom()<16)savelyLiveLocationMap.setView(latlng,17,{animate:true});
+  else savelyLiveLocationMap.panTo(latlng,{animate:true,duration:.5});
  }
+ if(savelyActiveSession&&savelyLiveLocationPoints.length%3===0)savelyPersistCurrentSession();
  renderSavelyLiveLocationPoints();
 }
 function renderSavelyLiveLocationPoints(){
  const list=document.getElementById('liveLocationRecentPoints'),count=document.getElementById('liveLocationPointCount');
  if(!list||!count)return;
  count.textContent=`${savelyLiveLocationPoints.length} point${savelyLiveLocationPoints.length===1?'':'s'}`;
- if(!savelyLiveLocationPoints.length){list.innerHTML='<div class="live-location-empty">No location points yet. Open Live Location and allow browser permission to begin.</div>';return;}
- list.innerHTML=savelyLiveLocationPoints.slice(-8).reverse().map((p,i)=>`<div class="live-location-point"><span class="live-location-point-index">${savelyLiveLocationPoints.length-i}</span><div class="live-location-point-main"><strong>${p.lat.toFixed(6)}, ${p.lng.toFixed(6)}</strong><small>${savelyFormatClock(p.at)} PHT</small></div><span class="live-location-point-accuracy">${p.accuracy?`±${Math.round(p.accuracy)} m`:'GPS'}</span></div>`).join('');
+ if(!savelyLiveLocationPoints.length){list.innerHTML='<div class="live-location-empty">No location points yet. Start tracking to record a route.</div>';return;}
+ list.innerHTML=savelyLiveLocationPoints.slice(-8).reverse().map((p,i)=>`<div class="live-location-point"><span class="live-location-point-index">${savelyLiveLocationPoints.length-i}</span><div class="live-location-point-main"><strong>${p.lat.toFixed(6)}, ${p.lng.toFixed(6)}</strong><small>${savelyFormatDateTime(p.at)} PHT</small></div><span class="live-location-point-accuracy">${p.accuracy?`±${Math.round(p.accuracy)} m`:'GPS'}</span></div>`).join('');
+}
+async function renderSavelyLocationHistory(){
+ const target=document.getElementById('savelyLocationHistoryContent');if(!target)return;
+ document.querySelectorAll('[data-location-history-tab]').forEach(b=>b.classList.toggle('active',b.dataset.locationHistoryTab===savelyLocationHistoryTab));
+ target.innerHTML='<div class="live-location-empty">Loading your saved location history…</div>';
+ try{
+  const [sessions,places]=await Promise.all([savelyDbGetAll('sessions'),savelyDbGetAll('places')]);
+  if(savelyLocationHistoryTab==='routes'){
+   const rows=sessions.sort((a,b)=>(b.startedAt||0)-(a.startedAt||0));
+   target.innerHTML=rows.length?rows.map(s=>`<article class="savely-location-history-item"><div class="savely-location-history-item-main"><strong>${savelyFormatDate(s.startedAt)}</strong><small>${savelyFormatDateTime(s.startedAt)}${s.endedAt?' – '+savelyFormatDateTime(s.endedAt):' · In progress'}</small><span>${(s.points||[]).length} GPS points · ${savelyFormatDistance(s.distance||0)}</span></div><div class="savely-location-history-item-actions"><button type="button" class="btn btn-light btn-sm" onclick="viewSavelySavedRoute('${s.id}')">View route</button><button type="button" class="btn btn-light btn-sm danger-text" onclick="deleteSavelySavedRoute('${s.id}')">Delete</button></div></article>`).join(''):'<div class="live-location-empty">No saved routes yet. Open Live Location and allow GPS access to begin recording.</div>';
+  }else{
+   const rows=places.sort((a,b)=>(b.startedAt||0)-(a.startedAt||0));
+   target.innerHTML=rows.length?rows.map(p=>`<article class="savely-location-history-item"><div class="savely-location-history-item-main"><strong>${savelyEscapeHtml(p.name||'Saved place')}</strong><small>${savelyFormatDateTime(p.startedAt)}${p.endedAt?' – '+savelyFormatDateTime(p.endedAt):' · Current stay'}</small><span>${savelyEscapeHtml(p.lat.toFixed(5)+', '+p.lng.toFixed(5))} · ${savelyFormatDuration(p.durationMs||0)}</span></div><div class="savely-location-history-item-actions"><button type="button" class="btn btn-light btn-sm" onclick="centerSavelyVisitedPlace('${p.id}')">Show on map</button><button type="button" class="btn btn-light btn-sm" onclick="renameSavelyVisitedPlace('${p.id}')">Rename</button><button type="button" class="btn btn-light btn-sm danger-text" onclick="deleteSavelyVisitedPlace('${p.id}')">Delete</button></div></article>`).join(''):'<div class="live-location-empty">Visited places will appear after Savely detects a stop lasting about 7 minutes.</div>';
+  }
+ }catch(e){target.innerHTML='<div class="live-location-empty">Location history is unavailable in this browser. Try a current version of Chrome or Edge.</div>';console.warn(e);}
+}
+function setSavelyLocationHistoryTab(tab){savelyLocationHistoryTab=tab==='places'?'places':'routes';renderSavelyLocationHistory();}
+async function viewSavelySavedRoute(id){
+ try{
+  const s=(await savelyDbGetAll('sessions')).find(x=>x.id===id);if(!s||!s.points||!s.points.length){toast('This route has no saved GPS points.');return;}
+  initSavelyLiveLocationMap();const pts=s.points.map(p=>[p.lat,p.lng]);
+  if(savelyLiveLocationTrail)savelyLiveLocationTrail.setLatLngs(pts);
+  if(savelyLiveLocationMap){savelyLiveLocationMap.fitBounds(pts,{padding:[35,35],maxZoom:17});}
+  const title=document.getElementById('liveLocationMapSubtitle');if(title)title.textContent='Viewing saved route · '+savelyFormatDate(s.startedAt);
+  document.getElementById('savelyLiveLocationMap')?.scrollIntoView({behavior:'smooth',block:'center'});
+ }catch(e){toast('Could not open this saved route.');}
+}
+async function centerSavelyVisitedPlace(id){
+ try{
+  const p=(await savelyDbGetAll('places')).find(x=>x.id===id);if(!p)return;
+  initSavelyLiveLocationMap();
+  if(savelyLiveLocationMap){savelyLiveLocationMap.setView([p.lat,p.lng],18,{animate:true});L.popup().setLatLng([p.lat,p.lng]).setContent('<strong>'+savelyEscapeHtml(p.name)+'</strong>').openOn(savelyLiveLocationMap);}
+  document.getElementById('savelyLiveLocationMap')?.scrollIntoView({behavior:'smooth',block:'center'});
+ }catch(e){toast('Could not show this place.');}
+}
+async function renameSavelyVisitedPlace(id){
+ try{
+  const p=(await savelyDbGetAll('places')).find(x=>x.id===id);if(!p)return;
+  const name=window.prompt('Name this visited place:',p.name||'Saved place');if(!name||!name.trim())return;
+  p.name=name.trim();await savelyDbPut('places',p);renderSavelyLocationHistory();
+ }catch(e){toast('Could not rename this place.');}
+}
+async function deleteSavelyVisitedPlace(id){
+ if(!confirm('Delete this visited-place record?'))return;
+ await savelyDbDelete('places',id);renderSavelyLocationHistory();
+}
+async function deleteSavelySavedRoute(id){
+ if(!confirm('Delete this saved route?'))return;
+ await savelyDbDelete('sessions',id);renderSavelyLocationHistory();
+}
+async function exportSavelyLocationHistory(){
+ try{
+  const [sessions,places]=await Promise.all([savelyDbGetAll('sessions'),savelyDbGetAll('places')]);
+  const blob=new Blob([JSON.stringify({exportedAt:new Date().toISOString(),sessions,places},null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='savely-location-history.json';a.click();URL.revokeObjectURL(url);
+ }catch(e){toast('Could not export location history.');}
+}
+async function deleteSavelyLocationHistory(){
+ if(!confirm('Delete all saved routes and visited places from this browser? This cannot be undone.'))return;
+ await Promise.all([savelyDbClear('sessions'),savelyDbClear('places')]);
+ savelyActiveSession=null;savelyActiveVisit=null;savelyStopCandidate=null;savelyLiveLocationPoints=[];savelyLiveLocationDistance=0;
+ if(savelyLiveLocationTrail)savelyLiveLocationTrail.setLatLngs([]);
+ renderSavelyLiveLocationPoints();renderSavelyLocationHistory();toast('Location history deleted from this browser.');
 }
 function startSavelyLiveLocation(){
  if(!navigator.geolocation){savelyLocationSetStatus('Location unavailable','This browser does not support geolocation.');toast('This browser does not support location access.');return;}
  if(!window.isSecureContext){savelyLocationSetStatus('Secure connection required','Open Savely through its HTTPS GitHub Pages address.');toast('Location access requires HTTPS.');return;}
  if(window.__savelyLiveLocationWatchId!==null)return;
- initSavelyLiveLocationMap();
+ initSavelyLiveLocationMap();savelyStartNewSession();
  savelyLocationSetStatus('Requesting permission…','Your browser will ask whether Savely may access your location.');
  window.__savelyLiveLocationWatchId=navigator.geolocation.watchPosition(updateSavelyLiveLocation,error=>{
-  const messages={1:['Permission denied','Allow location access in your browser site settings, then leave and reopen Live Location.'],2:['Position unavailable','GPS or network location could not determine your position. Try again outdoors.'],3:['Location timed out','No position arrived in time. Press Start tracking to retry.']};
-  const info=messages[error.code]||['Location error','Try starting location tracking again.'];
+  const messages={1:['Permission denied','Allow location access in your browser site settings, then reopen Live Location.'],2:['Position unavailable','GPS or network location could not determine your position. Try again outdoors.'],3:['Location timed out','No position arrived in time. Reopen Live Location to retry.']};
+  const info=messages[error.code]||['Location error','Try opening Live Location again.'];
   stopSavelyLiveLocation(info[1]);savelyLocationSetStatus(info[0],info[1]);toast(info[0]+'.');
  },{enableHighAccuracy:true,maximumAge:3000,timeout:20000});
  savelyLocationSetStatus('Tracking active','GPS is updating while this page stays open and visible.',true);
  setSavelyLiveLocationMarkerState(true);
 }
 function stopSavelyLiveLocation(message='Tracking stopped.'){
- if(window.__savelyLiveLocationWatchId!==null&&window.__savelyLiveLocationWatchId!==undefined){
-  navigator.geolocation.clearWatch(window.__savelyLiveLocationWatchId);
- }
- window.__savelyLiveLocationWatchId=null;
- setSavelyLiveLocationMarkerState(false);
+ if(window.__savelyLiveLocationWatchId!==null&&window.__savelyLiveLocationWatchId!==undefined)navigator.geolocation.clearWatch(window.__savelyLiveLocationWatchId);
+ window.__savelyLiveLocationWatchId=null;setSavelyLiveLocationMarkerState(false);
+ if(savelyActiveVisit)savelyFinishVisit(Date.now());
+ if(savelyActiveSession){savelyActiveSession.endedAt=Date.now();savelyPersistCurrentSession();savelyActiveSession=null;}
  if(document.getElementById('liveLocationStatus'))savelyLocationSetStatus('Not tracking',message,false);
+ renderSavelyLocationHistory();
 }
 function centerSavelyLiveLocation(){
  const point=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
- if(!savelyLiveLocationMap){initSavelyLiveLocationMap();}
- if(point&&savelyLiveLocationMap){
-  savelyLiveLocationMap.setView([point.lat,point.lng],18,{animate:true});
-  savelyLiveLocationMap.invalidateSize();
-  return;
- }
+ if(!savelyLiveLocationMap)initSavelyLiveLocationMap();
+ if(point&&savelyLiveLocationMap){savelyLiveLocationMap.setView([point.lat,point.lng],18,{animate:true});savelyLiveLocationMap.invalidateSize();return;}
  toast('Waiting for a GPS location fix.');
 }
 function clearSavelyLocationTrail(){
- stopSavelyLiveLocation('Trail cleared. Start tracking again when ready.');
- savelyLiveLocationPoints=[];savelyLiveLocationDistance=0;savelyLiveLocationHasCentered=false;
+ if(!confirm('Clear the current route? Previously saved routes and visited places will remain.'))return;
+ savelyLiveLocationPoints=[];savelyLiveLocationDistance=0;savelyStopCandidate=null;
+ if(savelyActiveSession){savelyActiveSession.points=[];savelyActiveSession.distance=0;savelyPersistCurrentSession();}
  if(savelyLiveLocationTrail)savelyLiveLocationTrail.setLatLngs([]);
- if(savelyLiveLocationMarker){savelyLiveLocationMap.removeLayer(savelyLiveLocationMarker);savelyLiveLocationMarker=null;}
- ['liveLocationCoordinates','liveLocationAccuracy','liveLocationSpeed'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=id==='liveLocationCoordinates'?'Waiting for permission':'—';});
+ if(savelyLiveLocationMarker&&savelyLiveLocationMap){savelyLiveLocationMap.removeLayer(savelyLiveLocationMarker);savelyLiveLocationMarker=null;}
+ ['liveLocationCoordinates','liveLocationAccuracy','liveLocationSpeed'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=id==='liveLocationCoordinates'?'Waiting for GPS':'—';});
  const distance=document.getElementById('liveLocationDistance');if(distance)distance.textContent='0 m';
  const update=document.getElementById('liveLocationLastUpdate');if(update)update.textContent='No location update yet';
- const subtitle=document.getElementById('liveLocationMapSubtitle');if(subtitle)subtitle.textContent='Your map will center on you after you allow location access.';
  renderSavelyLiveLocationPoints();
 }
+async function savelyRestoreLocationState(){
+ try{
+  const sessions=await savelyDbGetAll('sessions'),places=await savelyDbGetAll('places');
+  const latest=sessions.sort((a,b)=>(b.updatedAt||b.startedAt||0)-(a.updatedAt||a.startedAt||0))[0];
+  if(latest&&latest.points&&latest.points.length){
+   savelyLiveLocationPoints=latest.points.slice(-12000);savelyLiveLocationDistance=latest.distance||0;
+   savelyActiveSession=null;
+  }
+  renderSavelyLocationHistory();
+ }catch(e){console.warn('Location history restore failed:',e);}
+}
 document.addEventListener('visibilitychange',()=>{
- if(document.visibilityState==='hidden'&&window.__savelyLiveLocationWatchId!==null)stopSavelyLiveLocation('Tracking paused because this browser tab is hidden.');
+ if(document.visibilityState==='hidden'&&window.__savelyLiveLocationWatchId!==null)stopSavelyLiveLocation('Tracking paused because this browser tab is hidden. Your route was saved.');
 });
+savelyRestoreLocationState();
 </script>
 
 <script id="savely-goal-menu-dismiss-v1">
