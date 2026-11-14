@@ -3507,6 +3507,26 @@ button.link-btn{
 .construction-map-fallback a{color:var(--green);font-weight:800;text-decoration:none}
 @media(max-width:650px){.construction-map-frame-wrap{height:70vh;min-height:460px}}
 </style>
+
+<style id="savely-routed-page-content-visibility-fix-v1">
+/* Ensure the selected workspace page and its contents remain visible after navigation. */
+main.main > section.page.active,
+main.main > div.page.active {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  min-height: 180px;
+  overflow: visible;
+}
+main.main > section.page.active > *,
+main.main > div.page.active > * {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+main.main > .page:not(.active) { display: none !important; }
+</style>
+
 </head>
 <body>
 
