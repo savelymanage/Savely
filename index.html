@@ -129,7 +129,6 @@
 .auth-logout{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 10px;color:#586478;font-weight:700;font-size:11px}
 @media(max-width:760px){.auth-gate{grid-template-columns:1fr}.auth-story{min-height:auto;padding:24px 25px 20px}.auth-story-copy{margin:35px 0 20px}.auth-story-copy h1{font-size:36px}.auth-story-copy p{font-size:14px}.auth-perks{grid-template-columns:1fr 1fr;gap:9px}.auth-perk{font-size:11px}.auth-story-foot{display:none}.auth-panel-wrap{min-height:auto;padding:24px 16px 32px}.auth-panel{max-width:480px}}
 
-
 /* Savings drag-and-drop ordering */
 .drag-handle{display:inline-flex;align-items:center;justify-content:center;width:28px;height:30px;border:1px solid var(--line);border-radius:8px;color:var(--muted);font-size:22px;cursor:grab;user-select:none;touch-action:none}.financial-draggable-row[draggable="true"]{cursor:grab}.financial-draggable-row.dragging{opacity:.42;background:var(--soft)}.financial-draggable-row[draggable="false"]{cursor:default}#savingsListTable tbody tr{transition:background .12s,opacity .12s}#savingsListTable tbody tr.dragging td{border-top:2px solid var(--green)}
 
@@ -155,7 +154,6 @@
 #savingsTrendCanvasWrap::-webkit-scrollbar{height:9px}
 #savingsTrendCanvasWrap::-webkit-scrollbar-thumb{background:#b8c7d8;border-radius:99px}
 
-
 /* Savely Themes: persistent, responsive dark mode */
 .theme-choice-card{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
 .theme-choice-copy{display:flex;align-items:center;gap:13px;min-width:0}.theme-choice-copy strong{font-size:14px}.theme-choice-icon{width:42px;height:42px;display:grid;place-items:center;flex:0 0 42px;border-radius:12px;background:var(--green2);color:var(--green);font-size:21px}
@@ -176,7 +174,6 @@ body.dark-theme #savingsListTable .financial-draggable-row { color: var(--text);
 body.dark-theme #savingsListTable .financial-draggable-row td { color: var(--text); }
 @media(max-width:600px){.theme-choice-card{align-items:flex-start;padding:14px}.theme-choice-copy{gap:10px}.theme-choice-copy p{font-size:12px}}
 
-
 .goal-applied-bank-summary strong{display:block;margin-top:3px;color:var(--text)}
 .goal-applied-bank-summary .panel-sub{margin-top:4px}
 #goalBankEditor{padding-top:8px}
@@ -188,7 +185,6 @@ body.dark-theme #savingsListTable .financial-draggable-row td { color: var(--tex
 .weather-copy strong{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
 .weather-copy small{font-size:10px;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:760px){.top-actions{gap:6px}.weather-pill{min-height:44px;padding:6px 8px;gap:5px}.weather-icon{font-size:20px}.weather-copy strong{font-size:12px}.weather-copy small{font-size:9px;max-width:90px}.date-pill{padding:8px!important}}
-
 
 .savely-image-logo{overflow:hidden;border-radius:50%;padding:4px;box-sizing:border-box;background:#fff;border:1px solid #e7edf4}
 .savely-image-logo img{display:block;width:100%;height:100%;object-fit:contain}
@@ -209,7 +205,6 @@ body.dark-theme #savingsListTable .financial-draggable-row td { color: var(--tex
 .confirm-dialog-backdrop[style*="display:none"], .confirm-dialog-backdrop[hidden] {
   pointer-events: none !important;
 }
-
 
 /* Sidebar stays clickable on normal pages, but must remain below modal overlays. */
 .app{position:relative}
@@ -234,14 +229,12 @@ body.dark-theme #savingsListTable .financial-draggable-row td { color: var(--tex
 #savelyDeleteItemsBackdrop{z-index:30050!important}
 #savelyUpdatesBackdrop{z-index:30060!important}
 
-
 /* Salary amount action lives in the global top-right header, only on Salary. */
 #salaryDetailsOpenButton{display:none;white-space:nowrap;flex:0 0 auto}
 body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 @media(max-width:760px){
  body:has(#page-salary.active) #salaryDetailsOpenButton{font-size:11px;padding:8px 10px}
 }
-
 
 /* Philippine Holidays page */
 #page-holidays{max-width:100%;color:var(--text)}
@@ -299,7 +292,6 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 @media(max-width:900px){#page-holidays .holiday-hero{grid-template-columns:1fr}#page-holidays .holiday-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#page-holidays .holiday-row{grid-template-columns:90px minmax(0,1fr) minmax(130px,.8fr)}#page-holidays .holiday-row .holiday-countdown-cell{grid-column:2/4}}
 @media(max-width:600px){#page-holidays .holiday-page-heading h2{font-size:22px}#page-holidays .holiday-hero{padding:18px}#page-holidays .holiday-countdown{gap:5px}#page-holidays .holiday-countdown>div{padding:9px 2px}#page-holidays .holiday-stat-grid{gap:8px}#page-holidays .holiday-stat{padding:11px;gap:8px}#page-holidays .holiday-stat-icon{flex-basis:34px;height:34px}#page-holidays .holiday-row{grid-template-columns:72px minmax(0,1fr);gap:7px 10px;padding:12px}#page-holidays .holiday-row .holiday-type-cell,#page-holidays .holiday-row .holiday-countdown-cell{grid-column:2}#page-holidays .holiday-filter-row{align-items:flex-start}#page-holidays .holiday-filters button{min-height:35px;padding:0 10px;font-size:11px}}
 
-
 #page-holidays .holiday-month-jumps{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-3px 0 13px;color:var(--muted);font-size:11px;font-weight:750}
 #page-holidays .holiday-month-jumps button{border:1px solid #b9e5d1;background:#effaf4;color:#087a55;border-radius:8px;padding:7px 11px;font-size:11px;font-weight:800;cursor:pointer}
 #page-holidays .holiday-month-group{scroll-margin-top:24px}
@@ -313,7 +305,6 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 #settingsRecurringPanel { display: none !important; }
 </style>
 
-
 <style id="savely-v206-remove-version-history">
 /* Version history and changelog are hidden from Settings. */
 #versionHistoryPanel { display: block; }
@@ -325,7 +316,6 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 #modalForm input[name="due"]{cursor:pointer}
 #modalForm input[name="due"]::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.9;width:18px;height:18px}
 </style>
-
 
 <style id="savely-empty-goals-centered-v224">
 .empty-goals-centered {
@@ -340,7 +330,6 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
   margin-right: 0 !important;
 }
 </style>
-
 
 <style id="savely-empty-goals-center-v225">
 /* Center the empty state in the available width and height of the goals panel. */
@@ -360,7 +349,6 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
   text-align: center !important;
 }
 </style>
-
 
 <style id="savely-date-calendar-icon-v228">
 #modalForm input[type="date"]{
@@ -386,8 +374,6 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 
 
 
-
-
 <style id="savely-custom-date-picker-v230">
 .goal-date-control{position:relative;width:100%}
 .goal-date-control input[type="date"]{padding-right:44px!important}
@@ -409,7 +395,6 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 .goal-calendar-footer button{border:0;background:transparent;color:#138765;font-size:12px;font-weight:600;cursor:pointer;padding:5px}
 </style>
 
-
 <style id="savely-goal-bank-picker-v232">
 .goal-bank-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;border:1px solid var(--line);border-radius:10px;padding:10px;max-height:150px;overflow:auto}
 .goal-bank-option{display:flex;align-items:center;gap:7px;min-width:0;font-size:12px;cursor:pointer;padding:5px;border-radius:6px}
@@ -423,7 +408,6 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 .goal-bank-total{display:flex;justify-content:space-between;gap:10px;margin-top:10px;padding:12px;border-radius:9px;background:#eaf7f1;color:#12694f;font-size:13px}
 @media(max-width:600px){.goal-bank-picker{grid-template-columns:repeat(2,minmax(0,1fr))}.goal-bank-balance-row{grid-template-columns:1fr 120px}}
 </style>
-
 
 <style id="savely-goal-bank-picker-ui-v233">
 .goal-bank-picker{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;border:1px solid var(--line);border-radius:12px;padding:10px;max-height:230px!important;overflow-y:auto!important;overflow-x:hidden!important;background:#fff}
@@ -442,7 +426,6 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 @media(max-width:700px){.goal-bank-picker{grid-template-columns:repeat(2,minmax(0,1fr))!important}#modalBackdrop:has(#goalBankPicker) .form-grid{grid-template-columns:1fr}.goal-bank-balance-row{grid-template-columns:minmax(0,1fr) 130px}}
 </style>
 
-
 <style id="savely-goal-bank-tabs-icons-v234">
 .goal-bank-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}
 .goal-bank-tab{border:1px solid var(--line);background:#fff;color:var(--muted);padding:9px 13px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer}
@@ -457,7 +440,6 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 @media(max-width:700px){.goal-bank-picker{grid-template-columns:repeat(2,minmax(0,1fr))!important}.goal-bank-tabs{gap:6px}.goal-bank-tab{padding:8px 10px}}
 </style>
 
-
 <style id="savely-goal-bank-tabs-isolation-v235">
 #goalBankTabs{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
 #goalBankTabs .goal-bank-tab{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap}
@@ -467,7 +449,6 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 #goalBankTabs .goal-bank-tab[data-goal-bank-tab="Other"]{order:4}
 #goalBankPicker .goal-bank-option[style*="display: none"]{display:none!important}
 </style>
-
 
 <style id="savely-goal-bank-no-checkbox-v237">
 #goalBankPicker .goal-bank-option input.goal-bank-check{
@@ -505,7 +486,6 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 }
 </style>
 
-
 <style id="savely-goal-bank-breakdown-v238">
 .goal-bank-breakdown{display:grid;gap:6px;margin:8px 0 10px}
 .goal-bank-breakdown-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:#fbfcfe;font-size:12px}
@@ -513,7 +493,6 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 .goal-bank-breakdown-icon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;flex:0 0 24px;border-radius:7px;color:#fff;font-size:8px;font-weight:800;background:var(--goal-bank-color,#168765)}
 .goal-bank-breakdown-amount{font-weight:750;white-space:nowrap;color:var(--text,#17233b)}
 </style>
-
 
 <style id="savely-goal-bank-straight-lines-v239">
 .goal-bank-breakdown{
@@ -550,7 +529,6 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 }
 </style>
 
-
 <style id="savely-goal-progress-per-bank-v241">
 .goal-bank-progress-list{display:grid;gap:9px;margin:10px 0 8px}
 .goal-bank-progress-item{display:grid;gap:5px}
@@ -562,31 +540,26 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 .goal-bank-progress-track>span{display:block;height:100%;border-radius:inherit;background:var(--green,#168765)}
 </style>
 
-
 <style id="savely-goal-bank-amount-below-bar-v242">
 .goal-bank-breakdown{display:none!important}
 .goal-bank-progress-item{display:grid!important;gap:4px!important;margin:0 0 10px!important}
 .goal-bank-progress-amount{font-size:12px;font-weight:750;text-align:right;color:var(--text,#17233b);font-variant-numeric:tabular-nums;padding:0 2px 2px}
 </style>
 
-
 <style id="savely-goal-allocations-financial-list-v244">
 .goal-linked-item{font-weight:750;color:var(--green,#168765)}
 </style>
-
 
 <style id="savely-add-savings-to-goal-v246">
 #addToGoalBackdrop .modal{background:var(--panel,#fff);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 24px 70px rgba(10,25,50,.22)}
 #addToGoalBackdrop select{min-height:44px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;color:var(--text,#17233b)}
 </style>
 
-
 <style id="savely-interest-calculator-v247">
 @media(max-width:700px){#interestCalcResults{grid-template-columns:1fr!important}}
 #page-interest .cards .panel h2{margin:10px 0 0;font-size:24px;color:var(--text)}
 #page-interest input,#page-interest select{width:100%;box-sizing:border-box}
 </style>
-
 
 <style id="savely-interest-bank-picker-v248">
 .interest-bank-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
@@ -605,7 +578,6 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 @media(max-width:600px){.interest-bank-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.interest-bank-tab{flex:1}}
 </style>
 
-
 <!-- Savely v2.8.7: modern typography system -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -623,7 +595,6 @@ body, button, input, select, textarea { font-family: var(--font-ui) !important; 
 input::placeholder, textarea::placeholder { color: #9aa4b5; }
 </style>
 
-
 <style id="savely-v289-google-version-history">
 .auth-divider{display:flex;align-items:center;gap:12px;color:#929bad;font-size:11px;margin:17px 0 12px}
 .auth-divider:before,.auth-divider:after{content:"";height:1px;background:#e7ebf0;flex:1}
@@ -634,7 +605,6 @@ input::placeholder, textarea::placeholder { color: #9aa4b5; }
 .settings-tabs .financial-tab{flex:0 0 auto}
 #versionHistoryPanel{display:block}
 </style>
-
 
 <style id="savely-cross-device-compatibility">
 /* Cross-device web layout: keep content inside the viewport without removing desktop behavior. */
@@ -693,7 +663,6 @@ img,svg,canvas{max-width:100%}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
 </style>
 
-
 <style id="savely-interest-calculator-dark-mode-fix-v1">
 /* Interest Calculator: consistent, readable dark-theme surfaces */
 body.dark-theme #page-interest .interest-bank-tab{background:#172235!important;color:#cbd5e1!important;border-color:#334155!important}
@@ -718,7 +687,6 @@ body.dark-theme #page-interest .interest-summary-panel .panel-sub,body.dark-them
 body.dark-theme #page-interest .interest-summary-panel #interestCalcEnding{color:#76e0b5!important}
 @media(max-width:600px){body.dark-theme #page-interest .interest-bank-grid{grid-template-columns:repeat(2,minmax(0,1fr))}body.dark-theme #page-interest .interest-bank-card{padding:9px;gap:8px}}
 </style>
-
 
 <style id="savely-dark-financial-items-final-fix">
 /* Dark mode: Savings interest rates and three-dot action menus */
@@ -762,8 +730,6 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
 
 
 
-
-
 <style id="savely-goal-editor-bank-picker-consistent-v252">
 #modalBackdrop:has(#goalFallbackPicker) .modal{width:min(900px,calc(100vw - 32px));max-width:900px;max-height:92vh;overflow-y:auto;background:#f9fbfd;border:1px solid #e5ebf3;border-radius:16px;padding:20px}
 #modalBackdrop:has(#goalFallbackPicker) #modalTitle{font-size:18px;margin-bottom:5px}
@@ -780,7 +746,6 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
 #goalFallbackBalancesField[hidden]{display:none!important}
 @media(max-width:700px){#modalBackdrop:has(#goalFallbackPicker) .form-grid{grid-template-columns:1fr}#goalFallbackPicker.bank-picker{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
-
 
 <style id="savely-weather-horizontal-layout-v253">
 /* Wide, landscape forecast modal */
@@ -863,7 +828,6 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
 }
 </style>
 
-
 <style id="savely-weather-true-horizontal-scroll-v254">
 #savelySatelliteBackdrop > .modal{
   width:min(1500px,calc(100vw - 36px)) !important;
@@ -937,7 +901,6 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
 }
 </style>
 
-
 <style id="savely-weather-single-active-forecast-v255">
 #savelySatelliteBackdrop #savelyHourlyForecast[style*="display: none"],
 #savelySatelliteBackdrop #savelyDailyForecast[style*="display: none"]{
@@ -948,7 +911,6 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
   display:block !important;
 }
 </style>
-
 
 <style id="savely-financial-items-settings-v256">
 .financial-items-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -966,7 +928,6 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
  .financial-settings-menu{right:0;max-width:calc(100vw - 32px)}
 }
 </style>
-
 
 <style id="savely-delete-all-custom-confirm-v256">
 #savelyDeleteItemsBackdrop{
@@ -1000,7 +961,6 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
 @media(max-width:480px){#savelyDeleteItemsBackdrop .savely-delete-dialog{padding:20px;border-radius:16px}#savelyDeleteItemsBackdrop .savely-delete-actions button{flex:1}}
 </style>
 
-
 <style id="savely-goal-assigned-bank-disabled-v258">
 #bankPicker .bank-option-goal-assigned,
 #bankPicker .bank-option-goal-assigned:disabled{
@@ -1016,14 +976,12 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
 #bankPicker .bank-option-used:disabled{cursor:not-allowed}
 </style>
 
-
 <style id="savely-financial-graph-fit-fix-v259">
 #page-financial-list{min-width:0;max-width:100%;overflow-x:clip}
 #page-financial-list .panel{min-width:0;max-width:100%;box-sizing:border-box}
 #savingsTrendCanvasWrap{width:100%;max-width:100%;min-width:0;overflow-x:hidden!important;overflow-y:hidden!important;contain:layout paint;box-sizing:border-box}
 #savingsTrendChart{display:block;width:100%;min-width:0;max-width:100%;height:100%}
 </style>
-
 
 <style id="savely-selected-bank-graph-compact-v261">
 #savingsTrendCanvasWrap{
@@ -1062,7 +1020,6 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
 }
 </style>
 
-
 <style id="savely-goal-allocation-menu-actions-v262">
 .savings-item-menu .apply-savings-goal-action:disabled,
 .savings-item-menu .apply-savings-goal-action.is-disabled{
@@ -1070,7 +1027,6 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
   opacity:.62;cursor:not-allowed;pointer-events:none;border-color:var(--line,#e4eaf2)!important;
 }
 </style>
-
 
 <style id="savely-hide-savings-move-icon-v263">
 /* Hide the dedicated move handle/button; drag-and-drop remains available on the row. */
@@ -1091,13 +1047,11 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
 .savings-list [title*="Move"] { display:none!important; }
 </style>
 
-
 <style id="savely-move-handle-visibility-v263">
 /* Keep the drag zone on the row, but remove the visible grip icon and its button chrome. */
 button[draggable="true"],
 [role="button"][draggable="true"] { }
 </style>
-
 
 <style id="savely-growth-chart-larger-scrollable-plot-v2865">
 /* Larger savings growth graph: keep the peso axis in a sticky left overlay, scroll only the plot. */
@@ -1275,7 +1229,6 @@ html.theme-transitioning body *:not(svg):not(path):not(img):not(video):not(canva
 @media(max-width:560px){#savelySatelliteBackdrop > .modal{width:calc(100vw - 20px) !important;padding:16px !important;}#savelySatelliteBackdrop #savelyHourlyForecast > .savely-hourly-cards{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:9px !important;}#savelySatelliteBackdrop .savely-hour-card{min-height:210px;padding:12px;} }
 </style>
 
-
 <style id="savely-weather-card-width-fix">
 /* Give the five hourly forecast cards enough width and make them fill their grid cells. */
 #savelySatelliteBackdrop > .modal{
@@ -1325,7 +1278,6 @@ html.theme-transitioning body *:not(svg):not(path):not(img):not(video):not(canva
   }
 }
 </style>
-
 
 <style id="savely-debt-calendar-styles">
 .debt-intro{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 16px}
@@ -1408,7 +1360,6 @@ html.theme-transitioning body *:not(svg):not(path):not(img):not(video):not(canva
 }
 </style>
 
-
 <style id="savely-debt-topbar-button">
 #topbarAddDebtButton{display:none;flex:0 0 auto;white-space:nowrap}
 body:has(#page-debt.active) #topbarAddDebtButton{display:inline-flex!important}
@@ -1416,7 +1367,6 @@ body:has(#page-debt.active) #topbarAddDebtButton{display:inline-flex!important}
  body:has(#page-debt.active) #topbarAddDebtButton{font-size:11px;padding:8px 10px}
 }
 </style>
-
 
 <style id="savely-debt-typography-alignment">
 #page-debt .debt-calendar-panel .panel-head h2,
@@ -1443,7 +1393,6 @@ body:has(#page-debt.active) #topbarAddDebtButton{display:inline-flex!important}
 #page-debt .debt-summary-cards .stat-foot{font-size:10px;line-height:1.45}
 </style>
 
-
 <style id="savely-goal-financial-items-v1">
 #goalFallbackPicker.goal-item-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;max-height:285px;overflow:auto;padding:2px}
 #goalFallbackPicker .goal-item-option{position:relative;display:flex;align-items:center;gap:9px;min-width:0;min-height:62px;padding:9px 11px;border:1px solid var(--line);border-radius:11px;background:#fff;cursor:pointer;transition:background .15s,border-color .15s,opacity .15s}
@@ -1466,7 +1415,6 @@ body:has(#page-debt.active) #topbarAddDebtButton{display:inline-flex!important}
 @media(max-width:760px){#goalFallbackPicker.goal-item-picker{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:460px){#goalFallbackPicker.goal-item-picker{grid-template-columns:1fr}.goal-item-tabs{gap:5px}.goal-item-tab{padding:7px 9px}}
 </style>
-
 
 <style id="savely-consistent-button-sizing">
 .btn{min-height:40px!important;min-width:108px;padding:9px 14px!important;border-radius:10px;font-size:12px;line-height:1.2;white-space:nowrap}
@@ -1504,7 +1452,6 @@ body.dark-theme .debt-card-menu{background:var(--panel);border-color:var(--line)
 }
 </style>
 
-
 <style id="savely-savings-gradient-weather-hover-v2">
 /* Give the Savings total its own clear green-gradient emphasis. */
 #stats>.stat:nth-child(2){
@@ -1537,7 +1484,6 @@ body.dark-theme .debt-card-menu{background:var(--panel);border-color:var(--line)
 .debt-date-modal-body{overflow-y:auto!important}
 </style>
 
-
 <style id="savely-receivables-graph-and-fixed-sidebar">
 /* Money lent is an asset that originated in Savings; keep the navigation fixed while the document scrolls. */
 @media(min-width:761px){
@@ -1551,7 +1497,6 @@ body.dark-theme .debt-card-menu{background:var(--panel);border-color:var(--line)
  .main{min-width:0;min-height:100vh}
 }
 </style>
-
 
 <style id="savely-savings-interest-ui-v3">
 /* Savings page: focused, modern green-gradient total card */
@@ -1735,7 +1680,6 @@ button:focus-visible{outline:3px solid rgba(22,135,101,.22);outline-offset:2px}
 }
 </style>
 
-
 <style id="savely-dashboard-greeting-sidebar-fixed-v1">
 /* Dashboard greeting: keep the greeting itself neutral black; username styling remains separate. */
 body:has(#page-dashboard.active) #pageTitle{
@@ -1787,7 +1731,6 @@ body:has(#page-dashboard.active) #pageTitle{
 }
 </style>
 
-
 <style id="savely-page-isolation-fix-v1">
 /* Keep every routed page isolated: inactive pages must never leak into the current view.
    The Interest Calculator has its own ID-based layout styles, so explicitly restore its
@@ -1803,7 +1746,6 @@ main.main > #page-interest.page.active{
   flex-direction:column!important;
 }
 </style>
-
 
 <style id="savely-sidebar-viewport-lock-v2">
 /* Desktop navigation is a fixed viewport rail, not part of the scrolling document. */
@@ -1872,7 +1814,6 @@ main.main > #page-interest.page.active{
   }
 }
 </style>
-
 
 <style id="savely-sidebar-toggle-visible-and-menu-cleanup">
 @media (min-width:761px){
@@ -2162,7 +2103,6 @@ body:has(#page-holidays.active) #holidayRefreshButton{display:inline-flex}
 }
 </style>
 
-
 <style id="savely-global-button-consistency-v1">
 /* Site-wide button system: consistent control height, type, alignment and spacing */
 :root{
@@ -2275,7 +2215,6 @@ button.link-btn{
 }
 </style>
 
-
 <style id="savely-debt-side-chooser-responsive-fix">
 /* The two debt direction choices are large selectable cards, not standard action buttons. */
 #savelyDebtSideModal{
@@ -2374,7 +2313,6 @@ button.link-btn{
 }
 </style>
 
-
 <style id="savely-debt-provider-picker-ui-v1">
 .savely-debt-provider-section{
  padding:16px!important;
@@ -2452,7 +2390,6 @@ button.link-btn{
 }
 </style>
 
-
 <style id="savely-add-savings-bank-alignment-v2">
 #financialAddBackdrop #bankPicker{align-items:stretch!important}
 #financialAddBackdrop .bank-option-wrap{position:relative!important;min-width:0!important}
@@ -2475,7 +2412,6 @@ button.link-btn{
  padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important
 }
 </style>
-
 
 <style id="savely-overview-kpi-color-system-v2">
 #stats>.stat:nth-child(1),
@@ -2528,7 +2464,6 @@ button.link-btn{
 }
 </style>
 
-
 <style id="savely-debt-due-today-green-v1">
 #page-debt .debt-status.due,
 #page-debt .debt-day-chip.due,
@@ -2543,7 +2478,6 @@ button.link-btn{
 }
 #page-debt .debt-dot-today{background:#15966f!important}
 </style>
-
 
 <style id="savely-debt-paid-history-and-payment-ui-v1">
 .debt-paid-panel{margin-top:18px!important;padding:22px!important;border:1px solid #e4ebf2!important;border-radius:18px!important;background:linear-gradient(180deg,#fff 0%,#fbfdfc 100%)!important;box-shadow:0 8px 24px rgba(20,40,70,.045)!important}
@@ -2605,7 +2539,6 @@ button.link-btn{
  .savely-debt-payment-actions .btn{width:100%}
 }
 </style>
-
 
 <style id="savely-debt-tabs-inline-payment-live-location-v2">
 /* Compact side-by-side Debt content switcher */
@@ -2703,7 +2636,6 @@ button.link-btn{
 }
 </style>
 
-
 <style id="savely-live-location-pin-icon-v1">
 /* A distinct map pin for the user's current/last GPS position. */
 .savely-location-marker-host{
@@ -2751,7 +2683,6 @@ button.link-btn{
 }
 </style>
 
-
 <style id="savely-debt-auto-interest-computation-v1">
 .savely-auto-interest-card{
  padding:15px!important;border:1px solid #dcece3!important;border-radius:15px!important;
@@ -2781,7 +2712,6 @@ button.link-btn{
 @media(max-width:600px){.savely-auto-rate-metrics{grid-template-columns:1fr}}
 </style>
 
-
 <style id="savely-debt-confirm-footer-and-location-map-v2">
 #savelyDebtDateModal #debtDateModalAddButton[hidden]{display:none!important}
 .savely-live-location-map{
@@ -2799,7 +2729,6 @@ button.link-btn{
  background:#effaf4!important;
 }
 </style>
-
 
 <style id="savely-global-expenses-interest-location-v1">
 /* Interest Calculator provider tiles: fixed logo column and aligned copy. */
@@ -2894,7 +2823,6 @@ button.link-btn{
 }
 </style>
 
-
 <style id="savely-debt-form-three-step-wizard-v1">
 .savely-debt-wizard-top{
  display:flex;align-items:center;justify-content:space-between;gap:18px;
@@ -2929,7 +2857,6 @@ button.link-btn{
 }
 </style>
 
-
 <style id="savely-savings-linked-actions-weather-fixes-v1">
 .savings-item-actions.has-linked-badge{
  display:inline-flex!important;align-items:center!important;justify-content:flex-end!important;
@@ -2953,7 +2880,6 @@ button.link-btn{
  .savely-daily-row>div:nth-child(4),.savely-daily-row>div:nth-child(5){grid-column:1/-1}
 }
 </style>
-
 
 <style id="savely-expense-calendar-paid-menu-free-map-v1">
 /* Paid records: compact view-history + kebab action row. */
@@ -3044,7 +2970,6 @@ button.link-btn{
 #page-live-location .leaflet-control-attribution{font-size:9px!important;background:rgba(255,255,255,.86)!important}
 </style>
 
-
 <style id="savely-overview-three-cards-goal-menu-debt-spacing-v1">
 /* Overview has three summary metrics; let them fill the complete row. */
 #stats.cards{grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%}
@@ -3104,7 +3029,6 @@ button.link-btn{
 .goal-card-menu-popover button.goal-menu-delete{color:var(--red)}
 </style>
 
-
 <style id="savely-location-history-v2-styles">
 .savely-location-history-panel{margin-top:14px!important}
 .savely-location-history-actions{display:flex;gap:7px;flex-wrap:wrap}
@@ -3121,7 +3045,6 @@ button.link-btn{
 @media(max-width:700px){.savely-location-history-item{align-items:flex-start;flex-direction:column}.savely-location-history-item-actions{justify-content:flex-start}.savely-location-history-actions{margin-top:8px}}
 </style>
 
-
 <style id="savely-mariloan-disclosure-computation-v1">
 .savely-mariloan-breakdown .savely-mariloan-receive{
  padding:8px 10px!important;margin:3px 0!important;border:1px solid #d8eee2!important;
@@ -3133,7 +3056,6 @@ button.link-btn{
 .savely-mariloan-breakdown .total{border-top:1px solid #dbe8e0!important;margin-top:5px!important;padding-top:10px!important}
 </style>
 
-
 <style id="savely-free-waze-live-traffic-v1">
 .savely-live-map-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .savely-live-map-heading-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -3144,7 +3066,6 @@ button.link-btn{
 .savely-waze-traffic-view[hidden],.savely-live-location-map[hidden],.live-location-map-controls[hidden],.live-location-map-footer[hidden],.savely-waze-map-note[hidden]{display:none!important}
 .savely-waze-traffic-view iframe{display:block;width:100%;height:100%;min-height:560px;border:0;background:#eef3f1}
 </style>
-
 
 <style id="savely-linked-debt-actions-and-series-delete-v1">
 .savings-item-menu .menu-divider{height:1px;margin:5px 2px;background:var(--line,#e7edf1);pointer-events:none}
@@ -3166,7 +3087,6 @@ button.link-btn{
 .savely-debt-series-payment-heading{font-size:13px;margin:18px 0 8px}
 @media(max-width:560px){.savely-debt-series-totals{grid-template-columns:1fr}.savely-debt-series-history-record,.savely-debt-series-payment-row{align-items:flex-start}}
 </style>
-
 
 <style id="savely-transfer-polish-and-gps-fix-v1">
 #financialSettingsButton.financial-settings-button{
@@ -3228,12 +3148,10 @@ button.link-btn{
 }
 </style>
 
-
 <style id="savely-weather-cache-status-style">
 #savelyForecastLoading{line-height:1.55}
 #savelyForecastLoading[style*="display: block"]{color:var(--muted)}
 </style>
-
 
 <style id="savely-shopee-products-and-debt-colors">
 .savely-shopee-products{border:1px solid #cfe9dd;border-radius:13px;background:linear-gradient(145deg,#f7fcf9,#f1faf5);padding:13px;margin:0 0 10px}
@@ -3263,7 +3181,6 @@ button.link-btn{
 #page-debt .debt-summary-cards>.stat:nth-child(4) .stat-value{color:#d97706!important}
 @media(max-width:600px){.savely-shopee-product-row{grid-template-columns:minmax(0,1fr) 112px 34px;gap:6px}.savely-shopee-product-row input{font-size:12px;padding:9px}.savely-shopee-remove-product{width:34px}}
 </style>
-
 
 <style id="savely-salary-year-view-and-remaining-v1">
 #page-salary .salary-summary-cards{grid-template-columns:repeat(3,minmax(0,1fr))!important}
@@ -3301,7 +3218,6 @@ button.link-btn{
 @media(max-width:420px){#page-salary .salary-summary-cards{grid-template-columns:1fr!important}.salary-calendar-year-grid{grid-template-columns:1fr}.salary-year-month-card{padding:13px}.salary-year-day{font-size:10px}}
 </style>
 
-
 <style id="savely-spaylater-zero-interest-fee-v1">
 .savely-shopee-processing-fee{display:grid;grid-template-columns:minmax(0,1fr) minmax(120px,180px);gap:6px 14px;align-items:center;margin-top:12px;padding:12px;border:1px solid #dceee5;border-radius:11px;background:#fff}
 .savely-shopee-processing-fee label{display:block;font-size:11px;font-weight:850;color:var(--text);margin-bottom:3px}
@@ -3312,7 +3228,6 @@ button.link-btn{
 .savely-shopee-processing-help{grid-column:1/-1}
 @media(max-width:560px){.savely-shopee-processing-fee{grid-template-columns:minmax(0,1fr) 105px;gap:7px}.savely-shopee-processing-fee small{font-size:9px}}
 </style>
-
 
 <style id="savely-metro-manila-public-cctv-directory-v1">
 /* Public CCTV directory: city rail + road-specific camera source cards */
@@ -3411,7 +3326,6 @@ button.link-btn{
 }
 </style>
 
-
 <style id="savely-overview-financial-privacy-v1">
 .overview-privacy-toggle{
  display:inline-flex;align-items:center;justify-content:center;gap:8px;
@@ -3463,7 +3377,6 @@ button.link-btn{
  .overview-privacy-icon,.overview-privacy-icon svg{width:16px;height:16px}
 }
 </style>
-
 
 <style id="savely-cctv-quezon-city-only-v1">
 /* Only Quezon City currently has a listed public camera source. */
@@ -3602,13 +3515,11 @@ main.main > .page:not(.active) { display: none !important; }
     <button data-page="salary" aria-label="Salary" title="Salary"><span class="ico">₱</span><span class="nav-text">Salary</span></button>
     <button data-page="debt" aria-label="Debt" title="Debt"><span class="ico">▦</span><span class="nav-text">Debt</span></button>
     <button data-page="budget" aria-label="Expenses" title="Expenses"><span class="ico">↘</span><span class="nav-text">Expenses</span></button>
-    
-    
+
     <button data-page="goals" aria-label="Savings goals" title="Savings goals"><span class="ico">◎</span><span class="nav-text">Savings goals</span></button>
     <button data-page="interest" aria-label="Interest Calculator" title="Interest Calculator"><span class="ico">％</span><span class="nav-text">Interest Calculator</span></button>
     <button data-page="cards" aria-label="Cards" title="Cards"><span class="ico">▤</span><span class="nav-text">Cards</span></button>
-    
-    
+
     
     
     <button data-page="live-location" aria-label="Live Location" title="Live Location"><span class="ico">⌖</span><span class="nav-text">Live Location</span></button>
@@ -3642,7 +3553,6 @@ main.main > .page:not(.active) { display: none !important; }
   <section class="page" id="page-accounts"><div class="panel"><div class="panel-head"><div><h2>Savings accounts</h2><div class="panel-sub">Keep different savings pots organized.</div></div><button class="btn btn-primary" onclick="openModal('account')">＋ New account</button></div><div class="section-grid" id="allAccounts"></div><div class="footer-note">Account balances are calculated from each account's opening balance and transactions.</div></div></section>
   <section class="page" id="page-goals"><div class="panel"><div class="panel-head"><div><h2>Your savings goals</h2><div class="panel-sub">Give your money a purpose and track your progress.</div></div><button class="btn btn-primary" onclick="openModal('goal')">＋ Create Savings Goal</button></div><div class="section-grid" id="allGoals"></div></div></section>
 
-  
   <section class="page" id="page-cards" aria-label="Cards"></section>
   <section class="page" id="page-radio" aria-label="Radio"></section>
   <section class="page" id="page-construction-map" aria-label="Construction Project Map">
@@ -3735,14 +3645,7 @@ main.main > .page:not(.active) { display: none !important; }
       <div class="live-location-map-footer" id="savelyGpsMapFooter"><span><i class="live-location-legend-dot current"></i> Current / last position</span><span><i class="live-location-legend-line"></i> Recorded movement trail</span><span id="liveLocationLastUpdate">No location update yet</span></div>
       <div class="savely-waze-map-note" id="savelyWazeMapNote" hidden>Live traffic is provided by the Waze Live Map. Traffic conditions and reports depend on Waze coverage and community updates. This view is separate from Savely's GPS route map.</div>
     </section>
-    <section class="panel savely-location-history-panel">
-      <div class="panel-head"><div><h2>Location history</h2><div class="panel-sub">Your saved routes and places visited on this device.</div></div><div class="savely-location-history-actions"><button type="button" class="btn btn-light btn-sm" onclick="exportSavelyLocationHistory()">Export</button><button type="button" class="btn btn-light btn-sm danger-text" onclick="deleteSavelyLocationHistory()">Delete history</button></div></div>
-      <div class="savely-location-history-tabs" role="tablist" aria-label="Location history type">
-       <button type="button" class="active" data-location-history-tab="routes" onclick="setSavelyLocationHistoryTab('routes')">Routes</button>
-       <button type="button" data-location-history-tab="places" onclick="setSavelyLocationHistoryTab('places')">Visited places</button>
-      </div>
-      <div id="savelyLocationHistoryContent"><div class="live-location-empty">Your saved routes and visited places will appear here after GPS tracking records movement.</div></div>
-    </section>
+    
     <section class="panel live-location-history-panel">
       <div class="panel-head"><div><h2>Recent location points</h2><div class="panel-sub">Latest GPS points from the current tracking session.</div></div><span class="pill" id="liveLocationPointCount">0 points</span></div>
       <div id="liveLocationRecentPoints" class="live-location-recent-points"><div class="live-location-empty">No location points yet. Open Live Location and allow browser permission to begin.</div></div>
@@ -3825,7 +3728,6 @@ main.main > .page:not(.active) { display: none !important; }
       </form>
     </div></div>
   </section>
-
 
   <section class="page" id="page-debt">
     <div class="cards debt-summary-cards">
@@ -5548,7 +5450,6 @@ function renderDebtProviderPicker(modal,group,selectedKind='',selectedCounterpar
  }
 }
 
-
 const SAVELY_DEBT_AUTO_RATE_PRESETS = [
  {match:/mari.?loan/i, rate:2.95, basis:'monthly', feeRate:0, label:'2.95% monthly add-on', source:'Based on the MariLoan computation statement you provided: 2.95% monthly add-on, 5.00% monthly contractual rate shown separately, zero processing fee, and documentary stamp tax calculated at 0.75% of the credit facility amount. Your approved disclosure may differ.', url:'https://www.maribank.ph/product/mari-loan', mode:'estimate', mariLoanDisclosure:true, contractualRate:5, documentaryStampTaxRate:0.75, processingFee:0, defaultFrequency:'monthly', defaultInstallments:12},
  {match:/mari.?card/i, rate:3, basis:'monthly', feeRate:0, label:'3.00% monthly', source:'MariBank publishes a 3% monthly interest rate; 0% may apply when the statement is paid in full by the due date.', url:'https://www.maribank.ph/product/maricard-credit', mode:'estimate'},
@@ -6695,7 +6596,6 @@ function updateInterestEstimate(){
 function openMariBankInterest(id){openSavingsInterest(id);}
 function closeMariBankInterest(){document.getElementById('mariBankInterestBackdrop').style.display='none';}
 
-
 let savingsTrendHitTargets=[];
 let savingsTrendSelectedAmount=null;
 let savingsTrendSelectedBank=null;
@@ -7408,7 +7308,6 @@ function confirmAddSavingsToGoal(){
 }
 
 
-
 const interestBankRates = {
  Traditional: [
   {name:'BDO',short:'BDO',rate:0.0625,color:'#0057a8',source:'https://www.bdo.com.ph/',note:'Regular peso savings snapshot; verify your account product rate'},
@@ -7762,7 +7661,6 @@ function closeSavelyUpdates(){const el=document.getElementById('savelyUpdatesBac
 document.addEventListener('DOMContentLoaded',()=>{const el=document.getElementById('savelyUpdatesBackdrop');if(el)el.style.display='none';});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'){const updates=document.getElementById('savelyUpdatesBackdrop');if(updates&&getComputedStyle(updates).display!=='none')closeSavelyUpdates();}});
 
-
 /* Philippine holiday calendar: proclamation-backed dates with periodic public-calendar sync. */
 const SAVELY_PH_HOLIDAYS={
 2026:[
@@ -7910,7 +7808,6 @@ async function refreshPhilippineHolidays(manual){
  setTimeout(()=>{if(!window.__savelyHolidaySyncStarted)refreshPhilippineHolidays(false);},2500);
  setInterval(()=>refreshPhilippineHolidays(false),24*60*60*1000);
 })();
-
 
 let savelyOverviewFiguresVisible=true;
 try{
@@ -8170,11 +8067,9 @@ accrueRealtimeInterest();
 })();
 </script>
 
-
 <script id="savely-goals-fallback">
 // Goal buttons are handled by the reliable goal-modal layer at the end of this file.
 </script>
-
 
 
 
@@ -8189,7 +8084,6 @@ accrueRealtimeInterest();
     </div>
   </div>
 </div>
-
 
 <script id="savely-auth">
 (function(){
@@ -8513,7 +8407,6 @@ accrueRealtimeInterest();
 })(); 
 </script>
 
-
 <script id="savely-cloud-sync">
 (function(){
   // Cross-device financial sync requires the SQL table and RLS policies supplied with this file.
@@ -8656,7 +8549,6 @@ accrueRealtimeInterest();
 })();
 </script>
 
-
 <script id="savely-visualization-guard">
 (function(){
   function wrap(fnName,canvasId,metaId){
@@ -8689,7 +8581,6 @@ accrueRealtimeInterest();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();
 </script>
-
 
 <script id="savely-cross-device-chart-touch-support">
 (function(){
@@ -8729,7 +8620,6 @@ accrueRealtimeInterest();
   if(document.body)observer.observe(document.body,{childList:true,subtree:true});
 })();
 </script>
-
 
 <!-- Independent live clock fallback: runs separately from the main app script. -->
 <script id="savely-independent-live-clock">
@@ -8946,7 +8836,6 @@ accrueRealtimeInterest();
 })();
 </script>
 
-
 <script id="savely-live-weather">
 (function(){
   const $=id=>document.getElementById(id), STORE_KEY='savely_weather_location_v1', CURRENT_CACHE_KEY='savely_weather_current_cache_v2';
@@ -9089,7 +8978,6 @@ accrueRealtimeInterest();
   setInterval(start,10*60*1000);
 })();
 </script>
-
 
 <script id="savely-weather-location-settings">
 (function(){
@@ -9618,7 +9506,6 @@ function deleteAllSavingsItems(){
 })();
 </script>
 
-
 <style id="savely-sidebar-active-green-and-date-link">
 .nav button.active, body.dark-theme .nav button.active{
  background:var(--green)!important;
@@ -9643,7 +9530,6 @@ function deleteAllSavingsItems(){
 @media(max-width:540px){.goal-bank-progress-actions{gap:5px}.goal-bank-transfer-button{padding:5px 6px;font-size:9px}}
 </style>
 
-
 <style id="savely-sidebar-active-solid-green-white-v2">
 .sidebar .nav button.active,
 .nav button.active,
@@ -9664,7 +9550,6 @@ body.dark-theme .nav button.active {
   stroke: #fff !important;
 }
 </style>
-
 
 <style id="savely-debt-calendar-red-highlights">
 /* Dates with at least one scheduled debt or collection use a red highlight. */
@@ -9700,7 +9585,6 @@ body.dark-theme .nav button.active {
   background: #fff1f1 !important;
 }
 </style>
-
 
 <style id="savely-full-green-sidebar">
 /* Full-height green sidebar with white brand and navigation. */
@@ -9768,7 +9652,6 @@ body.dark-theme .app > .sidebar .nav button.active {
   border: 1px solid rgba(255,255,255,.55) !important;
 }
 </style>
-
 
 <style id="savely-primary-actions-larger">
 #topbarAddSavingsButton,
@@ -10135,7 +10018,6 @@ body.dark-theme .app > .sidebar .nav button.active {
   #page-salary .salary-calendar-holiday { font-size: 9px !important; padding: 3px 4px !important; }
 }
 </style>
-
 
 <style id="savely-floating-calculator-css">
 /* Minimal floating calculator launcher — anchored to the lower-right corner. */
@@ -10716,7 +10598,6 @@ body.dark-theme .app > .sidebar .nav button.active {
 })();
 </script>
 
-
 <style id="savely-global-consistent-typography-v1">
 /*
   Savely global typography scale:
@@ -10848,7 +10729,6 @@ body :where(
   }
 }
 </style>
-
 
 <style id="savely-collapsible-sidebar-css">
 /* Smooth desktop collapse/expand with an icon-only green navigation rail. */
@@ -10982,7 +10862,6 @@ body :where(
 }
 </style>
 
-
 <script id="savely-collapsible-sidebar-js">
 (function(){
   'use strict';
@@ -11016,7 +10895,6 @@ body :where(
 })();
 </script>
 
-
 <style id="savely-sidebar-toggle-white-green-v2">
 #savelySidebarToggle {
   background: #fff !important;
@@ -11038,7 +10916,6 @@ body :where(
   color: #168765 !important;
 }
 </style>
-
 
 <style id="savely-calculator-clean-large-v2">
 #savelyFloatingCalculator {
@@ -11159,7 +11036,6 @@ body :where(
 }
 </style>
 
-
 <style id="savely-global-total-number-size-v2">
 /* Smaller, calmer total figures with one consistent scale across all pages. */
 body :where(.stat-value,
@@ -11202,7 +11078,6 @@ body :where(.goal-amount, .account-balance, .goal-bank-total strong,
 }
 </style>
 
-
 <style id="savely-sidebar-white-hover-green-content-v1">
 .app > .sidebar #nav button:not(.active):hover,
 .app > .sidebar #nav button:not(.active):focus-visible,
@@ -11236,7 +11111,6 @@ body.dark-theme .app > .sidebar #nav button:not(.active):focus-visible * {
   color: #fff !important;
 }
 </style>
-
 
 <style id="savely-debt-direction-colors-v1">
 /* Debt calendar direction colors: I owe = red, Owed to me = green. */
@@ -11308,7 +11182,6 @@ body.dark-theme .app > .sidebar #nav button:not(.active):focus-visible * {
 }
 </style>
 
-
 <style id="savely-sidebar-active-white-green-v2">
 /* Selected and hovered navigation items share the same white/green treatment. */
 .app > .sidebar #nav button.active,
@@ -11335,7 +11208,6 @@ body.dark-theme .app > .sidebar #nav button.active * {
   color: #168765 !important;
 }
 </style>
-
 
 <style id="savely-bigger-calculator-green-page-titles-v1">
 /* Larger, easier-to-tap calculator launcher. */
@@ -11373,7 +11245,6 @@ body.dark-theme .app > .sidebar #nav button.active * {
   color: #168765 !important;
 }
 </style>
-
 
 <style id="savely-debt-installment-form-ui-v2">
 .savely-debt-form-backdrop{
@@ -11642,7 +11513,6 @@ body.dark-theme .app > .sidebar #nav button.active * {
 }
 </style>
 
-
 <style id="savely-debt-receivable-transfer-ui-v1">
 .savely-debt-fixed-kind{
  display:flex;align-items:center;gap:10px;min-height:46px;padding:10px 12px;
@@ -11855,7 +11725,6 @@ function setSavelyLiveLocationMarkerState(isLive){
 function savelyMakeLocationIcon(){
  return L.divIcon({className:'savely-location-marker-host',html:'<div class="savely-location-pin is-live" role="img" aria-label="Your live current location"><span class="savely-location-pulse"></span><svg viewBox="0 0 44 52" width="44" height="52" aria-hidden="true"><path d="M22 2.5C11.6 2.5 3.5 10.4 3.5 20.1c0 13.1 18.5 29.2 18.5 29.2s18.5-16.1 18.5-29.2C40.5 10.4 32.4 2.5 22 2.5Z" fill="#07885f" stroke="#ffffff" stroke-width="2.8" stroke-linejoin="round"/><circle cx="22" cy="19.5" r="7.2" fill="#ffffff"/><circle cx="22" cy="19.5" r="3.1" fill="#07885f"/></svg></div>',iconSize:[44,52],iconAnchor:[22,49],popupAnchor:[0,-44]});
 }
-
 
 /* Waze Live Map is a separate traffic view embedded without an API key. */
 let savelyLiveMapMode='location';
@@ -12268,7 +12137,6 @@ document.addEventListener('keydown',function(event){
 try{localStorage.removeItem(['savely','TomTomTrafficKey'].join(''));}catch(e){}
 </script>
 
-
 <script id="savely-metro-manila-public-cctv-directory-v1">
 (function(){
  const cities=[
@@ -12355,7 +12223,6 @@ try{localStorage.removeItem(['savely','TomTomTrafficKey'].join(''));}catch(e){}
  document.addEventListener('DOMContentLoaded',renderSavelyPublicCCTV,{once:true});
 })();
 </script>
-
 
 <script id="savely-construction-map-embed-fallback">
 (()=>{
