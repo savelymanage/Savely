@@ -3310,6 +3310,18 @@ button.link-btn{
 @media(max-width:420px){#page-salary .salary-summary-cards{grid-template-columns:1fr!important}.salary-calendar-year-grid{grid-template-columns:1fr}.salary-year-month-card{padding:13px}.salary-year-day{font-size:10px}}
 </style>
 
+
+<style id="savely-spaylater-zero-interest-fee-v1">
+.savely-shopee-processing-fee{display:grid;grid-template-columns:minmax(0,1fr) minmax(120px,180px);gap:6px 14px;align-items:center;margin-top:12px;padding:12px;border:1px solid #dceee5;border-radius:11px;background:#fff}
+.savely-shopee-processing-fee label{display:block;font-size:11px;font-weight:850;color:var(--text);margin-bottom:3px}
+.savely-shopee-processing-fee small{display:block;color:var(--muted);font-size:10px;line-height:1.45}
+.savely-shopee-processing-input{position:relative}
+.savely-shopee-processing-input input{width:100%;min-height:39px;padding:8px 30px 8px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--text);font:inherit;font-size:12px;font-weight:800}
+.savely-shopee-processing-input span{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted);font-weight:800;pointer-events:none}
+.savely-shopee-processing-help{grid-column:1/-1}
+@media(max-width:560px){.savely-shopee-processing-fee{grid-template-columns:minmax(0,1fr) 105px;gap:7px}.savely-shopee-processing-fee small{font-size:9px}}
+</style>
+
 </head>
 <body>
 
@@ -5206,7 +5218,7 @@ function updateDebtInterestProviderHint(modal,identifier){
  }else if(/mari.?credit/.test(value)){
   html=`<strong>MariCredit disclosure reference:</strong> monthly contractual rate listed as <strong>4.36% (3 months), 4.86% (6 months), 5.00% (12 months)</strong>. Confirm the latest disclosure and approved offer. ${link('https://banking-aka-storage.maribank.ph/maribank/ph/cmps-website/file-hosting/MariBank-Credit-Product-Disclosure-Sheet.pdf','View product disclosure sheet')}`;
  }else if(/shopee|spaylater/.test(value)){
-  html=`<strong>SPayLater published reference:</strong> processing fee <strong>0%–7%</strong>, interest up to <strong>3.95% per month</strong>, and late fee <strong>2.5%–5%</strong> on outstanding amounts. Offers vary by user and product. ${link('https://help.shopee.ph/portal/4/article/81098','View Shopee Help Center')}`;
+  html=`<strong>SPayLater estimate in Savely:</strong> defaults to <strong>0% monthly interest</strong> and applies only the one-time processing fee you enter from checkout. Shopee publishes processing fees of <strong>0%–7% per transaction</strong>. Some offers can carry monthly interest, so use this mode only when your checkout explicitly shows a 0% Interest offer. ${link('https://help.shopee.ph/portal/4/article/80986-How-does-the-SPayLater-payment-work?seo=1','View Shopee fee computation')}`;
  }else if(/atome/.test(value)){
   html=`<strong>Atome Cash published reference:</strong> interest <strong>0%–6% per month</strong>; facilitation/origination fees may also apply. Check the offer in-app. ${link('https://help.atome.ph/hc/en-gb/articles/54871283707417-What-fees-will-I-be-charged','View Atome fee guide')}`;
  }else if(/bill.?ease|billease/.test(value)){
@@ -5287,7 +5299,7 @@ const SAVELY_DEBT_AUTO_RATE_PRESETS = [
  {match:/mari.?loan/i, rate:2.95, basis:'monthly', feeRate:0, label:'2.95% monthly add-on', source:'Based on the MariLoan computation statement you provided: 2.95% monthly add-on, 5.00% monthly contractual rate shown separately, zero processing fee, and documentary stamp tax calculated at 0.75% of the credit facility amount. Your approved disclosure may differ.', url:'https://www.maribank.ph/product/mari-loan', mode:'estimate', mariLoanDisclosure:true, contractualRate:5, documentaryStampTaxRate:0.75, processingFee:0, defaultFrequency:'monthly', defaultInstallments:12},
  {match:/mari.?card/i, rate:3, basis:'monthly', feeRate:0, label:'3.00% monthly', source:'MariBank publishes a 3% monthly interest rate; 0% may apply when the statement is paid in full by the due date.', url:'https://www.maribank.ph/product/maricard-credit', mode:'estimate'},
  {match:/mari.?credit/i, rate:2.95, basis:'monthly', feeRate:0, label:'2.95% monthly add-on', source:'MariBank Credit product disclosure sheet lists a 2.95% monthly add-on rate.', url:'https://banking-aka-storage.maribank.ph/maribank/ph/cmps-website/file-hosting/MariBank-Credit-Product-Disclosure-Sheet.pdf', mode:'estimate'},
- {match:/spaylater|shopee.*paylater/i, rate:3.95, basis:'monthly', feeRate:0, label:'Up to 3.95% monthly', source:'Shopee lists up to 3.95% monthly interest. Its separate 0%–7% processing fee is not included because the exact fee is offer-specific.', url:'https://help.shopee.ph/portal/4/article/81098', mode:'estimate'},
+ {match:/spaylater|shopee.*paylater/i, rate:0, basis:'monthly', feeRate:0, label:'0% monthly interest · processing fee only', source:'This Savely estimate assumes you selected a 0% interest SPayLater offer. Shopee publishes a one-time processing fee of 0%–7% of the checkout amount; the exact fee is shown for each eligible checkout. Other offers may have interest, so verify the 0% Interest label in Shopee before ordering.', url:'https://help.shopee.ph/portal/4/article/80986-How-does-the-SPayLater-payment-work?seo=1', mode:'estimate', shopeeSpayLater:true},
  {match:/sloan/i, rate:3.30, basis:'monthly', feeRate:0, label:'3.30% monthly reference midpoint', source:'Shopee SLoan publishes 2.15%–4.45% monthly; this uses the range midpoint as an estimate, not a guaranteed offer.', url:'https://help.shopee.ph/portal/4/article/83225-What%20are%20the%20fees%20related%20to%20SLoan?seo=1', mode:'estimate'},
  {match:/atome/i, rate:2, basis:'monthly', feeRate:3, label:'2% interest + 3% monthly fee (example)', source:'Atome’s published example uses 2% monthly interest and a 3% monthly facilitation fee. Actual offer and applicable fees vary.', url:'https://help.atome.ph/hc/en-gb/articles/54871283707417-What-fees-will-I-be-charged', mode:'estimate'},
  {match:/home.?credit/i, rate:3.80, basis:'monthly', feeRate:0, label:'3.80% monthly sample reference', source:'Home Credit’s disclosure shows a 1.49%–8.99% nominal monthly range for Cash Loan; 3.80% is the example rate used in its representative EIR calculation. Actual offer varies.', url:'https://www.homecredit.ph/disclosures', mode:'estimate'},
@@ -5309,14 +5321,21 @@ function getSavelyDebtTermMonths(frequency,count){
  if(frequency==='monthly')return n;
  return 1;
 }
-function calculateSavelyDebtQuote(principal,preset,frequency,count){
+function calculateSavelyDebtQuote(principal,preset,frequency,count,options={}){
  const amount=Math.max(0,Number(principal)||0);
  if(!preset||!amount)return {principal:amount,interest:0,fees:0,total:amount,months:getSavelyDebtTermMonths(frequency,count),preset:null};
  const months=getSavelyDebtTermMonths(frequency,count);
+ const roundMoney=value=>Math.round((Number(value)||0)*100)/100;
+ if(preset.shopeeSpayLater){
+  const requestedRate=Number(options&&options.processingFeeRate);
+  const processingFeeRate=Math.min(7,Math.max(0,Number.isFinite(requestedRate)?requestedRate:0));
+  const processingFee=roundMoney(amount*processingFeeRate/100);
+  const interest=0,fees=processingFee,total=roundMoney(amount+processingFee);
+  return {principal:amount,interest,fees,total,months,preset,isMariLoan:false,isShopeeSpayLater:true,processingFee,processingFeeRate};
+ }
  let interest=preset.basis==='monthly'?amount*(preset.rate/100)*months:amount*(preset.rate/100);
  let fees=preset.feeRate?(preset.basis==='monthly'?amount*(preset.feeRate/100)*months:amount*(preset.feeRate/100)):0;
  const isMariLoan=!!preset.mariLoanDisclosure;
- const roundMoney=value=>Math.round((Number(value)||0)*100)/100;
  if(isMariLoan){
   interest=roundMoney(interest);
   fees=roundMoney(fees);
@@ -5340,7 +5359,9 @@ function updateSavelyDebtAutoQuote(modal){
  if(!principalField||!amountField)return null;
  const preset=getSavelyDebtAutoPreset(kindSelect&&kindSelect.value,counterparty&&counterparty.value);
  const count=Number(installments&&installments.value)||1;
- const quote=calculateSavelyDebtQuote(Number(principalField.value),preset,frequency&&frequency.value||'once',count);
+ const spaylaterFeeRateField=modal.querySelector('#savelyShopeeProcessingFeeRate');
+ const spaylaterFeeRate=spaylaterFeeRateField?Number(spaylaterFeeRateField.value)||0:0;
+ const quote=calculateSavelyDebtQuote(Number(principalField.value),preset,frequency&&frequency.value||'once',count,{processingFeeRate:spaylaterFeeRate});
  if(!preset){
   if(principalLabel)principalLabel.textContent='Total repayment amount from lender / credit app (₱)';
   amountField.value=principalField.value||'';
@@ -5353,7 +5374,19 @@ function updateSavelyDebtAutoQuote(modal){
   const sourceLink=preset.url?`<a href="${preset.url}" target="_blank" rel="noopener">Provider details</a>`:'';
   const note=preset.source||'Public reference rate. Your approved offer may differ.';
   const ratio=quote.principal?Math.round((quote.interest+quote.fees)/quote.principal*10000)/100:0;
-  if(summary&&quote.isMariLoan){
+  if(summary&&quote.isShopeeSpayLater){
+   const feeRate=Number(quote.processingFeeRate)||0;
+   summary.innerHTML=`<div class="savely-auto-rate-head"><strong>SPayLater · 0% interest estimate</strong><span class="savely-auto-rate-pill">PROCESSING FEE ONLY</span></div>
+    <div class="savely-auto-rate-metrics"><div><small>Monthly interest</small><strong>0.00%</strong></div><div><small>Installment term</small><strong>${quote.months.toFixed(1)} month(s)</strong></div></div>
+    <div class="savely-auto-rate-breakdown">
+     <div><span>Product / checkout total</span><strong>${money(quote.principal)}</strong></div>
+     <div><span>Monthly interest</span><strong>${money(0)}</strong></div>
+     <div><span>One-time processing fee (${feeRate.toFixed(2)}%)</span><strong>${money(quote.processingFee)}</strong></div>
+     <div class="total"><span>Estimated total repayment</span><strong>${money(quote.total)}</strong></div>
+     <div class="per-installment"><span>Approx. each payment (${count})</span><strong>${money(quote.total/count)}</strong></div>
+    </div>
+    <p class="savely-auto-rate-note">Assumes your Shopee checkout explicitly shows a 0% Interest offer. The processing fee is charged once on the checkout amount and distributed across installments. Shopee's published processing-fee range is 0%–7%; enter the exact percentage shown at checkout. Some SPayLater offers have interest, so confirm your offer before placing the order. ${sourceLink}</p>`;
+  }else if(summary&&quote.isMariLoan){
    summary.innerHTML=`<div class="savely-auto-rate-head"><strong>MariLoan repayment computation</strong><span class="savely-auto-rate-pill">STATEMENT-BASED</span></div>
     <div class="savely-auto-rate-metrics"><div><small>Monthly add-on interest</small><strong>2.95%</strong></div><div><small>Estimated term</small><strong>${quote.months.toFixed(1)} months</strong></div></div>
     <div class="savely-auto-rate-breakdown savely-mariloan-breakdown">
@@ -5412,8 +5445,13 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
       <div class="savely-shopee-products field full" id="savelyShopeeProductsPanel" hidden>
        <div class="savely-shopee-products-head"><div><strong>Products purchased</strong><small>Add the items charged to your Shopee SPayLater account.</small></div><button type="button" class="btn btn-primary savely-shopee-add-product" id="savelyShopeeAddProduct">＋ Add product</button></div>
        <div class="savely-shopee-product-list" id="savelyShopeeProductList"></div>
+       <div class="savely-shopee-processing-fee">
+        <div><label for="savelyShopeeProcessingFeeRate">One-time processing fee (%)</label><small>Use the exact percentage shown on your SPayLater checkout (0%–7%).</small></div>
+        <div class="savely-shopee-processing-input"><input id="savelyShopeeProcessingFeeRate" type="number" min="0" max="7" step="0.01" inputmode="decimal" value="0" aria-describedby="savelyShopeeProcessingFeeHelp"><span>%</span></div>
+        <small id="savelyShopeeProcessingFeeHelp" class="savely-shopee-processing-help">0% by default. This fee is applied once to the total checkout amount, not every month.</small>
+       </div>
        <div class="savely-shopee-products-total"><span>Products total</span><strong id="savelyShopeeProductsTotal">₱0.00</strong></div>
-       <p class="savely-auto-rate-note">Product prices are added together and used as the principal for the automatic repayment estimate. You can leave this section empty and enter one principal amount instead.</p>
+       <p class="savely-auto-rate-note">Product prices are added together and used as the checkout principal. You can leave this section empty and enter one principal amount instead.</p>
       </div>
       <div class="field"><label for="debtPrincipalLabel" id="debtPrincipalLabel">Principal / amount borrowed (₱)</label><input id="debtPrincipalAmount" type="number" min="0.01" step="0.01" required placeholder="e.g. 3500"></div>
       <input id="debtTotalAmount" type="hidden" value="">
@@ -5642,6 +5680,7 @@ function initSavelyDebtFormWizard(modal){
  const shopeeProductList=modal.querySelector('#savelyShopeeProductList');
  const shopeeAddProduct=modal.querySelector('#savelyShopeeAddProduct');
  const shopeeProductsTotal=modal.querySelector('#savelyShopeeProductsTotal');
+ const shopeeProcessingFeeRate=modal.querySelector('#savelyShopeeProcessingFeeRate');
  const debtKindForProducts=modal.querySelector('#debtKind');
  const isShopeeSpayLater=()=>String(debtKindForProducts&&debtKindForProducts.value||'').toLowerCase().includes('shopee spaylater');
  function collectShopeeProducts(){
@@ -5696,6 +5735,7 @@ function initSavelyDebtFormWizard(modal){
   }
  }
  if(shopeeAddProduct)shopeeAddProduct.addEventListener('click',()=>addShopeeProductRow());
+ if(shopeeProcessingFeeRate)shopeeProcessingFeeRate.addEventListener('input',()=>{updateSavelyDebtAutoQuote(modal);updateSchedulePreview();});
  if(debtKindForProducts)debtKindForProducts.addEventListener('change',syncShopeeProductVisibility);
  if(current&&Array.isArray(current.shopeeProducts)&&shopeeProductList){
   current.shopeeProducts.forEach(product=>addShopeeProductRow(product));
@@ -5709,7 +5749,8 @@ function initSavelyDebtFormWizard(modal){
   if(!title)title=counterparty||kind||(isOwed?'Debt payment':'Money lent');
   const autoPreset=isOwed&&!current?getSavelyDebtAutoPreset(modal.querySelector('#debtKind')?.value,modal.querySelector('#debtCounterparty')?.value):null;
   const principalAmount=principalField?Number(principalField.value):Number(modal.querySelector('#debtTotalAmount').value);
-  const autoQuote=principalField?calculateSavelyDebtQuote(principalAmount,autoPreset,frequency.value,Number(installments.value)||1):null;
+  const spaylaterProcessingFeeRate=Number(shopeeProcessingFeeRate&&shopeeProcessingFeeRate.value)||0;
+  const autoQuote=principalField?calculateSavelyDebtQuote(principalAmount,autoPreset,frequency.value,Number(installments.value)||1,{processingFeeRate:spaylaterProcessingFeeRate}):null;
   const interestRate=autoPreset?Number(autoPreset.rate):((current&&current.interestRate!==undefined)?Number(current.interestRate):null);
   const interestBasis=autoPreset?autoPreset.basis:((current&&current.interestBasis)||'monthly');
   const interestAmount=autoQuote?Math.round(autoQuote.interest*100)/100:Math.max(0,Number(current&&current.interestAmount)||0);
@@ -5723,6 +5764,7 @@ function initSavelyDebtFormWizard(modal){
   const count=current?1:(repeat==='once'?1:enteredCount);
   if(!title){toast('Enter a name or description.');return;}
   if(!Number.isFinite(amount)||amount<=0){toast('Enter an amount greater than zero.');return;}
+  if(autoPreset&&autoPreset.shopeeSpayLater&&(!Number.isFinite(spaylaterProcessingFeeRate)||spaylaterProcessingFeeRate<0||spaylaterProcessingFeeRate>7)){toast('Enter the SPayLater processing fee from 0% to 7%.');if(shopeeProcessingFeeRate)shopeeProcessingFeeRate.focus();return;}
   if(!dueDate){toast('Choose a date.');return;}
   if(!current&&(!Number.isInteger(count)||count<1||count>48)){toast('Enter a whole number of payments from 1 to 48.');installments.focus();return;}
   if(!current && Math.floor(amount*100)+0.000001<count){toast('The total amount is too small for that number of installments. Reduce the installment count.');return;}
@@ -5757,7 +5799,7 @@ function initSavelyDebtFormWizard(modal){
    const principalPart=i===count-1?Math.round((principalTotal-principalBase*(count-1))*100)/100:principalBase;
    const interestPart=i===count-1?Math.round((totalInterest-interestBase*(count-1))*100)/100:interestBase;
    const feePart=i===count-1?Math.round((totalFees-feeBase*(count-1))*100)/100:feeBase;
-   created.push({id:uid(),seriesId,direction:dir,kind,title,counterparty,shopeeProducts:shopeeProducts.length?shopeeProducts:undefined,interestRate,interestBasis,interestAmount:interestPart,interestCharges:feePart,principalAmount:principalPart,ratePresetLabel:autoPreset?autoPreset.label:null,loanDisclosure:autoQuote&&autoQuote.isMariLoan?{creditFacilityAmount:principalTotal,processingFee:autoQuote.processingFee,documentaryStampTax:autoQuote.documentaryStampTax,amountReceived:autoQuote.amountReceived,monthlyAddOnRate:Number(autoPreset.rate),monthlyContractualRate:autoQuote.monthlyContractualRate,totalInterest:totalInterest,totalRepayment:Math.round(autoQuote.total*100)/100,termMonths:autoQuote.months,reference:'User-provided MariLoan computation statement'}:null,amount:part,remainingAmount:part,dueDate:date,frequency:repeat,installmentNumber:i+1,totalInstallments:count,status:'unpaid',payments:[],createdAt:Date.now()});
+   created.push({id:uid(),seriesId,direction:dir,kind,title,counterparty,shopeeProducts:shopeeProducts.length?shopeeProducts:undefined,spaylaterProcessingFeeRate:autoPreset&&autoPreset.shopeeSpayLater?spaylaterProcessingFeeRate:undefined,spaylaterProcessingFee:autoPreset&&autoPreset.shopeeSpayLater?feePart:undefined,interestRate,interestBasis,interestAmount:interestPart,interestCharges:feePart,principalAmount:principalPart,ratePresetLabel:autoPreset?autoPreset.label:null,loanDisclosure:autoQuote&&autoQuote.isMariLoan?{creditFacilityAmount:principalTotal,processingFee:autoQuote.processingFee,documentaryStampTax:autoQuote.documentaryStampTax,amountReceived:autoQuote.amountReceived,monthlyAddOnRate:Number(autoPreset.rate),monthlyContractualRate:autoQuote.monthlyContractualRate,totalInterest:totalInterest,totalRepayment:Math.round(autoQuote.total*100)/100,termMonths:autoQuote.months,reference:'User-provided MariLoan computation statement'}:null,amount:part,remainingAmount:part,dueDate:date,frequency:repeat,installmentNumber:i+1,totalInstallments:count,status:'unpaid',payments:[],createdAt:Date.now()});
   }
   if(!Array.isArray(data.debtRecords))data.debtRecords=[];
   let receivableItem=null;
