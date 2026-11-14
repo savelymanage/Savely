@@ -3322,6 +3322,104 @@ button.link-btn{
 @media(max-width:560px){.savely-shopee-processing-fee{grid-template-columns:minmax(0,1fr) 105px;gap:7px}.savely-shopee-processing-fee small{font-size:9px}}
 </style>
 
+
+<style id="savely-metro-manila-public-cctv-directory-v1">
+/* Public CCTV directory: city rail + road-specific camera source cards */
+.savely-public-cctv-view{
+ display:grid;grid-template-columns:246px minmax(0,1fr);gap:0;
+ width:100%;min-height:clamp(560px,76vh,900px);height:clamp(560px,76vh,900px);
+ overflow:hidden;border:1px solid #dfe9e4;border-radius:15px;background:#f7faf9;
+}
+.savely-public-cctv-view[hidden]{display:none!important}
+.savely-cctv-city-sidebar{
+ min-width:0;display:flex;flex-direction:column;background:#f0f6f3;
+ border-right:1px solid #dce8e2;padding:17px 12px;overflow:hidden;
+}
+.savely-cctv-sidebar-heading{display:flex;flex-direction:column;gap:5px;padding:3px 8px 13px}
+.savely-cctv-sidebar-heading>span,.savely-cctv-eyebrow{font-size:9px;font-weight:900;letter-spacing:.11em;color:#108365}
+.savely-cctv-sidebar-heading strong{font-size:15px;color:#152d25;font-weight:900}
+.savely-cctv-sidebar-heading small{font-size:10px;color:#788b82}
+.savely-cctv-city-search,.savely-cctv-road-toolbar label{
+ height:38px;display:flex;align-items:center;gap:8px;border:1px solid #dbe7e0;
+ border-radius:9px;background:#fff;padding:0 10px;color:#82938b;
+}
+.savely-cctv-city-search{margin:0 2px 10px}
+.savely-cctv-city-search input,.savely-cctv-road-toolbar input{
+ min-width:0;width:100%;border:0!important;outline:0!important;background:transparent!important;
+ box-shadow:none!important;padding:0!important;font-size:11px!important;color:#243d33!important;
+}
+.savely-cctv-city-list{display:flex;flex-direction:column;gap:3px;overflow-y:auto;min-height:0;padding:1px 2px 8px;scrollbar-width:thin}
+.savely-cctv-city-btn{
+ display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:36px;
+ border:1px solid transparent;border-radius:8px;background:transparent;padding:0 9px;
+ color:#4f665c;text-align:left;font:inherit;font-size:10px;font-weight:750;cursor:pointer;
+}
+.savely-cctv-city-btn:hover{background:#e6f2ec}
+.savely-cctv-city-btn.active{background:#fff;border-color:#bfe4d1;color:#087f5b;box-shadow:0 2px 6px rgba(16,87,62,.05)}
+.savely-cctv-city-btn small{font-size:8px;color:#93a39b;font-weight:650}
+.savely-cctv-mobile-city{display:none}
+.savely-cctv-main{min-width:0;overflow-y:auto;padding:20px;background:#fff;scrollbar-width:thin}
+.savely-cctv-main-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:15px}
+.savely-cctv-main-head h3{font-size:21px;line-height:1.2;margin:5px 0 5px;color:#132e24;font-weight:900}
+.savely-cctv-main-head p{font-size:11px;color:#788b82;margin:0}
+.savely-cctv-coverage-pill{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;background:#eef8f2;color:#247452;border-radius:20px;padding:7px 10px;font-size:9px;font-weight:850}
+.savely-cctv-coverage-pill i{width:7px;height:7px;border-radius:50%;background:#11a36f;display:inline-block}
+.savely-cctv-notice{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border:1px solid #f0dfb8;border-radius:11px;background:#fffaf0;margin-bottom:17px}
+.savely-cctv-notice strong{font-size:11px;color:#8c5b12}
+.savely-cctv-notice span{font-size:10px;color:#927b56;line-height:1.5}
+.savely-cctv-road-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:11px}
+.savely-cctv-road-toolbar>div{display:flex;flex-direction:column;gap:3px}
+.savely-cctv-road-toolbar>div strong{font-size:13px;color:#19372b}
+.savely-cctv-road-toolbar>div small{font-size:9px;color:#84958d}
+.savely-cctv-road-toolbar label{width:min(270px,48%)}
+.savely-cctv-road-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.savely-cctv-road-card{min-width:0;border:1px solid #e1ebe5;border-radius:12px;background:linear-gradient(145deg,#fff 0%,#fbfdfc 100%);padding:12px;display:flex;flex-direction:column;gap:9px;box-shadow:0 2px 8px rgba(25,65,48,.025)}
+.savely-cctv-road-card-top{display:flex;align-items:flex-start;gap:9px}
+.savely-cctv-road-icon{flex:0 0 33px;width:33px;height:33px;border-radius:9px;background:#e9f7ef;color:#07815b;display:grid;place-items:center;font-size:16px}
+.savely-cctv-road-card h4{font-size:11px;line-height:1.35;color:#17382b;margin:0 0 3px;font-weight:900}
+.savely-cctv-road-location{font-size:9px;line-height:1.45;color:#819188}
+.savely-cctv-road-status{display:flex;align-items:center;gap:6px;border-top:1px solid #edf2ef;padding-top:8px;font-size:9px;color:#8a7754}
+.savely-cctv-road-status i{width:7px;height:7px;border-radius:50%;background:#e9a23b;display:inline-block;flex:0 0 7px}
+.savely-cctv-road-actions{display:flex;justify-content:flex-end}
+.savely-cctv-road-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:31px;padding:0 10px;border-radius:8px;border:1px solid #d9e9e0;background:#f5fbf7;color:#087f5b;font-size:9px;font-weight:850;text-decoration:none}
+.savely-cctv-road-actions a:hover{background:#eaf7ef;border-color:#afd9c2}
+.savely-cctv-no-results{grid-column:1/-1;padding:30px;text-align:center;border:1px dashed #dce7e1;border-radius:12px;color:#809189;font-size:11px}
+.savely-cctv-sources{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:8px;align-items:center;border-top:1px solid #e8efeb;margin-top:18px;padding-top:13px}
+.savely-cctv-sources>div{display:flex;flex-direction:column;gap:4px}
+.savely-cctv-sources>div strong{font-size:10px;color:#264537}
+.savely-cctv-sources>div small{font-size:8px;color:#87978f;line-height:1.4}
+.savely-cctv-sources>a{display:flex;align-items:center;justify-content:space-between;gap:5px;min-height:33px;padding:0 8px;border:1px solid #e2ebe6;border-radius:8px;color:#61776b;text-decoration:none;font-size:8px;font-weight:750}
+.savely-cctv-sources>a:hover{border-color:#b9dfc9;color:#087f5b;background:#f5fbf7}
+#page-live-location.savely-cctv-active .live-location-consent,
+#page-live-location.savely-cctv-active .live-location-stat-grid,
+#page-live-location.savely-cctv-active .savely-location-history-panel,
+#page-live-location.savely-cctv-active .live-location-history-panel{display:none!important}
+#page-live-location.savely-cctv-active .live-location-map-panel{margin-top:0}
+@media(max-width:900px){
+ .savely-public-cctv-view{grid-template-columns:205px minmax(0,1fr)}
+ .savely-cctv-main{padding:15px}
+ .savely-cctv-road-grid{grid-template-columns:1fr}
+ .savely-cctv-sources{grid-template-columns:1fr 1fr}
+}
+@media(max-width:650px){
+ .savely-public-cctv-view{display:flex;flex-direction:column;height:78vh;min-height:590px}
+ .savely-cctv-city-sidebar{border-right:0;border-bottom:1px solid #dce8e2;padding:10px;overflow:visible}
+ .savely-cctv-sidebar-heading{padding:0 3px 8px}
+ .savely-cctv-sidebar-heading strong{font-size:13px}
+ .savely-cctv-sidebar-heading small{display:none}
+ .savely-cctv-city-search,.savely-cctv-city-list{display:none}
+ .savely-cctv-mobile-city{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:10px;color:#63776c;font-weight:800}
+ .savely-cctv-mobile-city select{height:36px;flex:1;min-width:0;border:1px solid #dbe7e0;border-radius:8px;background:#fff;color:#17382b;padding:0 9px;font:inherit}
+ .savely-cctv-main{padding:13px;min-height:0}
+ .savely-cctv-main-head h3{font-size:18px}
+ .savely-cctv-coverage-pill{font-size:8px;padding:6px 8px}
+ .savely-cctv-road-toolbar{align-items:flex-start;flex-direction:column}
+ .savely-cctv-road-toolbar label{width:100%}
+ .savely-cctv-road-grid{grid-template-columns:1fr}
+ .savely-cctv-sources{grid-template-columns:1fr}
+}
+</style>
+
 </head>
 <body>
 
@@ -3458,6 +3556,7 @@ button.link-btn{
         <div class="savely-live-map-mode-switch" role="tablist" aria-label="Map view">
          <button type="button" class="active" data-savely-map-mode="location" role="tab" aria-selected="true" onclick="setSavelyLiveMapMode('location')">My location</button>
          <button type="button" data-savely-map-mode="traffic" role="tab" aria-selected="false" onclick="setSavelyLiveMapMode('traffic')">Live traffic</button>
+         <button type="button" data-savely-map-mode="cctv" role="tab" aria-selected="false" onclick="setSavelyLiveMapMode('cctv')">Public CCTV</button>
         </div>
         <span class="live-location-local-badge">This tab only</span>
        </div>
@@ -3466,6 +3565,29 @@ button.link-btn{
        <div id="savelyLiveLocationMap" class="savely-live-location-map" role="region" aria-label="Savely GPS map showing your current position and movement trail"></div>
        <div id="savelyWazeTrafficView" class="savely-waze-traffic-view" role="region" aria-label="Waze live traffic map" hidden>
         <iframe id="savelyWazeTrafficFrame" title="Waze Live Map traffic view" src="https://embed.waze.com/iframe?zoom=5&amp;lat=12.8797&amp;lon=121.7740&amp;pin=1" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+       </div>
+       <div id="savelyPublicCCTVView" class="savely-public-cctv-view" role="region" aria-label="Metro Manila public CCTV directory" hidden>
+        <aside class="savely-cctv-city-sidebar">
+         <div class="savely-cctv-sidebar-heading"><span>METRO MANILA</span><strong>Choose a city</strong><small>16 cities · 1 municipality</small></div>
+         <label class="savely-cctv-city-search"><span>⌕</span><input id="savelyCCTVCitySearch" type="search" placeholder="Find a city…" autocomplete="off"></label>
+         <nav id="savelyCCTVCityList" class="savely-cctv-city-list" aria-label="Metro Manila cities"></nav>
+         <label class="savely-cctv-mobile-city"><span>Choose city</span><select id="savelyCCTVMobileCity" aria-label="Choose a Metro Manila city"></select></label>
+        </aside>
+        <div class="savely-cctv-main">
+         <div class="savely-cctv-main-head">
+          <div><span class="savely-cctv-eyebrow">PUBLIC CAMERA DIRECTORY · NCR</span><h3 id="savelyCCTVSelectedCity">Quezon City</h3><p id="savelyCCTVSelectedCityDescription">Browse major roads and intersections in this area.</p></div>
+          <span class="savely-cctv-coverage-pill"><i></i> Road directory</span>
+         </div>
+         <div class="savely-cctv-notice"><strong>Feed availability is not yet verified.</strong><span>Road names below are location references, not confirmation that a public CCTV camera is installed there. Savely will only label a camera “Live” when an authorized public feed and its source are verified.</span></div>
+         <div class="savely-cctv-road-toolbar"><div><strong>Roads & intersections</strong><small id="savelyCCTVRoadCount">0 road references</small></div><label><span>⌕</span><input id="savelyCCTVRoadSearch" type="search" placeholder="Search road or area…" autocomplete="off"></label></div>
+         <div id="savelyCCTVRoadGrid" class="savely-cctv-road-grid"></div>
+         <div class="savely-cctv-sources">
+          <div><strong>Public source checks</strong><small>Open the original source to confirm camera coverage and access terms.</small></div>
+          <a href="https://pia.gov.ph/news/mmda-sm-supermalls-partner-for-traffic-information-sharing-project/" target="_blank" rel="noopener noreferrer">MMDA selected-feed partnership <span>↗</span></a>
+          <a href="https://lagayngdaan.com/cameras/" target="_blank" rel="noopener noreferrer">External public camera directory <span>↗</span></a>
+          <a href="https://mmda.gov.ph/" target="_blank" rel="noopener noreferrer">MMDA official website <span>↗</span></a>
+         </div>
+        </div>
        </div>
        <div class="live-location-map-controls" id="savelyGpsMapControls" aria-label="GPS map controls">
         <div class="live-location-map-live-state"><span class="live-location-status-dot" id="liveLocationStatusDot"></span><span><strong id="liveLocationStatus">Connecting to GPS</strong><small id="liveLocationStatusHelp">Waiting for browser permission.</small></span></div>
@@ -11975,6 +12097,211 @@ document.addEventListener('keydown',function(event){
 
 <script id="savely-remove-old-traffic-key">
 try{localStorage.removeItem(['savely','TomTomTrafficKey'].join(''));}catch(e){}
+</script>
+
+
+<script id="savely-metro-manila-public-cctv-directory-v1">
+(function(){
+ const cities=[
+  {name:'Quezon City',type:'City',roads:[
+   ['Commonwealth Avenue','Philcoa · Tandang Sora · Fairview corridor'],
+   ['EDSA','North Avenue · Kamuning · Cubao'],
+   ['Quezon Avenue','Welcome Rotonda · Timog Avenue · EDSA junction'],
+   ['Aurora Boulevard','Cubao · Anonas · Katipunan junction'],
+   ['Katipunan Avenue','Ateneo · UP Town Center · Katipunan–Aurora']
+  ]},
+  {name:'Manila',type:'City',roads:[
+   ['Roxas Boulevard','Luneta · United Nations Avenue · Quirino Grandstand'],
+   ['Taft Avenue','UN Avenue · Pedro Gil · Vito Cruz'],
+   ['España Boulevard','UST · Lacson Avenue · Welcome Rotonda'],
+   ['Claro M. Recto Avenue','Divisoria · Avenida · Legarda'],
+   ['Quirino Avenue','Paco · Malate · Osmeña Highway junction']
+  ]},
+  {name:'Makati',type:'City',roads:[
+   ['Ayala Avenue','Ayala Triangle · Makati Avenue · EDSA'],
+   ['EDSA','Guadix · Buendia · Ayala Avenue junction'],
+   ['Gil Puyat Avenue','Ayala Avenue · Chino Roces · Osmeña Highway'],
+   ['Chino Roces Avenue','Makati Cinema Square · Don Bosco · Buendia'],
+   ['Kalayaan Avenue','Rockwell · Makati Avenue · JP Rizal']
+  ]},
+  {name:'Taguig',type:'City',roads:[
+   ['C-5 Road','Bagong Ilog · Market! Market! · BCDA'],
+   ['Lawton Avenue','McKinley Hill · Gate 3 · C-5 junction'],
+   ['East Service Road','Lower Bicutan · FTI · Sucat boundary'],
+   ['Carlos P. Garcia Avenue','Ususan · Diego Silang · C-5 junction'],
+   ['Gen. Luna Street','Poblacion · Taguig City Hall area']
+  ]},
+  {name:'Pasig',type:'City',roads:[
+   ['Ortigas Avenue','Meralco Avenue · Rosario · C-5 junction'],
+   ['C-5 Road','Bagong Ilog · Ugong · Ortigas junction'],
+   ['Shaw Boulevard','Kapitolyo · Pasig Rotonda · EDSA boundary'],
+   ['Dr. Sixto Antonio Avenue','Kapitolyo · Maybunga · Manggahan'],
+   ['Mercedes Avenue','Pasig Palengke · Pasig Boulevard']
+  ]},
+  {name:'Mandaluyong',type:'City',roads:[
+   ['EDSA','Shaw MRT · Boni MRT · Ortigas boundary'],
+   ['Shaw Boulevard','EDSA · Greenfield · Pioneer Street'],
+   ['Boni Avenue','EDSA · Barangka · San Juan boundary'],
+   ['Pioneer Street','EDSA · Reliance · Sheridan'],
+   ['San Francisco Street','Maysilo Circle · Mandaluyong City Hall area']
+  ]},
+  {name:'Pasay',type:'City',roads:[
+   ['EDSA','Taft Avenue · MOA area · Roxas Boulevard junction'],
+   ['Roxas Boulevard','Libertad · Buendia · MOA access'],
+   ['Macapagal Boulevard','DFA · Aseana · MOA'],
+   ['Taft Avenue','Libertad · EDSA · Gil Puyat'],
+   ['Andrews Avenue','NAIA Terminal 3 access · Domestic Road']
+  ]},
+  {name:'Parañaque',type:'City',roads:[
+   ['Dr. A. Santos Avenue (Sucat Road)','SM City Sucat · Sucat Interchange · Better Living'],
+   ['Roxas Boulevard','Baclaran · Coastal Road · Parañaque boundary'],
+   ['C-5 Extension','Merville · Sucat · Coastal Road junction'],
+   ['Quirino Avenue','Baclaran · La Huerta · San Dionisio'],
+   ['Doña Soledad Avenue','Better Living · Bicutan · East Service Road']
+  ]},
+  {name:'Muntinlupa',type:'City',roads:[
+   ['National Road (Manila South Road)','Alabang · Tunasan · Poblacion'],
+   ['Alabang–Zapote Road','Alabang Town Center · Pamplona · Zapote boundary'],
+   ['Commerce Avenue','Filinvest City · Alabang Business District'],
+   ['Daang Hari Road','Alabang · Ayala Alabang · Las Piñas boundary'],
+   ['South Luzon Expressway','Alabang Exit · Filinvest Exit · Susana Heights']
+  ]},
+  {name:'Las Piñas',type:'City',roads:[
+   ['Alabang–Zapote Road','SM Southmall · Pamplona · Zapote'],
+   ['Marcos Alvarez Avenue','Talon · Almanza · Pilar Village area'],
+   ['C.V. Starr Avenue','Pulang Lupa · Las Piñas City Hall area'],
+   ['Diego Cera Avenue','Bacoor boundary · Pulang Lupa · Zapote'],
+   ['National Road','Pulang Lupa · Pamplona · Zapote']
+  ]},
+  {name:'Caloocan',type:'City',roads:[
+   ['EDSA','Monumento · Bagong Barrio · Balintawak boundary'],
+   ['Rizal Avenue Extension','Monumento · 5th Avenue · 10th Avenue'],
+   ['Samson Road','Monumento · Caloocan City Hall area'],
+   ['A. Bonifacio Avenue','Monumento · Grace Park · Balintawak'],
+   ['MacArthur Highway','Camarin · Deparo · northern Caloocan corridor']
+  ]},
+  {name:'Marikina',type:'City',roads:[
+   ['Marcos Highway','Santolan · Riverbanks · Marikina Sports Center'],
+   ['A. Bonifacio Avenue','Marikina Bayan · Marikina Bridge · Gil Fernando'],
+   ['J.P. Rizal Street','Marikina Bayan · Concepcion · Tumana'],
+   ['Gil Fernando Avenue','Marcos Highway · Marikina Heights'],
+   ['Shoe Avenue','Marikina Sports Center · Marikina Shoe Museum area']
+  ]},
+  {name:'Malabon',type:'City',roads:[
+   ['MacArthur Highway','Potrero · Tinajeros · Malabon–Valenzuela boundary'],
+   ['Governor Pascual Avenue','Concepcion · Tonsuya · Malabon City Hall area'],
+   ['Letre Road','Longos · Tonsuya · Malabon–Navotas boundary'],
+   ['C-4 Road','Navotas boundary · Malabon–Caloocan corridor'],
+   ['Rizal Avenue Extension','Acacia · Potrero · Monumento direction']
+  ]},
+  {name:'Navotas',type:'City',roads:[
+   ['C-4 Road','North Bay Boulevard · Navotas Fish Port access'],
+   ['North Bay Boulevard','Navotas Fish Port · Navotas City Hall area'],
+   ['M. Naval Street','San Jose · Sipac-Almacen · Bagumbayan North'],
+   ['Circumferential Road','Fish Port access · North Bay Boulevard junction']
+  ]},
+  {name:'Valenzuela',type:'City',roads:[
+   ['MacArthur Highway','Karuhatan · Malinta · Marulas'],
+   ['Maysan Road','Maysan · Malinta · MacArthur Highway junction'],
+   ['Paso de Blas Road','Paso de Blas · NLEX access'],
+   ['T. Santiago Street','Gen. T. de Leon · Valenzuela City Hall area'],
+   ['NLEX / Mindanao Avenue Link','Valenzuela toll plaza · Mindanao Avenue connection']
+  ]},
+  {name:'San Juan',type:'City',roads:[
+   ['N. Domingo Street','Pinaglabanan · Santolan Road · Addition Hills edge'],
+   ['Ortigas Avenue','Greenhills · Santolan Town Plaza · EDSA junction'],
+   ['Wilson Street','Greenhills Shopping Center · Club Filipino area'],
+   ['Santolan Road','Pinaglabanan · N. Domingo · Santolan boundary'],
+   ['F. Blumentritt Street','San Juan City Hall area · Agora Market vicinity']
+  ]},
+  {name:'Pateros',type:'Municipality',roads:[
+   ['B. Morcilla Street','Pateros Municipal Hall · Pateros Public Market'],
+   ['M. Almeda Street','Pateros town center · Taguig boundary'],
+   ['Pateros–Taguig Road','Pateros proper · Taguig connection'],
+   ['A. Luna Street','Pateros town center · residential/commercial corridor']
+  ]}
+ ];
+ let selectedCity='Quezon City';
+ const $=id=>document.getElementById(id);
+ const safe=value=>String(value||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+ function wazeUrl(road,city){
+  return 'https://www.waze.com/ul?q='+encodeURIComponent(road+', '+city+', Metro Manila, Philippines')+'&navigate=no';
+ }
+ function renderCityList(){
+  const root=$('savelyCCTVCityList'),mobile=$('savelyCCTVMobileCity');
+  if(!root||!mobile)return;
+  const query=String($('savelyCCTVCitySearch')?.value||'').trim().toLowerCase();
+  const filtered=cities.filter(city=>city.name.toLowerCase().includes(query));
+  root.innerHTML=filtered.length?filtered.map(city=>`<button type="button" class="savely-cctv-city-btn${city.name===selectedCity?' active':''}" data-city="${safe(city.name)}" aria-current="${city.name===selectedCity?'true':'false'}"><span>${safe(city.name)}</span><small>${city.type==='Municipality'?'MUN.':'CITY'}</small></button>`).join(''):'<div class="savely-cctv-no-results">No city found.</div>';
+  mobile.innerHTML=cities.map(city=>`<option value="${safe(city.name)}"${city.name===selectedCity?' selected':''}>${safe(city.name)}${city.type==='Municipality'?' (Municipality)':''}</option>`).join('');
+ }
+ function renderRoads(){
+  const city=cities.find(item=>item.name===selectedCity)||cities[0];
+  const root=$('savelyCCTVRoadGrid');
+  if(!root)return;
+  const query=String($('savelyCCTVRoadSearch')?.value||'').trim().toLowerCase();
+  const roads=city.roads.filter(item=>(item[0]+' '+item[1]).toLowerCase().includes(query));
+  const title=$('savelyCCTVSelectedCity'),desc=$('savelyCCTVSelectedCityDescription'),count=$('savelyCCTVRoadCount');
+  if(title)title.textContent=city.name;
+  if(desc)desc.textContent=(city.type==='Municipality'?'Municipality':'City')+' · Metro Manila · Major road and intersection references';
+  if(count)count.textContent=roads.length+' road reference'+(roads.length===1?'':'s');
+  root.innerHTML=roads.length?roads.map(([road,area])=>`<article class="savely-cctv-road-card">
+    <div class="savely-cctv-road-card-top"><span class="savely-cctv-road-icon" aria-hidden="true">▤</span><div><h4>${safe(road)}</h4><div class="savely-cctv-road-location">${safe(area)}</div></div></div>
+    <div class="savely-cctv-road-status"><i></i><span>No verified public CCTV feed for this road in Savely yet</span></div>
+    <div class="savely-cctv-road-actions"><a href="${wazeUrl(road,city.name)}" target="_blank" rel="noopener noreferrer">Check road in Waze ↗</a></div>
+   </article>`).join(''):'<div class="savely-cctv-no-results">No road matches your search in this city.</div>';
+ }
+ function chooseCity(name){
+  if(!cities.some(city=>city.name===name))return;
+  selectedCity=name;
+  const search=$('savelyCCTVCitySearch');if(search)search.value='';
+  renderCityList();renderRoads();
+ }
+ window.renderSavelyPublicCCTV=function(){renderCityList();renderRoads();};
+ window.setSavelyCCTVSelectedCity=chooseCity;
+ document.addEventListener('click',event=>{
+  const button=event.target.closest&&event.target.closest('.savely-cctv-city-btn');
+  if(button)chooseCity(button.dataset.city);
+ });
+ document.addEventListener('input',event=>{
+  if(event.target&&event.target.id==='savelyCCTVCitySearch')renderCityList();
+  if(event.target&&event.target.id==='savelyCCTVRoadSearch')renderRoads();
+ });
+ document.addEventListener('change',event=>{
+  if(event.target&&event.target.id==='savelyCCTVMobileCity')chooseCity(event.target.value);
+ });
+ window.setSavelyLiveMapMode=function(mode){
+  const next=['traffic','cctv'].includes(mode)?mode:'location';
+  savelyLiveMapMode=next;
+  const location=next==='location',traffic=next==='traffic',cctv=next==='cctv';
+  const page=$('page-live-location');
+  const gpsMap=$('savelyLiveLocationMap'),trafficView=$('savelyWazeTrafficView'),cctvView=$('savelyPublicCCTVView');
+  const gpsControls=$('savelyGpsMapControls'),trafficControls=$('savelyWazeMapControls');
+  const gpsFooter=$('savelyGpsMapFooter'),trafficNote=$('savelyWazeMapNote');
+  const title=$('savelyLiveMapTitle'),subtitle=$('liveLocationMapSubtitle');
+  if(page)page.classList.toggle('savely-cctv-active',cctv);
+  if(gpsMap)gpsMap.hidden=!location;
+  if(trafficView)trafficView.hidden=!traffic;
+  if(cctvView)cctvView.hidden=!cctv;
+  if(gpsControls)gpsControls.hidden=!location;
+  if(trafficControls)trafficControls.hidden=!traffic;
+  if(gpsFooter)gpsFooter.hidden=!location;
+  if(trafficNote)trafficNote.hidden=!traffic;
+  if(title)title.textContent=location?'Live movement map':traffic?'Live traffic':'Metro Manila Public CCTV';
+  if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Real-time traffic information in a separate Waze Live Map.':'Browse road-specific public camera sources by Metro Manila city.';
+  document.querySelectorAll('[data-savely-map-mode]').forEach(button=>{
+   const active=button.dataset.savelyMapMode===next;
+   button.classList.toggle('active',active);button.setAttribute('aria-selected',active?'true':'false');
+  });
+  if(traffic)refreshSavelyWazeTraffic(true);
+  if(location){
+   initSavelyLiveLocationMap();
+   setTimeout(()=>{if(savelyLiveLocationMap){savelyLiveLocationMap.invalidateSize();savelyEnsureLastKnownMarker();}},120);
+  }
+  if(cctv)renderSavelyPublicCCTV();
+ };
+ document.addEventListener('DOMContentLoaded',renderSavelyPublicCCTV,{once:true});
+})();
 </script>
 
 </body>
