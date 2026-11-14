@@ -3176,6 +3176,71 @@ button.link-btn{
 @media(max-width:560px){.savely-debt-series-totals{grid-template-columns:1fr}.savely-debt-series-history-record,.savely-debt-series-payment-row{align-items:flex-start}}
 </style>
 
+
+<style id="savely-transfer-polish-and-gps-fix-v1">
+#financialSettingsButton.financial-settings-button{
+ background:var(--green)!important;color:#fff!important;border-color:var(--green)!important;
+ box-shadow:0 5px 14px rgba(19,135,101,.16);font-weight:800
+}
+#financialSettingsButton.financial-settings-button:hover{background:#087654!important;border-color:#087654!important}
+.bank-option-wrap{display:flex;align-items:center;min-width:0;position:relative}
+.bank-option-wrap .bank-option{
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;
+ width:100%;min-width:0;min-height:42px;box-sizing:border-box;padding:5px 39px 5px 10px!important;
+ text-align:left!important;line-height:1.2
+}
+.bank-option-wrap .bank-option .bank-logo,
+.bank-option-wrap .bank-option .savely-image-logo{
+ width:32px!important;height:32px!important;min-width:32px!important;min-height:32px!important;
+ flex:0 0 32px!important;margin:0!important;display:grid;place-items:center;box-sizing:border-box
+}
+.bank-option-wrap .bank-option .bank-option-name{
+ display:block;flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+ text-align:left;line-height:1.25
+}
+.bank-option-wrap .bank-favorite{
+ position:absolute;right:5px;top:50%;transform:translateY(-50%);
+ display:grid;place-items:center;width:27px;height:27px;min-width:27px;
+ padding:0!important;line-height:1;border-radius:7px;z-index:2
+}
+.savely-transfer-review-backdrop{backdrop-filter:blur(3px)}
+.savely-transfer-review-dialog{width:min(570px,100%);max-height:90vh;overflow:auto;padding:24px}
+.savely-transfer-step-label{font-size:9px;letter-spacing:.11em;font-weight:900;color:var(--green);margin-bottom:5px}
+.savely-transfer-review-route{display:grid;grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr);align-items:center;gap:9px;margin:14px 0}
+.savely-transfer-review-account{min-width:0;padding:13px;border:1px solid var(--line);border-radius:13px;background:var(--soft)}
+.savely-transfer-review-label{display:block;color:var(--muted);font-size:9px;font-weight:800;margin-bottom:9px}
+.savely-transfer-review-bank{display:flex;align-items:center;gap:8px;min-width:0}
+.savely-transfer-review-bank strong{font-size:12px;min-width:0;overflow-wrap:anywhere}
+.savely-transfer-review-bank .bank-logo{width:31px;height:31px;flex:0 0 31px}
+.savely-transfer-fallback-logo{background:var(--green)}
+.savely-transfer-review-account small{display:block;color:var(--muted);font-size:10px;line-height:1.45;margin-top:7px}
+.savely-transfer-review-arrow{display:grid;place-items:center;width:24px;height:24px;color:var(--green);font-size:17px;font-weight:900}
+.savely-transfer-review-amount{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px;border:1px solid #b9e7d1;border-radius:13px;background:var(--green2);margin-top:12px}
+.savely-transfer-review-amount span{font-size:12px;font-weight:750;color:var(--text)}
+.savely-transfer-review-amount strong{font-size:22px;color:var(--green);font-variant-numeric:tabular-nums}
+.savely-transfer-review-after{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+.savely-transfer-review-after>div{display:grid;gap:6px;padding:12px;border:1px solid var(--line);border-radius:11px}
+.savely-transfer-review-after span{font-size:10px;color:var(--muted)}
+.savely-transfer-review-after strong{font-size:14px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.savely-transfer-review-note{font-size:10px;color:var(--muted);line-height:1.5;margin:12px 0 0}
+.savely-transfer-review-actions{justify-content:flex-end;margin-top:18px}
+.savely-transfer-review-actions .btn{min-width:128px}
+.savely-waze-traffic-view{position:relative}
+.savely-waze-current-location-pin{
+ position:absolute;left:50%;top:50%;z-index:5;transform:translate(-50%,-100%);
+ width:42px;height:50px;display:grid;place-items:center;pointer-events:none;
+ filter:drop-shadow(0 3px 5px rgba(0,0,0,.25))
+}
+.savely-waze-current-location-pin[hidden]{display:none!important}
+.savely-waze-current-location-pin svg{display:block;width:42px;height:50px}
+@media(max-width:620px){
+ .savely-transfer-review-route{grid-template-columns:1fr;gap:7px}
+ .savely-transfer-review-arrow{transform:rotate(90deg);margin:auto}
+ .savely-transfer-review-after{grid-template-columns:1fr}
+ .savely-transfer-review-actions{display:grid;grid-template-columns:1fr 1fr}
+}
+</style>
+
 </head>
 <body>
 
@@ -3320,6 +3385,9 @@ button.link-btn{
        <div id="savelyLiveLocationMap" class="savely-live-location-map" role="region" aria-label="Savely GPS map showing your current position and movement trail"></div>
        <div id="savelyWazeTrafficView" class="savely-waze-traffic-view" role="region" aria-label="Waze live traffic map" hidden>
         <iframe id="savelyWazeTrafficFrame" title="Waze Live Map traffic view" src="https://embed.waze.com/iframe?zoom=5&amp;lat=12.8797&amp;lon=121.7740&amp;pin=1" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        <div id="savelyWazeCurrentLocationPin" class="savely-waze-current-location-pin" hidden aria-label="Your current device location">
+         <svg viewBox="0 0 44 52" aria-hidden="true"><path d="M22 2.5C11.6 2.5 3.5 10.4 3.5 20.1c0 13.1 18.5 29.2 18.5 29.2s18.5-16.1 18.5-29.2C40.5 10.4 32.4 2.5 22 2.5Z" fill="#07885f" stroke="#ffffff" stroke-width="2.8" stroke-linejoin="round"/><circle cx="22" cy="19.5" r="7.2" fill="#ffffff"/><circle cx="22" cy="19.5" r="3.1" fill="#07885f"/></svg>
+        </div>
        </div>
        <div class="live-location-map-controls" id="savelyGpsMapControls" aria-label="GPS map controls">
         <div class="live-location-map-live-state"><span class="live-location-status-dot" id="liveLocationStatusDot"></span><span><strong id="liveLocationStatus">Connecting to GPS</strong><small id="liveLocationStatusHelp">Waiting for browser permission.</small></span></div>
@@ -3714,6 +3782,8 @@ function accrueRealtimeInterest(){
 }
 
 function closeSavingsTransfer(){
+ const review=document.getElementById('savelyTransferReviewBackdrop');
+ if(review)review.remove();
  const modal=document.getElementById('savelyTransferModal');
  if(modal)modal.remove();
 }
@@ -3734,7 +3804,7 @@ function openSavingsTransfer(sourceId){
  modal.className='modal-backdrop';
  modal.style.cssText='display:flex;z-index:100120;align-items:center;justify-content:center;padding:18px';
  modal.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="savelyTransferTitle" style="width:min(820px,100%);max-height:92vh;overflow:auto;padding:22px">
-  <div class="panel-head" style="align-items:flex-start"><div><h2 id="savelyTransferTitle">⇄ Transfer money</h2><p class="panel-sub">Choose a destination bank or digital wallet.</p></div><button type="button" class="btn btn-light" onclick="closeSavingsTransfer()">✕ Close</button></div>
+  <div class="panel-head" style="align-items:flex-start"><div><h2 id="savelyTransferTitle">Transfer money</h2><p class="panel-sub">Choose a destination bank or digital wallet.</p></div><button type="button" class="btn btn-light" onclick="closeSavingsTransfer()">✕ Close</button></div>
   <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0">
    <div style="border:1px solid var(--line);background:var(--soft);border-radius:12px;padding:12px 14px;min-width:0"><div class="panel-sub">FROM · SOURCE</div><strong>${esc(source.name||'Savings')}</strong><div style="font-size:19px;font-weight:850;color:var(--green);margin-top:3px">${peso(source.amount)}</div><div class="panel-sub">Available balance</div></div>
    <div id="savelyTransferSelectedCard" style="border:1px dashed var(--line);background:var(--card);border-radius:12px;padding:12px 14px;min-width:0"><div class="panel-sub">TO · DESTINATION</div><strong style="color:var(--muted)">Choose a bank below</strong><div class="panel-sub" style="margin-top:5px">Choose any bank. If it is not in Savings yet, Savely will add it automatically after confirmation.</div></div>
@@ -3815,41 +3885,52 @@ function openSavingsTransfer(sourceId){
   label.style.color=amount>available?'var(--red)':'var(--muted)';
  });
  function showTransferReview(amount){
+  const existing=document.getElementById('savelyTransferReviewBackdrop');
+  if(existing)existing.remove();
   const destination=selectedDestinationId?(data.savingsList||[]).find(item=>String(item.id)===String(selectedDestinationId)):null;
   const destinationName=destination?String(destination.name||selectedDestinationName):selectedDestinationName;
   const sourceBalance=Math.max(0,Number(source.amount)||0);
   const destinationBalance=destination?Math.max(0,Number(destination.amount)||0):0;
-  const review=document.createElement('section');
-  review.id='savelyTransferReview';
-  review.style.cssText='border-top:1px solid var(--line);padding-top:16px;margin-top:14px';
-  review.innerHTML=`<div style="font-size:16px;font-weight:850;margin-bottom:12px">Review transfer</div>
-   <div style="border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:12px">
-    <div style="display:flex;justify-content:space-between;gap:12px"><span class="panel-sub">From</span><strong>${esc(source.name||'Savings')}</strong></div>
-    <div style="display:flex;justify-content:space-between;gap:12px"><span class="panel-sub">To</span><strong>${esc(destinationName)}</strong></div>
-    <div style="display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:12px"><span class="panel-sub">Transfer amount</span><strong style="font-size:19px;color:var(--green)">${peso(amount)}</strong></div>
-    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
-     <div style="background:var(--soft);border-radius:10px;padding:10px"><div class="panel-sub">Source balance after</div><strong>${peso(sourceBalance-amount)}</strong></div>
-     <div style="background:var(--soft);border-radius:10px;padding:10px"><div class="panel-sub">Destination balance after</div><strong>${peso(destinationBalance+amount)}</strong></div>
-    </div>
-    ${destination?'<div class="panel-sub">This bank already exists in your Savings items.</div>':'<div class="panel-sub" style="color:var(--green)">A new Savings item will be created automatically for this bank.</div>'}
+  const review=document.createElement('div');
+  review.id='savelyTransferReviewBackdrop';
+  review.className='modal-backdrop savely-transfer-review-backdrop';
+  review.style.cssText='display:flex;z-index:100125;align-items:center;justify-content:center;padding:18px';
+  review.innerHTML=`<div class="modal savely-transfer-review-dialog" role="dialog" aria-modal="true" aria-labelledby="savelyTransferReviewTitle">
+   <div class="panel-head" style="align-items:flex-start">
+    <div><div class="savely-transfer-step-label">TRANSFER · FINAL REVIEW</div><h2 id="savelyTransferReviewTitle">Review your transfer</h2><p class="panel-sub">Check the details before moving your money.</p></div>
+    <button type="button" class="btn btn-light" id="savelyTransferReviewClose" aria-label="Close review">✕ Close</button>
    </div>
-   <div class="form-actions" style="justify-content:flex-end;margin-top:14px">
+   <div class="savely-transfer-review-route">
+    <div class="savely-transfer-review-account">
+     <span class="savely-transfer-review-label">FROM · SOURCE</span>
+     <div class="savely-transfer-review-bank">${savelyBrandLogo(source.name,'bank-logo')||`<span class="bank-logo savely-transfer-fallback-logo">${esc(String(source.name||'₱').slice(0,3).toUpperCase())}</span>`}<strong>${esc(source.name||'Savings')}</strong></div>
+     <small>Current balance · ${peso(sourceBalance)}</small>
+    </div>
+    <div class="savely-transfer-review-arrow" aria-hidden="true">→</div>
+    <div class="savely-transfer-review-account">
+     <span class="savely-transfer-review-label">TO · DESTINATION</span>
+     <div class="savely-transfer-review-bank">${savelyBrandLogo(destinationName,'bank-logo')||`<span class="bank-logo savely-transfer-fallback-logo">${esc(String(destinationName||'₱').slice(0,3).toUpperCase())}</span>`}<strong>${esc(destinationName)}</strong></div>
+     <small>${destination?`Current balance · ${peso(destinationBalance)}`:'New Savings item · created after confirmation'}</small>
+    </div>
+   </div>
+   <div class="savely-transfer-review-amount">
+    <span>Transfer amount</span>
+    <strong>${peso(amount)}</strong>
+   </div>
+   <div class="savely-transfer-review-after">
+    <div><span>Source balance after</span><strong>${peso(sourceBalance-amount)}</strong></div>
+    <div><span>Destination balance after</span><strong>${peso(destinationBalance+amount)}</strong></div>
+   </div>
+   <p class="savely-transfer-review-note">${destination?'The selected account already exists in your Savings items.':'Savely will create the destination Savings item automatically.'} This transfer updates both balances and their history.</p>
+   <div class="form-actions savely-transfer-review-actions">
     <button type="button" class="btn btn-secondary" id="savelyTransferBackButton">Back</button>
-    <button type="button" class="btn btn-primary" id="savelyTransferConfirmButton" style="background:var(--green);border-color:var(--green)">Confirm transfer</button>
-   </div>`;
-  picker.hidden=true;
-  modal.querySelectorAll('[data-transfer-filter]').forEach(btn=>btn.closest('.bank-picker-tabs').hidden=true);
-  modal.querySelector('#savelyTransferForm').hidden=true;
-  selectedCard.parentElement.hidden=true;
-  modal.querySelector('#savelyTransferForm').after(review);
-  review.querySelector('#savelyTransferBackButton').addEventListener('click',()=>{
-   review.remove();
-   picker.hidden=false;
-   modal.querySelectorAll('[data-transfer-filter]').forEach(btn=>btn.closest('.bank-picker-tabs').hidden=false);
-   modal.querySelector('#savelyTransferForm').hidden=false;
-   selectedCard.parentElement.hidden=false;
-   amountInput.focus();
-  });
+    <button type="button" class="btn btn-primary" id="savelyTransferConfirmButton">Confirm transfer</button>
+   </div>
+  </div>`;
+  review.addEventListener('click',event=>{if(event.target===review)review.remove();});
+  document.body.appendChild(review);
+  review.querySelector('#savelyTransferReviewClose').addEventListener('click',()=>review.remove());
+  review.querySelector('#savelyTransferBackButton').addEventListener('click',()=>review.remove());
   review.querySelector('#savelyTransferConfirmButton').addEventListener('click',commitTransfer);
  }
  function commitTransfer(){
@@ -7236,7 +7317,7 @@ async function refreshPhilippineHolidays(manual){
 })();
 
 function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard')setTimeout(renderOverallTrend,50);document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Location.');if(p==='live-location')setTimeout(()=>{
- setSavelyLiveMapMode('location');
+ setSavelyLiveMapMode('traffic');
  initSavelyLiveLocationMap();
  if(savelyLiveLocationMap){
   const lastPoint=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
@@ -11062,7 +11143,9 @@ function savelyFormatClock(ts){return new Intl.DateTimeFormat('en-PH',{timeZone:
 function savelyLocationSetStatus(title,detail,live=false){
  const t=document.getElementById('liveLocationStatus'),d=document.getElementById('liveLocationStatusHelp'),dot=document.getElementById('liveLocationStatusDot');
  if(t)t.textContent=title;if(d)d.textContent=detail;if(dot)dot.classList.toggle('is-live',!!live);
- const stop=document.getElementById('liveLocationStop');if(stop)stop.disabled=!live;
+ const stop=document.getElementById('liveLocationStop');
+ const watchActive=window.__savelyLiveLocationWatchId!==null&&window.__savelyLiveLocationWatchId!==undefined;
+ if(stop)stop.disabled=!watchActive;
 }
 function setSavelyLiveLocationMarkerState(isLive){
  if(!savelyLiveLocationMarker)return;
@@ -11087,6 +11170,8 @@ function savelyBuildWazeTrafficUrl(point){
 function refreshSavelyWazeTraffic(force=false){
  const frame=document.getElementById('savelyWazeTrafficFrame');if(!frame)return;
  const point=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1]||null;
+ const pin=document.getElementById('savelyWazeCurrentLocationPin');
+ if(pin)pin.hidden=!point;
  const url=savelyBuildWazeTrafficUrl(point);
  if(!force&&url===savelyWazeLastCenterUrl)return;
  savelyWazeLastCenterUrl=url;frame.src=url;
@@ -11168,8 +11253,10 @@ function initSavelyLiveLocationMap(){
 function savelyStartNewSession(){
  if(savelyActiveSession)return;
  savelyLiveLocationPoints=[];savelyLiveLocationDistance=0;savelyStopCandidate=null;savelyActiveVisit=null;
+ savelyWazeHasCenteredOnGps=false;savelyWazeLastCenterUrl='';
  savelyActiveSession={id:savelyLocationId(),startedAt:Date.now(),endedAt:null,points:[],distance:0,visitIds:[]};
  if(savelyLiveLocationTrail)savelyLiveLocationTrail.setLatLngs([]);
+ refreshSavelyWazeTraffic(true);
  renderSavelyLiveLocationPoints();
 }
 async function savelyResolvePlaceName(lat,lng){
@@ -11226,8 +11313,8 @@ function savelyUpdateVisitDetection(point){
 }
 function updateSavelyLiveLocation(position){
  const c=position.coords,point={lat:c.latitude,lng:c.longitude,accuracy:c.accuracy||0,speed:c.speed,heading:c.heading,at:position.timestamp||Date.now()};
+ if(point.accuracy>500){savelyLocationSetStatus('Weak GPS signal',`Location accuracy is ±${Math.round(point.accuracy)} m. Waiting for a better fix.`,false);return;}
  if(!savelyWazeHasCenteredOnGps){savelyWazeHasCenteredOnGps=true;refreshSavelyWazeTraffic(true);}
- if(point.accuracy>100){savelyLocationSetStatus('Weak GPS signal','Location accuracy is over 100 m. Waiting for a better fix.',true);return;}
  const last=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
  if(last){
   const moved=savelyDistanceMeters(last,point);
@@ -11331,22 +11418,66 @@ async function deleteSavelyLocationHistory(){
 }
 function startSavelyLiveLocation(){
  window.__savelyLocationUserStopped=false;
- if(!navigator.geolocation){savelyLocationSetStatus('Location unavailable','This browser does not support geolocation.');toast('This browser does not support location access.');return;}
- if(!window.isSecureContext){savelyLocationSetStatus('Secure connection required','Open Savely through its HTTPS GitHub Pages address.');toast('Location access requires HTTPS.');return;}
- if(window.__savelyLiveLocationWatchId!==null)return;
+ if(!navigator.geolocation){savelyLocationSetStatus('Location unavailable','This browser does not support geolocation.',false);toast('This browser does not support location access.');return;}
+ if(!window.isSecureContext){savelyLocationSetStatus('Secure connection required','Open Savely through the HTTPS GitHub Pages address.',false);toast('Location access requires HTTPS.');return;}
+ if(window.__savelyLiveLocationWatchId!==null&&window.__savelyLiveLocationWatchId!==undefined)return;
  initSavelyLiveLocationMap();savelyStartNewSession();
- savelyLocationSetStatus('Requesting permission…','Your browser will ask whether Savely may access your location.');
- window.__savelyLiveLocationWatchId=navigator.geolocation.watchPosition(updateSavelyLiveLocation,error=>{
-  const messages={1:['Permission denied','Allow location access in your browser site settings, then reopen Live Location.'],2:['Position unavailable','GPS or network location could not determine your position. Try again outdoors.'],3:['Location timed out','No position arrived in time. Reopen Live Location to retry.']};
-  const info=messages[error.code]||['Location error','Try opening Live Location again.'];
-  stopSavelyLiveLocation(info[1]);savelyLocationSetStatus(info[0],info[1]);toast(info[0]+'.');
- },{enableHighAccuracy:true,maximumAge:3000,timeout:20000});
- savelyLocationSetStatus('Tracking active','GPS is updating while this page stays open and visible.',true);
- setSavelyLiveLocationMarkerState(true);
+ const attempt=(Number(window.__savelyLocationAttemptToken)||0)+1;
+ window.__savelyLocationAttemptToken=attempt;
+ let gotValidFix=false;
+ savelyLocationSetStatus('Finding location…','Requesting a fresh location from this device. Allow location access if your browser asks.',false);
+ const onPosition=position=>{
+  if(window.__savelyLocationAttemptToken!==attempt||window.__savelyLocationUserStopped)return;
+  const accuracy=Number(position.coords&&position.coords.accuracy)||0;
+  if(accuracy>500){
+   savelyLocationSetStatus('Finding location…',`GPS fix is still approximate (±${Math.round(accuracy)} m). Waiting for a better fix.`,false);
+   return;
+  }
+  const stamp=Number(position.timestamp)||Date.now();
+  const last=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
+  if(last&&Number(last.at)>stamp+1000)return;
+  gotValidFix=true;
+  updateSavelyLiveLocation(position);
+  savelyLocationSetStatus('Tracking active',`Your location is updating. GPS accuracy ±${Math.round(accuracy||0)} m. Keep this page open and visible.`,true);
+  setSavelyLiveLocationMarkerState(true);
+ };
+ const onPositionError=error=>{
+  if(window.__savelyLocationAttemptToken!==attempt||window.__savelyLocationUserStopped)return;
+  if(error.code===1){
+   stopSavelyLiveLocation('Location permission was denied.');
+   savelyLocationSetStatus('Permission denied','Allow location access in your browser site settings, then open Live Location again.',false);
+   toast('Location permission was denied.');
+   return;
+  }
+  if(gotValidFix)return;
+  const detail=error.code===3
+   ?'The first GPS request timed out. Savely is still requesting a location fix; keep this page open.'
+   :'Your device has not returned a GPS position yet. Try moving near a window or checking device location settings.';
+  savelyLocationSetStatus('Finding location…',detail,false);
+ };
+ try{
+  window.__savelyLiveLocationWatchId=navigator.geolocation.watchPosition(onPosition,onPositionError,{
+   enableHighAccuracy:true,maximumAge:10000,timeout:60000
+  });
+ }catch(error){
+  window.__savelyLiveLocationWatchId=null;
+  savelyLocationSetStatus('Location unavailable','The browser could not start GPS tracking. Refresh the page and try again.',false);
+  toast('Could not start GPS tracking.');
+  return;
+ }
+ // Bootstrap with a quicker network/Wi-Fi location request; if it times out, request a high-accuracy fix too.
+ navigator.geolocation.getCurrentPosition(onPosition,error=>{
+  onPositionError(error);
+  if(error.code===1||gotValidFix||window.__savelyLocationAttemptToken!==attempt||window.__savelyLocationUserStopped)return;
+  navigator.geolocation.getCurrentPosition(onPosition,onPositionError,{
+   enableHighAccuracy:true,maximumAge:30000,timeout:45000
+  });
+ },{enableHighAccuracy:false,maximumAge:15000,timeout:25000});
 }
 function stopSavelyLiveLocation(message='Tracking stopped.',userInitiated=false){
- if(userInitiated)window.__savelyLocationUserStopped=true;
- if(window.__savelyLiveLocationWatchId!==null&&window.__savelyLiveLocationWatchId!==undefined)navigator.geolocation.clearWatch(window.__savelyLiveLocationWatchId);
+ window.__savelyLocationUserStopped=true;
+ window.__savelyLocationAttemptToken=(Number(window.__savelyLocationAttemptToken)||0)+1;
+ if(window.__savelyLiveLocationWatchId!==null&&window.__savelyLiveLocationWatchId!==undefined&&navigator.geolocation)navigator.geolocation.clearWatch(window.__savelyLiveLocationWatchId);
  window.__savelyLiveLocationWatchId=null;setSavelyLiveLocationMarkerState(false);
  if(savelyActiveVisit)savelyFinishVisit(Date.now());
  if(savelyActiveSession){savelyActiveSession.endedAt=Date.now();savelyPersistCurrentSession();savelyActiveSession=null;}
