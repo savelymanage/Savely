@@ -3578,6 +3578,48 @@ body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number:
 }
 </style>
 
+
+<style id="savely-live-map-shell-controls-fix-v3">
+#page-live-location .live-location-map-shell{position:relative!important;isolation:isolate!important}
+#page-live-location .live-location-map-controls{position:absolute!important;top:16px!important;right:16px!important;z-index:30!important}
+#page-live-location .savely-construction-map-view{position:relative;z-index:1;width:100%;min-height:560px;height:clamp(560px,76vh,900px);overflow:hidden;pointer-events:auto}
+#page-live-location .savely-construction-map-view[hidden]{display:none!important}
+#page-live-location .savely-construction-map-view .panel{height:100%;min-height:560px;overflow:auto}
+#page-live-location .savely-construction-map-view .construction-map-frame-wrap{height:calc(100% - 130px);min-height:420px;max-height:none}
+#page-live-location #savelyConstructionMapFrame{display:block;width:100%;height:100%;min-height:420px;border:0;pointer-events:auto}
+#page-live-location .savely-live-map-mode-switch{position:relative;z-index:50;pointer-events:auto}
+#page-live-location .savely-live-map-mode-switch button{position:relative;z-index:51;pointer-events:auto;cursor:pointer}
+@media(max-width:760px){
+ #page-live-location .live-location-map-controls{top:10px!important;right:10px!important;width:146px!important}
+ #page-live-location .savely-construction-map-view{height:70vh;min-height:520px}
+}
+</style>
+<script id="savely-live-map-mode-click-fix-v3">
+(function(){
+ function bindMapModeButtons(){
+  const switcher=document.querySelector('#page-live-location .savely-live-map-mode-switch');
+  if(!switcher||switcher.dataset.savelyBound==='1')return;
+  switcher.dataset.savelyBound='1';
+  switcher.querySelectorAll('[data-savely-map-mode]').forEach(button=>{
+   button.removeAttribute('onclick');
+   button.addEventListener('click',function(event){
+    event.preventDefault();
+    event.stopPropagation();
+    const mode=this.getAttribute('data-savely-map-mode');
+    if(typeof window.setSavelyLiveMapMode==='function')window.setSavelyLiveMapMode(mode);
+   });
+  });
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindMapModeButtons,{once:true});
+ else bindMapModeButtons();
+ document.addEventListener('click',function(event){
+  const button=event.target.closest('#page-live-location [data-savely-map-mode]');
+  if(!button)return;
+  if(typeof window.setSavelyLiveMapMode==='function')window.setSavelyLiveMapMode(button.getAttribute('data-savely-map-mode'));
+ },true);
+})();
+</script>
+
 </head>
 <body>
 
@@ -3766,7 +3808,7 @@ body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number:
         </div>
       </div>
       <div class="footer-note">Project records and map pins are based on DPWH-published data. Coverage depends on whether a project has recorded coordinates. Data is not a live construction camera or independently verified site progress. <a href="https://proyektoph.com/developers" target="_blank" rel="noopener noreferrer">API and data notes</a>.</div>
-    </div></div></div>
+    </div></div>
        <div class="live-location-map-controls" id="savelyGpsMapControls" aria-label="GPS map controls">
         <div class="live-location-map-live-state"><span class="live-location-status-dot" id="liveLocationStatusDot"></span><span><strong id="liveLocationStatus">Connecting to GPS</strong><small id="liveLocationStatusHelp">Waiting for browser permission.</small></span></div>
         <button type="button" class="live-location-map-action" id="liveLocationStop" onclick="stopSavelyLiveLocation('Tracking stopped by you.',true)" disabled>Stop tracking</button>
@@ -3779,6 +3821,7 @@ body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number:
        </div>
       <div class="live-location-map-footer" id="savelyGpsMapFooter"><span><i class="live-location-legend-dot current"></i> Current / last position</span><span><i class="live-location-legend-line"></i> Recorded movement trail</span><span id="liveLocationLastUpdate">No location update yet</span></div>
       <div class="savely-waze-map-note" id="savelyWazeMapNote" hidden>Live traffic is provided by the Waze Live Map. Traffic conditions and reports depend on Waze coverage and community updates. This view is separate from Savely's GPS route map.</div>
+     </div>
     </section>
     </div>
     
