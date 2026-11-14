@@ -3436,18 +3436,16 @@ button.link-btn{
 .overview-privacy-toggle[hidden]{display:none!important}
 .overview-privacy-icon{width:17px;height:17px;display:grid;place-items:center;flex:0 0 17px}
 .overview-privacy-icon svg{width:17px;height:17px;display:block}
-
-/* Only conceal dashboard amounts while the privacy toggle is active. */
-#page-dashboard.savely-overview-private .savely-private-number{
+.savely-private-number{
+ filter:none!important;
  position:relative;
  display:inline-block;
- filter:none!important;
  user-select:none;
  pointer-events:none;
- -webkit-text-fill-color:transparent!important;
+ -webkit-text-fill-color:transparent;
  text-shadow:none!important;
 }
-#page-dashboard.savely-overview-private .savely-private-number::after{
+.savely-private-number::after{
  content:"******";
  position:absolute;
  inset:0;
@@ -3667,10 +3665,6 @@ button.link-btn{
           </div>
           <div class="savely-cctv-featured-foot"><span>This is a public sky/panoramic webcam, not a road-facing traffic CCTV. Playback depends on the publisher's stream being active and allowing embedding.</span><a href="https://www.vision-environnement.com/en/webcam/philippines/grand-manille/19619-quezon-city-live-sky-camera/" target="_blank" rel="noopener noreferrer">Original camera source ↗</a></div>
          </section>
-         <div class="savely-cctv-road-toolbar"><div><strong>Roads & intersections</strong><small id="savelyCCTVRoadCount">0 road references</small></div><label><span>⌕</span><input id="savelyCCTVRoadSearch" type="search" placeholder="Search road or area…" autocomplete="off"></label></div>
-         <div id="savelyCCTVRoadGrid" class="savely-cctv-road-grid"></div>
-         <div class="savely-cctv-sources">
-          <div><strong>Public source checks</strong><small>Open the original source to confirm camera coverage and access terms.</small></div>
           <a href="https://pia.gov.ph/news/mmda-sm-supermalls-partner-for-traffic-information-sharing-project/" target="_blank" rel="noopener noreferrer">MMDA selected-feed partnership <span>↗</span></a>
           <a href="https://lagayngdaan.com/cameras/" target="_blank" rel="noopener noreferrer">External public camera directory <span>↗</span></a>
           <a href="https://mmda.gov.ph/" target="_blank" rel="noopener noreferrer">MMDA official website <span>↗</span></a>
