@@ -3141,8 +3141,18 @@ button.link-btn{
 .savely-live-map-mode-switch button{min-height:34px;padding:0 13px;border:0;border-radius:8px;background:transparent;color:#718078;font:inherit;font-size:10px;font-weight:850;cursor:pointer;white-space:nowrap}
 .savely-live-map-mode-switch button.active{background:#138765;color:#fff;box-shadow:0 2px 7px rgba(19,135,101,.18)}
 .savely-waze-traffic-view{width:100%;height:clamp(560px,76vh,900px);min-height:560px;overflow:hidden;border:1px solid #e2eaf0;border-radius:15px;background:#eef3f1}
-.savely-waze-traffic-view[hidden],.savely-live-location-map[hidden],.live-location-map-controls[hidden],.live-location-map-footer[hidden],.savely-waze-map-note[hidden]{display:none!important}
+.savely-waze-traffic-view[hidden],.savely-railway-live-view[hidden],.savely-live-location-map[hidden],.live-location-map-controls[hidden],.live-location-map-footer[hidden],.savely-waze-map-note[hidden]{display:none!important}
 .savely-waze-traffic-view iframe{display:block;width:100%;height:100%;min-height:560px;border:0;background:#eef3f1}
+.savely-railway-live-view{width:100%;padding:16px;border:1px solid #e2eaf0;border-radius:15px;background:#fff}
+.savely-railway-live-view[hidden]{display:none!important}
+.savely-railway-live-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px}
+.savely-railway-live-head h3{margin:4px 0;font-size:18px;color:var(--text)}
+.savely-railway-live-head p{margin:0;color:var(--muted);font-size:11px}
+.savely-railway-live-head>a{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 13px;border:1px solid #cfe5da;border-radius:9px;background:#f4faf7;color:#087b5b;text-decoration:none;font-size:11px;font-weight:800;white-space:nowrap}
+.savely-railway-live-frame-wrap{height:clamp(560px,76vh,900px);min-height:560px;overflow:hidden;border:1px solid #e2eaf0;border-radius:12px;background:#f2f6f4}
+.savely-railway-live-frame-wrap iframe{display:block;width:100%;height:100%;min-height:560px;border:0;background:#f2f6f4}
+.savely-railway-live-note{margin-top:10px;color:var(--muted);font-size:10px;line-height:1.55}
+.savely-railway-live-note strong{color:var(--text)}
 .savely-waze-map-controls{top:16px;right:16px}
 .savely-waze-map-note{margin-top:10px;color:var(--muted);font-size:10px;line-height:1.5}
 @media(max-width:650px){
@@ -3151,6 +3161,9 @@ button.link-btn{
  .savely-live-map-mode-switch{flex:1}
  .savely-live-map-mode-switch button{flex:1;padding:0 8px}
  .savely-waze-traffic-view,.savely-waze-traffic-view iframe{height:68vh;min-height:440px}
+ .savely-railway-live-view{padding:10px}
+ .savely-railway-live-frame-wrap,.savely-railway-live-frame-wrap iframe{height:68vh;min-height:440px}
+ .savely-railway-live-head{align-items:flex-start;flex-direction:column}
 }
 </style>
 
@@ -3635,6 +3648,7 @@ button.link-btn{
          <button type="button" class="active" data-savely-map-mode="location" role="tab" aria-selected="true" onclick="setSavelyLiveMapMode('location')">My location</button>
          <button type="button" data-savely-map-mode="traffic" role="tab" aria-selected="false" onclick="setSavelyLiveMapMode('traffic')">Live traffic</button>
          <button type="button" data-savely-map-mode="cctv" role="tab" aria-selected="false" onclick="setSavelyLiveMapMode('cctv')">Public CCTV</button>
+         <button type="button" data-savely-map-mode="railway" role="tab" aria-selected="false" onclick="setSavelyLiveMapMode('railway')">Railway Live</button>
         </div>
         <span class="live-location-local-badge">This tab only</span>
        </div>
@@ -3644,6 +3658,16 @@ button.link-btn{
        <div id="savelyWazeTrafficView" class="savely-waze-traffic-view" role="region" aria-label="Waze live traffic map" hidden>
         <iframe id="savelyWazeTrafficFrame" title="Waze Live Map traffic view" src="https://embed.waze.com/iframe?zoom=5&amp;lat=12.8797&amp;lon=121.7740&amp;pin=1" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
        </div>
+       <section id="savelyRailwayLiveView" class="savely-railway-live-view" role="region" aria-label="TrainSight Metro Manila live railway tracker" hidden>
+        <div class="savely-railway-live-head">
+         <div><span class="savely-cctv-eyebrow">PUBLIC RAILWAY TRACKER</span><h3>Metro Manila Railway Live</h3><p>TrainSight · LRT-1 · LRT-2 · MRT-3</p></div>
+         <a href="https://rail.trainsight.app/" target="_blank" rel="noopener noreferrer">Open TrainSight ↗</a>
+        </div>
+        <div class="savely-railway-live-frame-wrap">
+         <iframe id="savelyRailwayLiveFrame" title="TrainSight live train tracker for Metro Manila" src="https://rail.trainsight.app/" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="geolocation"></iframe>
+        </div>
+        <div class="savely-railway-live-note"><strong>Embedding is experimental.</strong> If TrainSight blocks third-party framing or the panel stays blank, use “Open TrainSight” above to view the live tracker directly. Train positions and update frequency are controlled by TrainSight; Savely does not independently verify or generate train locations.</div>
+       </section>
        <div id="savelyPublicCCTVView" class="savely-public-cctv-view" role="region" aria-label="Metro Manila public CCTV directory" hidden>
         <aside class="savely-cctv-city-sidebar">
          <div class="savely-cctv-sidebar-heading"><span>METRO MANILA</span><strong>Choose a city</strong><small>1 city currently available</small></div>
@@ -11827,33 +11851,38 @@ function refreshSavelyWazeTraffic(force=false){
  savelyWazeLastCenterUrl=url;frame.src=url;
 }
 function setSavelyLiveMapMode(mode){
- savelyLiveMapMode=mode==='traffic'?'traffic':'location';
- const traffic=savelyLiveMapMode==='traffic';
+ savelyLiveMapMode=['traffic','cctv','railway'].includes(mode)?mode:'location';
+ const location=savelyLiveMapMode==='location',traffic=savelyLiveMapMode==='traffic',cctv=savelyLiveMapMode==='cctv',railway=savelyLiveMapMode==='railway';
  const gpsMap=document.getElementById('savelyLiveLocationMap');
  const trafficView=document.getElementById('savelyWazeTrafficView');
+ const railwayView=document.getElementById('savelyRailwayLiveView');
+ const cctvView=document.getElementById('savelyPublicCCTVView');
  const gpsControls=document.getElementById('savelyGpsMapControls');
  const trafficControls=document.getElementById('savelyWazeMapControls');
  const gpsFooter=document.getElementById('savelyGpsMapFooter');
  const trafficNote=document.getElementById('savelyWazeMapNote');
  const title=document.getElementById('savelyLiveMapTitle');
  const subtitle=document.getElementById('liveLocationMapSubtitle');
- if(gpsMap)gpsMap.hidden=traffic;
+ if(gpsMap)gpsMap.hidden=!location;
  if(trafficView)trafficView.hidden=!traffic;
- if(gpsControls)gpsControls.hidden=traffic;
+ if(railwayView)railwayView.hidden=!railway;
+ if(cctvView)cctvView.hidden=!cctv;
+ if(gpsControls)gpsControls.hidden=!location;
  if(trafficControls)trafficControls.hidden=!traffic;
- if(gpsFooter)gpsFooter.hidden=traffic;
+ if(gpsFooter)gpsFooter.hidden=!location;
  if(trafficNote)trafficNote.hidden=!traffic;
- if(title)title.textContent=traffic?'Live traffic':'Live movement map';
- if(subtitle)subtitle.textContent=traffic?'Real-time traffic information in a separate Waze Live Map.':'Your current position and movement trail are updating while tracking is active.';
+ if(title)title.textContent=location?'Live movement map':traffic?'Live traffic':cctv?'Metro Manila Public CCTV':'Railway Live';
+ if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Real-time traffic information in a separate Waze Live Map.':cctv?'View the available Quezon City public webcam.':'Attempting to display the public TrainSight live railway tracker for LRT-1, LRT-2, and MRT-3.';
  document.querySelectorAll('[data-savely-map-mode]').forEach(button=>{
   const active=button.dataset.savelyMapMode===savelyLiveMapMode;
   button.classList.toggle('active',active);button.setAttribute('aria-selected',active?'true':'false');
  });
  if(traffic)refreshSavelyWazeTraffic(true);
- else{
+ if(location){
   initSavelyLiveLocationMap();
   setTimeout(()=>{if(savelyLiveLocationMap){savelyLiveLocationMap.invalidateSize();savelyEnsureLastKnownMarker();}},120);
  }
+ if(cctv&&window.renderSavelyPublicCCTV)window.renderSavelyPublicCCTV();
 }
 function centerSavelyWazeTraffic(){
  const point=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
@@ -12270,24 +12299,25 @@ try{localStorage.removeItem(['savely','TomTomTrafficKey'].join(''));}catch(e){}
   if(event.target&&event.target.id==='savelyCCTVRoadSearch')renderRoads();
  });
  window.setSavelyLiveMapMode=function(mode){
-  const next=['traffic','cctv'].includes(mode)?mode:'location';
+  const next=['traffic','cctv','railway'].includes(mode)?mode:'location';
   savelyLiveMapMode=next;
-  const location=next==='location',traffic=next==='traffic',cctv=next==='cctv';
+  const location=next==='location',traffic=next==='traffic',cctv=next==='cctv',railway=next==='railway';
   const page=$('page-live-location');
-  const gpsMap=$('savelyLiveLocationMap'),trafficView=$('savelyWazeTrafficView'),cctvView=$('savelyPublicCCTVView');
+  const gpsMap=$('savelyLiveLocationMap'),trafficView=$('savelyWazeTrafficView'),railwayView=$('savelyRailwayLiveView'),cctvView=$('savelyPublicCCTVView');
   const gpsControls=$('savelyGpsMapControls'),trafficControls=$('savelyWazeMapControls');
   const gpsFooter=$('savelyGpsMapFooter'),trafficNote=$('savelyWazeMapNote');
   const title=$('savelyLiveMapTitle'),subtitle=$('liveLocationMapSubtitle');
   if(page)page.classList.toggle('savely-cctv-active',cctv);
   if(gpsMap)gpsMap.hidden=!location;
   if(trafficView)trafficView.hidden=!traffic;
+  if(railwayView)railwayView.hidden=!railway;
   if(cctvView)cctvView.hidden=!cctv;
   if(gpsControls)gpsControls.hidden=!location;
   if(trafficControls)trafficControls.hidden=!traffic;
   if(gpsFooter)gpsFooter.hidden=!location;
   if(trafficNote)trafficNote.hidden=!traffic;
-  if(title)title.textContent=location?'Live movement map':traffic?'Live traffic':'Metro Manila Public CCTV';
-  if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Real-time traffic information in a separate Waze Live Map.':'View the available Quezon City public webcam and browse road references.';
+  if(title)title.textContent=location?'Live movement map':traffic?'Live traffic':cctv?'Metro Manila Public CCTV':'Railway Live';
+  if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Real-time traffic information in a separate Waze Live Map.':cctv?'View the available Quezon City public webcam.':'Attempting to display the public TrainSight live railway tracker for LRT-1, LRT-2, and MRT-3.';
   document.querySelectorAll('[data-savely-map-mode]').forEach(button=>{
    const active=button.dataset.savelyMapMode===next;
    button.classList.toggle('active',active);button.setAttribute('aria-selected',active?'true':'false');
