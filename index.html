@@ -2929,6 +2929,31 @@ button.link-btn{
 }
 </style>
 
+
+<style id="savely-savings-linked-actions-weather-fixes-v1">
+.savings-item-actions.has-linked-badge{
+ display:inline-flex!important;align-items:center!important;justify-content:flex-end!important;
+ gap:8px!important;white-space:nowrap!important;
+}
+.savings-item-actions.has-linked-badge .savely-receivable-linked-badge{flex:0 0 auto}
+.savings-item-actions.has-linked-badge .savings-item-menu-button{flex:0 0 34px}
+#viewSavingsGraphButton.btn-primary{
+ background:var(--green,#168765)!important;border-color:var(--green,#168765)!important;
+ color:#fff!important;box-shadow:0 4px 12px rgba(17,125,91,.15)
+}
+#viewSavingsGraphButton.btn-primary:hover{filter:brightness(.96);transform:translateY(-1px)}
+.savely-daily-row{
+ display:grid;grid-template-columns:minmax(100px,1.2fr) 48px minmax(90px,1fr) minmax(105px,1fr) minmax(120px,1fr);
+ align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff
+}
+.savely-daily-icon{font-size:25px}
+.savely-daily-temp{font-weight:800}
+@media(max-width:760px){
+ .savely-daily-row{grid-template-columns:1fr 40px 1fr;gap:8px}
+ .savely-daily-row>div:nth-child(4),.savely-daily-row>div:nth-child(5){grid-column:1/-1}
+}
+</style>
+
 </head>
 <body>
 
@@ -3214,7 +3239,7 @@ button.link-btn{
         <div class="panel" id="savingsTrendPanel" style="margin-bottom:18px">
       <div class="panel-head"><div><h2>Savings growth by bank</h2><div class="panel-sub">Live comparison of current savings balances across your banks and digital wallets.</div></div><span class="panel-sub" id="savingsTrendMeta">Savings only</span></div>
       <div style="width:100%;height:280px;position:relative;overflow-x:auto!important;overflow-y:hidden!important;scrollbar-width:thin;overscroll-behavior-x:contain" id="savingsTrendCanvasWrap"><canvas id="savingsTrendChart" role="img" aria-label="Line graph comparing savings balances by bank and digital wallet" style="width:100%;height:100%;display:block"></canvas></div>
-      <div class="panel-sub" id="savingsTrendLegend" style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px"></div><div id="savingsGraphAction" style="display:none;justify-content:flex-end;margin-top:10px"><button type="button" class="btn btn-light" id="viewSavingsGraphButton" onclick="toggleSavingsGraphView()">View savings graph</button></div>
+      <div class="panel-sub" id="savingsTrendLegend" style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px"></div><div id="savingsGraphAction" style="display:none;justify-content:flex-end;margin-top:10px"><button type="button" class="btn btn-primary" id="viewSavingsGraphButton" onclick="toggleSavingsGraphView()">View full savings graph</button></div>
       <div class="footer-note">Updates when you add or edit savings. Balance changes are plotted as history, so decreases and increases appear as dips and rises.</div>
     </div>
     <div class="panel">
@@ -6028,11 +6053,13 @@ function renderSavingsList(){
    if(rowItem&&rowItem.isReceivable){
     row.classList.add('is-receivable-row');
     const actions=row.querySelector('.savings-item-actions');
-    if(actions){
+    if(actions&&!actions.querySelector('.savely-receivable-linked-badge')){
      const badge=document.createElement('span');
      badge.className='savely-receivable-linked-badge';
      badge.textContent='LINKED TO DEBT';
-     actions.replaceWith(badge);
+     badge.title='This savings item is linked to a debt collection record.';
+     actions.insertBefore(badge,actions.firstChild);
+     actions.classList.add('has-linked-badge');
     }
    }
    row.addEventListener('click',event=>{
@@ -7722,44 +7749,110 @@ accrueRealtimeInterest();
 <script id="savely-live-weather">
 (function(){
   const $=id=>document.getElementById(id), STORE_KEY='savely_weather_location_v1';
-  const labels={0:['☀️','Sunny'],1:['🌤️','Mostly clear'],2:['⛅','Partly cloudy'],3:['☁️','Cloudy'],45:['🌫️','Foggy'],48:['🌫️','Foggy'],51:['🌦️','Light drizzle'],53:['🌦️','Drizzle'],55:['🌧️','Heavy drizzle'],56:['🌧️','Freezing drizzle'],57:['🌧️','Freezing drizzle'],61:['🌧️','Light rain'],63:['🌧️','Rain'],65:['🌧️','Heavy rain'],66:['🌧️','Freezing rain'],67:['🌧️','Heavy freezing rain'],71:['🌨️','Light snow'],73:['🌨️','Snow'],75:['❄️','Heavy snow'],77:['🌨️','Snow grains'],80:['🌦️','Rain showers'],81:['🌧️','Rain showers'],82:['⛈️','Heavy showers'],85:['🌨️','Snow showers'],86:['❄️','Heavy snow showers'],95:['⛈️','Thunderstorm'],96:['⛈️','Thunderstorm with hail'],99:['⛈️','Severe thunderstorm']};
-  function readLocation(){try{return JSON.parse(localStorage.getItem(STORE_KEY)||'null')}catch(e){return null}}
-  function render(temp,code,place){const v=labels[code]||['🌡️','Current conditions'];if($('savelyWeatherIcon'))$('savelyWeatherIcon').textContent=v[0];if($('savelyWeatherTemp'))$('savelyWeatherTemp').textContent=Math.round(temp)+'°C';if($('savelyWeatherDesc'))$('savelyWeatherDesc').textContent=v[1]+(place?' · '+place:'');if($('savelyWeather'))$('savelyWeather').title='Live weather: '+v[1]+', '+Math.round(temp)+'°C'+(place?' · '+place:'');}
-  async function load(lat,lon,place){try{const url='https://api.open-meteo.com/v1/forecast?latitude='+encodeURIComponent(lat)+'&longitude='+encodeURIComponent(lon)+'&current=temperature_2m,weather_code&timezone=auto';const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw Error('Weather request failed');const d=await r.json();if(!d.current)throw Error('No current weather');render(d.current.temperature_2m,d.current.weather_code,place);return true}catch(e){if($('savelyWeatherTemp'))$('savelyWeatherTemp').textContent='—';if($('savelyWeatherDesc'))$('savelyWeatherDesc').textContent='Weather unavailable';if($('savelyWeather'))$('savelyWeather').title='Could not load current weather. Check internet connection.';return false;}}
+  const labels={0:['☀️','Sunny'],1:['🌤️','Mostly clear'],2:['⛅','Partly cloudy'],3:['☁️','Cloudy'],45:['🌫️','Foggy'],48:['🌫️','Foggy'],51:['🌦️','Light drizzle'],53:['🌦️','Drizzle'],55:['🌧️','Heavy drizzle'],56:['🌧️','Freezing drizzle'],57:['🌧️','Freezing drizzle'],61:['🌧️','Light rain'],63:['🌧️','Rain'],65:['🌧️','Heavy rain'],66:['🌧️','Freezing rain'],67:['🌧️','Heavy freezing rain'],71:['🌨️','Light snow'],73:['🌨️','Snow'],75:['❄️','Heavy snow'],77:['🌨️','Snow grains'],80:['🌦️','Rain showers'],81:['🌧️','Rain showers'],82:['⛈️','Heavy showers'],85:['🌨️','Snow showers'],86:['❄️','Snow showers'],95:['⛈️','Thunderstorm'],96:['⛈️','Thunderstorm with hail'],99:['⛈️','Severe thunderstorm']};
+
+  function readLocation(){
+    try{return JSON.parse(localStorage.getItem(STORE_KEY)||'null')}catch(e){return null}
+  }
+  function setStatus(message){
+    if($('savelyWeatherDesc'))$('savelyWeatherDesc').textContent=message;
+    if($('savelyWeather'))$('savelyWeather').title=message;
+  }
+  function render(temp,code,place){
+    const v=labels[Number(code)]||['🌡️','Current conditions'];
+    if($('savelyWeatherIcon'))$('savelyWeatherIcon').textContent=v[0];
+    if($('savelyWeatherTemp'))$('savelyWeatherTemp').textContent=Math.round(Number(temp))+'°C';
+    setStatus(v[1]+(place?' · '+place:''));
+  }
+  async function fetchJson(url,timeoutMs=11000){
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),timeoutMs);
+    try{
+      const r=await fetch(url,{cache:'no-store',signal:controller.signal});
+      if(!r.ok)throw new Error('Weather service returned HTTP '+r.status);
+      const d=await r.json();
+      if(d&&d.error)throw new Error(d.reason||'Weather service returned an error');
+      return d;
+    }finally{clearTimeout(timer);}
+  }
+  async function load(lat,lon,place){
+    const params=new URLSearchParams({
+      latitude:String(lat),longitude:String(lon),
+      current:'temperature_2m,weather_code',
+      timezone:'Asia/Manila'
+    });
+    const url='https://api.open-meteo.com/v1/forecast?'+params.toString();
+    let lastError=null;
+    for(let attempt=0;attempt<2;attempt++){
+      try{
+        const d=await fetchJson(url,12000);
+        if(!d.current||!Number.isFinite(Number(d.current.temperature_2m)))throw new Error('Current weather data was empty');
+        render(d.current.temperature_2m,d.current.weather_code,place);
+        return true;
+      }catch(error){
+        lastError=error;
+        if(attempt===0)await new Promise(resolve=>setTimeout(resolve,650));
+      }
+    }
+    setStatus('Weather unavailable · '+(lastError&&lastError.name==='AbortError'?'request timed out':'service connection failed'));
+    if($('savelyWeatherTemp'))$('savelyWeatherTemp').textContent='—';
+    return false;
+  }
+  function normalizeCity(value){
+    return String(value||'')
+      .replace(/^(?:city of|municipality of|municipality)\s+/i,'')
+      .replace(/\s+/g,' ').trim();
+  }
   async function geocodeSaved(loc){
-    // Open-Meteo's `name` parameter expects a place name, not a comma-separated address.
-    // Try the selected city first, then less-specific city-name variants.
-    const cleanCity=String(loc.city||'').replace(/^(city of|municipality of|municipality)\s+/i,'').trim();
+    const cleanCity=normalizeCity(loc.city);
     const candidates=[cleanCity,loc.city,loc.province,loc.region].filter((v,i,a)=>v&&a.indexOf(v)===i);
     for(const q of candidates){
       try{
-        const url='https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(q)+'&count=10&language=en&format=json&countryCode=PH';
-        const r=await fetch(url,{cache:'no-store'});
-        if(!r.ok)continue;
-        const d=await r.json();
+        const params=new URLSearchParams({name:q,count:'10',language:'en',format:'json',countryCode:'PH'});
+        const d=await fetchJson('https://geocoding-api.open-meteo.com/v1/search?'+params.toString(),9000);
         const list=(d.results||[]).filter(x=>String(x.country_code||'').toUpperCase()==='PH');
-        // Prefer a result whose locality name resembles the saved city.
         const wanted=cleanCity.toLowerCase();
-        const match=list.find(x=>String(x.name||'').toLowerCase()===wanted)
-          ||list.find(x=>String(x.name||'').toLowerCase().includes(wanted)||wanted.includes(String(x.name||'').toLowerCase()))
-          ||list[0];
-        if(match&&Number.isFinite(match.latitude)&&Number.isFinite(match.longitude)){
-          const ok=await load(match.latitude,match.longitude,[loc.barangay,loc.city,loc.province].filter(Boolean).join(', '));
-          if(ok)return true;
+        const adminWanted=String(loc.region||loc.province||'').toLowerCase();
+        const exact=list.filter(x=>String(x.name||'').toLowerCase()===wanted);
+        const match=
+          exact.find(x=>adminWanted&&String(x.admin1||'').toLowerCase()===adminWanted)||
+          exact[0]||
+          list.find(x=>String(x.name||'').toLowerCase().includes(wanted))||
+          list[0];
+        if(match&&Number.isFinite(Number(match.latitude))&&Number.isFinite(Number(match.longitude))){
+          return {lat:Number(match.latitude),lon:Number(match.longitude),label:[loc.barangay,loc.city,loc.province||loc.region].filter(Boolean).join(', ')};
         }
       }catch(e){}
     }
-    // Do not silently use device coordinates for a saved location; show a clear fallback
-    // and keep the selected city label visible so the user knows what failed.
-    if($('savelyWeatherIcon'))$('savelyWeatherIcon').textContent='🌦️';
-    if($('savelyWeatherTemp'))$('savelyWeatherTemp').textContent='—';
-    if($('savelyWeatherDesc'))$('savelyWeatherDesc').textContent='Weather unavailable';
-    if($('savelyWeather'))$('savelyWeather').title='Could not find weather coordinates for '+[loc.city,loc.province,loc.region].filter(Boolean).join(', ')+'. Check internet connection or choose another city.';
-    return false;
+    return null;
   }
-  function start(){const saved=readLocation();if(saved&&saved.city){geocodeSaved(saved);return;}const fallback=()=>load(15.4817,120.5979,'Tarlac City');if(!navigator.geolocation){fallback();return;}navigator.geolocation.getCurrentPosition(async p=>{const ok=await load(p.coords.latitude,p.coords.longitude,'Local area');if(!ok)fallback();},fallback,{enableHighAccuracy:false,timeout:5000,maximumAge:600000});}
+  async function getDevicePosition(){
+    if(!navigator.geolocation)return null;
+    return await new Promise(resolve=>{
+      navigator.geolocation.getCurrentPosition(
+        p=>resolve({lat:p.coords.latitude,lon:p.coords.longitude,label:'Your device location'}),
+        ()=>resolve(null),
+        {enableHighAccuracy:false,timeout:5000,maximumAge:600000}
+      );
+    });
+  }
+  async function start(){
+    if($('savelyWeatherTemp'))$('savelyWeatherTemp').textContent='Loading…';
+    setStatus('Loading current weather…');
+    const saved=readLocation();
+    let place=saved&&saved.city?await geocodeSaved(saved):null;
+    if(!place)place=await getDevicePosition();
+    // A city-level fallback keeps the weather card useful if location permission
+    // is declined or the saved city is temporarily unavailable in the geocoder.
+    if(!place)place={lat:14.5995,lon:120.9842,label:'Manila, Philippines'};
+    const ok=await load(place.lat,place.lon,place.label);
+    if(!ok&&place.label!=='Manila, Philippines'){
+      await load(14.5995,120.9842,'Manila, Philippines');
+    }
+  }
   window.savelyReloadWeather=start;
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();setInterval(start,10*60*1000);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+  setInterval(start,10*60*1000);
 })();
 </script>
 
@@ -8005,7 +8098,7 @@ accrueRealtimeInterest();
 <script id="savely-hourly-daily-weather">
 (function(){
  const $=id=>document.getElementById(id), KEY='savely_weather_location_v1';
- let forecastCache=null, activeTab='hourly';
+ let forecastCache=null, activeTab='hourly', loadingRequest=false;
  const codeLabels={
   0:['☀️','Clear sky'],1:['🌤️','Mainly clear'],2:['⛅','Partly cloudy'],3:['☁️','Overcast'],
   45:['🌫️','Fog'],48:['🌫️','Depositing rime fog'],51:['🌦️','Light drizzle'],53:['🌦️','Drizzle'],
@@ -8018,102 +8111,143 @@ accrueRealtimeInterest();
  };
  function weather(code){return codeLabels[Number(code)]||['🌡️','Weather conditions unavailable'];}
  function savedLocation(){try{return JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){return null}}
+ function normalizeCity(value){return String(value||'').replace(/^(?:city of|municipality of|municipality)\s+/i,'').replace(/\s+/g,' ').trim();}
+ async function fetchJson(url,timeoutMs=14000){
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{
+   const r=await fetch(url,{cache:'no-store',signal:controller.signal});
+   if(!r.ok)throw new Error('HTTP '+r.status);
+   const data=await r.json();
+   if(data&&data.error)throw new Error(data.reason||'Weather API error');
+   return data;
+  }finally{clearTimeout(timer);}
+ }
+ async function geocodeSaved(loc){
+  const city=normalizeCity(loc.city);
+  const candidates=[city,loc.city,loc.province,loc.region].filter((v,i,a)=>v&&a.indexOf(v)===i);
+  for(const q of candidates){
+   try{
+    const params=new URLSearchParams({name:q,count:'10',language:'en',format:'json',countryCode:'PH'});
+    const d=await fetchJson('https://geocoding-api.open-meteo.com/v1/search?'+params.toString(),9000);
+    const rows=(d.results||[]).filter(x=>String(x.country_code||'').toUpperCase()==='PH');
+    const exact=rows.filter(x=>String(x.name||'').toLowerCase()===city.toLowerCase());
+    const admin=String(loc.region||loc.province||'').toLowerCase();
+    const match=exact.find(x=>admin&&String(x.admin1||'').toLowerCase()===admin)||exact[0]||
+      rows.find(x=>String(x.name||'').toLowerCase().includes(city.toLowerCase()))||rows[0];
+    if(match&&Number.isFinite(Number(match.latitude))&&Number.isFinite(Number(match.longitude))){
+     return {lat:Number(match.latitude),lon:Number(match.longitude),label:[loc.barangay,loc.city,loc.province||loc.region].filter(Boolean).join(', ')};
+    }
+   }catch(e){}
+  }
+  return null;
+ }
  async function resolveCoordinates(){
-   const loc=savedLocation();
-   if(loc&&loc.city){
-     const qList=[[loc.city,loc.province].filter(Boolean).join(' '),loc.city];
-     for(const q of qList){
-       try{
-         const r=await fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(q)+'&count=10&language=en&format=json&countryCode=PH',{cache:'no-store'});
-         if(!r.ok)continue;
-         const d=await r.json();
-         const rows=(d.results||[]).filter(x=>String(x.country_code||'').toUpperCase()==='PH');
-         const city=String(loc.city).toLowerCase(),prov=String(loc.province||'').toLowerCase();
-         const m=rows.find(x=>String(x.name||'').toLowerCase()===city&&(!prov||String(x.admin1||'').toLowerCase().includes(prov)||prov.includes(String(x.admin1||'').toLowerCase())))
-          ||rows.find(x=>String(x.name||'').toLowerCase()===city)
-          ||rows.find(x=>String(x.name||'').toLowerCase().includes(city)||city.includes(String(x.name||'').toLowerCase()))
-          ||rows[0];
-         if(m&&Number.isFinite(m.latitude)&&Number.isFinite(m.longitude))return {lat:m.latitude,lon:m.longitude,label:[loc.barangay,loc.city,loc.province,loc.region].filter(Boolean).join(', ')};
-       }catch(e){}
-     }
-   }
-   if(navigator.geolocation){
-     const pos=await new Promise(resolve=>navigator.geolocation.getCurrentPosition(p=>resolve(p),()=>resolve(null),{timeout:3500,maximumAge:600000}));
-     if(pos)return {lat:pos.coords.latitude,lon:pos.coords.longitude,label:'Your device location'};
-   }
-   return {lat:14.5995,lon:120.9842,label:'Manila, Philippines'};
+  const saved=savedLocation();
+  if(saved&&saved.city){
+   const resolved=await geocodeSaved(saved);
+   if(resolved)return resolved;
+  }
+  if(navigator.geolocation){
+   const pos=await new Promise(resolve=>navigator.geolocation.getCurrentPosition(
+    p=>resolve(p),()=>resolve(null),{timeout:4500,maximumAge:600000,enableHighAccuracy:false}
+   ));
+   if(pos)return {lat:pos.coords.latitude,lon:pos.coords.longitude,label:'Your device location'};
+  }
+  return {lat:14.5995,lon:120.9842,label:'Manila, Philippines'};
  }
  function dateLabel(value, options){
-   try{return new Intl.DateTimeFormat(undefined,options).format(new Date(value));}catch(e){return value||''}
+  try{return new Intl.DateTimeFormat('en-PH',options).format(new Date(value));}catch(e){return value||''}
  }
  function renderHourly(data){
-   const target=$('savelyHourlyForecast');if(!target)return;
-   const h=data.hourly||{}, times=h.time||[], now=Date.now();
-   let indices=times.map((t,i)=>({t,i})).filter(x=>new Date(x.t).getTime()>=now-3600000).slice(0,5);
-   if(!indices.length)indices=times.map((t,i)=>({t,i})).slice(0,5);
-   if(!indices.length){target.innerHTML='<p class="panel-sub">Hourly forecast is unavailable right now.</p>';return;}
-   target.innerHTML='<div class="savely-hourly-cards">'+indices.map(({t,i},cardIndex)=>{
-     const [icon,label]=weather(h.weather_code?.[i]);
-     const temp=Number.isFinite(h.temperature_2m?.[i])?Math.round(h.temperature_2m[i])+'°C':'—';
-     const rain=Number.isFinite(h.precipitation_probability?.[i])?Math.round(h.precipitation_probability[i])+'%':'—';
-     const wind=Number.isFinite(h.wind_speed_10m?.[i])?Math.round(h.wind_speed_10m[i])+' km/h':'—';
-     const current=cardIndex===0;
-     const timeText=current?'NOW':dateLabel(t,{weekday:'short',hour:'numeric'});
-     return '<article class="savely-hour-card'+(current?' is-current':'')+'"><div class="savely-hour-time">'+timeText+(current?'<span class="savely-current-badge">CURRENT</span>':'')+'</div><div class="savely-hour-icon">'+icon+'</div><div class="savely-hour-temp">'+temp+'</div><div class="savely-hour-condition">'+label+'</div><div class="savely-hour-meta"><span>Rain chance</span><strong>'+rain+'</strong></div><div class="savely-hour-meta"><span>Wind</span><strong>'+wind+'</strong></div></article>';
-   }).join('')+'</div>';
+  const target=$('savelyHourlyForecast');if(!target)return;
+  const h=data.hourly||{},times=h.time||[],now=Date.now();
+  let indices=times.map((t,i)=>({t,i})).filter(x=>new Date(x.t).getTime()>=now-3600000).slice(0,5);
+  if(!indices.length)indices=times.map((t,i)=>({t,i})).slice(0,5);
+  if(!indices.length){target.innerHTML='<p class="panel-sub">Hourly forecast is unavailable right now.</p>';return;}
+  target.innerHTML='<div class="savely-hourly-cards">'+indices.map(({t,i},cardIndex)=>{
+   const [icon,label]=weather(h.weather_code?.[i]);
+   const temp=Number.isFinite(h.temperature_2m?.[i])?Math.round(h.temperature_2m[i])+'°C':'—';
+   const rain=Number.isFinite(h.precipitation_probability?.[i])?Math.round(h.precipitation_probability[i])+'%':'—';
+   const wind=Number.isFinite(h.wind_speed_10m?.[i])?Math.round(h.wind_speed_10m[i])+' km/h':'—';
+   const current=cardIndex===0,timeText=current?'NOW':dateLabel(t,{weekday:'short',hour:'numeric'});
+   return '<article class="savely-hour-card'+(current?' is-current':'')+'"><div class="savely-hour-time">'+timeText+(current?'<span class="savely-current-badge">CURRENT</span>':'')+'</div><div class="savely-hour-icon">'+icon+'</div><div class="savely-hour-temp">'+temp+'</div><div class="savely-hour-condition">'+label+'</div><div class="savely-hour-meta"><span>Rain chance</span><strong>'+rain+'</strong></div><div class="savely-hour-meta"><span>Wind</span><strong>'+wind+'</strong></div></article>';
+  }).join('')+'</div>';
  }
  function renderDaily(data){
-   const target=$('savelyDailyForecast');if(!target)return;
-   const d=data.daily||{}, times=d.time||[];
-   if(!times.length){target.innerHTML='<p class="panel-sub">Daily forecast is unavailable right now.</p>';return;}
-   target.innerHTML='<div style="display:grid;gap:9px">'+times.slice(0,7).map((t,i)=>{
-     const [icon,label]=weather(d.weather_code?.[i]);
-     const max=Number.isFinite(d.temperature_2m_max?.[i])?Math.round(d.temperature_2m_max[i])+'°':'—';
-     const min=Number.isFinite(d.temperature_2m_min?.[i])?Math.round(d.temperature_2m_min[i])+'°':'—';
-     const rain=Number.isFinite(d.precipitation_probability_max?.[i])?Math.round(d.precipitation_probability_max[i])+'%':'—';
-     const sunrise=d.sunrise?.[i]?dateLabel(d.sunrise[i],{hour:'numeric',minute:'2-digit'}):'—';
-     const sunset=d.sunset?.[i]?dateLabel(d.sunset[i],{hour:'numeric',minute:'2-digit'}):'—';
-     return '<div style="display:grid;grid-template-columns:minmax(100px,1.2fr) 48px minmax(90px,1fr) minmax(105px,1fr) minmax(120px,1fr);align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;padding:12px"><div><strong>'+dateLabel(t,{weekday:'short',month:'short',day:'numeric'})+'</strong></div><div style="font-size:25px">'+icon+'</div><div><div style="font-weight:750">'+max+' / '+min+'</div><div class="panel-sub">High / Low</div></div><div><div>'+label+'</div><div class="panel-sub">Rain chance: '+rain+'</div></div><div class="panel-sub">☀️ '+sunrise+' · 🌇 '+sunset+'</div></div>';
-   }).join('')+'</div>';
+  const target=$('savelyDailyForecast');if(!target)return;
+  const d=data.daily||{},times=d.time||[];
+  if(!times.length){target.innerHTML='<p class="panel-sub">Daily forecast is unavailable right now.</p>';return;}
+  target.innerHTML='<div style="display:grid;gap:9px">'+times.slice(0,7).map((t,i)=>{
+   const [icon,label]=weather(d.weather_code?.[i]);
+   const max=Number.isFinite(d.temperature_2m_max?.[i])?Math.round(d.temperature_2m_max[i])+'°':'—';
+   const min=Number.isFinite(d.temperature_2m_min?.[i])?Math.round(d.temperature_2m_min[i])+'°':'—';
+   const rain=Number.isFinite(d.precipitation_probability_max?.[i])?Math.round(d.precipitation_probability_max[i])+'%':'—';
+   const sunrise=d.sunrise?.[i]?dateLabel(d.sunrise[i],{hour:'numeric',minute:'2-digit'}):'—';
+   const sunset=d.sunset?.[i]?dateLabel(d.sunset[i],{hour:'numeric',minute:'2-digit'}):'—';
+   return '<div class="savely-daily-row"><div><strong>'+dateLabel(t,{weekday:'short',month:'short',day:'numeric'})+'</strong></div><div class="savely-daily-icon">'+icon+'</div><div><div class="savely-daily-temp">'+max+' / '+min+'</div><div class="panel-sub">High / Low</div></div><div><div>'+label+'</div><div class="panel-sub">Rain chance: '+rain+'</div></div><div class="panel-sub">☀️ '+sunrise+' · 🌇 '+sunset+'</div></div>';
+  }).join('')+'</div>';
  }
  window.showSavelyForecastTab=function(tab){
-   activeTab=tab==='daily'?'daily':'hourly';
-   const hourly=$('savelyHourlyForecast'),daily=$('savelyDailyForecast'),hBtn=$('savelyHourlyTab'),dBtn=$('savelyDailyTab');
-   if(hourly)hourly.style.display=activeTab==='hourly'?'block':'none';
-   if(daily)daily.style.display=activeTab==='daily'?'block':'none';
-   if(hBtn){hBtn.className=activeTab==='hourly'?'btn btn-primary':'btn btn-secondary';}
-   if(dBtn){dBtn.className=activeTab==='daily'?'btn btn-primary':'btn btn-secondary';}
+  activeTab=tab==='daily'?'daily':'hourly';
+  const hourly=$('savelyHourlyForecast'),daily=$('savelyDailyForecast'),hBtn=$('savelyHourlyTab'),dBtn=$('savelyDailyTab');
+  if(hourly)hourly.style.display=activeTab==='hourly'?'block':'none';
+  if(daily)daily.style.display=activeTab==='daily'?'block':'none';
+  if(hBtn)hBtn.className=activeTab==='hourly'?'btn btn-primary':'btn btn-secondary';
+  if(dBtn)dBtn.className=activeTab==='daily'?'btn btn-primary':'btn btn-secondary';
  };
+ async function requestForecast(lat,lon,simplified){
+  const params=new URLSearchParams({
+   latitude:String(lat),longitude:String(lon),forecast_days:'7',timezone:'Asia/Manila'
+  });
+  params.set('hourly',simplified?'temperature_2m,weather_code,wind_speed_10m':'temperature_2m,relative_humidity_2m,precipitation_probability,weather_code,wind_speed_10m');
+  params.set('daily',simplified?'weather_code,temperature_2m_max,temperature_2m_min':'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset');
+  const data=await fetchJson('https://api.open-meteo.com/v1/forecast?'+params.toString(),15000);
+  if(!data.hourly||!Array.isArray(data.hourly.time)||!data.hourly.time.length||!data.daily||!Array.isArray(data.daily.time)||!data.daily.time.length){
+   throw new Error('The weather service returned incomplete hourly/daily data.');
+  }
+  return data;
+ }
  window.loadSavelyForecast=async function(force){
-   const loading=$('savelyForecastLoading');
-   if(loading){loading.style.display='block';loading.textContent='Loading weather forecast…';}
-   if(!force&&forecastCache){renderHourly(forecastCache);renderDaily(forecastCache);if(loading)loading.style.display='none';window.showSavelyForecastTab(activeTab);return;}
-   try{
-     const loc=await resolveCoordinates();
-     const place=$('savelySatellitePlace');if(place)place.textContent='Hourly & daily forecast · '+loc.label;
-     const url='https://api.open-meteo.com/v1/forecast?latitude='+encodeURIComponent(loc.lat)+'&longitude='+encodeURIComponent(loc.lon)+'&hourly=temperature_2m,relative_humidity_2m,precipitation_probability,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&forecast_days=7&timezone=auto';
-     const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error('Forecast request failed');
-     const data=await r.json();if(!data.hourly||!data.daily)throw new Error('Forecast data unavailable');
-     forecastCache=data;renderHourly(data);renderDaily(data);
-     if(loading)loading.style.display='none';
-     window.showSavelyForecastTab(activeTab);
-   }catch(e){
-     if(loading){loading.style.display='block';loading.textContent='Could not load the forecast. Check your internet connection and try Refresh forecast.';}
+  const loading=$('savelyForecastLoading');
+  if(loading){loading.style.display='block';loading.textContent='Loading weather forecast…';}
+  if(loadingRequest)return;
+  if(!force&&forecastCache){
+   renderHourly(forecastCache);renderDaily(forecastCache);
+   if(loading)loading.style.display='none';
+   window.showSavelyForecastTab(activeTab);return;
+  }
+  loadingRequest=true;
+  try{
+   const loc=await resolveCoordinates();
+   const place=$('savelySatellitePlace');if(place)place.textContent='Hourly & daily forecast · '+loc.label;
+   let data;
+   try{data=await requestForecast(loc.lat,loc.lon,false);}
+   catch(fullError){data=await requestForecast(loc.lat,loc.lon,true);}
+   forecastCache=data;
+   renderHourly(data);renderDaily(data);
+   if(loading)loading.style.display='none';
+   window.showSavelyForecastTab(activeTab);
+  }catch(error){
+   if(loading){
+    loading.style.display='block';
+    const detail=error&&error.name==='AbortError'?'The weather service timed out.':(error&&error.message?error.message:'Unknown weather error.');
+    loading.textContent='Could not load forecast: '+detail+' Try Refresh forecast.';
    }
+  }finally{loadingRequest=false;}
  };
  window.openSavelySatellite=function(){
-   const back=$('savelySatelliteBackdrop');if(!back)return;
-   back.style.display='flex';window.showSavelyForecastTab('hourly');window.loadSavelyForecast(false);
+  const back=$('savelySatelliteBackdrop');if(!back)return;
+  back.style.display='flex';window.showSavelyForecastTab('hourly');window.loadSavelyForecast(false);
  };
  window.closeSavelySatellite=function(){const b=$('savelySatelliteBackdrop');if(b)b.style.display='none';};
  document.addEventListener('DOMContentLoaded',function(){
-   const w=$('savelyWeather');
-   if(w){
-     w.addEventListener('click',function(){window.openSavelySatellite()});
-     w.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();window.openSavelySatellite()}});
-   }
+  const w=$('savelyWeather');
+  if(w){
+   w.addEventListener('click',function(){window.openSavelySatellite()});
+   w.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();window.openSavelySatellite()}});
+  }
  });
- window.addEventListener('keydown',function(e){if(e.key==='Escape'){const b=$('savelySatelliteBackdrop');if(b&&b.style.display==='flex')window.closeSavelySatellite()}});
+ window.addEventListener('keydown',function(e){if(e.key==='Escape'){const b=$('savelySatelliteBackdrop');if(b&&b.style.display==='flex')window.closeSavelySatellite();}});
 })();
 </script>
 
@@ -9180,9 +9314,17 @@ body.dark-theme .app > .sidebar .nav button.active {
     updateDisplay();
   }
   function calculate(){
-    const full=expression
-      ? expression + (/[+\-*/]$/.test(expression)?'':currentEntry)
-      : currentEntry;
+    // Ignore an unfinished trailing operator instead of turning a normal
+    // intermediate expression (for example, 44 ×) into an Error screen.
+    if(expression && /[+\-*/]$/.test(expression)){
+      const lastOperand=expression.slice(0,-1).match(/(?:^|[+\-*/])(-?(?:\d+\.?\d*|\.\d+))$/);
+      currentEntry=lastOperand?lastOperand[1]:'0';
+      expression='';
+      justEvaluated=true;
+      updateDisplay();
+      return;
+    }
+    const full=expression ? expression+currentEntry : currentEntry;
     try{
       const result=evaluate(full);
       currentEntry=String(Number(result.toPrecision(12)));
