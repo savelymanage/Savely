@@ -3466,6 +3466,38 @@ button.link-btn{
 }
 </style>
 
+
+<style id="savely-cctv-quezon-city-only-v1">
+/* Only Quezon City currently has a listed public camera source. */
+.savely-public-cctv-view{grid-template-columns:190px minmax(0,1fr)}
+.savely-cctv-city-search,.savely-cctv-mobile-city{display:none!important}
+.savely-cctv-city-list{display:flex;flex-direction:column;gap:5px;overflow:visible;padding-top:4px}
+.savely-cctv-city-btn{width:100%;min-height:42px}
+.savely-cctv-city-btn small{font-size:8px;color:#07815b;letter-spacing:.04em}
+.savely-cctv-featured-camera{border:1px solid #cfe7da;border-radius:14px;background:linear-gradient(145deg,#f5fbf7,#fff);padding:14px;margin:0 0 18px}
+.savely-cctv-featured-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px}
+.savely-cctv-featured-head h4{font-size:14px;font-weight:900;color:#17382b;margin:4px 0 3px}
+.savely-cctv-featured-head p{font-size:10px;color:#819188;margin:0}
+.savely-cctv-webcam-badge{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;padding:7px 10px;border-radius:99px;background:#e9f7ef;color:#087f5b;font-size:9px;font-weight:850}
+.savely-cctv-webcam-badge i{width:7px;height:7px;border-radius:50%;background:#15a36f;display:inline-block}
+.savely-cctv-video-frame{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:11px;background:#14231d}
+.savely-cctv-video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.savely-cctv-featured-foot{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-top:9px}
+.savely-cctv-featured-foot span{font-size:9px;line-height:1.5;color:#7e8e85}
+.savely-cctv-featured-foot a{flex:0 0 auto;color:#087f5b;font-size:9px;font-weight:850;text-decoration:none}
+.savely-cctv-featured-foot a:hover{text-decoration:underline}
+@media(max-width:650px){
+ .savely-public-cctv-view{display:flex;flex-direction:column}
+ .savely-cctv-city-sidebar{padding:10px 12px}
+ .savely-cctv-sidebar-heading{padding:0 3px 7px}
+ .savely-cctv-sidebar-heading small{display:block}
+ .savely-cctv-city-list{flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:0}
+ .savely-cctv-city-btn{width:auto;flex:0 0 auto;min-height:34px;padding:0 12px}
+ .savely-cctv-main{padding:13px}
+ .savely-cctv-featured-foot{flex-direction:column}
+}
+</style>
+
 </head>
 <body>
 
@@ -3614,17 +3646,25 @@ button.link-btn{
        </div>
        <div id="savelyPublicCCTVView" class="savely-public-cctv-view" role="region" aria-label="Metro Manila public CCTV directory" hidden>
         <aside class="savely-cctv-city-sidebar">
-         <div class="savely-cctv-sidebar-heading"><span>METRO MANILA</span><strong>Choose a city</strong><small>16 cities · 1 municipality</small></div>
-         <label class="savely-cctv-city-search"><span>⌕</span><input id="savelyCCTVCitySearch" type="search" placeholder="Find a city…" autocomplete="off"></label>
-         <nav id="savelyCCTVCityList" class="savely-cctv-city-list" aria-label="Metro Manila cities"></nav>
-         <label class="savely-cctv-mobile-city"><span>Choose city</span><select id="savelyCCTVMobileCity" aria-label="Choose a Metro Manila city"></select></label>
+         <div class="savely-cctv-sidebar-heading"><span>METRO MANILA</span><strong>Choose a city</strong><small>1 city currently available</small></div>
+                  <nav id="savelyCCTVCityList" class="savely-cctv-city-list" aria-label="Available CCTV city"></nav>
         </aside>
         <div class="savely-cctv-main">
          <div class="savely-cctv-main-head">
           <div><span class="savely-cctv-eyebrow">PUBLIC CAMERA DIRECTORY · NCR</span><h3 id="savelyCCTVSelectedCity">Quezon City</h3><p id="savelyCCTVSelectedCityDescription">Browse major roads and intersections in this area.</p></div>
           <span class="savely-cctv-coverage-pill"><i></i> Road directory</span>
          </div>
-         <div class="savely-cctv-notice"><strong>Feed availability is not yet verified.</strong><span>Road names below are location references, not confirmation that a public CCTV camera is installed there. Savely will only label a camera “Live” when an authorized public feed and its source are verified.</span></div>
+         <div class="savely-cctv-notice"><strong>Quezon City is the only city currently listed.</strong><span>The featured sky camera is a public panoramic webcam. The road entries below are location references only; they are not confirmed traffic-camera installations or live feeds.</span></div>
+         <section class="savely-cctv-featured-camera" aria-labelledby="savelyCCTVFeaturedTitle">
+          <div class="savely-cctv-featured-head">
+           <div><span class="savely-cctv-eyebrow">AVAILABLE PUBLIC WEBCAM</span><h4 id="savelyCCTVFeaturedTitle">Quezon City Live Sky Camera</h4><p>Quezon City, Metro Manila · Public panoramic view</p></div>
+           <span class="savely-cctv-webcam-badge"><i></i> Video player</span>
+          </div>
+          <div class="savely-cctv-video-frame">
+           <iframe src="https://www.youtube.com/embed/SIdi3pCdPvA" title="Quezon City Live Sky Camera — Vision-Environnement" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          </div>
+          <div class="savely-cctv-featured-foot"><span>This is a public sky/panoramic webcam, not a road-facing traffic CCTV. Playback depends on the publisher's stream being active and allowing embedding.</span><a href="https://www.vision-environnement.com/en/webcam/philippines/grand-manille/19619-quezon-city-live-sky-camera/" target="_blank" rel="noopener noreferrer">Original camera source ↗</a></div>
+         </section>
          <div class="savely-cctv-road-toolbar"><div><strong>Roads & intersections</strong><small id="savelyCCTVRoadCount">0 road references</small></div><label><span>⌕</span><input id="savelyCCTVRoadSearch" type="search" placeholder="Search road or area…" autocomplete="off"></label></div>
          <div id="savelyCCTVRoadGrid" class="savely-cctv-road-grid"></div>
          <div class="savely-cctv-sources">
@@ -12189,116 +12229,6 @@ try{localStorage.removeItem(['savely','TomTomTrafficKey'].join(''));}catch(e){}
    ['Quezon Avenue','Welcome Rotonda · Timog Avenue · EDSA junction'],
    ['Aurora Boulevard','Cubao · Anonas · Katipunan junction'],
    ['Katipunan Avenue','Ateneo · UP Town Center · Katipunan–Aurora']
-  ]},
-  {name:'Manila',type:'City',roads:[
-   ['Roxas Boulevard','Luneta · United Nations Avenue · Quirino Grandstand'],
-   ['Taft Avenue','UN Avenue · Pedro Gil · Vito Cruz'],
-   ['España Boulevard','UST · Lacson Avenue · Welcome Rotonda'],
-   ['Claro M. Recto Avenue','Divisoria · Avenida · Legarda'],
-   ['Quirino Avenue','Paco · Malate · Osmeña Highway junction']
-  ]},
-  {name:'Makati',type:'City',roads:[
-   ['Ayala Avenue','Ayala Triangle · Makati Avenue · EDSA'],
-   ['EDSA','Guadix · Buendia · Ayala Avenue junction'],
-   ['Gil Puyat Avenue','Ayala Avenue · Chino Roces · Osmeña Highway'],
-   ['Chino Roces Avenue','Makati Cinema Square · Don Bosco · Buendia'],
-   ['Kalayaan Avenue','Rockwell · Makati Avenue · JP Rizal']
-  ]},
-  {name:'Taguig',type:'City',roads:[
-   ['C-5 Road','Bagong Ilog · Market! Market! · BCDA'],
-   ['Lawton Avenue','McKinley Hill · Gate 3 · C-5 junction'],
-   ['East Service Road','Lower Bicutan · FTI · Sucat boundary'],
-   ['Carlos P. Garcia Avenue','Ususan · Diego Silang · C-5 junction'],
-   ['Gen. Luna Street','Poblacion · Taguig City Hall area']
-  ]},
-  {name:'Pasig',type:'City',roads:[
-   ['Ortigas Avenue','Meralco Avenue · Rosario · C-5 junction'],
-   ['C-5 Road','Bagong Ilog · Ugong · Ortigas junction'],
-   ['Shaw Boulevard','Kapitolyo · Pasig Rotonda · EDSA boundary'],
-   ['Dr. Sixto Antonio Avenue','Kapitolyo · Maybunga · Manggahan'],
-   ['Mercedes Avenue','Pasig Palengke · Pasig Boulevard']
-  ]},
-  {name:'Mandaluyong',type:'City',roads:[
-   ['EDSA','Shaw MRT · Boni MRT · Ortigas boundary'],
-   ['Shaw Boulevard','EDSA · Greenfield · Pioneer Street'],
-   ['Boni Avenue','EDSA · Barangka · San Juan boundary'],
-   ['Pioneer Street','EDSA · Reliance · Sheridan'],
-   ['San Francisco Street','Maysilo Circle · Mandaluyong City Hall area']
-  ]},
-  {name:'Pasay',type:'City',roads:[
-   ['EDSA','Taft Avenue · MOA area · Roxas Boulevard junction'],
-   ['Roxas Boulevard','Libertad · Buendia · MOA access'],
-   ['Macapagal Boulevard','DFA · Aseana · MOA'],
-   ['Taft Avenue','Libertad · EDSA · Gil Puyat'],
-   ['Andrews Avenue','NAIA Terminal 3 access · Domestic Road']
-  ]},
-  {name:'Parañaque',type:'City',roads:[
-   ['Dr. A. Santos Avenue (Sucat Road)','SM City Sucat · Sucat Interchange · Better Living'],
-   ['Roxas Boulevard','Baclaran · Coastal Road · Parañaque boundary'],
-   ['C-5 Extension','Merville · Sucat · Coastal Road junction'],
-   ['Quirino Avenue','Baclaran · La Huerta · San Dionisio'],
-   ['Doña Soledad Avenue','Better Living · Bicutan · East Service Road']
-  ]},
-  {name:'Muntinlupa',type:'City',roads:[
-   ['National Road (Manila South Road)','Alabang · Tunasan · Poblacion'],
-   ['Alabang–Zapote Road','Alabang Town Center · Pamplona · Zapote boundary'],
-   ['Commerce Avenue','Filinvest City · Alabang Business District'],
-   ['Daang Hari Road','Alabang · Ayala Alabang · Las Piñas boundary'],
-   ['South Luzon Expressway','Alabang Exit · Filinvest Exit · Susana Heights']
-  ]},
-  {name:'Las Piñas',type:'City',roads:[
-   ['Alabang–Zapote Road','SM Southmall · Pamplona · Zapote'],
-   ['Marcos Alvarez Avenue','Talon · Almanza · Pilar Village area'],
-   ['C.V. Starr Avenue','Pulang Lupa · Las Piñas City Hall area'],
-   ['Diego Cera Avenue','Bacoor boundary · Pulang Lupa · Zapote'],
-   ['National Road','Pulang Lupa · Pamplona · Zapote']
-  ]},
-  {name:'Caloocan',type:'City',roads:[
-   ['EDSA','Monumento · Bagong Barrio · Balintawak boundary'],
-   ['Rizal Avenue Extension','Monumento · 5th Avenue · 10th Avenue'],
-   ['Samson Road','Monumento · Caloocan City Hall area'],
-   ['A. Bonifacio Avenue','Monumento · Grace Park · Balintawak'],
-   ['MacArthur Highway','Camarin · Deparo · northern Caloocan corridor']
-  ]},
-  {name:'Marikina',type:'City',roads:[
-   ['Marcos Highway','Santolan · Riverbanks · Marikina Sports Center'],
-   ['A. Bonifacio Avenue','Marikina Bayan · Marikina Bridge · Gil Fernando'],
-   ['J.P. Rizal Street','Marikina Bayan · Concepcion · Tumana'],
-   ['Gil Fernando Avenue','Marcos Highway · Marikina Heights'],
-   ['Shoe Avenue','Marikina Sports Center · Marikina Shoe Museum area']
-  ]},
-  {name:'Malabon',type:'City',roads:[
-   ['MacArthur Highway','Potrero · Tinajeros · Malabon–Valenzuela boundary'],
-   ['Governor Pascual Avenue','Concepcion · Tonsuya · Malabon City Hall area'],
-   ['Letre Road','Longos · Tonsuya · Malabon–Navotas boundary'],
-   ['C-4 Road','Navotas boundary · Malabon–Caloocan corridor'],
-   ['Rizal Avenue Extension','Acacia · Potrero · Monumento direction']
-  ]},
-  {name:'Navotas',type:'City',roads:[
-   ['C-4 Road','North Bay Boulevard · Navotas Fish Port access'],
-   ['North Bay Boulevard','Navotas Fish Port · Navotas City Hall area'],
-   ['M. Naval Street','San Jose · Sipac-Almacen · Bagumbayan North'],
-   ['Circumferential Road','Fish Port access · North Bay Boulevard junction']
-  ]},
-  {name:'Valenzuela',type:'City',roads:[
-   ['MacArthur Highway','Karuhatan · Malinta · Marulas'],
-   ['Maysan Road','Maysan · Malinta · MacArthur Highway junction'],
-   ['Paso de Blas Road','Paso de Blas · NLEX access'],
-   ['T. Santiago Street','Gen. T. de Leon · Valenzuela City Hall area'],
-   ['NLEX / Mindanao Avenue Link','Valenzuela toll plaza · Mindanao Avenue connection']
-  ]},
-  {name:'San Juan',type:'City',roads:[
-   ['N. Domingo Street','Pinaglabanan · Santolan Road · Addition Hills edge'],
-   ['Ortigas Avenue','Greenhills · Santolan Town Plaza · EDSA junction'],
-   ['Wilson Street','Greenhills Shopping Center · Club Filipino area'],
-   ['Santolan Road','Pinaglabanan · N. Domingo · Santolan boundary'],
-   ['F. Blumentritt Street','San Juan City Hall area · Agora Market vicinity']
-  ]},
-  {name:'Pateros',type:'Municipality',roads:[
-   ['B. Morcilla Street','Pateros Municipal Hall · Pateros Public Market'],
-   ['M. Almeda Street','Pateros town center · Taguig boundary'],
-   ['Pateros–Taguig Road','Pateros proper · Taguig connection'],
-   ['A. Luna Street','Pateros town center · residential/commercial corridor']
   ]}
  ];
  let selectedCity='Quezon City';
@@ -12308,12 +12238,9 @@ try{localStorage.removeItem(['savely','TomTomTrafficKey'].join(''));}catch(e){}
   return 'https://www.waze.com/ul?q='+encodeURIComponent(road+', '+city+', Metro Manila, Philippines')+'&navigate=no';
  }
  function renderCityList(){
-  const root=$('savelyCCTVCityList'),mobile=$('savelyCCTVMobileCity');
-  if(!root||!mobile)return;
-  const query=String($('savelyCCTVCitySearch')?.value||'').trim().toLowerCase();
-  const filtered=cities.filter(city=>city.name.toLowerCase().includes(query));
-  root.innerHTML=filtered.length?filtered.map(city=>`<button type="button" class="savely-cctv-city-btn${city.name===selectedCity?' active':''}" data-city="${safe(city.name)}" aria-current="${city.name===selectedCity?'true':'false'}"><span>${safe(city.name)}</span><small>${city.type==='Municipality'?'MUN.':'CITY'}</small></button>`).join(''):'<div class="savely-cctv-no-results">No city found.</div>';
-  mobile.innerHTML=cities.map(city=>`<option value="${safe(city.name)}"${city.name===selectedCity?' selected':''}>${safe(city.name)}${city.type==='Municipality'?' (Municipality)':''}</option>`).join('');
+  const root=$('savelyCCTVCityList');
+  if(!root)return;
+  root.innerHTML=cities.map(city=>`<button type="button" class="savely-cctv-city-btn${city.name===selectedCity?' active':''}" data-city="${safe(city.name)}" aria-current="${city.name===selectedCity?'true':'false'}"><span>${safe(city.name)}</span><small>AVAILABLE</small></button>`).join('');
  }
  function renderRoads(){
   const city=cities.find(item=>item.name===selectedCity)||cities[0];
@@ -12344,11 +12271,7 @@ try{localStorage.removeItem(['savely','TomTomTrafficKey'].join(''));}catch(e){}
   if(button)chooseCity(button.dataset.city);
  });
  document.addEventListener('input',event=>{
-  if(event.target&&event.target.id==='savelyCCTVCitySearch')renderCityList();
   if(event.target&&event.target.id==='savelyCCTVRoadSearch')renderRoads();
- });
- document.addEventListener('change',event=>{
-  if(event.target&&event.target.id==='savelyCCTVMobileCity')chooseCity(event.target.value);
  });
  window.setSavelyLiveMapMode=function(mode){
   const next=['traffic','cctv'].includes(mode)?mode:'location';
@@ -12368,7 +12291,7 @@ try{localStorage.removeItem(['savely','TomTomTrafficKey'].join(''));}catch(e){}
   if(gpsFooter)gpsFooter.hidden=!location;
   if(trafficNote)trafficNote.hidden=!traffic;
   if(title)title.textContent=location?'Live movement map':traffic?'Live traffic':'Metro Manila Public CCTV';
-  if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Real-time traffic information in a separate Waze Live Map.':'Browse road-specific public camera sources by Metro Manila city.';
+  if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Real-time traffic information in a separate Waze Live Map.':'View the available Quezon City public webcam and browse road references.';
   document.querySelectorAll('[data-savely-map-mode]').forEach(button=>{
    const active=button.dataset.savelyMapMode===next;
    button.classList.toggle('active',active);button.setAttribute('aria-selected',active?'true':'false');
