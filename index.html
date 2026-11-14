@@ -2374,6 +2374,84 @@ button.link-btn{
 }
 </style>
 
+
+<style id="savely-debt-provider-picker-ui-v1">
+.savely-debt-provider-section{
+ padding:16px!important;
+ border:1px solid #e4ece8!important;
+ border-radius:15px!important;
+ background:linear-gradient(180deg,#fbfefc 0%,#f7fbf9 100%)!important;
+}
+.savely-debt-provider-heading{
+ display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px;
+}
+.savely-debt-provider-heading label{
+ display:block;margin:0!important;font-size:12px!important;font-weight:800!important;color:#33483d!important;
+}
+.savely-debt-provider-heading small{
+ display:block;margin-top:4px;color:#7a8a81;font-size:10px;line-height:1.45;
+}
+.savely-debt-provider-tabs{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 12px;
+}
+.savely-debt-provider-tabs button{
+ width:100%!important;min-width:0!important;min-height:40px!important;height:40px!important;
+ padding:0 9px!important;border:1px solid #e0e9e4!important;border-radius:10px!important;
+ background:#fff!important;color:#718078!important;font-size:11px!important;font-weight:800!important;
+ white-space:normal!important;line-height:1.25!important;text-align:center;
+}
+.savely-debt-provider-tabs button.active{
+ background:#168765!important;border-color:#168765!important;color:#fff!important;
+ box-shadow:0 4px 11px rgba(22,135,101,.15)!important;
+}
+.savely-debt-provider-grid{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;
+ max-height:220px;overflow-y:auto;overflow-x:hidden;padding:2px;margin-bottom:9px;
+}
+.savely-debt-provider-option{
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ height:44px!important;min-height:44px!important;padding:5px 9px!important;
+ border:1px solid #e2eaf0!important;border-radius:10px!important;background:#fff!important;
+ color:#253346!important;text-align:left!important;white-space:normal!important;
+ font-size:11px!important;font-weight:750!important;overflow:hidden;
+ transition:border-color .15s ease,background .15s ease,box-shadow .15s ease;
+}
+.savely-debt-provider-option:hover{
+ border-color:#9ed8bd!important;background:#f5fcf8!important;
+}
+.savely-debt-provider-option.selected{
+ border-color:#168765!important;background:#effaf4!important;
+ box-shadow:0 0 0 2px rgba(22,135,101,.09)!important;
+}
+.savely-debt-provider-logo{
+ display:inline-flex;align-items:center;justify-content:center;flex:0 0 30px;
+ width:30px;height:30px;border-radius:9px;background:var(--provider-color,#758097);
+ color:#fff;font-size:9px;font-weight:900;letter-spacing:-.3px;
+}
+.savely-debt-provider-name{
+ min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.savely-debt-provider-check{
+ flex:0 0 12px;width:12px;color:#168765;font-size:12px;font-weight:900;text-align:center;
+}
+.savely-debt-provider-help{
+ color:#7a8796;font-size:10px;line-height:1.45;
+}
+.savely-debt-form-dialog #debtKind{
+ min-height:43px!important;border-radius:10px!important;
+}
+@media(max-width:760px){
+ .savely-debt-provider-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .savely-debt-provider-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-height:210px}
+}
+@media(max-width:420px){
+ .savely-debt-provider-section{padding:12px!important}
+ .savely-debt-provider-option{gap:6px!important;padding:5px 7px!important;font-size:10px!important}
+ .savely-debt-provider-logo{flex-basis:27px;width:27px;height:27px}
+}
+</style>
+
 </head>
 <body>
 
@@ -3802,6 +3880,122 @@ function closeDebtSideChooser(){
  if(modal._escapeHandler)document.removeEventListener('keydown',modal._escapeHandler);
  modal.remove();
 }
+
+const SAVELY_DEBT_PROVIDER_GROUPS={
+ 'Banks':[
+  {name:'BDO',short:'BDO',color:'#0757a6',kind:'Bank / salary loan'},
+  {name:'BPI',short:'BPI',color:'#b21f2d',kind:'Bank / salary loan'},
+  {name:'Metrobank',short:'MB',color:'#0067a5',kind:'Bank / salary loan'},
+  {name:'UnionBank',short:'UB',color:'#e1262f',kind:'Bank / salary loan'},
+  {name:'RCBC',short:'RC',color:'#7b2b83',kind:'Bank / salary loan'},
+  {name:'PNB',short:'PNB',color:'#16478e',kind:'Bank / salary loan'},
+  {name:'Landbank',short:'LB',color:'#16834a',kind:'Bank / salary loan'},
+  {name:'Security Bank',short:'SB',color:'#c21f32',kind:'Bank / salary loan'},
+  {name:'China Bank',short:'CBC',color:'#b8202e',kind:'Bank / salary loan'},
+  {name:'EastWest Bank',short:'EW',color:'#007b83',kind:'Bank / salary loan'},
+  {name:'PSBank',short:'PS',color:'#0097d7',kind:'Bank / salary loan'},
+  {name:'AUB',short:'AUB',color:'#17468b',kind:'Bank / salary loan'},
+  {name:'Bank of Commerce',short:'BOC',color:'#1c7d4d',kind:'Bank / salary loan'},
+  {name:'PBCOM',short:'PB',color:'#00529b',kind:'Bank / salary loan'},
+  {name:'Philtrust Bank',short:'PTB',color:'#005c45',kind:'Bank / salary loan'},
+  {name:'BPI BanKo TODO',short:'BK',color:'#b21f2d',kind:'Bank / salary loan'},
+  {name:'Other bank',short:'+',color:'#758097',kind:'Bank / salary loan'}
+ ],
+ 'Digital Banks':[
+  {name:'GCash',short:'G',color:'#007dff',kind:'GCash GLoan / GGives'},
+  {name:'Maya',short:'M',color:'#00a878',kind:'Maya Easy Credit'},
+  {name:'GoTyme Bank',short:'GT',color:'#e45b3c',kind:'Digital bank loan'},
+  {name:'MariBank',short:'MB',color:'#f58220',kind:'Digital bank loan'},
+  {name:'CIMB Bank',short:'CIMB',color:'#7b2c91',kind:'Digital bank loan'},
+  {name:'Tonik Bank',short:'T',color:'#e65c9c',kind:'Digital bank loan'},
+  {name:'UNO Digital Bank',short:'UNO',color:'#263b8f',kind:'Digital bank loan'},
+  {name:'UnionDigital Bank',short:'UD',color:'#244d8f',kind:'Digital bank loan'},
+  {name:'OwnBank',short:'OWN',color:'#16a36a',kind:'Digital bank loan'},
+  {name:'Netbank',short:'NET',color:'#344f9c',kind:'Digital bank loan'},
+  {name:'DiskarTech',short:'DT',color:'#ef7622',kind:'Digital bank loan'},
+  {name:'Komo',short:'K',color:'#1969aa',kind:'Digital bank loan'},
+  {name:'Other digital lender',short:'+',color:'#758097',kind:'Digital bank loan'}
+ ],
+ 'E-commerce / PayLater':[
+  {name:'Shopee SPayLater',short:'S',color:'#ee4d2d',kind:'Shopee SPayLater'},
+  {name:'Lazada LazPayLater',short:'L',color:'#f04b8b',kind:'Lazada LazPayLater'},
+  {name:'Atome',short:'A',color:'#29264a',kind:'Atome'},
+  {name:'BillEase',short:'BE',color:'#6540a5',kind:'SLoan / Billease'},
+  {name:'Shopee SLoan',short:'SL',color:'#ee4d2d',kind:'SLoan / Billease'},
+  {name:'Home Credit',short:'HC',color:'#c51f36',kind:'Home Credit'},
+  {name:'Other PayLater',short:'+',color:'#758097',kind:'Other'}
+ ],
+ 'Other':[
+  {name:'SSS / Pag-IBIG',short:'SSS',color:'#087d59',kind:'SSS / Pag-IBIG loan'},
+  {name:'Tala / online lender',short:'T',color:'#7056b3',kind:'Tala / online lending app'},
+  {name:'Utility / subscription',short:'UT',color:'#64748b',kind:'Utility / subscription bill'},
+  {name:'Personal lender',short:'PL',color:'#64748b',kind:'Personal loan / money lent'},
+  {name:'Other',short:'+',color:'#758097',kind:'Other'}
+ ]
+};
+const SAVELY_DEBT_KIND_BY_GROUP={
+ 'Banks':['Bank / salary loan','Credit card'],
+ 'Digital Banks':['Digital bank loan','GCash GLoan / GGives','Maya Easy Credit','Credit card'],
+ 'E-commerce / PayLater':['Shopee SPayLater','Lazada LazPayLater','Atome','SLoan / Billease','Home Credit','Other'],
+ 'Other':['SSS / Pag-IBIG loan','Tala / online lending app','Utility / subscription bill','Personal loan / money lent','Other']
+};
+function savelyDebtProviderGroup(kind,counterparty){
+ const k=String(kind||'').toLowerCase(),c=String(counterparty||'').toLowerCase();
+ if(/shopee|spaylater|lazada|lazpaylater|atome|billease|sloan|home credit|paylater/.test(k+' '+c))return 'E-commerce / PayLater';
+ if(/gcash|maya|digital bank|gotyme|maribank|cimb|tonik|uno digital|uniondigital|ownbank|netbank|diskartech|komo/.test(k+' '+c))return 'Digital Banks';
+ if(/bank|credit card|bdo|bpi|metrobank|unionbank|rcbc|pnb|landbank|security bank|china bank|eastwest|psbank|aub|pbcom|philtrust/.test(k+' '+c))return 'Banks';
+ return 'Other';
+}
+function renderDebtProviderPicker(modal,group,selectedKind='',selectedCounterparty=''){
+ const tabs=modal.querySelectorAll('[data-debt-provider-group]');
+ const grid=modal.querySelector('#debtProviderGrid');
+ const kindSelect=modal.querySelector('#debtKind');
+ const counterpartyInput=modal.querySelector('#debtCounterparty');
+ const help=modal.querySelector('#debtProviderHelp');
+ if(!grid||!kindSelect)return;
+ const activeGroup=SAVELY_DEBT_PROVIDER_GROUPS[group]?group:'Banks';
+ tabs.forEach(tab=>tab.classList.toggle('active',tab.dataset.debtProviderGroup===activeGroup));
+ const kindOptions=SAVELY_DEBT_KIND_BY_GROUP[activeGroup]||['Other'];
+ const currentKind=kindOptions.includes(selectedKind)?selectedKind:(kindOptions.includes(kindSelect.value)?kindSelect.value:kindOptions[0]);
+ kindSelect.innerHTML=kindOptions.map(value=>`<option value="${esc(value)}">${esc(value)}</option>`).join('');
+ kindSelect.value=currentKind;
+ const providers=SAVELY_DEBT_PROVIDER_GROUPS[activeGroup]||[];
+ const normalized=String(selectedCounterparty||'').trim().toLowerCase();
+ grid.innerHTML=providers.map(provider=>{
+  const selected=normalized && (normalized===provider.name.toLowerCase() || normalized.includes(provider.name.toLowerCase()) || provider.name.toLowerCase().includes(normalized));
+  return `<button type="button" class="savely-debt-provider-option${selected?' selected':''}" data-debt-provider="${esc(provider.name)}" data-debt-kind="${esc(provider.kind)}" title="${esc(provider.name)}"><span class="savely-debt-provider-logo" style="--provider-color:${provider.color}">${esc(provider.short)}</span><span class="savely-debt-provider-name">${esc(provider.name)}</span><span class="savely-debt-provider-check">${selected?'✓':''}</span></button>`;
+ }).join('');
+ if(help)help.textContent=activeGroup==='Other'?'Choose a common debt type, or select Other and enter your own lender / platform.':'Choose a provider to fill the lender / platform field. You can still edit the name manually.';
+ grid.querySelectorAll('[data-debt-provider]').forEach(button=>button.addEventListener('click',()=>{
+  const providerName=button.dataset.debtProvider;
+  const mappedKind=button.dataset.debtKind;
+  if(counterpartyInput)counterpartyInput.value=providerName==='Other bank'||providerName==='Other digital lender'||providerName==='Other PayLater'||providerName==='Other'?'':providerName;
+  if(kindOptions.includes(mappedKind))kindSelect.value=mappedKind;
+  grid.querySelectorAll('.savely-debt-provider-option').forEach(item=>{
+   item.classList.toggle('selected',item===button);
+   const mark=item.querySelector('.savely-debt-provider-check');if(mark)mark.textContent=item===button?'✓':'';
+  });
+  if(counterpartyInput)counterpartyInput.focus({preventScroll:true});
+ }));
+ tabs.forEach(tab=>tab.onclick=()=>{
+  const next=tab.dataset.debtProviderGroup;
+  const nextKinds=SAVELY_DEBT_KIND_BY_GROUP[next]||['Other'];
+  const preserved=nextKinds.includes(kindSelect.value)?kindSelect.value:nextKinds[0];
+  renderDebtProviderPicker(modal,next,preserved,'');
+ });
+ if(counterpartyInput && !counterpartyInput.dataset.debtProviderManualBound){
+  counterpartyInput.addEventListener('input',()=>{
+   const value=counterpartyInput.value.trim().toLowerCase();
+   grid.querySelectorAll('[data-debt-provider]').forEach(button=>{
+    const selected=value && button.dataset.debtProvider.toLowerCase()===value;
+    button.classList.toggle('selected',!!selected);
+    const mark=button.querySelector('.savely-debt-provider-check');if(mark)mark.textContent=selected?'✓':'';
+   });
+  });
+  counterpartyInput.dataset.debtProviderManualBound='1';
+ }
+}
+
 function openDebtForm(id=null,defaultDate=null,directionChoice=null){
  ensureDebtReceivableLinks();
  const current=id?(data.debtRecords||[]).find(x=>String(x.id)===String(id)):null;
@@ -3814,13 +4008,24 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
  const paid=current?debtPaidAmount(current):0;
  const formTitle=current?`Edit ${isOwed?'payment':'collection'} record`:isOwed?'Add payment schedule':'Add money to collect';
  const formSubtitle=isOwed?'Track a bill, loan, or installment that you need to pay.':'Track money you lent and the payments you expect to collect.';
- const typeOptions=`<option>Shopee SPayLater</option><option>Lazada LazPayLater</option><option>Atome</option><option>GCash GLoan / GGives</option><option>Maya Easy Credit</option><option>SLoan / Billease</option><option>Home Credit</option><option>Tala / online lending app</option><option>Credit card</option><option>Bank / salary loan</option><option>SSS / Pag-IBIG loan</option><option>Utility / subscription bill</option><option>Personal loan / money lent</option><option>Other</option>`;
+ const typeOptions=`<option>Digital bank loan</option><option>Shopee SPayLater</option><option>Lazada LazPayLater</option><option>Atome</option><option>GCash GLoan / GGives</option><option>Maya Easy Credit</option><option>SLoan / Billease</option><option>Home Credit</option><option>Tala / online lending app</option><option>Credit card</option><option>Bank / salary loan</option><option>SSS / Pag-IBIG loan</option><option>Utility / subscription bill</option><option>Personal loan / money lent</option><option>Other</option>`;
  modal.innerHTML=`<div class="modal savely-debt-form-dialog" role="dialog" aria-modal="true" aria-labelledby="debtFormTitle" style="width:min(760px,100%);max-height:92vh;overflow:auto">
   <div class="panel-head savely-debt-form-header"><div><div class="savely-debt-kicker">DEBT SCHEDULE</div><h2 id="debtFormTitle">${formTitle}</h2><div class="panel-sub">${formSubtitle}</div></div><button type="button" class="btn btn-light" onclick="closeDebtForm()">✕ Close</button></div>
   <div class="savely-debt-direction-banner ${isOwed?'is-owed':'is-lent'}"><span class="savely-debt-direction-icon">${isOwed?'↗':'↙'}</span><span>${isOwed?'I OWE · PAYMENT TO MAKE':'OWED TO ME · MONEY TO COLLECT'}</span></div>
   <form id="savelyDebtForm">
    <div class="debt-form-grid">
-    ${isOwed?`<div class="field full"><label for="debtKind">Debt type</label><select id="debtKind" required>${typeOptions}</select></div>`:`<div class="field full"><label>Debt type</label><div class="savely-debt-fixed-kind"><span class="savely-debt-fixed-kind-icon">↙</span><span><strong>Personal loan / money lent</strong><small>For money you lend directly to another person.</small></span></div></div>`}
+    ${isOwed?`<div class="field full savely-debt-provider-section">
+      <div class="savely-debt-provider-heading"><div><label>Choose debt source</label><small>Select where the debt or payment comes from.</small></div></div>
+      <div class="savely-debt-provider-tabs" id="debtProviderTabs" role="group" aria-label="Debt source category">
+       <button type="button" class="active" data-debt-provider-group="Banks">Banks</button>
+       <button type="button" data-debt-provider-group="Digital Banks">Digital Banks</button>
+       <button type="button" data-debt-provider-group="E-commerce / PayLater">E-commerce / PayLater</button>
+       <button type="button" data-debt-provider-group="Other">Other</button>
+      </div>
+      <div class="savely-debt-provider-grid" id="debtProviderGrid" aria-label="Choose lender or platform"></div>
+      <div class="savely-debt-provider-help" id="debtProviderHelp">Choose a bank or platform to fill the lender / platform field. You can still edit it manually.</div>
+     </div>
+     <div class="field full"><label for="debtKind">Debt product / type</label><select id="debtKind" required>${typeOptions}</select></div>`:`<div class="field full"><label>Debt type</label><div class="savely-debt-fixed-kind"><span class="savely-debt-fixed-kind-icon">↙</span><span><strong>Personal loan / money lent</strong><small>For money you lend directly to another person.</small></span></div></div>`}
     <div class="field full"><label for="debtTitle">${isOwed?'Bill / payment name':'Loan / collection name'}</label><input id="debtTitle" maxlength="90" required placeholder="${isOwed?'e.g. Shopee SPayLater · November bill':'e.g. Money lent to Juan'}"></div>
     <div class="field full"><label for="debtCounterparty" id="debtCounterpartyLabel">${isOwed?'Lender / platform':'Borrower / person who owes you'}</label><input id="debtCounterparty" maxlength="70" placeholder="${isOwed?'e.g. Shopee, Lazada, GCash, or bank':'e.g. Friend, family member, or colleague'}"></div>
     <div class="field"><label for="debtTotalAmount">${current?'Scheduled amount (₱)':isOwed?'Total amount to pay (₱)':'Total amount to collect (₱)'}</label><input id="debtTotalAmount" type="number" min="0.01" step="0.01" required value="${current?Number(current.amount).toFixed(2):''}" placeholder="e.g. 3500"></div>
@@ -3846,6 +4051,12 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
   modal.querySelector('#debtCounterparty').value=current.counterparty||'';
  }
  if(!current&&!isOwed){const kindSelect=modal.querySelector('#debtKind');if(kindSelect)kindSelect.value='Personal loan / money lent';}
+ if(isOwed){
+  const initialKind=current?(current.kind||''):'Bank / salary loan';
+  const initialCounterparty=current?(current.counterparty||''):'';
+  const initialGroup=savelyDebtProviderGroup(initialKind,initialCounterparty);
+  renderDebtProviderPicker(modal,initialGroup,initialKind,initialCounterparty);
+ }
  const frequency=modal.querySelector('#debtFrequency'),installments=modal.querySelector('#debtInstallments');
  const preview=modal.querySelector('#debtSchedulePreview');
  const amountField=modal.querySelector('#debtTotalAmount');
