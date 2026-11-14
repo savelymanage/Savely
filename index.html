@@ -3121,6 +3121,18 @@ button.link-btn{
 @media(max-width:700px){.savely-location-history-item{align-items:flex-start;flex-direction:column}.savely-location-history-item-actions{justify-content:flex-start}.savely-location-history-actions{margin-top:8px}}
 </style>
 
+
+<style id="savely-mariloan-disclosure-computation-v1">
+.savely-mariloan-breakdown .savely-mariloan-receive{
+ padding:8px 10px!important;margin:3px 0!important;border:1px solid #d8eee2!important;
+ border-radius:9px!important;background:#f0faf4!important;
+}
+.savely-mariloan-breakdown .savely-mariloan-receive span,
+.savely-mariloan-breakdown .savely-mariloan-receive strong{color:#087d59!important;font-weight:850!important}
+.savely-mariloan-reference-label{font-size:9px;color:#86938e;font-weight:600}
+.savely-mariloan-breakdown .total{border-top:1px solid #dbe8e0!important;margin-top:5px!important;padding-top:10px!important}
+</style>
+
 </head>
 <body>
 
@@ -4820,7 +4832,7 @@ function updateDebtInterestProviderHint(modal,identifier){
  const link=(url,label)=>`<a href="${url}" target="_blank" rel="noopener">${label}</a>`;
  let html='No verified public rate is shown for this selection. Enter the exact rate and charges from your loan agreement or repayment screen.';
  if(/mari.?loan/.test(value)){
-  html=`<strong>MariLoan published reference:</strong> as low as <strong>0.95% monthly add-on</strong> for selected customers. Your actual offer may differ. ${link('https://www.maribank.ph/product/mari-loan','View MariLoan details')}`;
+  html=`<strong>MariLoan statement reference:</strong> <strong>2.95% monthly add-on</strong> and <strong>5.00% monthly contractual rate</strong> shown separately. The sample also shows <strong>0 processing fee</strong> and <strong>0.75% documentary stamp tax</strong> (PHP 26.25 on PHP 3,500), deducted from proceeds. ${link('https://www.maribank.ph/product/mari-loan','View MariLoan details')} Actual loan disclosures can differ.`;
  }else if(/mari.?credit/.test(value)){
   html=`<strong>MariCredit disclosure reference:</strong> monthly contractual rate listed as <strong>4.36% (3 months), 4.86% (6 months), 5.00% (12 months)</strong>. Confirm the latest disclosure and approved offer. ${link('https://banking-aka-storage.maribank.ph/maribank/ph/cmps-website/file-hosting/MariBank-Credit-Product-Disclosure-Sheet.pdf','View product disclosure sheet')}`;
  }else if(/shopee|spaylater/.test(value)){
@@ -4902,7 +4914,7 @@ function renderDebtProviderPicker(modal,group,selectedKind='',selectedCounterpar
 
 
 const SAVELY_DEBT_AUTO_RATE_PRESETS = [
- {match:/mari.?loan/i, rate:2.95, basis:'monthly', feeRate:0, label:'2.95% monthly add-on', source:'MariLoan interest rate set to 2.95% monthly as requested. Confirm your actual rate and total repayment amount in your loan agreement.', url:'https://www.maribank.ph/product/mari-loan', mode:'estimate'},
+ {match:/mari.?loan/i, rate:2.95, basis:'monthly', feeRate:0, label:'2.95% monthly add-on', source:'Based on the MariLoan computation statement you provided: 2.95% monthly add-on, 5.00% monthly contractual rate shown separately, zero processing fee, and documentary stamp tax calculated at 0.75% of the credit facility amount. Your approved disclosure may differ.', url:'https://www.maribank.ph/product/mari-loan', mode:'estimate', mariLoanDisclosure:true, contractualRate:5, documentaryStampTaxRate:0.75, processingFee:0, defaultFrequency:'monthly', defaultInstallments:12},
  {match:/mari.?card/i, rate:3, basis:'monthly', feeRate:0, label:'3.00% monthly', source:'MariBank publishes a 3% monthly interest rate; 0% may apply when the statement is paid in full by the due date.', url:'https://www.maribank.ph/product/maricard-credit', mode:'estimate'},
  {match:/mari.?credit/i, rate:2.95, basis:'monthly', feeRate:0, label:'2.95% monthly add-on', source:'MariBank Credit product disclosure sheet lists a 2.95% monthly add-on rate.', url:'https://banking-aka-storage.maribank.ph/maribank/ph/cmps-website/file-hosting/MariBank-Credit-Product-Disclosure-Sheet.pdf', mode:'estimate'},
  {match:/spaylater|shopee.*paylater/i, rate:3.95, basis:'monthly', feeRate:0, label:'Up to 3.95% monthly', source:'Shopee lists up to 3.95% monthly interest. Its separate 0%–7% processing fee is not included because the exact fee is offer-specific.', url:'https://help.shopee.ph/portal/4/article/81098', mode:'estimate'},
@@ -4931,9 +4943,19 @@ function calculateSavelyDebtQuote(principal,preset,frequency,count){
  const amount=Math.max(0,Number(principal)||0);
  if(!preset||!amount)return {principal:amount,interest:0,fees:0,total:amount,months:getSavelyDebtTermMonths(frequency,count),preset:null};
  const months=getSavelyDebtTermMonths(frequency,count);
- const interest=preset.basis==='monthly'?amount*(preset.rate/100)*months:amount*(preset.rate/100);
- const fees=preset.feeRate?(preset.basis==='monthly'?amount*(preset.feeRate/100)*months:amount*(preset.feeRate/100)):0;
- return {principal:amount,interest,fees,total:amount+interest+fees,months,preset};
+ let interest=preset.basis==='monthly'?amount*(preset.rate/100)*months:amount*(preset.rate/100);
+ let fees=preset.feeRate?(preset.basis==='monthly'?amount*(preset.feeRate/100)*months:amount*(preset.feeRate/100)):0;
+ const isMariLoan=!!preset.mariLoanDisclosure;
+ const roundMoney=value=>Math.round((Number(value)||0)*100)/100;
+ if(isMariLoan){
+  interest=roundMoney(interest);
+  fees=roundMoney(fees);
+ }
+ const processingFee=isMariLoan?roundMoney(preset.processingFee||0):0;
+ const documentaryStampTax=isMariLoan?roundMoney(amount*(Number(preset.documentaryStampTaxRate)||0)/100):0;
+ const amountReceived=isMariLoan?roundMoney(amount-processingFee-documentaryStampTax):amount;
+ const total=roundMoney(amount+interest+fees);
+ return {principal:amount,interest,fees,total,months,preset,isMariLoan,processingFee,documentaryStampTax,amountReceived,monthlyContractualRate:isMariLoan?Number(preset.contractualRate)||0:null};
 }
 function updateSavelyDebtAutoQuote(modal){
  if(!modal)return null;
@@ -4961,7 +4983,24 @@ function updateSavelyDebtAutoQuote(modal){
   const sourceLink=preset.url?`<a href="${preset.url}" target="_blank" rel="noopener">Provider details</a>`:'';
   const note=preset.source||'Public reference rate. Your approved offer may differ.';
   const ratio=quote.principal?Math.round((quote.interest+quote.fees)/quote.principal*10000)/100:0;
-  if(summary)summary.innerHTML=`<div class="savely-auto-rate-head"><strong>Automatic interest estimate</strong><span class="savely-auto-rate-pill">AUTO RATE</span></div><div class="savely-auto-rate-metrics"><div><small>Rate reference</small><strong>${rateLabel}</strong></div><div><small>Estimated term</small><strong>${quote.months.toFixed(1)} month(s)</strong></div></div><div class="savely-auto-rate-breakdown"><div><span>Principal</span><strong>${money(quote.principal)}</strong></div><div><span>Interest</span><strong>${money(quote.interest)}</strong></div><div><span>Additional service fees</span><strong>${money(quote.fees)}</strong></div><div class="total"><span>Estimated total repayment</span><strong>${money(quote.total)}</strong></div><div class="per-installment"><span>Approx. each payment (${count})</span><strong>${money(quote.total/count)}</strong></div></div><p class="savely-auto-rate-note">${note} ${sourceLink} Calculation uses a simple add-on estimate; confirm against your lender's actual disclosure.</p>`;
+  if(summary&&quote.isMariLoan){
+   summary.innerHTML=`<div class="savely-auto-rate-head"><strong>MariLoan repayment computation</strong><span class="savely-auto-rate-pill">STATEMENT-BASED</span></div>
+    <div class="savely-auto-rate-metrics"><div><small>Monthly add-on interest</small><strong>2.95%</strong></div><div><small>Estimated term</small><strong>${quote.months.toFixed(1)} months</strong></div></div>
+    <div class="savely-auto-rate-breakdown savely-mariloan-breakdown">
+     <div><span>Credit facility amount</span><strong>${money(quote.principal)}</strong></div>
+     <div><span>Processing fee</span><strong>${money(quote.processingFee)}</strong></div>
+     <div><span>Documentary stamp tax (0.75%)</span><strong>${money(quote.documentaryStampTax)}</strong></div>
+     <div class="savely-mariloan-receive"><span>Amount to receive</span><strong>${money(quote.amountReceived)}</strong></div>
+     <div><span>Monthly add-on interest rate</span><strong>2.95%</strong></div>
+     <div><span>Monthly contractual rate <small class="savely-mariloan-reference-label">(disclosed separately)</small></span><strong>5.00%</strong></div>
+     <div><span>Interest amount (${quote.months.toFixed(1)} months)</span><strong>${money(quote.interest)}</strong></div>
+     <div class="total"><span>Total repayment amount</span><strong>${money(quote.total)}</strong></div>
+     <div class="per-installment"><span>Approx. each payment (${count})</span><strong>${money(quote.total/count)}</strong></div>
+    </div>
+    <p class="savely-auto-rate-note">The documentary stamp tax is deducted from the credit facility proceeds; it is not added again to the repayment total. The 5.00% contractual rate is displayed as disclosed in your sample and is not added on top of the 2.95% add-on calculation. ${sourceLink} Reference: the MariLoan statement you provided; actual offer terms may differ.</p>`;
+  }else if(summary){
+   summary.innerHTML=`<div class="savely-auto-rate-head"><strong>Automatic interest estimate</strong><span class="savely-auto-rate-pill">AUTO RATE</span></div><div class="savely-auto-rate-metrics"><div><small>Rate reference</small><strong>${rateLabel}</strong></div><div><small>Estimated term</small><strong>${quote.months.toFixed(1)} month(s)</strong></div></div><div class="savely-auto-rate-breakdown"><div><span>Principal</span><strong>${money(quote.principal)}</strong></div><div><span>Interest</span><strong>${money(quote.interest)}</strong></div><div><span>Additional service fees</span><strong>${money(quote.fees)}</strong></div><div class="total"><span>Estimated total repayment</span><strong>${money(quote.total)}</strong></div><div class="per-installment"><span>Approx. each payment (${count})</span><strong>${money(quote.total/count)}</strong></div></div><p class="savely-auto-rate-note">${note} ${sourceLink} Calculation uses a simple add-on estimate; confirm against your lender's actual disclosure.</p>`;
+  }
  }
  return quote;
 }
@@ -5206,6 +5245,20 @@ function initSavelyDebtFormWizard(modal){
    field.addEventListener('input',refreshAutoQuote);
    field.addEventListener('change',refreshAutoQuote);
   });
+  let mariLoanDefaultsApplied=false;
+  const applyMariLoanDefaults=()=>{
+   const selectedPreset=getSavelyDebtAutoPreset(modal.querySelector('#debtKind')?.value,modal.querySelector('#debtCounterparty')?.value);
+   if(selectedPreset&&selectedPreset.mariLoanDisclosure&&!mariLoanDefaultsApplied){
+    frequency.value=selectedPreset.defaultFrequency||'monthly';
+    installments.value=String(selectedPreset.defaultInstallments||12);
+    mariLoanDefaultsApplied=true;
+   }
+   refreshAutoQuote();
+  };
+  const debtKindField=modal.querySelector('#debtKind');
+  const lenderField=modal.querySelector('#debtCounterparty');
+  if(debtKindField)debtKindField.addEventListener('change',applyMariLoanDefaults);
+  if(lenderField)lenderField.addEventListener('change',applyMariLoanDefaults);
   updateSavelyDebtAutoQuote(modal);
  }
  updateSchedulePreview();
@@ -5263,7 +5316,7 @@ function initSavelyDebtFormWizard(modal){
    const principalPart=i===count-1?Math.round((principalTotal-principalBase*(count-1))*100)/100:principalBase;
    const interestPart=i===count-1?Math.round((totalInterest-interestBase*(count-1))*100)/100:interestBase;
    const feePart=i===count-1?Math.round((totalFees-feeBase*(count-1))*100)/100:feeBase;
-   created.push({id:uid(),seriesId,direction:dir,kind,title,counterparty,interestRate,interestBasis,interestAmount:interestPart,interestCharges:feePart,principalAmount:principalPart,ratePresetLabel:autoPreset?autoPreset.label:null,amount:part,remainingAmount:part,dueDate:date,frequency:repeat,installmentNumber:i+1,totalInstallments:count,status:'unpaid',payments:[],createdAt:Date.now()});
+   created.push({id:uid(),seriesId,direction:dir,kind,title,counterparty,interestRate,interestBasis,interestAmount:interestPart,interestCharges:feePart,principalAmount:principalPart,ratePresetLabel:autoPreset?autoPreset.label:null,loanDisclosure:autoQuote&&autoQuote.isMariLoan?{creditFacilityAmount:principalTotal,processingFee:autoQuote.processingFee,documentaryStampTax:autoQuote.documentaryStampTax,amountReceived:autoQuote.amountReceived,monthlyAddOnRate:Number(autoPreset.rate),monthlyContractualRate:autoQuote.monthlyContractualRate,totalInterest:totalInterest,totalRepayment:Math.round(autoQuote.total*100)/100,termMonths:autoQuote.months,reference:'User-provided MariLoan computation statement'}:null,amount:part,remainingAmount:part,dueDate:date,frequency:repeat,installmentNumber:i+1,totalInstallments:count,status:'unpaid',payments:[],createdAt:Date.now()});
   }
   if(!Array.isArray(data.debtRecords))data.debtRecords=[];
   let receivableItem=null;
