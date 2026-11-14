@@ -3440,6 +3440,12 @@ main.main > div.page.active > * {
 main.main > .page:not(.active) { display: none !important; }
 </style>
 
+
+<style id="savely-page-navigation-repair-v4">
+.page{display:none!important}
+.page.active{display:block!important}
+</style>
+
 </head>
 <body>
 
@@ -3681,7 +3687,48 @@ main.main > .page:not(.active) { display: none !important; }
     </div></div>
   </section>
 
-  <section class="page" id="page-debt">
+  <section class="page" id="page-salary">
+    <div class="cards salary-summary-cards" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:18px">
+      <div class="stat"><div class="stat-top">Monthly take-home salary</div><div class="stat-value" id="salaryMonthlyDisplay" style="color:var(--green)">₱0.00</div><div class="stat-foot" id="salaryPayDayDisplay">Set your monthly salary below</div></div>
+      <div class="stat"><div class="stat-top">Annual projection</div><div class="stat-value" id="salaryAnnualDisplay" style="color:var(--blue)">₱0.00</div><div class="stat-foot">Monthly salary × 12, before any changes or bonuses</div></div>
+      <div class="stat salary-annual-remaining-stat"><div class="stat-top">Remaining salary this year</div><div class="stat-value" id="salaryAnnualRemainingDisplay" style="color:#07875f">₱0.00</div><div class="stat-foot" id="salaryAnnualRemainingFoot">Estimated future cutoffs through December</div></div>
+    </div>
+    <section class="panel salary-calendar-panel" aria-labelledby="salaryCalendarTitle" style="margin-bottom:18px">
+      <div class="panel-head salary-calendar-head">
+        <div><h2 id="salaryCalendarTitle" style="font-size:19px">Salary calendar</h2><div class="panel-sub">View both monthly cutoff paydays. If a payday falls on a weekend or recognized Philippine holiday, it moves to the previous working day.</div></div>
+        <div class="salary-calendar-controls">
+          <div class="salary-calendar-view-toggle" role="group" aria-label="Calendar view">
+            <button type="button" class="active" data-salary-calendar-view="month" onclick="setSalaryCalendarView('month')" aria-pressed="true">Monthly</button>
+            <button type="button" data-salary-calendar-view="year" onclick="setSalaryCalendarView('year')" aria-pressed="false">Yearly</button>
+          </div>
+          <div class="salary-calendar-nav">
+            <button type="button" class="btn btn-light" id="salaryCalendarPrev" onclick="changeSalaryCalendarMonth(-1)" aria-label="Previous month">‹</button>
+            <button type="button" class="btn btn-light" onclick="goToCurrentSalaryCalendarMonth()">Today</button>
+            <button type="button" class="btn btn-light" id="salaryCalendarNext" onclick="changeSalaryCalendarMonth(1)" aria-label="Next month">›</button>
+          </div>
+        </div>
+      </div>
+      <div class="salary-calendar-month-row"><strong id="salaryCalendarMonthLabel">Month Year</strong><span style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span class="salary-calendar-key"><i></i> Payday</span><span class="salary-calendar-key"><i style="background:#f97316;box-shadow:0 0 0 3px #ffedd5"></i> Regular holiday</span><span class="salary-calendar-key"><i style="background:#2563eb;box-shadow:0 0 0 3px #dbeafe"></i> Special non-working</span></span></div>
+      <div class="salary-calendar-grid salary-calendar-weekdays" aria-hidden="true">
+        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+      </div>
+      <div id="salaryCalendarGrid" class="salary-calendar-grid" role="grid" aria-label="Monthly salary calendar"></div>
+      <div id="salaryCalendarYearGrid" class="salary-calendar-year-grid" role="group" aria-label="Yearly salary calendar" hidden></div>
+      <div id="salaryCalendarDetails" class="salary-calendar-details" aria-live="polite"></div><div id="salaryHolidayUpdateStatus" class="salary-calendar-holiday-status">Philippine holidays: checking for updates…</div>
+    </section>
+    <div id="salaryDetailsBackdrop" hidden onclick="if(event.target===this)toggleSalaryDetails(false)" style="position:fixed;inset:0;background:rgba(15,23,42,.48);backdrop-filter:blur(3px);z-index:9998;display:none;align-items:center;justify-content:center;padding:20px;overflow:auto">
+    <div class="panel" id="salaryDetailsPanel" role="dialog" aria-modal="true" aria-labelledby="salaryDetailsTitle" style="width:min(100%,760px);max-width:760px;max-height:calc(100vh - 40px);overflow:auto;box-shadow:0 24px 80px rgba(15,23,42,.25)">
+      <div class="panel-head"><div><h2 id="salaryDetailsTitle">Salary details</h2><div class="panel-sub">Update this whenever your monthly salary changes.</div></div><button type="button" class="btn btn-light" onclick="toggleSalaryDetails(false)" aria-label="Close salary details">✕ Close</button></div>
+      <form id="monthlySalaryForm" onsubmit="saveMonthlySalary(event)" class="form-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+        <div class="field"><label for="monthlySalaryAmount">Monthly salary (₱)</label><input id="monthlySalaryAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 12000" required></div>
+        <div class="field"><label for="monthlySalaryPayDay">Usual payday</label><select id="monthlySalaryPayDay"><option value="15-30">15–30 cutoff (15th &amp; end of month)</option><option value="5-20">5–20 cutoff (5th &amp; 20th)</option><option value="10-25">10–25 cutoff (10th &amp; 25th)</option><option value="custom">Varies / not fixed</option></select></div>
+        <div class="field" style="grid-column:1/-1"><label for="monthlySalaryNotes">Notes (optional)</label><input id="monthlySalaryNotes" type="text" maxlength="240" placeholder="e.g. Part-time salary, net of deductions"></div>
+        <div style="grid-column:1/-1;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button type="submit" class="btn btn-primary">Save monthly salary</button><span class="panel-sub" id="monthlySalaryUpdatedAt">Not saved yet</span></div>
+      </form>
+    </div></div>
+  </section>
+
+    <section class="page" id="page-debt">
     <div class="cards debt-summary-cards">
       <div class="stat"><div class="stat-top">I owe</div><div class="stat-value" id="debtOweTotal" style="color:var(--red)">₱0.00</div><div class="stat-foot">Your remaining payments</div></div>
       <div class="stat"><div class="stat-top">Owed to me</div><div class="stat-value" id="debtLentTotal" style="color:var(--green)">₱0.00</div><div class="stat-foot">Money to collect</div></div>
@@ -7794,7 +7841,7 @@ function toggleOverviewFigures(){
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',updateOverviewPrivacyState,{once:true});else updateOverviewPrivacyState();
-function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard'){renderDashboard();setTimeout(renderOverallTrend,50);}document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');updateOverviewPrivacyState();if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Location.');if(p==='live-location')setTimeout(()=>{
+function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard'){renderDashboard();setTimeout(renderOverallTrend,50);}const targetPage=document.getElementById('page-'+p);if(!targetPage){console.warn('Savely page not found:',p);return;}document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));targetPage.classList.add('active');updateOverviewPrivacyState();if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Location.');if(p==='live-location')setTimeout(()=>{
  setSavelyLiveMapMode('traffic');
  initSavelyLiveLocationMap();
  if(savelyLiveLocationMap){
