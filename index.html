@@ -3420,6 +3420,35 @@ button.link-btn{
 }
 </style>
 
+
+<style id="savely-overview-financial-privacy-v1">
+.overview-privacy-toggle{
+ display:inline-flex;align-items:center;justify-content:center;gap:8px;
+ min-height:40px;height:40px;padding:0 13px;border:1px solid #d8e7df;
+ border-radius:10px;background:#fff;color:#176c50;
+ font:inherit;font-size:11px;font-weight:850;white-space:nowrap;cursor:pointer;
+ box-shadow:0 2px 7px rgba(20,70,49,.035);
+ transition:background .16s ease,border-color .16s ease,box-shadow .16s ease;
+}
+.overview-privacy-toggle:hover,.overview-privacy-toggle:focus-visible{
+ background:#f2faf5;border-color:#79c9a2;box-shadow:0 3px 12px rgba(16,135,96,.10);outline:none;
+}
+.overview-privacy-toggle[hidden]{display:none!important}
+.overview-privacy-icon{width:17px;height:17px;display:grid;place-items:center;flex:0 0 17px}
+.overview-privacy-icon svg{width:17px;height:17px;display:block}
+.savely-private-number{filter:blur(9px);user-select:none;pointer-events:none;transition:filter .18s ease}
+#page-dashboard.savely-overview-private #overallTrendPanel canvas,
+#page-dashboard.savely-overview-private #overallTrendLegend,
+#page-dashboard.savely-overview-private #chart{
+ filter:blur(9px);user-select:none;pointer-events:none;transition:filter .18s ease;
+}
+#page-dashboard.savely-overview-private #overallTrendPanel canvas{opacity:.35}
+@media(max-width:700px){
+ .overview-privacy-toggle{height:36px;min-height:36px;padding:0 9px;font-size:10px;gap:6px}
+ .overview-privacy-icon,.overview-privacy-icon svg{width:16px;height:16px}
+}
+</style>
+
 </head>
 <body>
 
@@ -3510,7 +3539,7 @@ button.link-btn{
   <div class="side-bottom"><strong>Small steps add up.</strong><p>Keep your goals in sight and your savings moving forward.</p></div>
 </aside>
 <main class="main">
-  <header class="topbar"><div><div class="eyebrow" id="eyebrow">YOUR MONEY, IN FOCUS</div><h1 class="page-title" id="pageTitle">Good afternoon 👋</h1><div id="dashboardUsername" class="dashboard-username" hidden></div><div class="page-description" id="pageDescription">A clear view of your savings, income, and financial progress.</div></div><div class="top-actions"><button type="button" class="holiday-header-refresh" id="holidayRefreshButton" onclick="refreshPhilippineHolidays(true)">Check for updates</button><div class="weather-pill" id="savelyWeather" title="Live weather · Click to view satellite imagery" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="savelySatelliteBackdrop" style="cursor:pointer"><span class="weather-icon" id="savelyWeatherIcon">🌤️</span><span class="weather-copy"><strong id="savelyWeatherTemp">Loading…</strong><small id="savelyWeatherDesc">Current weather</small></span></div><div class="date-pill date-pill-clickable" id="today" role="button" tabindex="0" aria-label="Open calendar and holiday countdowns" title="View calendar and holiday countdowns" onclick="openHolidaysPage()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openHolidaysPage()}">
+  <header class="topbar"><div><div class="eyebrow" id="eyebrow">YOUR MONEY, IN FOCUS</div><h1 class="page-title" id="pageTitle">Good afternoon 👋</h1><div id="dashboardUsername" class="dashboard-username" hidden></div><div class="page-description" id="pageDescription">A clear view of your savings, income, and financial progress.</div></div><div class="top-actions"><button type="button" class="holiday-header-refresh" id="holidayRefreshButton" onclick="refreshPhilippineHolidays(true)">Check for updates</button><button type="button" class="overview-privacy-toggle" id="overviewPrivacyToggle" onclick="toggleOverviewFigures()" hidden aria-label="Hide financial figures" aria-pressed="false" title="Hide financial figures"><span class="overview-privacy-icon" id="overviewPrivacyIcon" aria-hidden="true"></span><span id="overviewPrivacyLabel">Hide figures</span></button><div class="weather-pill" id="savelyWeather" title="Live weather · Click to view satellite imagery" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="savelySatelliteBackdrop" style="cursor:pointer"><span class="weather-icon" id="savelyWeatherIcon">🌤️</span><span class="weather-copy"><strong id="savelyWeatherTemp">Loading…</strong><small id="savelyWeatherDesc">Current weather</small></span></div><div class="date-pill date-pill-clickable" id="today" role="button" tabindex="0" aria-label="Open calendar and holiday countdowns" title="View calendar and holiday countdowns" onclick="openHolidaysPage()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openHolidaysPage()}">
 
 </div><button type="button" class="btn btn-primary" id="topbarAddDebtButton" onclick="openDebtForm()" style="display:none;background:var(--green);border-color:var(--green);white-space:nowrap">＋ Add debt</button><button type="button" class="btn btn-primary salary-amount-top-button" id="salaryDetailsOpenButton" onclick="toggleSalaryDetails(true)" style="background:var(--green);border-color:var(--green);white-space:nowrap">＋ Add salary amount</button><button id="topbarAddSavingsButton" class="btn btn-primary" style="background:var(--green);border-color:var(--green)" onclick="openFinancialAdd()">＋ <span class="desktop-label">Add Savings</span><span class="mobile-label">Add Savings</span></button><div class="avatar">S</div><div class="auth-user-chip" id="savely-auth-user-chip" hidden><span class="auth-user-email" id="savely-auth-user-email"></span></div></div></header>
   <section class="page active" id="page-dashboard">
@@ -6210,10 +6239,10 @@ const financialSum=cat=>financialItems.filter(item=>(item.category||'Savings')==
 const savingsTotal=financialSum('Savings'),salaryTotal=financialSum('Salary'),debtTotal=getOutstandingOwedTotal();
 const categoryDelta=cat=>financialItems.filter(i=>(i.category||'Savings')===cat).reduce((sum,item)=>{const hist=Array.isArray(item.changeHistory)?item.changeHistory:[];if(!hist.length)return sum;const latest=hist.reduce((a,b)=>(Number(b.at)||0)>(Number(a.at)||0)?b:a,hist[0]);return sum+Number(latest.newAmount||0)-Number(latest.oldAmount||0);},0);
 const savingsDelta=categoryDelta('Savings'),salaryDelta=categoryDelta('Salary'),debtDelta=categoryDelta('Debt'),overallDelta=savingsDelta+salaryDelta-debtDelta;
-const deltaHtml=d=>Math.abs(d)<0.005?'':`<div class="stat-foot" style="color:${d>0?'var(--green)':'var(--red)'};font-weight:800">${d>0?'+':'−'} ${peso(Math.abs(d))}</div>`;
+const deltaHtml=d=>Math.abs(d)<0.005?'':`<div class="stat-foot savely-private-number" style="color:${d>0?'var(--green)':'var(--red)'};font-weight:800">${d>0?'+':'−'} ${peso(Math.abs(d))}</div>`;
 const savingsAndSalaryTotal=savingsTotal+salaryTotal;const goalBalance=goal&&Array.isArray(goal.banks)&&goal.banks.length?goalCurrentAmount(goal):savingsAndSalaryTotal;const prog=goal?Math.min(100,Math.max(0,goalBalance/goal.target*100)):0;
-document.getElementById('stats').innerHTML=`<div class="stat"><div class="stat-top">Savings total <span class="stat-icon" style="background:#e5f7ef;color:#169b70">₱</span></div><div class="stat-value" style="color:var(--green)">${peso(savingsTotal)}</div><div class="stat-foot">Savings savings</div><div class="stat-foot savings-total-asof" id="savingsTotalAsOf" style="margin-top:5px;font-size:10px">As of —</div>${deltaHtml(savingsDelta)}</div><div class="stat"><div class="stat-top">Salary / income total <span class="stat-icon" style="background:#edf1ff;color:#536be0">↗</span></div><div class="stat-value" style="color:var(--blue)">${peso(salaryTotal)}</div><div class="stat-foot">Savings income</div>${deltaHtml(salaryDelta)}</div><div class="stat"><div class="stat-top">Debt total <span class="stat-icon" style="background:#fff1e7;color:#e64b5b">−</span></div><div class="stat-value" style="color:var(--red)">${peso(debtTotal)}</div><div class="stat-foot">I owe · remaining balance</div></div>`;
-document.getElementById('mainGoal').innerHTML=goal?`<div class="between"><span>${esc(goal.name)}</span><span>${prog.toFixed(1)}%</span></div><div class="goal-amount">${peso(goalBalance)} <span style="font-size:13px;color:var(--muted);font-weight:600">of ${peso(goal.target)}</span></div><div class="progress"><span style="width:${prog}%"></span></div><div class="between"><span>Current savings + salary / income total</span><strong style="color:var(--text)">${peso(Math.max(0,goal.target-goalBalance))} remaining</strong></div><div class="goal-meta"><div class="mini">✦</div><div><strong>${goalBalance>=goal.target?'Goal reached — amazing work!':'You are building a great habit.'}</strong><small>${goal.due?'Target date: '+fmtDate(goal.due):'Every deposit gets you closer.'}</small></div></div>`:'<div class="empty">Create your first savings goal.</div>';
+document.getElementById('stats').innerHTML=`<div class="stat"><div class="stat-top">Savings total <span class="stat-icon" style="background:#e5f7ef;color:#169b70">₱</span></div><div class="stat-value savely-private-number" style="color:var(--green)">${peso(savingsTotal)}</div><div class="stat-foot">Savings savings</div><div class="stat-foot savings-total-asof" id="savingsTotalAsOf" style="margin-top:5px;font-size:10px">As of —</div>${deltaHtml(savingsDelta)}</div><div class="stat"><div class="stat-top">Salary / income total <span class="stat-icon" style="background:#edf1ff;color:#536be0">↗</span></div><div class="stat-value savely-private-number" style="color:var(--blue)">${peso(salaryTotal)}</div><div class="stat-foot">Savings income</div>${deltaHtml(salaryDelta)}</div><div class="stat"><div class="stat-top">Debt total <span class="stat-icon" style="background:#fff1e7;color:#e64b5b">−</span></div><div class="stat-value savely-private-number" style="color:var(--red)">${peso(debtTotal)}</div><div class="stat-foot">I owe · remaining balance</div></div>`;
+document.getElementById('mainGoal').innerHTML=goal?`<div class="between"><span>${esc(goal.name)}</span><span class="savely-private-number">${prog.toFixed(1)}%</span></div><div class="goal-amount savely-private-number">${peso(goalBalance)} <span style="font-size:13px;color:var(--muted);font-weight:600">of ${peso(goal.target)}</span></div><div class="progress"><span style="width:${prog}%"></span></div><div class="between"><span>Current savings + salary / income total</span><strong class="savely-private-number" style="color:var(--text)">${peso(Math.max(0,goal.target-goalBalance))} remaining</strong></div><div class="goal-meta"><div class="mini">✦</div><div><strong>${goalBalance>=goal.target?'Goal reached — amazing work!':'You are building a great habit.'}</strong><small>${goal.due?'Target date: '+fmtDate(goal.due):'Every deposit gets you closer.'}</small></div></div>`:'<div class="empty">Create your first savings goal.</div>';
 const vals=[];for(let i=5;i>=0;i--){let d=new Date();d.setDate(1);d.setMonth(d.getMonth()-i);let m=d.toISOString().slice(0,7);let net=data.transactions.filter(t=>t.date.slice(0,7)===m).reduce((s,t)=>s+((t.type==='deposit'||t.type==='interest')?+t.amount:- +t.amount),0);vals.push({m,label:d.toLocaleDateString('en-PH',{month:'short'}),v:net})}let max=Math.max(1,...vals.map(v=>Math.abs(v.v)));document.getElementById('chart').innerHTML=vals.map((v,i)=>`<div class="bar-wrap" title="${esc(v.m)}: ${peso(v.v)}"><div class="bar ${i===5?'current':''}" style="height:${Math.max(4,Math.abs(v.v)/max*78)}%"></div><div class="bar-label">${v.label}</div></div>`).join('');
 const financialHistory=[];
 financialItems.forEach(item=>{
@@ -6231,7 +6260,7 @@ financialItems.forEach(item=>{
  }
 });
 financialHistory.sort((a,b)=>b.at-a.at);
-document.getElementById('recentTable').innerHTML=financialHistory.length?`<div class="financial-history-list">${financialHistory.slice(0,8).map(h=>`<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center"><div style="min-width:0"><strong style="display:block;overflow-wrap:anywhere">${esc(h.name)}</strong><small style="color:var(--muted)">${esc(h.category)} · ${esc(h.label)} · ${h.at?new Date(h.at).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'}):'Date unavailable'}</small><div style="font-size:12px;color:var(--muted);margin-top:3px">${peso(h.oldAmount)} → ${peso(h.newAmount)}</div></div><strong style="white-space:nowrap;color:${h.delta>=0?'var(--green)':'var(--red)'}">${h.delta>=0?'+':'−'}${peso(Math.abs(h.delta))}</strong></div>`).join('')}</div>`:'<div class="empty">No Savings balance history yet. Changes to savings, salary, and debt items will appear here.</div>';const overviewAccountList=document.getElementById('accountList');if(overviewAccountList)overviewAccountList.innerHTML=data.accounts.map((a,i)=>`<div class="account"><div class="account-icon">${i===0?'▣':'◈'}</div><div class="account-info"><strong>${esc(a.name)}</strong><small>${esc(a.type)}</small></div><div class="account-balance">${peso(balance(a.id))}</div></div>`).join('')||'<div class="empty">No accounts yet.</div>'}
+document.getElementById('recentTable').innerHTML=financialHistory.length?`<div class="financial-history-list">${financialHistory.slice(0,8).map(h=>`<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center"><div style="min-width:0"><strong style="display:block;overflow-wrap:anywhere">${esc(h.name)}</strong><small style="color:var(--muted)">${esc(h.category)} · ${esc(h.label)} · ${h.at?new Date(h.at).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'}):'Date unavailable'}</small><div class="savely-private-number" style="font-size:12px;color:var(--muted);margin-top:3px">${peso(h.oldAmount)} → ${peso(h.newAmount)}</div></div><strong class="savely-private-number" style="white-space:nowrap;color:${h.delta>=0?'var(--green)':'var(--red)'}">${h.delta>=0?'+':'−'}${peso(Math.abs(h.delta))}</strong></div>`).join('')}</div>`:'<div class="empty">No Savings balance history yet. Changes to savings, salary, and debt items will appear here.</div>';const overviewAccountList=document.getElementById('accountList');if(overviewAccountList)overviewAccountList.innerHTML=data.accounts.map((a,i)=>`<div class="account"><div class="account-icon">${i===0?'▣':'◈'}</div><div class="account-info"><strong>${esc(a.name)}</strong><small>${esc(a.type)}</small></div><div class="account-balance">${peso(balance(a.id))}</div></div>`).join('')||'<div class="empty">No accounts yet.</div>'}
 function renderTransactions(){document.getElementById('allTransactions').innerHTML=txRows(data.transactions)}
 function renderAccounts(){document.getElementById('allAccounts').innerHTML=data.accounts.map(a=>`<div class="goal-card"><div class="between"><span class="muted">${esc(a.type)} account</span><button class="delete-btn" onclick="deleteAccount('${a.id}')">Delete</button></div><h3 style="margin-top:12px">${esc(a.name)}</h3><div class="goal-amount">${peso(balance(a.id))}</div><div class="between"><span>Opening balance</span><strong>${peso(a.opening)}</strong></div><div class="between" style="margin-top:7px"><span>Transactions</span><strong>${data.transactions.filter(t=>t.accountId===a.id).length}</strong></div></div>`).join('')||'<div class="empty">Create an account to get started.</div>'}
 
@@ -7779,7 +7808,41 @@ async function refreshPhilippineHolidays(manual){
  setInterval(()=>refreshPhilippineHolidays(false),24*60*60*1000);
 })();
 
-function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard'){renderDashboard();setTimeout(renderOverallTrend,50);}document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Location.');if(p==='live-location')setTimeout(()=>{
+
+let savelyOverviewFiguresVisible=true;
+try{
+ const storedPrivacy=localStorage.getItem('savelyOverviewFiguresVisible');
+ if(storedPrivacy==='false')savelyOverviewFiguresVisible=false;
+}catch(e){}
+function savelyEyeSvg(open){
+ return open
+ ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>'
+ : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 3 18 18"/><path d="M10.6 5.2A10.9 10.9 0 0 1 12 5c6.4 0 10 7 10 7a15.8 15.8 0 0 1-3.1 3.8"/><path d="M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7a10.5 10.5 0 0 0 4-.8"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+}
+function updateOverviewPrivacyState(){
+ const page=document.getElementById('page-dashboard');
+ const button=document.getElementById('overviewPrivacyToggle');
+ const icon=document.getElementById('overviewPrivacyIcon');
+ const label=document.getElementById('overviewPrivacyLabel');
+ const active=!!page&&page.classList.contains('active');
+ if(page)page.classList.toggle('savely-overview-private',!savelyOverviewFiguresVisible);
+ if(button){
+  button.hidden=!active;
+  button.setAttribute('aria-pressed',savelyOverviewFiguresVisible?'false':'true');
+  button.setAttribute('aria-label',savelyOverviewFiguresVisible?'Hide financial figures':'Show financial figures');
+  button.title=savelyOverviewFiguresVisible?'Hide financial figures':'Show financial figures';
+ }
+ if(icon)icon.innerHTML=savelyEyeSvg(savelyOverviewFiguresVisible);
+ if(label)label.textContent=savelyOverviewFiguresVisible?'Hide figures':'Show figures';
+}
+function toggleOverviewFigures(){
+ savelyOverviewFiguresVisible=!savelyOverviewFiguresVisible;
+ try{localStorage.setItem('savelyOverviewFiguresVisible',String(savelyOverviewFiguresVisible));}catch(e){}
+ updateOverviewPrivacyState();
+}
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',updateOverviewPrivacyState,{once:true});else updateOverviewPrivacyState();
+function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard'){renderDashboard();setTimeout(renderOverallTrend,50);}document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');updateOverviewPrivacyState();if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Location.');if(p==='live-location')setTimeout(()=>{
  setSavelyLiveMapMode('traffic');
  initSavelyLiveLocationMap();
  if(savelyLiveLocationMap){
