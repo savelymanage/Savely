@@ -3516,6 +3516,16 @@ button.link-btn{
 }
 </style>
 
+
+<style id="savely-geops-railway-embed-test-v1">
+.savely-geops-map-wrap{width:100%;height:clamp(560px,76vh,860px);min-height:560px;overflow:hidden;border:1px solid #dfe8e3;border-radius:13px;background:#eef2f4}
+.savely-geops-map-wrap iframe{display:block;width:100%;height:100%;min-height:560px;border:0;background:#eef2f4}
+.savely-trenligtas-map-wrap{width:100%;height:clamp(560px,76vh,900px);min-height:560px;overflow:hidden;border:1px solid #e2eaf0;border-radius:12px;background:#eef2f4}
+.savely-trenligtas-map-wrap iframe{display:block;width:100%;height:100%;min-height:560px;border:0;background:#eef2f4}
+.savely-railway-secondary-link{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding:11px 13px;border:1px solid var(--line,#e2eaf0);border-radius:10px;font-size:11px;color:var(--muted)}
+.savely-railway-secondary-link a{color:var(--green,#087b5b);font-weight:800;text-decoration:none;white-space:nowrap}
+@media(max-width:650px){.savely-geops-map-wrap,.savely-geops-map-wrap iframe{height:68vh;min-height:440px}.savely-trenligtas-map-wrap,.savely-trenligtas-map-wrap iframe{height:68vh;min-height:440px}.savely-railway-secondary-link{align-items:flex-start;flex-direction:column}}
+</style>
 </head>
 <body>
 
@@ -3665,20 +3675,16 @@ button.link-btn{
        <div id="savelyWazeTrafficView" class="savely-waze-traffic-view" role="region" aria-label="Waze live traffic map" hidden>
         <iframe id="savelyWazeTrafficFrame" title="Waze Live Map traffic view" src="https://embed.waze.com/iframe?zoom=5&amp;lat=12.8797&amp;lon=121.7740&amp;pin=1" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
        </div>
-       <section id="savelyRailwayLiveView" class="savely-railway-live-view" role="region" aria-label="TrainSight Metro Manila live railway tracker" hidden>
+       <section id="savelyRailwayLiveView" class="savely-railway-live-view" role="region" aria-label="TRENLigtas Metro Manila live train map" hidden>
         <div class="savely-railway-live-head">
-         <div><span class="savely-cctv-eyebrow">PUBLIC RAILWAY TRACKER</span><h3>Metro Manila Railway Live</h3><p>TrainSight · LRT-1 · LRT-2 · MRT-3</p></div>
-         <a href="https://rail.trainsight.app/" target="_blank" rel="noopener noreferrer">Open TrainSight ↗</a>
+         <div><span class="savely-cctv-eyebrow">PUBLIC METRO MANILA TRAIN TRACKER · PROJECTLIGTAS</span><h3>TRENLigtas Live Train Map</h3><p>LRT-1 · LRT-2 · MRT-3 · Predicted train positions and community-reported station ETAs</p></div>
+         <a href="https://projectligtas.com/commute" target="_blank" rel="noopener noreferrer">Open TRENLigtas ↗</a>
         </div>
-        <div class="savely-railway-access-panel">
-         <div class="savely-railway-access-inner">
-          <div class="savely-railway-access-icon" aria-hidden="true">🚆</div>
-          <h4>View live train positions on TrainSight</h4>
-          <p>TrainSight does not currently allow its tracker to be displayed inside Savely. Open the public tracker in a new tab to view available LRT-1, LRT-2, and MRT-3 train positions.</p>
-          <a class="savely-railway-open-button" href="https://rail.trainsight.app/" target="_blank" rel="noopener noreferrer">Open TrainSight Live ↗</a>
-         </div>
+        <div class="savely-geops-map-wrap savely-trenligtas-map-wrap">
+         <iframe id="savelyTrenligtasFrame" title="TRENLigtas Live Train Map — Metro Manila" src="https://projectligtas.com/commute" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
         </div>
-        <div class="savely-railway-live-note"><strong>External tracker.</strong> Live positions, estimated locations, and update frequency are provided by TrainSight. Savely does not independently verify or generate train locations.</div>
+        <div class="savely-railway-live-note"><strong>Embedding test:</strong> If the map loads here, the public page allows this third-party iframe. TRENLigtas describes its train markers as predicted positions refreshed every five seconds; station ETAs are based on community reports. These are not confirmed continuous onboard GPS positions. If the panel is blank or says the site refused to connect, use Open TRENLigtas above.</div>
+        <div class="savely-railway-secondary-link"><span>Other Metro Manila train tracker</span><a href="https://rail.trainsight.app/" target="_blank" rel="noopener noreferrer">Open TrainSight ↗</a></div>
        </section>
        <div id="savelyPublicCCTVView" class="savely-public-cctv-view" role="region" aria-label="Metro Manila public CCTV directory" hidden>
         <aside class="savely-cctv-city-sidebar">
@@ -11884,7 +11890,7 @@ function setSavelyLiveMapMode(mode){
  if(gpsFooter)gpsFooter.hidden=!location;
  if(trafficNote)trafficNote.hidden=!traffic;
  if(title)title.textContent=location?'Live movement map':traffic?'Live traffic':cctv?'Metro Manila Public CCTV':'Railway Live';
- if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Real-time traffic information in a separate Waze Live Map.':cctv?'View the available Quezon City public webcam.':'Attempting to display the public TrainSight live railway tracker for LRT-1, LRT-2, and MRT-3.';
+ if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Real-time traffic information in a separate Waze Live Map.':cctv?'View the available Quezon City public webcam.':'Testing the public TRENLigtas Live Train Map for LRT-1, LRT-2, and MRT-3.';
  document.querySelectorAll('[data-savely-map-mode]').forEach(button=>{
   const active=button.dataset.savelyMapMode===savelyLiveMapMode;
   button.classList.toggle('active',active);button.setAttribute('aria-selected',active?'true':'false');
@@ -12329,7 +12335,7 @@ try{localStorage.removeItem(['savely','TomTomTrafficKey'].join(''));}catch(e){}
   if(gpsFooter)gpsFooter.hidden=!location;
   if(trafficNote)trafficNote.hidden=!traffic;
   if(title)title.textContent=location?'Live movement map':traffic?'Live traffic':cctv?'Metro Manila Public CCTV':'Railway Live';
-  if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Real-time traffic information in a separate Waze Live Map.':cctv?'View the available Quezon City public webcam.':'Attempting to display the public TrainSight live railway tracker for LRT-1, LRT-2, and MRT-3.';
+  if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Real-time traffic information in a separate Waze Live Map.':cctv?'View the available Quezon City public webcam.':'Testing the public TRENLigtas Live Train Map for LRT-1, LRT-2, and MRT-3.';
   document.querySelectorAll('[data-savely-map-mode]').forEach(button=>{
    const active=button.dataset.savelyMapMode===next;
    button.classList.toggle('active',active);button.setAttribute('aria-selected',active?'true':'false');
