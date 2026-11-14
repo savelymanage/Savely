@@ -2452,6 +2452,30 @@ button.link-btn{
 }
 </style>
 
+
+<style id="savely-add-savings-bank-alignment-v2">
+#financialAddBackdrop #bankPicker{align-items:stretch!important}
+#financialAddBackdrop .bank-option-wrap{position:relative!important;min-width:0!important}
+#financialAddBackdrop .bank-option-wrap .bank-option{
+ display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;
+ gap:9px!important;width:100%!important;height:42px!important;min-height:42px!important;min-width:0!important;
+ padding:5px 32px 5px 10px!important;text-align:left!important;white-space:nowrap!important
+}
+#financialAddBackdrop .bank-option .bank-logo{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ flex:0 0 31px!important;width:31px!important;height:31px!important;margin:0!important
+}
+#financialAddBackdrop .bank-option .bank-option-name{
+ display:block!important;flex:1 1 auto!important;min-width:0!important;overflow:hidden!important;
+ text-overflow:ellipsis!important;white-space:nowrap!important;text-align:left!important
+}
+#financialAddBackdrop .bank-option-wrap .bank-favorite{
+ position:absolute!important;right:5px!important;top:50%!important;transform:translateY(-50%)!important;
+ width:24px!important;min-width:24px!important;height:28px!important;min-height:28px!important;
+ padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important
+}
+</style>
+
 </head>
 <body>
 
@@ -3439,7 +3463,8 @@ function debtStatus(item){
 function debtStatusLabel(status){return ({upcoming:'UPCOMING',due:'DUE TODAY',overdue:'OVERDUE',paid:'PAID',partial:'PARTIALLY PAID'})[status]||'UPCOMING';}
 function debtFilteredItems(){
  const all=Array.isArray(data.debtRecords)?data.debtRecords:[];
- return all.filter(item=>debtDirectionFilter==='all'||item.direction===debtDirectionFilter);
+ // Only active balances appear on the calendar; settled records remain stored for history.
+ return all.filter(item=>debtRemaining(item)>0.005&&(debtDirectionFilter==='all'||item.direction===debtDirectionFilter));
 }
 function saveDebtRecords(){
  try{localStorage.setItem(STORE,JSON.stringify(data));return true;}
@@ -5124,7 +5149,12 @@ function renderSavingsList(){
    if(rowItem&&rowItem.isReceivable){
     row.classList.add('is-receivable-row');
     const actions=row.querySelector('.savings-item-actions');
-    if(actions)actions.innerHTML='<span class="savely-receivable-linked-badge">LINKED TO DEBT</span>';
+    if(actions){
+     const badge=document.createElement('span');
+     badge.className='savely-receivable-linked-badge';
+     badge.textContent='LINKED TO DEBT';
+     actions.replaceWith(badge);
+    }
    }
    row.addEventListener('click',event=>{
     if(event.target.closest('button,a,input,select,textarea,.drag-handle'))return;
