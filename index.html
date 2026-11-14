@@ -3154,6 +3154,28 @@ button.link-btn{
 }
 </style>
 
+
+<style id="savely-linked-debt-actions-and-series-delete-v1">
+.savings-item-menu .menu-divider{height:1px;margin:5px 2px;background:var(--line,#e7edf1);pointer-events:none}
+.savings-item-menu .savings-item-menu-empty{padding:10px;color:var(--muted);font-size:11px}
+.savings-item-menu button.menu-delete{color:var(--red)}
+.savings-item-menu button.menu-delete:hover{background:#fff1f2}
+.savely-debt-series-history-dialog{width:min(640px,100%);max-height:88vh;overflow:auto}
+.savely-debt-series-totals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.savely-debt-series-totals>div{display:grid;gap:5px;min-width:0}
+.savely-debt-series-totals small{font-size:10px;color:var(--muted)}
+.savely-debt-series-totals strong{font-size:14px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.savely-debt-series-history-list,.savely-debt-series-payment-list{display:grid;gap:7px;margin-top:12px}
+.savely-debt-series-history-record,.savely-debt-series-payment-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel,#fff)}
+.savely-debt-series-history-record>div:first-child,.savely-debt-series-payment-row>div{display:grid;gap:4px;min-width:0}
+.savely-debt-series-history-record strong,.savely-debt-series-payment-row strong{font-size:11px}
+.savely-debt-series-history-record small,.savely-debt-series-payment-row small{font-size:10px;color:var(--muted);line-height:1.4}
+.savely-debt-series-history-amount{text-align:right}
+.savely-debt-series-payment-row>strong{color:var(--green);white-space:nowrap}
+.savely-debt-series-payment-heading{font-size:13px;margin:18px 0 8px}
+@media(max-width:560px){.savely-debt-series-totals{grid-template-columns:1fr}.savely-debt-series-history-record,.savely-debt-series-payment-row{align-items:flex-start}}
+</style>
+
 </head>
 <body>
 
@@ -4570,6 +4592,7 @@ function debtCard(item,surface='upcoming'){
    <button type="button" onclick="viewDebtHistory('${id}');closeDebtCardMenus()">${st==='paid'?'Payment history':'View history'}</button>
    <div class="menu-divider"></div>
    <button type="button" class="menu-danger" onclick="deleteDebtRecord('${id}');closeDebtCardMenus()">Delete record</button>
+   ${debtSeriesRecords(item).length>1?`<button type="button" class="menu-danger" onclick="closeDebtCardMenus();deleteDebtSchedule('${id}')">Delete entire schedule (${debtSeriesRecords(item).length})</button>`:''}
   </div>
  </div>`;
  return `<article class="debt-item-card${st==='due'?' is-due-today':''}"><div class="debt-item-main"><div class="debt-item-top"><span class="debt-direction-tag${isOwed?'':' lent'}">${directionLabel}</span><span class="debt-status ${st}">${debtStatusLabel(st)}</span></div><div class="debt-item-title" style="margin-top:6px">${esc(item.title||'Debt record')}</div><div class="debt-item-sub">${esc(item.kind||'Other')}${person}${installment} · Due ${fmtDate(item.dueDate)} · Original ${peso(item.amount)}</div></div><div><div class="debt-item-amount" style="color:${isOwed?'var(--red)':'var(--green)'}">${peso(debtRemaining(item))}</div><div class="debt-item-sub" style="text-align:right">Remaining</div>${menu}</div></article>`;
@@ -4726,6 +4749,7 @@ function debtPaidCard(item){
      <button type="button" class="debt-card-menu-button debt-paid-menu-button" aria-label="More options for completed record" aria-haspopup="true" aria-expanded="false" onclick="toggleDebtCardMenu(event,'${menuId}')">⋯</button>
      <div class="debt-card-menu" data-debt-menu="${menuId}">
       <button type="button" class="menu-danger" onclick="closeDebtCardMenus();deleteDebtRecord('${id}')">Delete record</button>
+      ${debtSeriesRecords(item).length>1?`<button type="button" class="menu-danger" onclick="closeDebtCardMenus();deleteDebtSchedule('${id}')">Delete entire schedule (${debtSeriesRecords(item).length})</button>`:''}
      </div>
     </div>
    </div>
@@ -5392,6 +5416,113 @@ function initSavelyDebtFormWizard(modal){
 }
 function closeDebtForm(){const modal=document.getElementById('savelyDebtFormModal');if(modal)modal.remove();}
 function editDebtRecord(id){openDebtForm(id);}
+function debtSeriesRecords(itemOrId){
+ const item=typeof itemOrId==='object'?itemOrId:(data.debtRecords||[]).find(x=>String(x.id)===String(itemOrId));
+ if(!item)return [];
+ if(item.seriesId){
+  return (data.debtRecords||[]).filter(record=>String(record.seriesId||'')===String(item.seriesId));
+ }
+ return [item];
+}
+function debtSeriesActiveRecords(itemOrId){
+ return debtSeriesRecords(itemOrId).filter(record=>debtRemaining(record)>0.005)
+  .sort((a,b)=>String(a.dueDate||'').localeCompare(String(b.dueDate||''))||Number(a.installmentNumber||0)-Number(b.installmentNumber||0));
+}
+function debtSeriesDeleteLabel(item,records){
+ const direction=item.direction==='lent'?'collection':'payment';
+ const title=item.title||item.counterparty||'debt';
+ return `${records.length} scheduled ${direction}${records.length===1?'':'s'} for "${title}"`;
+}
+function deleteDebtSchedule(id){
+ const item=(data.debtRecords||[]).find(record=>String(record.id)===String(id));
+ if(!item)return;
+ const records=debtSeriesRecords(item);
+ if(!records.length)return;
+ const label=debtSeriesDeleteLabel(item,records);
+ if(!confirm(`Delete the entire schedule?\n\n${label} will be permanently removed, including paid and unpaid installments and their payment history.${item.direction==='lent'?' The linked Money lent item will also be removed from Savings.':''}\n\nThis cannot be undone.`))return;
+ const snapshot=JSON.stringify(data);
+ const ids=new Set(records.map(record=>String(record.id)));
+ const seriesKey=String(item.seriesId||('single-'+item.id));
+ data.debtRecords=(data.debtRecords||[]).filter(record=>!ids.has(String(record.id)));
+ if(item.direction==='lent'){
+  data.savingsList=(data.savingsList||[]).filter(entry=>{
+   if(!entry.isReceivable)return true;
+   return String(entry.receivableSeriesId||'')!==seriesKey &&
+          String(entry.id||'')!==String(item.receivableItemId||'');
+  });
+ }
+ try{localStorage.setItem(STORE,JSON.stringify(data));}
+ catch(error){try{data=JSON.parse(snapshot);}catch(e){}toast('The entire schedule could not be deleted. No changes were saved.');return;}
+ closeDebtCardMenus();
+ closeSavingsItemMenus();
+ render();
+ toast(`Entire schedule deleted: ${records.length} record${records.length===1?'':'s'} removed.`);
+}
+function viewDebtSeriesHistory(id){
+ const item=(data.debtRecords||[]).find(record=>String(record.id)===String(id));
+ if(!item)return;
+ const records=debtSeriesRecords(item).sort((a,b)=>Number(a.installmentNumber||0)-Number(b.installmentNumber||0)||String(a.dueDate||'').localeCompare(String(b.dueDate||'')));
+ const totalOriginal=records.reduce((sum,record)=>sum+Math.max(0,Number(record.amount)||0),0);
+ const totalPaid=records.reduce((sum,record)=>sum+debtPaidAmount(record),0);
+ const totalRemaining=records.reduce((sum,record)=>sum+debtRemaining(record),0);
+ const paymentRows=records.flatMap(record=>(Array.isArray(record.payments)?record.payments:[]).map(payment=>({record,payment})))
+  .sort((a,b)=>String(b.payment.date||'').localeCompare(String(a.payment.date||''))||Number(b.payment.at||0)-Number(a.payment.at||0));
+ const modal=document.createElement('div');
+ modal.id='savelyDebtSeriesHistoryModal';modal.className='modal-backdrop';
+ modal.style.cssText='display:flex;z-index:30000;align-items:center;justify-content:center;padding:18px';
+ modal.innerHTML=`<div class="modal savely-debt-series-history-dialog" role="dialog" aria-modal="true" aria-labelledby="debtSeriesHistoryTitle">
+  <div class="panel-head"><div><div class="savely-debt-kicker">SCHEDULE HISTORY</div><h2 id="debtSeriesHistoryTitle">${esc(item.title||'Debt schedule')} · Full history</h2><div class="panel-sub">${esc(item.counterparty||'')} · ${records.length} scheduled record${records.length===1?'':'s'}</div></div><button type="button" class="btn btn-light" onclick="closeDebtSeriesHistory()">✕ Close</button></div>
+  <div class="debt-review-box savely-debt-series-totals">
+   <div><small>Original total</small><strong>${peso(totalOriginal)}</strong></div>
+   <div><small>Total ${item.direction==='lent'?'collected':'paid'}</small><strong>${peso(totalPaid)}</strong></div>
+   <div><small>Remaining</small><strong>${peso(totalRemaining)}</strong></div>
+  </div>
+  <div class="savely-debt-series-history-list">
+   ${records.map(record=>`<article class="savely-debt-series-history-record">
+    <div><strong>${record.totalInstallments>1?`Installment ${Number(record.installmentNumber)||'—'}/${record.totalInstallments}`:esc(record.title||'Record')}</strong><small>Due ${fmtDate(record.dueDate)} · ${debtStatusLabel(debtStatus(record))}</small></div>
+    <div class="savely-debt-series-history-amount"><strong>${peso(record.amount)}</strong><small>${debtRemaining(record)>0.005?`${peso(debtRemaining(record))} remaining`:'Completed'}</small></div>
+   </article>`).join('')}
+  </div>
+  <h3 class="savely-debt-series-payment-heading">Payment & collection activity</h3>
+  ${paymentRows.length?`<div class="savely-debt-series-payment-list">${paymentRows.map(({record,payment})=>`<div class="savely-debt-series-payment-row"><div><strong>${esc(fmtDate(payment.date))}</strong><small>${record.totalInstallments>1?`Installment ${record.installmentNumber}/${record.totalInstallments}`:esc(record.title||'Debt record')}${payment.destinationName?` · Deposited to ${esc(payment.destinationName)}`:''}${payment.note?` · ${esc(payment.note)}`:''}</small></div><strong>${peso(payment.amount)}</strong></div>`).join('')}</div>`:'<div class="debt-empty">No payments or collections recorded in this schedule yet.</div>'}
+  <div class="form-actions"><button type="button" class="btn btn-primary" onclick="closeDebtSeriesHistory()">Done</button></div>
+ </div>`;
+ modal.addEventListener('click',event=>{if(event.target===modal)closeDebtSeriesHistory();});
+ document.body.appendChild(modal);
+}
+function closeDebtSeriesHistory(){
+ const modal=document.getElementById('savelyDebtSeriesHistoryModal');
+ if(modal)modal.remove();
+}
+function linkedReceivableDebtRecords(receivable){
+ if(!receivable||!receivable.isReceivable)return [];
+ const series=String(receivable.receivableSeriesId||'');
+ return (data.debtRecords||[]).filter(record=>{
+  if(record.direction!=='lent')return false;
+  if(series)return String(record.seriesId||('single-'+record.id))===series;
+  return String(record.receivableItemId||'')===String(receivable.id);
+ }).sort((a,b)=>String(a.dueDate||'').localeCompare(String(b.dueDate||''))||Number(a.installmentNumber||0)-Number(b.installmentNumber||0));
+}
+function savingsLinkedDebtMenuHTML(receivable){
+ const all=linkedReceivableDebtRecords(receivable);
+ const active=all.filter(record=>debtRemaining(record)>0.005);
+ const actionRecord=active[0]||all[0];
+ if(!actionRecord){
+  return '<div class="savings-item-menu-empty">No linked Debt records found.</div>';
+ }
+ const id=esc(String(actionRecord.id));
+ const seriesCount=all.length;
+ return `${active.length?`
+  <button type="button" onclick="closeSavingsItemMenus();markDebtAsPaid('${id}','upcoming')">Mark as collected</button>
+  <button type="button" onclick="closeSavingsItemMenus();openDebtPayment('${id}')">Partial collection</button>
+  <div class="menu-divider"></div>`:''}
+  <button type="button" onclick="closeSavingsItemMenus();editDebtRecord('${id}')">Edit record</button>
+  <button type="button" onclick="closeSavingsItemMenus();viewDebtSeriesHistory('${id}')">View history</button>
+  <div class="menu-divider"></div>
+  <button type="button" class="menu-delete" onclick="closeSavingsItemMenus();deleteDebtRecord('${id}')">Delete record</button>
+  ${seriesCount>1?`<button type="button" class="menu-delete" onclick="closeSavingsItemMenus();deleteDebtSchedule('${id}')">Delete entire schedule (${seriesCount})</button>`:''}`;
+}
+
 function deleteDebtRecord(id){
  const item=(data.debtRecords||[]).find(x=>String(x.id)===String(id));if(!item)return;
  if(!confirm(`Delete "${item.title}" from your debt calendar?`))return;
@@ -6420,7 +6551,7 @@ function renderSavingsList(){
  renderSavingsTrend();
  renderOverallTrend();
  const target=document.getElementById('savingsListTable');
- target.innerHTML=selected.length?`<table><thead><tr><th>Item / source</th><th>Date added</th><th class="financial-trend-col" aria-label="Balance trend"></th><th style="text-align:right">Amount</th>${activeFinancialCategory==='Savings'?'<th>Interest estimate</th>':''}<th></th></tr></thead><tbody>${selected.map(item=>`<tr data-financial-item-id="${esc(item.id)}" data-trend-bank="${esc(item.isGoalAllocation?item.name:(item.bankName||item.name))}" title="Click to focus this item on the graph" draggable="true" class="financial-draggable-row" style="cursor:pointer"><td><div class="tx-title" style="display:flex;align-items:center;min-width:180px">${financialBankLogo(item.bankName||item.name)}<span>${item.isGoalAllocation?`<span class="goal-linked-item">${esc(item.name)}</span><div class="footer-note">Linked from Savings Goals</div>`:esc(item.name)}</span></div></td><td>${fmtDate(item.date)}</td><td class="financial-trend-col" style="text-align:center;width:42px">${financialItemTrendIndicator(item)}</td><td style="text-align:right;font-weight:800;color:${item.category==='Debt'?'var(--red)':'var(--text)'}"><span style="display:inline-flex;align-items:center;justify-content:flex-end;gap:6px"><span>${item.category==='Debt'?'−':'+'}${peso(item.amount)}</span></span></td>${activeFinancialCategory==='Savings'?`<td>${item.isReceivable?'<span class="muted">Receivable · No bank interest</span>':(/^maya$/i.test(String(item.bankName||item.name||'').trim())||/maya savings/i.test(String(item.bankName||item.name||'')))?mayaInterestEstimate(item.amount,item.mayaBonusRate||3):(interestEstimate(item.amount,getInterestRate(item.bankName||item.name,item.category))||'<span class="muted">Rate unavailable</span>')}</td>`:''}<td style="text-align:right"><div class="savings-item-actions"><button type="button" class="savings-item-menu-button" aria-label="Savings item actions" aria-expanded="false" onclick="toggleSavingsItemMenu(event,'${esc(String(item.id))}')">⋯</button><div class="savings-item-menu" id="savings-item-menu-${esc(String(item.id))}">${item.isGoalAllocation?`<button type="button" class="apply-savings-goal-action is-disabled" disabled aria-disabled="true" title="This bank is already linked to a savings goal">Apply to savings goal ✓</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationInterest('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">View interest</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationHistory('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editGoal('${esc(String(item.goalId))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();removeGoalBankAllocation('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">Delete</button>`:`${activeFinancialCategory==='Savings'?`<button type="button" class="apply-savings-goal-action" data-savings-item-id="${esc(String(item.id))}" onclick="event.preventDefault();event.stopPropagation();closeSavingsItemMenus();askAddSavingsToGoal(this.dataset.savingsItemId)">Apply to savings goal</button><button type="button" onclick="closeSavingsItemMenus();openSavingsTransfer('${esc(String(item.id))}')">Transfer</button>`:''}${activeFinancialCategory==='Savings'&&!/^(cash|coins?|coins?\s*\(.*\)|₱1 coin.*|1 coin.*)$/i.test(String(item.name||'').trim())?`<button type="button" onclick="closeSavingsItemMenus();openSavingsInterest('${esc(String(item.id))}')">View interest</button>`:''}<button type="button" onclick="closeSavingsItemMenus();openSavingsHistory('${esc(String(item.id))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editFinancialItem('${esc(String(item.id))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();deleteSavingsItem('${esc(String(item.id))}')">Delete</button>`}</div></div></td></tr>`).join('')}</tbody></table><div class="between savely-items-updated-footer" style="margin-top:14px;justify-content:flex-end"><span style="color:var(--muted)">Last updated</span><strong id="savingsItemsLastUpdated" style="font-weight:700">${getSavingsItemsLastUpdatedLabel(selected)}</strong></div>`:`<div class="empty">No ${activeFinancialCategory.toLowerCase()} items yet. Click Add to create one.</div>`;
+ target.innerHTML=selected.length?`<table><thead><tr><th>Item / source</th><th>Date added</th><th class="financial-trend-col" aria-label="Balance trend"></th><th style="text-align:right">Amount</th>${activeFinancialCategory==='Savings'?'<th>Interest estimate</th>':''}<th></th></tr></thead><tbody>${selected.map(item=>`<tr data-financial-item-id="${esc(item.id)}" data-trend-bank="${esc(item.isGoalAllocation?item.name:(item.bankName||item.name))}" title="Click to focus this item on the graph" draggable="true" class="financial-draggable-row" style="cursor:pointer"><td><div class="tx-title" style="display:flex;align-items:center;min-width:180px">${financialBankLogo(item.bankName||item.name)}<span>${item.isGoalAllocation?`<span class="goal-linked-item">${esc(item.name)}</span><div class="footer-note">Linked from Savings Goals</div>`:esc(item.name)}</span></div></td><td>${fmtDate(item.date)}</td><td class="financial-trend-col" style="text-align:center;width:42px">${financialItemTrendIndicator(item)}</td><td style="text-align:right;font-weight:800;color:${item.category==='Debt'?'var(--red)':'var(--text)'}"><span style="display:inline-flex;align-items:center;justify-content:flex-end;gap:6px"><span>${item.category==='Debt'?'−':'+'}${peso(item.amount)}</span></span></td>${activeFinancialCategory==='Savings'?`<td>${item.isReceivable?'<span class="muted">Receivable · No bank interest</span>':(/^maya$/i.test(String(item.bankName||item.name||'').trim())||/maya savings/i.test(String(item.bankName||item.name||'')))?mayaInterestEstimate(item.amount,item.mayaBonusRate||3):(interestEstimate(item.amount,getInterestRate(item.bankName||item.name,item.category))||'<span class="muted">Rate unavailable</span>')}</td>`:''}<td style="text-align:right"><div class="savings-item-actions"><button type="button" class="savings-item-menu-button" aria-label="Savings item actions" aria-expanded="false" onclick="toggleSavingsItemMenu(event,'${esc(String(item.id))}')">⋯</button><div class="savings-item-menu" id="savings-item-menu-${esc(String(item.id))}">${item.isReceivable?savingsLinkedDebtMenuHTML(item):item.isGoalAllocation?`<button type="button" class="apply-savings-goal-action is-disabled" disabled aria-disabled="true" title="This bank is already linked to a savings goal">Apply to savings goal ✓</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationInterest('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">View interest</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationHistory('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editGoal('${esc(String(item.goalId))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();removeGoalBankAllocation('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">Delete</button>`:`${activeFinancialCategory==='Savings'?`<button type="button" class="apply-savings-goal-action" data-savings-item-id="${esc(String(item.id))}" onclick="event.preventDefault();event.stopPropagation();closeSavingsItemMenus();askAddSavingsToGoal(this.dataset.savingsItemId)">Apply to savings goal</button><button type="button" onclick="closeSavingsItemMenus();openSavingsTransfer('${esc(String(item.id))}')">Transfer</button>`:''}${activeFinancialCategory==='Savings'&&!/^(cash|coins?|coins?\s*\(.*\)|₱1 coin.*|1 coin.*)$/i.test(String(item.name||'').trim())?`<button type="button" onclick="closeSavingsItemMenus();openSavingsInterest('${esc(String(item.id))}')">View interest</button>`:''}<button type="button" onclick="closeSavingsItemMenus();openSavingsHistory('${esc(String(item.id))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editFinancialItem('${esc(String(item.id))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();deleteSavingsItem('${esc(String(item.id))}')">Delete</button>`}</div></div></td></tr>`).join('')}</tbody></table><div class="between savely-items-updated-footer" style="margin-top:14px;justify-content:flex-end"><span style="color:var(--muted)">Last updated</span><strong id="savingsItemsLastUpdated" style="font-weight:700">${getSavingsItemsLastUpdatedLabel(selected)}</strong></div>`:`<div class="empty">No ${activeFinancialCategory.toLowerCase()} items yet. Click Add to create one.</div>`;
  // Clicking a savings row focuses the growth graph on that bank; clicking it again restores all banks.
  const tbody=target.querySelector('tbody');
  if(tbody){
