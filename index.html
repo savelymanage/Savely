@@ -2476,6 +2476,74 @@ button.link-btn{
 }
 </style>
 
+
+<style id="savely-overview-kpi-color-system-v2">
+#stats>.stat:nth-child(1),
+#stats>.stat:nth-child(2),
+#stats>.stat:nth-child(3){
+ position:relative!important;
+ overflow:hidden!important;
+ border:1px solid transparent!important;
+ border-radius:19px!important;
+ box-shadow:0 10px 25px rgba(20,40,70,.08)!important;
+}
+#stats>.stat:nth-child(1){
+ background:linear-gradient(130deg,#087b59 0%,#10966c 54%,#31b887 100%)!important;
+ border-color:#168765!important;
+}
+#stats>.stat:nth-child(2){
+ background:linear-gradient(130deg,#3159bd 0%,#436fe0 54%,#7395f2 100%)!important;
+ border-color:#5276d7!important;
+}
+#stats>.stat:nth-child(3){
+ background:linear-gradient(130deg,#c93e50 0%,#e45161 54%,#f17b82 100%)!important;
+ border-color:#d84c5b!important;
+}
+#stats>.stat:nth-child(1)::after,
+#stats>.stat:nth-child(2)::after,
+#stats>.stat:nth-child(3)::after{
+ content:"";position:absolute;right:-48px;top:-92px;width:170px;height:170px;
+ border-radius:50%;background:rgba(255,255,255,.11);pointer-events:none;
+}
+#stats>.stat:nth-child(1) .stat-top,
+#stats>.stat:nth-child(1) .stat-foot,
+#stats>.stat:nth-child(1) .stat-value,
+#stats>.stat:nth-child(1) .savings-total-asof,
+#stats>.stat:nth-child(2) .stat-top,
+#stats>.stat:nth-child(2) .stat-foot,
+#stats>.stat:nth-child(2) .stat-value,
+#stats>.stat:nth-child(3) .stat-top,
+#stats>.stat:nth-child(3) .stat-foot,
+#stats>.stat:nth-child(3) .stat-value{
+ color:#fff!important;position:relative!important;z-index:1;
+}
+#stats>.stat:nth-child(1) .stat-foot,
+#stats>.stat:nth-child(2) .stat-foot,
+#stats>.stat:nth-child(3) .stat-foot{opacity:.9}
+#stats>.stat:nth-child(1) .stat-icon,
+#stats>.stat:nth-child(2) .stat-icon,
+#stats>.stat:nth-child(3) .stat-icon{
+ position:relative;z-index:1;background:rgba(255,255,255,.18)!important;
+ color:#fff!important;border:1px solid rgba(255,255,255,.2);
+}
+</style>
+
+
+<style id="savely-debt-due-today-green-v1">
+#page-debt .debt-status.due,
+#page-debt .debt-day-chip.due,
+#page-debt .debt-day-chip.today{
+ background:#e2f7ec!important;color:#087a50!important;
+ border:1px solid #bce8d0!important;
+}
+#page-debt .debt-item-card.is-due-today{
+ border-color:#8fd6b0!important;
+ background:linear-gradient(100deg,#effaf4 0%,#fff 76%)!important;
+ box-shadow:inset 3px 0 0 #15966f,0 4px 14px rgba(21,150,111,.06)!important;
+}
+#page-debt .debt-dot-today{background:#15966f!important}
+</style>
+
 </head>
 <body>
 
@@ -3786,7 +3854,7 @@ function debtCard(item){
    <button type="button" class="menu-danger" onclick="deleteDebtRecord('${id}');closeDebtCardMenus()">Delete record</button>
   </div>
  </div>`;
- return `<article class="debt-item-card"><div class="debt-item-main"><div class="debt-item-top"><span class="debt-direction-tag${isOwed?'':' lent'}">${directionLabel}</span><span class="debt-status ${st}">${debtStatusLabel(st)}</span></div><div class="debt-item-title" style="margin-top:6px">${esc(item.title||'Debt record')}</div><div class="debt-item-sub">${esc(item.kind||'Other')}${person}${installment} · Due ${fmtDate(item.dueDate)} · Original ${peso(item.amount)}</div></div><div><div class="debt-item-amount" style="color:${isOwed?'var(--red)':'var(--green)'}">${peso(debtRemaining(item))}</div><div class="debt-item-sub" style="text-align:right">Remaining</div>${menu}</div></article>`;
+ return `<article class="debt-item-card${st==='due'?' is-due-today':''}"><div class="debt-item-main"><div class="debt-item-top"><span class="debt-direction-tag${isOwed?'':' lent'}">${directionLabel}</span><span class="debt-status ${st}">${debtStatusLabel(st)}</span></div><div class="debt-item-title" style="margin-top:6px">${esc(item.title||'Debt record')}</div><div class="debt-item-sub">${esc(item.kind||'Other')}${person}${installment} · Due ${fmtDate(item.dueDate)} · Original ${peso(item.amount)}</div></div><div><div class="debt-item-amount" style="color:${isOwed?'var(--red)':'var(--green)'}">${peso(debtRemaining(item))}</div><div class="debt-item-sub" style="text-align:right">Remaining</div>${menu}</div></article>`;
 }
 function closeDebtCardMenus(){
  document.querySelectorAll('.debt-card-menu.is-floating').forEach(menu=>{
@@ -3942,13 +4010,31 @@ const SAVELY_DEBT_PROVIDER_GROUPS={
   {name:'Other digital lender',short:'+',color:'#758097',kind:'Digital bank loan'}
  ],
  'E-commerce / PayLater':[
+  {name:'MariLoan',short:'ML',color:'#f58220',kind:'MariLoan'},
+  {name:'MariCredit',short:'MC',color:'#f58220',kind:'MariCredit'},
+  {name:'MariCard Credit',short:'MC',color:'#f58220',kind:'MariCard Credit'},
   {name:'Shopee SPayLater',short:'S',color:'#ee4d2d',kind:'Shopee SPayLater'},
+  {name:'Shopee SLoan',short:'SL',color:'#ee4d2d',kind:'SLoan / Billease'},
   {name:'Lazada LazPayLater',short:'L',color:'#f04b8b',kind:'Lazada LazPayLater'},
   {name:'Atome',short:'A',color:'#29264a',kind:'Atome'},
   {name:'BillEase',short:'BE',color:'#6540a5',kind:'SLoan / Billease'},
-  {name:'Shopee SLoan',short:'SL',color:'#ee4d2d',kind:'SLoan / Billease'},
   {name:'Home Credit',short:'HC',color:'#c51f36',kind:'Home Credit'},
-  {name:'Other PayLater',short:'+',color:'#758097',kind:'Other'}
+  {name:'Akulaku',short:'AK',color:'#e24e42',kind:'Akulaku'},
+  {name:'Kredivo PH',short:'K',color:'#283b81',kind:'Kredivo PH'},
+  {name:'Plentina',short:'P',color:'#2069bd',kind:'Plentina'},
+  {name:'TendoPay',short:'TP',color:'#1a8c69',kind:'TendoPay'},
+  {name:'Cashalo',short:'C',color:'#137b73',kind:'Cashalo'},
+  {name:'Tala',short:'T',color:'#6551ad',kind:'Tala'},
+  {name:'JuanHand',short:'JH',color:'#287d58',kind:'JuanHand'},
+  {name:'Skyro',short:'SK',color:'#3b6eb4',kind:'Skyro'},
+  {name:'Salmon Finance',short:'SF',color:'#e16f56',kind:'Salmon Finance'},
+  {name:'ACOM',short:'AC',color:'#1f5c9f',kind:'ACOM'},
+  {name:'CashMart',short:'CM',color:'#285b8e',kind:'CashMart'},
+  {name:'MoneyCat',short:'MC',color:'#7353a6',kind:'MoneyCat'},
+  {name:'CashMe',short:'CM',color:'#1e8a7a',kind:'CashMe'},
+  {name:'GrabFinance',short:'GF',color:'#168765',kind:'GrabFinance'},
+  {name:'Bukas',short:'B',color:'#f2a43a',kind:'Bukas'},
+  {name:'Other loan / credit',short:'+',color:'#758097',kind:'Other'}
  ],
  'Other':[
   {name:'SSS / Pag-IBIG',short:'SSS',color:'#087d59',kind:'SSS / Pag-IBIG loan'},
@@ -3961,12 +4047,12 @@ const SAVELY_DEBT_PROVIDER_GROUPS={
 const SAVELY_DEBT_KIND_BY_GROUP={
  'Banks':['Bank / salary loan','Credit card'],
  'Digital Banks':['Digital bank loan','GCash GLoan / GGives','Maya Easy Credit','Credit card'],
- 'E-commerce / PayLater':['Shopee SPayLater','Lazada LazPayLater','Atome','SLoan / Billease','Home Credit','Other'],
+ 'E-commerce / PayLater':['MariLoan','MariCredit','MariCard Credit','Shopee SPayLater','Lazada LazPayLater','Atome','SLoan / Billease','Home Credit','Akulaku','Kredivo PH','Plentina','TendoPay','Cashalo','Tala','JuanHand','Skyro','Salmon Finance','ACOM','CashMart','MoneyCat','CashMe','GrabFinance','Bukas','Other'],
  'Other':['SSS / Pag-IBIG loan','Tala / online lending app','Utility / subscription bill','Personal loan / money lent','Other']
 };
 function savelyDebtProviderGroup(kind,counterparty){
  const k=String(kind||'').toLowerCase(),c=String(counterparty||'').toLowerCase();
- if(/shopee|spaylater|lazada|lazpaylater|atome|billease|sloan|home credit|paylater/.test(k+' '+c))return 'E-commerce / PayLater';
+ if(/shopee|spaylater|lazada|lazpaylater|atome|billease|sloan|home credit|paylater|mariloan|maricredit|maricard|akulaku|kredivo|plentina|tendopay|cashalo|tala|juanhand|skyro|salmon|acom|cashmart|moneycat|cashme|grabfinance|bukas/.test(k+' '+c))return 'E-commerce / PayLater';
  if(/gcash|maya|digital bank|gotyme|maribank|cimb|tonik|uno digital|uniondigital|ownbank|netbank|diskartech|komo/.test(k+' '+c))return 'Digital Banks';
  if(/bank|credit card|bdo|bpi|metrobank|unionbank|rcbc|pnb|landbank|security bank|china bank|eastwest|psbank|aub|pbcom|philtrust/.test(k+' '+c))return 'Banks';
  return 'Other';
@@ -4044,7 +4130,7 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
       <div class="savely-debt-provider-tabs" id="debtProviderTabs" role="group" aria-label="Debt source category">
        <button type="button" class="active" data-debt-provider-group="Banks">Banks</button>
        <button type="button" data-debt-provider-group="Digital Banks">Digital Banks</button>
-       <button type="button" data-debt-provider-group="E-commerce / PayLater">E-commerce / PayLater</button>
+       <button type="button" data-debt-provider-group="E-commerce / PayLater">E-commerce / Loans &amp; Credit</button>
        <button type="button" data-debt-provider-group="Other">Other</button>
       </div>
       <div class="savely-debt-provider-grid" id="debtProviderGrid" aria-label="Choose lender or platform"></div>
