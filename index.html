@@ -3226,11 +3226,7 @@ button.link-btn{
 .savely-transfer-review-actions{justify-content:flex-end;margin-top:18px}
 .savely-transfer-review-actions .btn{min-width:128px}
 .savely-waze-traffic-view{position:relative}
-.savely-waze-current-location-pin{
- position:absolute;left:50%;top:50%;z-index:5;transform:translate(-50%,-100%);
- width:42px;height:50px;display:grid;place-items:center;pointer-events:none;
- filter:drop-shadow(0 3px 5px rgba(0,0,0,.25))
-}
+
 .savely-waze-current-location-pin[hidden]{display:none!important}
 .savely-waze-current-location-pin svg{display:block;width:42px;height:50px}
 @media(max-width:620px){
@@ -3245,6 +3241,36 @@ button.link-btn{
 <style id="savely-weather-cache-status-style">
 #savelyForecastLoading{line-height:1.55}
 #savelyForecastLoading[style*="display: block"]{color:var(--muted)}
+</style>
+
+
+<style id="savely-shopee-products-and-debt-colors">
+.savely-shopee-products{border:1px solid #cfe9dd;border-radius:13px;background:linear-gradient(145deg,#f7fcf9,#f1faf5);padding:13px;margin:0 0 10px}
+.savely-shopee-products[hidden]{display:none!important}
+.savely-shopee-products-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.savely-shopee-products-head strong{display:block;color:var(--text);font-size:12px;font-weight:850}
+.savely-shopee-products-head small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.savely-shopee-add-product{min-height:36px!important;height:36px!important;padding:0 12px!important;font-size:11px!important}
+.savely-shopee-product-list{display:grid;gap:8px}
+.savely-shopee-product-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(130px,.42fr) 36px;gap:8px;align-items:center}
+.savely-shopee-product-row input{width:100%;min-width:0;min-height:40px}
+.savely-shopee-remove-product{width:36px;height:40px;border:1px solid #f3d0d0;background:#fff6f6;color:#db414b;border-radius:9px;font-size:17px;font-weight:800;cursor:pointer}
+.savely-shopee-products-total{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #dceee5;margin-top:10px;padding-top:10px;font-size:11px;color:var(--muted)}
+.savely-shopee-products-total strong{font-size:14px;color:#07875f;font-weight:900}
+.savely-shopee-saved-products{margin-top:10px;padding:10px;border:1px solid var(--line);border-radius:9px;background:#f8fbfa;font-size:11px}
+.savely-shopee-saved-products>strong{display:block;margin-bottom:6px}
+.savely-shopee-saved-products>div{display:flex;justify-content:space-between;gap:12px;padding:4px 0;color:var(--muted)}
+.savely-shopee-saved-products b{color:var(--text);white-space:nowrap}
+#page-debt .debt-summary-cards>.stat{border-top:4px solid transparent;position:relative}
+#page-debt .debt-summary-cards>.stat:nth-child(1){border-top-color:#ef4444;background:linear-gradient(180deg,#fff8f8 0%,#fff 62%)}
+#page-debt .debt-summary-cards>.stat:nth-child(1) .stat-value{color:#e33f4b!important}
+#page-debt .debt-summary-cards>.stat:nth-child(2){border-top-color:#09966a;background:linear-gradient(180deg,#f4fcf8 0%,#fff 62%)}
+#page-debt .debt-summary-cards>.stat:nth-child(2) .stat-value{color:#07875f!important}
+#page-debt .debt-summary-cards>.stat:nth-child(3){border-top-color:#3b68d9;background:linear-gradient(180deg,#f5f8ff 0%,#fff 62%)}
+#page-debt .debt-summary-cards>.stat:nth-child(3) .stat-value{color:#315fcb!important}
+#page-debt .debt-summary-cards>.stat:nth-child(4){border-top-color:#f59e0b;background:linear-gradient(180deg,#fffaf1 0%,#fff 62%)}
+#page-debt .debt-summary-cards>.stat:nth-child(4) .stat-value{color:#d97706!important}
+@media(max-width:600px){.savely-shopee-product-row{grid-template-columns:minmax(0,1fr) 112px 34px;gap:6px}.savely-shopee-product-row input{font-size:12px;padding:9px}.savely-shopee-remove-product{width:34px}}
 </style>
 
 </head>
@@ -3391,9 +3417,6 @@ button.link-btn{
        <div id="savelyLiveLocationMap" class="savely-live-location-map" role="region" aria-label="Savely GPS map showing your current position and movement trail"></div>
        <div id="savelyWazeTrafficView" class="savely-waze-traffic-view" role="region" aria-label="Waze live traffic map" hidden>
         <iframe id="savelyWazeTrafficFrame" title="Waze Live Map traffic view" src="https://embed.waze.com/iframe?zoom=5&amp;lat=12.8797&amp;lon=121.7740&amp;pin=1" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
-        <div id="savelyWazeCurrentLocationPin" class="savely-waze-current-location-pin" hidden aria-label="Your current device location">
-         <svg viewBox="0 0 44 52" aria-hidden="true"><path d="M22 2.5C11.6 2.5 3.5 10.4 3.5 20.1c0 13.1 18.5 29.2 18.5 29.2s18.5-16.1 18.5-29.2C40.5 10.4 32.4 2.5 22 2.5Z" fill="#07885f" stroke="#ffffff" stroke-width="2.8" stroke-linejoin="round"/><circle cx="22" cy="19.5" r="7.2" fill="#ffffff"/><circle cx="22" cy="19.5" r="3.1" fill="#07885f"/></svg>
-        </div>
        </div>
        <div class="live-location-map-controls" id="savelyGpsMapControls" aria-label="GPS map controls">
         <div class="live-location-map-live-state"><span class="live-location-status-dot" id="liveLocationStatusDot"></span><span><strong id="liveLocationStatus">Connecting to GPS</strong><small id="liveLocationStatusHelp">Waiting for browser permission.</small></span></div>
@@ -4675,7 +4698,7 @@ function renderDebtCalendar(){
 function debtCard(item,surface='upcoming'){
  const st=debtStatus(item),isOwed=item.direction==='owed',directionLabel=isOwed?'I OWE':'OWED TO ME';
  const person=item.counterparty?` · ${esc(item.counterparty)}`:'';
- const installment=item.totalInstallments>1?` · Installment ${item.installmentNumber}/${item.totalInstallments}`:'';
+ const installment=item.totalInstallments>1?` · Installment ${item.installmentNumber}/${item.totalInstallments}`:''; const productCount=Array.isArray(item.shopeeProducts)&&item.shopeeProducts.length?` · ${item.shopeeProducts.length} product${item.shopeeProducts.length===1?'':'s'}`:'';
  const id=esc(item.id);
  const menu=`<div class="debt-card-menu-wrap">
   <button type="button" class="debt-card-menu-button" aria-label="More options for ${esc(item.title||'debt record')}" aria-haspopup="true" aria-expanded="false" onclick="toggleDebtCardMenu(event,'${id}')">⋯</button>
@@ -4688,7 +4711,7 @@ function debtCard(item,surface='upcoming'){
    ${debtSeriesRecords(item).length>1?`<button type="button" class="menu-danger" onclick="closeDebtCardMenus();deleteDebtSchedule('${id}')">Delete entire schedule (${debtSeriesRecords(item).length})</button>`:''}
   </div>
  </div>`;
- return `<article class="debt-item-card${st==='due'?' is-due-today':''}"><div class="debt-item-main"><div class="debt-item-top"><span class="debt-direction-tag${isOwed?'':' lent'}">${directionLabel}</span><span class="debt-status ${st}">${debtStatusLabel(st)}</span></div><div class="debt-item-title" style="margin-top:6px">${esc(item.title||'Debt record')}</div><div class="debt-item-sub">${esc(item.kind||'Other')}${person}${installment} · Due ${fmtDate(item.dueDate)} · Original ${peso(item.amount)}</div></div><div><div class="debt-item-amount" style="color:${isOwed?'var(--red)':'var(--green)'}">${peso(debtRemaining(item))}</div><div class="debt-item-sub" style="text-align:right">Remaining</div>${menu}</div></article>`;
+ return `<article class="debt-item-card${st==='due'?' is-due-today':''}"><div class="debt-item-main"><div class="debt-item-top"><span class="debt-direction-tag${isOwed?'':' lent'}">${directionLabel}</span><span class="debt-status ${st}">${debtStatusLabel(st)}</span></div><div class="debt-item-title" style="margin-top:6px">${esc(item.title||'Debt record')}</div><div class="debt-item-sub">${esc(item.kind||'Other')}${person}${installment}${productCount} · Due ${fmtDate(item.dueDate)} · Original ${peso(item.amount)}</div></div><div><div class="debt-item-amount" style="color:${isOwed?'var(--red)':'var(--green)'}">${peso(debtRemaining(item))}</div><div class="debt-item-sub" style="text-align:right">Remaining</div>${menu}</div></article>`;
 }
 function closeDebtCardMenus(){
  document.querySelectorAll('.debt-card-menu.is-floating').forEach(menu=>{
@@ -5193,12 +5216,19 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
     <div class="field full"><label for="debtCounterparty" id="debtCounterpartyLabel">${isOwed?'Lender / platform':'Borrower / person who owes you'}</label><input id="debtCounterparty" maxlength="70" placeholder="${isOwed?'e.g. Shopee, Lazada, GCash, or bank':'e.g. Friend, family member, or colleague'}"></div>
     ${isOwed&&!current?`<div class="field full savely-auto-interest-card">
       <div class="savely-auto-rate-head"><strong>Automatic interest &amp; repayment estimate</strong><span class="savely-auto-rate-pill">AUTO RATE</span></div>
+      <div class="savely-shopee-products field full" id="savelyShopeeProductsPanel" hidden>
+       <div class="savely-shopee-products-head"><div><strong>Products purchased</strong><small>Add the items charged to your Shopee SPayLater account.</small></div><button type="button" class="btn btn-primary savely-shopee-add-product" id="savelyShopeeAddProduct">＋ Add product</button></div>
+       <div class="savely-shopee-product-list" id="savelyShopeeProductList"></div>
+       <div class="savely-shopee-products-total"><span>Products total</span><strong id="savelyShopeeProductsTotal">₱0.00</strong></div>
+       <p class="savely-auto-rate-note">Product prices are added together and used as the principal for the automatic repayment estimate. You can leave this section empty and enter one principal amount instead.</p>
+      </div>
       <div class="field"><label for="debtPrincipalLabel" id="debtPrincipalLabel">Principal / amount borrowed (₱)</label><input id="debtPrincipalAmount" type="number" min="0.01" step="0.01" required placeholder="e.g. 3500"></div>
       <input id="debtTotalAmount" type="hidden" value="">
       <div id="debtAutoInterestSummary" class="savely-auto-interest-summary" aria-live="polite"></div>
      </div>`:isOwed&&current?`<div class="field full savely-auto-interest-card">
       <div class="savely-auto-rate-head"><strong>Recorded loan details</strong><span class="savely-auto-rate-pill neutral">SAVED</span></div>
       <p class="savely-auto-rate-note">This is an existing scheduled installment. Its amount already includes any interest recorded when it was created. Editing this amount will not apply interest a second time.</p>
+      ${Array.isArray(current.shopeeProducts)&&current.shopeeProducts.length?`<div class="savely-shopee-saved-products"><strong>SPayLater products</strong>${current.shopeeProducts.map(product=>`<div><span>${esc(product.name||'Product')}</span><b>${peso(product.amount)}</b></div>`).join('')}</div>`:''}
      </div>`:''}
     ${!(isOwed&&!current)?`<div class="field"><label for="debtTotalAmount">${current?'Scheduled amount (₱)':isOwed?'Total amount to pay (₱)':'Total amount to collect (₱)'}</label><input id="debtTotalAmount" type="number" min="0.01" step="0.01" required value="${current?Number(current.amount).toFixed(2):''}" placeholder="e.g. 3500"></div>`:''}
     <div class="field"><label for="debtFirstDue">${isOwed?'First due date':'Expected collection date'}</label><input id="debtFirstDue" type="date" required value="${current?esc(current.dueDate):(defaultDate||debtLocalISO(new Date()))}"></div>
@@ -5415,6 +5445,69 @@ function initSavelyDebtFormWizard(modal){
   if(lenderField)lenderField.addEventListener('change',applyMariLoanDefaults);
   updateSavelyDebtAutoQuote(modal);
  }
+ const shopeeProductPanel=modal.querySelector('#savelyShopeeProductsPanel');
+ const shopeeProductList=modal.querySelector('#savelyShopeeProductList');
+ const shopeeAddProduct=modal.querySelector('#savelyShopeeAddProduct');
+ const shopeeProductsTotal=modal.querySelector('#savelyShopeeProductsTotal');
+ const debtKindForProducts=modal.querySelector('#debtKind');
+ const isShopeeSpayLater=()=>String(debtKindForProducts&&debtKindForProducts.value||'').toLowerCase().includes('shopee spaylater');
+ function collectShopeeProducts(){
+  if(!shopeeProductList)return [];
+  return [...shopeeProductList.querySelectorAll('.savely-shopee-product-row')].map(row=>({
+   name:String(row.querySelector('[data-shopee-product-name]')?.value||'').trim(),
+   amount:Math.max(0,Number(row.querySelector('[data-shopee-product-amount]')?.value)||0)
+  })).filter(product=>product.name||product.amount>0);
+ }
+ function syncShopeeProductsToPrincipal(){
+  if(!shopeeProductList||!principalField)return;
+  const rows=[...shopeeProductList.querySelectorAll('.savely-shopee-product-row')];
+  const amountTotal=Math.round(rows.reduce((sum,row)=>sum+Math.max(0,Number(row.querySelector('[data-shopee-product-amount]')?.value)||0),0)*100)/100;
+  const hasProductRows=rows.length>0;
+  if(shopeeProductsTotal)shopeeProductsTotal.textContent=peso(amountTotal);
+  if(hasProductRows){
+   principalField.value=amountTotal>0?amountTotal.toFixed(2):'';
+   principalField.readOnly=true;
+   principalField.setAttribute('aria-describedby','savelyShopeeProductPrincipalHelp');
+  }else{
+   principalField.readOnly=false;
+   principalField.removeAttribute('aria-describedby');
+  }
+  updateSavelyDebtAutoQuote(modal);
+  updateSchedulePreview();
+ }
+ function addShopeeProductRow(product={}){
+  if(!shopeeProductList)return;
+  const row=document.createElement('div');
+  row.className='savely-shopee-product-row';
+  row.innerHTML=`<input type="text" maxlength="100" data-shopee-product-name required placeholder="Product name" aria-label="Shopee product name"><input type="number" min="0.01" step="0.01" inputmode="decimal" data-shopee-product-amount required placeholder="Price (₱)" aria-label="Shopee product price"><button type="button" class="savely-shopee-remove-product" aria-label="Remove product" title="Remove product">×</button>`;
+  row.querySelector('[data-shopee-product-name]').value=String(product.name||'');
+  row.querySelector('[data-shopee-product-amount]').value=Number(product.amount)>0?Number(product.amount).toFixed(2):'';
+  row.querySelector('.savely-shopee-remove-product').addEventListener('click',()=>{row.remove();syncShopeeProductsToPrincipal();});
+  row.addEventListener('input',syncShopeeProductsToPrincipal);
+  shopeeProductList.appendChild(row);
+  syncShopeeProductsToPrincipal();
+  row.querySelector('[data-shopee-product-name]').focus({preventScroll:true});
+ }
+ function syncShopeeProductVisibility(){
+  if(!shopeeProductPanel)return;
+  const show=isShopeeSpayLater();
+  shopeeProductPanel.hidden=!show;
+  if(!show&&principalField){
+   principalField.readOnly=false;
+   principalField.removeAttribute('aria-describedby');
+  }
+  if(show&&shopeeProductList&&shopeeProductList.children.length===0&&current&&Array.isArray(current.shopeeProducts)){
+   current.shopeeProducts.forEach(product=>addShopeeProductRow(product));
+  }else if(show&&shopeeProductList&&shopeeProductList.children.length>0){
+   syncShopeeProductsToPrincipal();
+  }
+ }
+ if(shopeeAddProduct)shopeeAddProduct.addEventListener('click',()=>addShopeeProductRow());
+ if(debtKindForProducts)debtKindForProducts.addEventListener('change',syncShopeeProductVisibility);
+ if(current&&Array.isArray(current.shopeeProducts)&&shopeeProductList){
+  current.shopeeProducts.forEach(product=>addShopeeProductRow(product));
+ }
+ syncShopeeProductVisibility();
  updateSchedulePreview();
  modal.querySelector('#savelyDebtForm').addEventListener('submit',e=>{
   e.preventDefault();
@@ -5428,6 +5521,7 @@ function initSavelyDebtFormWizard(modal){
   const interestBasis=autoPreset?autoPreset.basis:((current&&current.interestBasis)||'monthly');
   const interestAmount=autoQuote?Math.round(autoQuote.interest*100)/100:Math.max(0,Number(current&&current.interestAmount)||0);
   const interestCharges=autoQuote?Math.round(autoQuote.fees*100)/100:Math.max(0,Number(current&&current.interestCharges)||0);
+  const shopeeProducts=isOwed&&String(kind).toLowerCase().includes('shopee spaylater')?collectShopeeProducts():[];
   const amount=principalField?Math.round(autoQuote.total*100)/100:Number(modal.querySelector('#debtTotalAmount').value);
   const dueDate=modal.querySelector('#debtFirstDue').value;
   let repeat=frequency.value;
@@ -5443,7 +5537,7 @@ function initSavelyDebtFormWizard(modal){
    if(amount+0.000001<paid){toast('Scheduled amount cannot be lower than amounts already recorded.');return;}
    const editSnapshot=JSON.stringify(data);
    const previousRemaining=debtRemaining(current);
-   current.direction=dir;current.kind=kind;current.title=title;current.counterparty=counterparty;current.interestRate=interestRate;current.interestBasis=interestBasis;current.interestCharges=interestCharges;current.amount=amount;current.remainingAmount=Math.max(0,amount-paid);current.dueDate=dueDate;
+   current.direction=dir;current.kind=kind;current.title=title;current.counterparty=counterparty;current.interestRate=interestRate;current.interestBasis=interestBasis;current.interestCharges=interestCharges;if(shopeeProducts.length)current.shopeeProducts=shopeeProducts;current.amount=amount;current.remainingAmount=Math.max(0,amount-paid);current.dueDate=dueDate;
    current.status=current.remainingAmount<=0.005?'paid':(paid>0?'partial':'unpaid');
    const updatedReceivable=current.direction==='lent'?debtFindReceivableItem(current):null;
    if(updatedReceivable){
@@ -5470,7 +5564,7 @@ function initSavelyDebtFormWizard(modal){
    const principalPart=i===count-1?Math.round((principalTotal-principalBase*(count-1))*100)/100:principalBase;
    const interestPart=i===count-1?Math.round((totalInterest-interestBase*(count-1))*100)/100:interestBase;
    const feePart=i===count-1?Math.round((totalFees-feeBase*(count-1))*100)/100:feeBase;
-   created.push({id:uid(),seriesId,direction:dir,kind,title,counterparty,interestRate,interestBasis,interestAmount:interestPart,interestCharges:feePart,principalAmount:principalPart,ratePresetLabel:autoPreset?autoPreset.label:null,loanDisclosure:autoQuote&&autoQuote.isMariLoan?{creditFacilityAmount:principalTotal,processingFee:autoQuote.processingFee,documentaryStampTax:autoQuote.documentaryStampTax,amountReceived:autoQuote.amountReceived,monthlyAddOnRate:Number(autoPreset.rate),monthlyContractualRate:autoQuote.monthlyContractualRate,totalInterest:totalInterest,totalRepayment:Math.round(autoQuote.total*100)/100,termMonths:autoQuote.months,reference:'User-provided MariLoan computation statement'}:null,amount:part,remainingAmount:part,dueDate:date,frequency:repeat,installmentNumber:i+1,totalInstallments:count,status:'unpaid',payments:[],createdAt:Date.now()});
+   created.push({id:uid(),seriesId,direction:dir,kind,title,counterparty,shopeeProducts:shopeeProducts.length?shopeeProducts:undefined,interestRate,interestBasis,interestAmount:interestPart,interestCharges:feePart,principalAmount:principalPart,ratePresetLabel:autoPreset?autoPreset.label:null,loanDisclosure:autoQuote&&autoQuote.isMariLoan?{creditFacilityAmount:principalTotal,processingFee:autoQuote.processingFee,documentaryStampTax:autoQuote.documentaryStampTax,amountReceived:autoQuote.amountReceived,monthlyAddOnRate:Number(autoPreset.rate),monthlyContractualRate:autoQuote.monthlyContractualRate,totalInterest:totalInterest,totalRepayment:Math.round(autoQuote.total*100)/100,termMonths:autoQuote.months,reference:'User-provided MariLoan computation statement'}:null,amount:part,remainingAmount:part,dueDate:date,frequency:repeat,installmentNumber:i+1,totalInstallments:count,status:'unpaid',payments:[],createdAt:Date.now()});
   }
   if(!Array.isArray(data.debtRecords))data.debtRecords=[];
   let receivableItem=null;
