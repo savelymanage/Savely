@@ -3446,6 +3446,62 @@ main.main > .page:not(.active) { display: none !important; }
 .page.active{display:block!important}
 </style>
 
+
+<style id="savely-global-page-isolation-v5">
+  /* Every Savely page is hidden unless it is the single active page.
+     This applies regardless of its DOM nesting level. */
+  body .page:not(.active) {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  body .page.active {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+</style>
+<script id="savely-global-page-isolation-script-v5">
+(function () {
+  function enforceSingleActiveSavelyPage() {
+    const pages = Array.from(document.querySelectorAll('body .page'));
+    if (!pages.length) return;
+
+    let active = pages.find(page => page.classList.contains('active'));
+    if (!active) {
+      active = document.getElementById('page-dashboard') || pages[0];
+    }
+
+    pages.forEach(page => {
+      const isActive = page === active;
+      page.classList.toggle('active', isActive);
+      page.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', enforceSingleActiveSavelyPage, { once: true });
+  } else {
+    enforceSingleActiveSavelyPage();
+  }
+
+  // Observe page class changes from the existing sidebar navigation.
+  const observer = new MutationObserver(() => enforceSingleActiveSavelyPage());
+  const startObserver = () => {
+    document.querySelectorAll('body .page').forEach(page => {
+      observer.observe(page, { attributes: true, attributeFilter: ['class'] });
+    });
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startObserver, { once: true });
+  } else {
+    startObserver();
+  }
+})();
+</script>
+
 </head>
 <body>
 
