@@ -2954,6 +2954,96 @@ button.link-btn{
 }
 </style>
 
+
+<style id="savely-expense-calendar-paid-menu-free-map-v1">
+/* Paid records: compact view-history + kebab action row. */
+.debt-paid-card-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:6px}
+.debt-paid-card-end .debt-card-menu-wrap{margin:0!important}
+.debt-paid-menu-button{width:34px!important;height:34px!important;min-width:34px!important;font-size:21px!important}
+.debt-paid-card-end .debt-paid-history-button{margin:0!important}
+@media(max-width:620px){
+ .debt-paid-card{align-items:flex-start!important}
+ .debt-paid-card-end{max-width:44%;gap:5px}
+ .debt-paid-card-actions{flex-wrap:wrap}
+}
+
+/* Expenses is a calendar-first page, not the former budget dashboard. */
+.expenses-calendar-panel{padding:22px!important}
+.expenses-calendar-panel-head{align-items:center!important;margin-bottom:15px!important}
+.expenses-add-button{min-width:132px}
+.expenses-calendar-summary{
+ display:flex;align-items:center;justify-content:space-between;gap:16px;
+ padding:15px 17px;margin-bottom:18px;border:1px solid #d8eee3;border-radius:13px;
+ background:linear-gradient(110deg,#f0fbf5,#f8fcfa)
+}
+.expenses-calendar-summary>div{display:flex;flex-direction:column;gap:4px}
+.expenses-summary-label{font-size:10px;color:#718579;font-weight:750}
+.expenses-calendar-summary strong{font-size:23px;color:#07845d;font-weight:900;font-variant-numeric:tabular-nums}
+.expenses-summary-count{padding:7px 11px;border-radius:999px;background:#e2f5eb;color:#137d5b;font-size:10px;font-weight:850}
+.expenses-calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0 13px}
+.expenses-month-label{font-size:17px;font-weight:850;color:var(--text)}
+.expenses-month-actions{display:flex;align-items:center;gap:7px}
+.expenses-month-actions .btn{min-height:36px!important;height:36px!important;padding:0 12px!important}
+.expenses-month-nav{width:36px!important;min-width:36px!important;padding:0!important;font-size:20px!important}
+.expenses-today-button{min-width:66px}
+.expenses-calendar-weekdays,.expenses-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.expenses-calendar-weekdays{margin-bottom:8px}
+.expenses-calendar-weekdays span{padding:6px 3px;text-align:center;color:#8290a0;font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.05em}
+.expenses-calendar-day{
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;
+ gap:8px!important;min-width:0!important;min-height:126px!important;height:auto!important;padding:10px!important;
+ border:1px solid #e4ebef!important;border-radius:12px!important;background:#fff!important;
+ color:var(--text)!important;text-align:left!important;white-space:normal!important;
+ transition:border-color .14s ease,background .14s ease,box-shadow .14s ease!important;
+}
+.expenses-calendar-day:hover{border-color:#9ed8bb!important;background:#f8fcf9!important;box-shadow:0 4px 12px rgba(15,110,75,.06)}
+.expenses-calendar-day.is-today{border-color:#168765!important;background:#f4fbf7!important;box-shadow:inset 0 0 0 1px rgba(22,135,101,.12)}
+.expenses-calendar-day.has-expenses{background:#fbfefc!important}
+.expenses-day-top{display:flex;align-items:flex-start;justify-content:space-between;gap:4px;min-width:0}
+.expenses-day-number{display:grid;place-items:center;flex:0 0 25px;width:25px;height:25px;border-radius:50%;font-size:11px;font-weight:850;color:#354557}
+.expenses-calendar-day.is-today .expenses-day-number{background:#168765;color:#fff}
+.expenses-day-total{min-width:0;overflow:hidden;text-overflow:ellipsis;color:#07845d;font-size:9px;font-weight:900;white-space:nowrap;font-variant-numeric:tabular-nums}
+.expenses-day-items{display:grid;gap:4px;min-width:0}
+.expenses-day-item{display:flex;align-items:center;justify-content:space-between;gap:5px;min-width:0;padding:4px 5px;border-radius:6px;background:#eaf7ef;color:#287451;font-size:9px;line-height:1.25}
+.expenses-day-item span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.expenses-day-item strong{flex:0 0 auto;font-size:9px;font-weight:850}
+.expenses-day-more{font-size:9px;color:#6e8a7c;font-weight:750;padding-left:3px}
+.expenses-day-add{margin-top:auto;padding-top:3px;color:#94a19b;font-size:9px;font-weight:750;opacity:.85}
+.expenses-calendar-day:hover .expenses-day-add{color:#168765;opacity:1}
+.expenses-calendar-empty{min-height:126px}
+.expenses-calendar-legend{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font-size:10px}
+.expenses-calendar-legend span:first-child{display:flex;align-items:center;gap:7px}
+.expenses-calendar-legend i{width:8px;height:8px;border-radius:50%;background:#168765;display:inline-block}
+#page-budget .expenses-calendar-panel{min-height:400px}
+@media(max-width:950px){
+ .expenses-calendar-weekdays,.expenses-calendar-grid{gap:5px}
+ .expenses-calendar-day{min-height:112px!important;padding:7px!important}
+ .expenses-calendar-empty{min-height:112px}
+}
+@media(max-width:650px){
+ .expenses-calendar-panel{padding:13px!important}
+ .expenses-calendar-panel-head{align-items:flex-start!important;flex-direction:column!important}
+ .expenses-calendar-panel-head .expenses-add-button{width:100%!important}
+ .expenses-calendar-summary{padding:11px 12px}
+ .expenses-calendar-summary strong{font-size:19px}
+ .expenses-calendar-weekdays,.expenses-calendar-grid{gap:3px}
+ .expenses-calendar-weekdays span{font-size:8px}
+ .expenses-calendar-day{min-height:86px!important;padding:5px!important;border-radius:8px!important;gap:5px!important}
+ .expenses-calendar-empty{min-height:86px}
+ .expenses-day-number{width:21px;height:21px;flex-basis:21px;font-size:10px}
+ .expenses-day-total{font-size:7px}
+ .expenses-day-item{font-size:7px;padding:3px}
+ .expenses-day-item strong{font-size:7px}
+ .expenses-day-add{font-size:7px}
+ .expenses-calendar-legend{font-size:9px;align-items:flex-start;flex-direction:column}
+}
+
+/* Clear, key-free OpenStreetMap base tiles inside the Live Location map. */
+#page-live-location .savely-live-location-map{background:#e9f0ec!important}
+#page-live-location .leaflet-container{font-family:inherit!important}
+#page-live-location .leaflet-control-attribution{font-size:9px!important;background:rgba(255,255,255,.86)!important}
+</style>
+
 </head>
 <body>
 
@@ -3254,7 +3344,34 @@ button.link-btn{
 </div></div></div><div class="table-wrap" id="savingsListTable"></div>
     </div>
     </section>
-  <section class="page" id="page-budget"><div class="layout"><div class="panel"><div class="panel-head"><div><h2>Monthly budgets</h2><div class="panel-sub" id="budgetMonth"></div></div><button class="btn btn-primary" onclick="openModal('budget')">＋ Set budget</button></div><div id="budgetList"></div></div><div class="panel"><div class="panel-head"><div><h2>Expense summary</h2><div class="panel-sub">This calendar month</div></div></div><div id="expenseSummary"></div></div></div><div class="panel" style="margin-top:16px"><div class="panel-head"><div><h2>Recent expenses</h2><div class="panel-sub">Latest expense entries recorded in Savely.</div></div></div><div id="expensesRecentList" class="expenses-recent-list"></div></div></section>
+  <section class="page" id="page-budget">
+ <div class="panel expenses-calendar-panel">
+  <div class="panel-head expenses-calendar-panel-head">
+   <div>
+    <h2>Expense calendar</h2>
+    <div class="panel-sub">Add and review your expenses by date.</div>
+   </div>
+   <button type="button" class="btn btn-primary expenses-add-button" onclick="openExpenseEntry()">＋ Add expense</button>
+  </div>
+  <div class="expenses-calendar-summary">
+   <div><span class="expenses-summary-label">This month</span><strong id="expensesCalendarTotal">₱0.00</strong></div>
+   <span class="expenses-summary-count" id="expensesCalendarCount">0 expenses</span>
+  </div>
+  <div class="expenses-calendar-toolbar">
+   <div class="expenses-month-label" id="expensesCalendarMonth">November 2026</div>
+   <div class="expenses-month-actions">
+    <button type="button" class="btn btn-light expenses-month-nav" onclick="changeExpenseCalendarMonth(-1)" aria-label="Previous month">‹</button>
+    <button type="button" class="btn btn-light expenses-today-button" onclick="goToExpenseCalendarToday()">Today</button>
+    <button type="button" class="btn btn-light expenses-month-nav" onclick="changeExpenseCalendarMonth(1)" aria-label="Next month">›</button>
+   </div>
+  </div>
+  <div class="expenses-calendar-weekdays" aria-hidden="true">
+   <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+  </div>
+  <div class="expenses-calendar-grid" id="expensesCalendarGrid" role="grid" aria-label="Expenses calendar"></div>
+  <div class="expenses-calendar-legend"><span><i></i> Expense recorded</span><span>Choose any day to add an expense</span></div>
+ </div>
+</section>
   <section class="page" id="page-interest"><div class="section-grid"><div class="panel"><div class="panel-head"><div><h2>Interest calculator</h2><div class="panel-sub">Estimate growth using a fixed annual rate.</div></div></div><form id="interestForm"><div class="form-grid"><div class="field full"><label>Principal amount (₱)</label><input id="principal" type="number" min="0" step=".01" value="50000" required></div><div class="field"><label>Annual interest rate (%)</label><input id="rate" type="number" min="0" step=".01" value="6" required></div><div class="field"><label>Duration (days)</label><input id="days" type="number" min="1" value="30" required></div><div class="field full"><label>Compounding</label><select id="compound"><option value="simple">Simple interest</option><option value="daily">Daily compounding (estimate)</option></select></div></div><div class="form-actions"><button class="btn btn-primary">Calculate interest</button></div></form><div id="interestResult" style="margin-top:18px"></div></div><div class="panel"><h2>How this estimate works</h2><p class="panel-sub" style="line-height:1.8">This calculator estimates interest before tax, fees, and provider-specific rules. Actual bank or e-wallet earnings may differ. It does not connect to a financial institution.</p><div class="notice" style="margin-top:18px">Interest is not automatically added to your account. Record credited interest as a transaction when it arrives.</div></div></div></section>
   <section class="page" id="page-reports"><div class="cards" id="reportStats"></div><div class="panel"><div class="panel-head"><div><h2>Transaction report</h2><div class="panel-sub">Filter a date range and export a CSV file.</div></div><button class="btn btn-light" onclick="exportCSV()">↓ Export CSV</button></div><div class="form-grid" style="margin-bottom:18px"><div class="field"><label>From date</label><input id="reportFrom" type="date"></div><div class="field"><label>To date</label><input id="reportTo" type="date"></div></div><div class="table-wrap" id="reportTable"></div></div></section>
   <section class="page" id="page-settings"><div class="settings-tabs-wrap"><div class="settings-tabs" role="tablist" aria-label="Settings sections" style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;padding-bottom:12px;border-bottom:1px solid var(--line)">
@@ -4456,6 +4573,7 @@ function debtPaidCard(item){
  const amount=Math.max(0,Number(debtPaidAmount(item))||Number(item.amount)||0);
  const paidDate=debtPaidDate(item);
  const id=esc(item.id);
+ const menuId='paid-'+id;
  const sideLabel=isOwed?'I OWE':'OWED TO ME';
  return `<article class="debt-paid-card ${isOwed?'is-owed':'is-collected'}">
   <div class="debt-paid-card-main">
@@ -4467,7 +4585,15 @@ function debtPaidCard(item){
   <div class="debt-paid-card-end">
    <div class="debt-paid-amount">${peso(amount)}</div>
    <div class="debt-paid-amount-label">${isOwed?'Total paid':'Total collected'}</div>
-   <button type="button" class="btn btn-light debt-paid-history-button" onclick="viewDebtHistory('${id}')">View history</button>
+   <div class="debt-paid-card-actions">
+    <button type="button" class="btn btn-light debt-paid-history-button" onclick="viewDebtHistory('${id}')">View history</button>
+    <div class="debt-card-menu-wrap">
+     <button type="button" class="debt-card-menu-button debt-paid-menu-button" aria-label="More options for completed record" aria-haspopup="true" aria-expanded="false" onclick="toggleDebtCardMenu(event,'${menuId}')">⋯</button>
+     <div class="debt-card-menu" data-debt-menu="${menuId}">
+      <button type="button" class="menu-danger" onclick="closeDebtCardMenus();deleteDebtRecord('${id}')">Delete record</button>
+     </div>
+    </div>
+   </div>
   </div>
  </article>`;
 }
@@ -5364,7 +5490,81 @@ function renderGoals(){
  }).join('')||'<div class="goals-empty-state-center"><div class="empty">No goals yet. Create one to start tracking.</div></div>';
 }
 
-function renderBudget(){let m=todayISO().slice(0,7);document.getElementById('budgetMonth').textContent=new Date().toLocaleDateString('en-PH',{month:'long',year:'numeric'});let spent=c=>data.transactions.filter(t=>t.type==='expense'&&t.category===c&&t.date.slice(0,7)===m).reduce((s,t)=>s+ +t.amount,0);document.getElementById('budgetList').innerHTML=data.budgets.map(b=>{let s=spent(b.category),p=b.limit?Math.min(100,s/b.limit*100):0;return `<div class="budget-row"><div class="budget-top"><div><strong>${esc(b.category)}</strong><div class="muted" style="font-size:11px">${peso(s)} spent of ${peso(b.limit)}</div></div></div><button class="delete-btn" onclick="deleteBudget('${b.id}')">Remove</button></div><div class="small-progress"><span style="width:${p}%;background:${p>=100?'var(--red)':'var(--blue)'}"></span></div></div>`}).join('')||'<div class="empty">No budgets set.</div>';let total=totalExpenses(true),limit=data.budgets.reduce((s,b)=>s+ +b.limit,0);document.getElementById('expenseSummary').innerHTML=`<div class="goal-amount">${peso(total)}</div><div class="panel-sub">Total expenses this month</div><div class="progress"><span style="width:${limit?Math.min(100,total/limit*100):0}%;background:${total>limit?'var(--red)':'var(--blue)'}"></span></div><div class="between"><span>Budget total</span><strong>${peso(limit)}</strong></div><div class="between" style="margin-top:8px"><span>Remaining budget</span><strong style="color:${limit-total<0?'var(--red)':'var(--green)'}">${peso(limit-total)}</strong></div>`;const recent=document.getElementById('expensesRecentList');if(recent){const rows=data.transactions.filter(t=>t.type==='expense').sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).slice(0,12);recent.innerHTML=rows.length?rows.map(t=>`<div class="expenses-recent-row"><div class="expenses-recent-icon">↘</div><div class="expenses-recent-main"><strong>${esc(t.description||t.category||'Expense')}</strong><small>${esc(t.category||'Uncategorized')} · ${fmtDate(t.date)}</small></div><strong class="expenses-recent-amount">−${peso(t.amount)}</strong></div>`).join(''):'<div class="expenses-empty">No expense entries yet. Add an expense transaction to see it here.</div>';}}
+let expenseCalendarCursor=new Date();
+expenseCalendarCursor.setDate(1);
+function expenseLocalISO(date){
+ return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');
+}
+function changeExpenseCalendarMonth(delta){
+ expenseCalendarCursor=new Date(expenseCalendarCursor.getFullYear(),expenseCalendarCursor.getMonth()+Number(delta||0),1);
+ renderBudget();
+}
+function goToExpenseCalendarToday(){
+ const now=new Date();
+ expenseCalendarCursor=new Date(now.getFullYear(),now.getMonth(),1);
+ renderBudget();
+}
+function openExpenseEntry(dateValue){
+ const date=dateValue||expenseLocalISO(new Date());
+ openModal('transaction');
+ const form=document.getElementById('modalForm');
+ if(!form)return;
+ const type=form.querySelector('[name="type"]');
+ const dateInput=form.querySelector('[name="date"]');
+ const title=document.getElementById('modalTitle');
+ const desc=document.getElementById('modalDesc');
+ if(type){
+  type.value='expense';
+  const wrapper=type.closest('.field');
+  if(wrapper)wrapper.style.display='none';
+ }
+ if(dateInput)dateInput.value=date;
+ if(title)title.textContent='Add expense';
+ if(desc)desc.textContent='Record an expense on '+new Date(date+'T12:00:00').toLocaleDateString('en-PH',{month:'long',day:'numeric',year:'numeric'})+'.';
+ const description=form.querySelector('[name="description"]');
+ if(description)description.placeholder='e.g. Lunch, groceries, transportation';
+ const category=form.querySelector('[name="category"]');
+ if(category)category.value='';
+}
+function renderBudget(){
+ const grid=document.getElementById('expensesCalendarGrid');
+ const monthLabel=document.getElementById('expensesCalendarMonth');
+ const totalEl=document.getElementById('expensesCalendarTotal');
+ const countEl=document.getElementById('expensesCalendarCount');
+ if(!grid||!monthLabel)return;
+ const year=expenseCalendarCursor.getFullYear(),month=expenseCalendarCursor.getMonth();
+ monthLabel.textContent=expenseCalendarCursor.toLocaleDateString('en-PH',{month:'long',year:'numeric'});
+ const monthKey=year+'-'+String(month+1).padStart(2,'0');
+ const expenseRows=(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>t.type==='expense'&&String(t.date||'').slice(0,7)===monthKey);
+ const monthTotal=expenseRows.reduce((sum,t)=>sum+Math.max(0,Number(t.amount)||0),0);
+ if(totalEl)totalEl.textContent=peso(monthTotal);
+ if(countEl)countEl.textContent=expenseRows.length+' expense'+(expenseRows.length===1?'':'s');
+ const firstDay=new Date(year,month,1).getDay();
+ const dayCount=new Date(year,month+1,0).getDate();
+ const rowCount=Math.ceil((firstDay+dayCount)/7);
+ const today=expenseLocalISO(new Date());
+ const weekdayNames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+ const cells=[];
+ for(let index=0;index<rowCount*7;index++){
+  const day=index-firstDay+1;
+  if(day<1||day>dayCount){
+   cells.push('<div class="expenses-calendar-empty" aria-hidden="true"></div>');
+   continue;
+  }
+  const date=new Date(year,month,day);
+  const iso=expenseLocalISO(date);
+  const items=expenseRows.filter(t=>String(t.date||'')===iso).sort((a,b)=>Number(a.createdAt||0)-Number(b.createdAt||0));
+  const total=items.reduce((sum,t)=>sum+Math.max(0,Number(t.amount)||0),0);
+  const chips=items.slice(0,3).map(item=>`<span class="expenses-day-item" title="${esc(item.description||item.category||'Expense')}"><span>${esc(item.description||item.category||'Expense')}</span><strong>${peso(item.amount)}</strong></span>`).join('');
+  const more=items.length>3?`<span class="expenses-day-more">+${items.length-3} more</span>`:'';
+  cells.push(`<button type="button" class="expenses-calendar-day${iso===today?' is-today':''}${items.length?' has-expenses':''}" onclick="openExpenseEntry('${iso}')" aria-label="${weekdayNames[date.getDay()]}, ${date.toLocaleDateString('en-PH',{month:'long',day:'numeric',year:'numeric'})}. ${items.length} expenses totalling ${peso(total)}. Click to add an expense.">
+   <span class="expenses-day-top"><span class="expenses-day-number">${day}</span>${items.length?`<span class="expenses-day-total">${peso(total)}</span>`:''}</span>
+   <span class="expenses-day-items">${chips}${more}</span>
+   <span class="expenses-day-add">${items.length?'+ Add':'＋ Add expense'}</span>
+  </button>`);
+ }
+ grid.innerHTML=cells.join('');
+}
 function renderReports(){let from=document.getElementById('reportFrom')?.value||'0000-00-00',to=document.getElementById('reportTo')?.value||'9999-99-99';let list=data.transactions.filter(t=>t.date>=from&&t.date<=to);let dep=list.filter(t=>t.type==='deposit'||t.type==='interest').reduce((s,t)=>s+ +t.amount,0),out=list.filter(t=>t.type==='withdrawal'||t.type==='expense').reduce((s,t)=>s+ +t.amount,0);document.getElementById('reportStats').innerHTML=`<div class="stat"><div class="stat-top">Opening balances</div><div class="stat-value">${peso(data.accounts.reduce((s,a)=>s+ +a.opening,0))}</div></div><div class="stat"><div class="stat-top">Money in</div><div class="stat-value positive">${peso(dep)}</div></div><div class="stat"><div class="stat-top">Money out</div><div class="stat-value" style="color:var(--red)">${peso(out)}</div></div><div class="stat"><div class="stat-top">Net movement</div><div class="stat-value">${peso(dep-out)}</div></div>`;document.getElementById('reportTable').innerHTML=txRows(list)}
 
 let activeFinancialCategory='Savings';
@@ -6302,17 +6502,11 @@ document.addEventListener('click',event=>{
 function renderInterestBanks(){
  const grid=document.getElementById('interestBankGrid');if(!grid)return;
  document.querySelectorAll('[data-interest-group]').forEach(b=>b.classList.toggle('active',b.dataset.interestGroup===activeInterestGroup));
- const banks=(interestBankRates[activeInterestGroup]||[]).filter(bank=>!savelyRemovedInterestBanks.has(bank.name));
- grid.innerHTML=banks.map(b=>`<div class="interest-bank-menu-wrap">
-  <button type="button" class="interest-bank-card interest-bank-select ${selectedInterestBank&&selectedInterestBank.name===b.name?'active':''}" data-interest-bank="${esc(b.name)}" aria-label="Select ${esc(b.name)}">
-   <span class="interest-bank-logo" style="--bank-color:${b.color}">${esc(b.short)}</span>
-   <span class="interest-bank-copy"><span class="interest-bank-name">${esc(b.name)}</span><span class="interest-bank-rate">${b.rate}% p.a. base</span></span>
-  </button>
-  <button type="button" class="interest-bank-more" aria-label="More options for ${esc(b.name)}" aria-haspopup="menu" aria-expanded="false" title="More options">⋯</button>
-  <div class="interest-bank-menu" role="menu">
-   <button type="button" class="interest-bank-delete" role="menuitem" data-delete-interest-bank="${esc(b.name)}">Delete</button>
-  </div>
- </div>`).join('');
+ const banks=interestBankRates[activeInterestGroup]||[];
+ grid.innerHTML=banks.map(b=>`<button type="button" class="interest-bank-card interest-bank-select ${selectedInterestBank&&selectedInterestBank.name===b.name?'active':''}" data-interest-bank="${esc(b.name)}" aria-label="Select ${esc(b.name)}">
+  <span class="interest-bank-logo" style="--bank-color:${b.color}">${esc(b.short)}</span>
+  <span class="interest-bank-copy"><span class="interest-bank-name">${esc(b.name)}</span><span class="interest-bank-rate">${b.rate}% p.a. base</span></span>
+ </button>`).join('');
  grid.querySelectorAll('[data-interest-bank]').forEach(button=>button.addEventListener('click',()=>{
   selectedInterestBank=banks.find(b=>b.name===button.dataset.interestBank)||null;
   const rateInput=document.getElementById('interestCalcRate');
@@ -6324,23 +6518,12 @@ function renderInterestBanks(){
    rateInput.value=mayaSelect.value;
   }else{
    mayaWrap.style.display='none';
-   rateInput.value=selectedInterestBank?selectedInterestBank.rate:0;
+   rateInput.value=selectedInterestBank&&Number.isFinite(Number(selectedInterestBank.rate))?selectedInterestBank.rate:0;
   }
   renderInterestBanks();
   const b=selectedInterestBank;
   document.getElementById('interestSelectedNote').innerHTML=b?`${esc(b.note)} <span class="interest-bank-source">Official source: <a href="${esc(b.source)}" target="_blank" rel="noopener noreferrer">${esc(b.name)} website ↗</a></span>`:'Choose a bank to load its listed base rate.';
   updateInterestCalculator();
- }));
- grid.querySelectorAll('.interest-bank-more').forEach(button=>button.addEventListener('click',event=>{
-  event.preventDefault();event.stopPropagation();
-  const wrap=button.closest('.interest-bank-menu-wrap');
-  const wasOpen=wrap.classList.contains('is-open');
-  closeInterestBankMenus();
-  if(!wasOpen){wrap.classList.add('is-open');button.setAttribute('aria-expanded','true');}
- }));
- grid.querySelectorAll('[data-delete-interest-bank]').forEach(button=>button.addEventListener('click',event=>{
-  event.preventDefault();event.stopPropagation();
-  deleteInterestBankProvider(button.dataset.deleteInterestBank);
  }));
 }
 document.querySelectorAll('[data-interest-group]').forEach(button=>button.addEventListener('click',()=>{
@@ -6759,7 +6942,7 @@ function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavin
   savelyLiveLocationMap.invalidateSize();
  }
   if(window.__savelyLiveLocationWatchId===null||window.__savelyLiveLocationWatchId===undefined)startSavelyLiveLocation();
-},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LOCATION TOOLS','Live Location'],holidays:['CALENDAR · PHILIPPINES','Calendar']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Track your spending, manage monthly budgets, and review expense activity.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'',holidays:'View Philippine regular holidays, special non-working days, and live countdowns.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
+},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LOCATION TOOLS','Live Location'],holidays:['CALENDAR · PHILIPPINES','Calendar']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'',holidays:'View Philippine regular holidays, special non-working days, and live countdowns.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
 document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
 function openModal(kind,goalToEdit=null){const form=document.getElementById('modalForm'),title=document.getElementById('modalTitle'),desc=document.getElementById('modalDesc');let accountOptions=data.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');let field=(label,name,type='text',value='',extra='')=>`<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let select=(label,name,opts)=>`<div class="field"><label>${label}</label><select name="${name}">${opts}</select></div>`;let fullfield=(label,name,type='text',value='',extra='')=>`<div class="field full"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let body='';
 if(kind==='transaction'){title.textContent='Add transaction';desc.textContent='Record a deposit, withdrawal, interest credit, or expense.';body=`<div class="form-grid">${fullfield('Description','description','text','','required maxlength="100"')}${select('Transaction type','type','<option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option><option value="expense">Expense</option><option value="interest">Interest credit</option>')}${select('Account','accountId',accountOptions)}${field('Amount (₱)','amount','number','','required min=".01" step=".01"')}${field('Date','date','date',todayISO(),'required')}${field('Category','category','text','General','maxlength="60"')}</div>`}
@@ -10511,9 +10694,11 @@ function initSavelyLiveLocationMap(){
    savelyLiveLocationMap.setView([12.8797,121.7740],6);
    savelyLiveLocationHasCentered=false;
   }
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
-   subdomains:'abcd',maxZoom:20,
-   attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+   maxZoom:19,
+   maxNativeZoom:19,
+   attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors',
+   crossOrigin:true
   }).addTo(savelyLiveLocationMap);
   savelyLiveLocationTrail=L.polyline([],{color:'#128765',weight:5,opacity:.8,lineCap:'round',lineJoin:'round'}).addTo(savelyLiveLocationMap);
  }
