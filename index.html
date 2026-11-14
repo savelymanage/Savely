@@ -12367,5 +12367,73 @@ try{localStorage.removeItem(['savely','TomTomTrafficKey'].join(''));}catch(e){}
  window.setTimeout(()=>{if(!loaded)fallback.hidden=false;},12000);
 })();
 </script>
+
+<style id="savely-page-isolation-repair-v3">
+  main.main > section.page,
+  main.main > div.page { display: none !important; }
+  main.main > section.page.active,
+  main.main > div.page.active { display: block !important; }
+  main.main > section.page.active > *,
+  main.main > div.page.active > * { min-width: 0; }
+</style>
+<script id="savely-page-isolation-repair-script-v3">
+(function () {
+  function repairSavelyPageLayout() {
+    const main = document.querySelector('main.main');
+    if (!main) return;
+
+    const pages = Array.from(document.querySelectorAll('.page'));
+    const firstById = new Map();
+
+    pages.forEach((page) => {
+      const id = page.id || '';
+      if (id && firstById.has(id)) {
+        const original = firstById.get(id);
+        // Merge duplicate page sections instead of leaving duplicate page IDs
+        // that make sidebar navigation target the wrong section.
+        while (page.firstChild) original.appendChild(page.firstChild);
+        page.remove();
+        return;
+      }
+      if (id) firstById.set(id, page);
+      if (page.parentElement !== main) main.appendChild(page);
+    });
+
+    // Keep only one page active and make sure the selected page is visible.
+    const current = main.querySelector('.page.active') || main.querySelector('#page-dashboard');
+    main.querySelectorAll('.page').forEach((page) => {
+      page.classList.toggle('active', page === current);
+      page.setAttribute('aria-hidden', page === current ? 'false' : 'true');
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', repairSavelyPageLayout, { once: true });
+  } else {
+    repairSavelyPageLayout();
+  }
+
+  // Re-run after the original app's initial navigation setup, if it changes pages.
+  const originalShowPage = window.showPage;
+  if (typeof originalShowPage === 'function' && !originalShowPage.__savelyPageRepairWrapped) {
+    const wrapped = function (pageId) {
+      repairSavelyPageLayout();
+      const result = originalShowPage.apply(this, arguments);
+      const main = document.querySelector('main.main');
+      if (main) {
+        main.querySelectorAll('.page').forEach((page) => {
+          const active = page.id === 'page-' + pageId;
+          page.classList.toggle('active', active);
+          page.setAttribute('aria-hidden', active ? 'false' : 'true');
+        });
+      }
+      return result;
+    };
+    wrapped.__savelyPageRepairWrapped = true;
+    window.showPage = wrapped;
+  }
+})();
+</script>
+
 </body>
 </html>
