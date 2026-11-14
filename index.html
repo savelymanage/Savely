@@ -2781,6 +2781,25 @@ button.link-btn{
 @media(max-width:600px){.savely-auto-rate-metrics{grid-template-columns:1fr}}
 </style>
 
+
+<style id="savely-debt-confirm-footer-and-location-map-v2">
+#savelyDebtDateModal #debtDateModalAddButton[hidden]{display:none!important}
+.savely-live-location-map{
+ background:#e9f1ef!important;
+}
+.savely-live-location-map .leaflet-tile{
+ filter:saturate(.96) contrast(1.02);
+}
+.savely-live-location-map .leaflet-control-zoom a{
+ border:1px solid #dce7e2!important;
+ color:#156d50!important;
+ background:rgba(255,255,255,.96)!important;
+}
+.savely-live-location-map .leaflet-control-zoom a:hover{
+ background:#effaf4!important;
+}
+</style>
+
 </head>
 <body>
 
@@ -4216,6 +4235,10 @@ function renderDebtDateDetails(openModal=false){
  const meta=modal.querySelector('#debtDateModalMeta'),body=modal.querySelector('#debtDateModalBody'),title=modal.querySelector('#debtDateModalTitle');
  if(title)title.textContent=dateLabel;
  if(meta)meta.textContent=`${items.length} record${items.length===1?'':'s'} · ${peso(remainingTotal)} remaining`;
+ const addButton=modal.querySelector('#debtDateModalAddButton');
+ const paymentConfirmationActive=(debtPaidConfirmSurface==='date'&&!!debtPaidConfirmId)||
+  (debtInlinePaymentSuccess&&debtInlinePaymentSuccess.surface==='date'&&debtInlinePaymentSuccess.date===debtSelectedDate);
+ if(addButton)addButton.hidden=!!paymentConfirmationActive;
  if(body){
   if(debtInlinePaymentSuccess&&debtInlinePaymentSuccess.surface==='date'&&debtInlinePaymentSuccess.date===debtSelectedDate){
    if(title)title.textContent='Payment completed';
@@ -6418,7 +6441,20 @@ async function refreshPhilippineHolidays(manual){
  setInterval(()=>refreshPhilippineHolidays(false),24*60*60*1000);
 })();
 
-function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard')setTimeout(renderOverallTrend,50);document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Location.');if(p==='live-location')setTimeout(initSavelyLiveLocationMap,100);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Budget & expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LOCATION TOOLS','Live Location'],holidays:['CALENDAR · PHILIPPINES','Calendar']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Plan your spending and keep monthly expenses within your limits.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'',holidays:'View Philippine regular holidays, special non-working days, and live countdowns.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
+function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard')setTimeout(renderOverallTrend,50);document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Location.');if(p==='live-location')setTimeout(()=>{
+ initSavelyLiveLocationMap();
+ if(savelyLiveLocationMap){
+  const lastPoint=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
+  if(lastPoint){
+   savelyLiveLocationMap.setView([lastPoint.lat,lastPoint.lng],17,{animate:false});
+   savelyLiveLocationHasCentered=true;
+  }else{
+   savelyLiveLocationMap.setView([12.8797,121.7740],6,{animate:false});
+   savelyLiveLocationHasCentered=false;
+  }
+  savelyLiveLocationMap.invalidateSize();
+ }
+},100);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Budget & expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LOCATION TOOLS','Live Location'],holidays:['CALENDAR · PHILIPPINES','Calendar']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Plan your spending and keep monthly expenses within your limits.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'',holidays:'View Philippine regular holidays, special non-working days, and live countdowns.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
 document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
 function openModal(kind,goalToEdit=null){const form=document.getElementById('modalForm'),title=document.getElementById('modalTitle'),desc=document.getElementById('modalDesc');let accountOptions=data.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');let field=(label,name,type='text',value='',extra='')=>`<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let select=(label,name,opts)=>`<div class="field"><label>${label}</label><select name="${name}">${opts}</select></div>`;let fullfield=(label,name,type='text',value='',extra='')=>`<div class="field full"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let body='';
 if(kind==='transaction'){title.textContent='Add transaction';desc.textContent='Record a deposit, withdrawal, interest credit, or expense.';body=`<div class="form-grid">${fullfield('Description','description','text','','required maxlength="100"')}${select('Transaction type','type','<option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option><option value="expense">Expense</option><option value="interest">Interest credit</option>')}${select('Account','accountId',accountOptions)}${field('Amount (₱)','amount','number','','required min=".01" step=".01"')}${field('Date','date','date',todayISO(),'required')}${field('Category','category','text','General','maxlength="60"')}</div>`}
@@ -10045,8 +10081,20 @@ function initSavelyLiveLocationMap(){
  const el=document.getElementById('savelyLiveLocationMap');if(!el)return;
  if(!window.L){el.innerHTML='<div class="live-location-empty">The map library could not be loaded. Check your internet connection and refresh the page.</div>';return;}
  if(!savelyLiveLocationMap){
-  savelyLiveLocationMap=L.map(el,{zoomControl:true,preferCanvas:true}).setView([12.8797,121.7740],5);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'}).addTo(savelyLiveLocationMap);
+  const lastKnown=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
+  savelyLiveLocationMap=L.map(el,{zoomControl:true,preferCanvas:true,scrollWheelZoom:true});
+  if(lastKnown){
+   savelyLiveLocationMap.setView([lastKnown.lat,lastKnown.lng],17);
+   savelyLiveLocationHasCentered=true;
+  }else{
+   // Start at a useful Philippines overview until the user grants GPS access.
+   savelyLiveLocationMap.setView([12.8797,121.7740],6);
+   savelyLiveLocationHasCentered=false;
+  }
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
+   subdomains:'abcd',maxZoom:20,
+   attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'
+  }).addTo(savelyLiveLocationMap);
   savelyLiveLocationTrail=L.polyline([],{color:'#128765',weight:5,opacity:.8,lineCap:'round',lineJoin:'round'}).addTo(savelyLiveLocationMap);
  }
  setTimeout(()=>savelyLiveLocationMap&&savelyLiveLocationMap.invalidateSize(),120);
@@ -10103,8 +10151,14 @@ function updateSavelyLiveLocation(position){
   }else savelyLiveLocationMarker.setLatLng(latlng);
   setSavelyLiveLocationMarkerState(window.__savelyLiveLocationWatchId!==null);
   if(savelyLiveLocationTrail)savelyLiveLocationTrail.setLatLngs(savelyLiveLocationPoints.map(p=>[p.lat,p.lng]));
-  if(!savelyLiveLocationHasCentered){savelyLiveLocationMap.setView(latlng,17);savelyLiveLocationHasCentered=true;}
-  else savelyLiveLocationMap.panTo(latlng,{animate:true,duration:.5});
+  if(!savelyLiveLocationHasCentered){
+   savelyLiveLocationMap.setView(latlng,17,{animate:false});
+   savelyLiveLocationHasCentered=true;
+  }else if(savelyLiveLocationMap.getZoom()<16){
+   savelyLiveLocationMap.setView(latlng,17,{animate:true});
+  }else{
+   savelyLiveLocationMap.panTo(latlng,{animate:true,duration:.5});
+  }
  }
  renderSavelyLiveLocationPoints();
 }
