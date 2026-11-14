@@ -2800,6 +2800,135 @@ button.link-btn{
 }
 </style>
 
+
+<style id="savely-global-expenses-interest-location-v1">
+/* Interest Calculator provider tiles: fixed logo column and aligned copy. */
+.interest-bank-grid{align-items:stretch!important;gap:10px!important}
+.interest-bank-menu-wrap{position:relative!important;min-width:0!important;width:100%;height:100%}
+.interest-bank-card.interest-bank-select{
+ box-sizing:border-box!important;display:flex!important;flex-direction:row!important;
+ align-items:center!important;justify-content:flex-start!important;gap:10px!important;
+ width:100%!important;min-width:0!important;min-height:52px!important;height:52px!important;
+ padding:7px 43px 7px 11px!important;text-align:left!important;white-space:normal!important;
+}
+.interest-bank-logo{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ flex:0 0 34px!important;width:34px!important;height:34px!important;margin:0!important;
+ border-radius:10px!important;font-size:10px!important;line-height:1!important;
+}
+.interest-bank-copy{display:flex!important;flex:1 1 auto!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:3px!important;min-width:0!important;text-align:left!important}
+.interest-bank-name{display:block!important;width:100%;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;line-height:1.2!important;font-size:11px!important}
+.interest-bank-rate{display:block!important;margin:0!important;line-height:1.2!important;font-size:10px!important;white-space:nowrap!important}
+.interest-bank-more{
+ position:absolute!important;right:5px!important;top:50%!important;transform:translateY(-50%)!important;
+ width:30px!important;min-width:30px!important;height:30px!important;min-height:30px!important;
+ padding:0!important;border:1px solid #e6edf2!important;border-radius:8px!important;
+ background:#fff!important;color:#64748b!important;font-size:19px!important;font-weight:900!important;
+ line-height:1!important;z-index:3;
+}
+.interest-bank-more:hover{border-color:#a8d9c2!important;background:#f2fbf6!important;color:#07845d!important}
+.interest-bank-menu{
+ display:none;position:absolute;right:4px;top:calc(50% + 18px);z-index:20;
+ min-width:132px;padding:5px;border:1px solid #e4eaf0;border-radius:10px;
+ background:#fff;box-shadow:0 12px 28px rgba(20,38,58,.15);
+}
+.interest-bank-menu-wrap.is-open .interest-bank-menu{display:block}
+.interest-bank-menu button{
+ width:100%!important;min-height:36px!important;height:36px!important;
+ justify-content:flex-start!important;padding:0 10px!important;border:0!important;
+ border-radius:7px!important;background:#fff!important;color:#d94755!important;
+ font-size:11px!important;font-weight:800!important;text-align:left!important;
+}
+.interest-bank-menu button:hover{background:#fff1f2!important}
+
+/* Expenses page reuses the current budget and expense summary data. */
+.expenses-recent-list{display:grid;gap:0}
+.expenses-recent-row{display:flex;align-items:center;gap:12px;padding:12px 2px;border-bottom:1px solid #edf1f5}
+.expenses-recent-row:last-child{border-bottom:0}
+.expenses-recent-icon{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border-radius:10px;background:#fff0f1;color:#d94b58;font-size:17px;font-weight:900}
+.expenses-recent-main{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}
+.expenses-recent-main strong{font-size:12px;color:#263344}
+.expenses-recent-main small{font-size:10px;color:#8793a1}
+.expenses-recent-amount{font-size:12px;color:#d84b59;font-variant-numeric:tabular-nums}
+.expenses-empty{padding:24px;text-align:center;color:#8492a1;font-size:12px;border:1px dashed #dfe7ed;border-radius:12px;background:#fbfcfd}
+
+/* Live map gets the primary canvas. Controls float inside its upper-right edge. */
+#page-live-location .live-location-consent{padding:12px 15px!important;margin-bottom:12px!important}
+#page-live-location .live-location-stat-grid{margin:0 0 14px!important}
+#page-live-location .live-location-map-panel{padding:18px!important}
+#page-live-location .live-location-map-panel .panel-head{margin-bottom:12px!important}
+.live-location-map-shell{position:relative;width:100%;isolation:isolate}
+#page-live-location .savely-live-location-map{
+ width:100%!important;height:clamp(560px,76vh,900px)!important;min-height:560px!important;
+ border-radius:15px!important;overflow:hidden!important;background:#e9f1ef!important;
+}
+.live-location-map-controls{
+ position:absolute;z-index:700;top:16px;right:16px;
+ display:flex;flex-direction:column;align-items:stretch;gap:8px;
+ width:174px;max-width:calc(100% - 32px);
+ padding:10px;border:1px solid rgba(226,236,231,.95);border-radius:14px;
+ background:rgba(255,255,255,.94);backdrop-filter:blur(10px);
+ box-shadow:0 10px 28px rgba(19,45,35,.16);
+}
+.live-location-map-live-state{display:flex;align-items:flex-start;gap:8px;padding:2px 2px 8px;border-bottom:1px solid #e8efeb}
+.live-location-map-live-state .live-location-status-dot{margin-top:4px;flex:0 0 9px}
+.live-location-map-live-state>span:last-child{display:flex;min-width:0;flex-direction:column;gap:3px}
+.live-location-map-live-state strong{font-size:11px;color:#234336;line-height:1.25}
+.live-location-map-live-state small{font-size:9px;color:#74857b;line-height:1.35}
+.live-location-map-action{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ width:100%!important;min-height:37px!important;height:37px!important;padding:0 10px!important;
+ border:1px solid #e0e9e4!important;border-radius:9px!important;background:#fff!important;
+ color:#27634c!important;font-size:10px!important;font-weight:850!important;white-space:nowrap!important;
+}
+.live-location-map-action:hover{background:#f0faf4!important;border-color:#a9d9c0!important}
+.live-location-map-action:disabled{opacity:.45;cursor:not-allowed}
+.live-location-map-action.danger{color:#c34452!important;border-color:#f0d8dc!important}
+.live-location-map-action.danger:hover{background:#fff4f5!important}
+#page-live-location .live-location-map-footer{padding-top:10px}
+@media(max-width:760px){
+ #page-live-location .savely-live-location-map{height:68vh!important;min-height:460px!important}
+ .live-location-map-controls{top:10px;right:10px;width:146px;padding:8px;gap:6px}
+ .live-location-map-action{min-height:34px!important;height:34px!important}
+ #page-live-location .live-location-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+
+
+<style id="savely-debt-form-three-step-wizard-v1">
+.savely-debt-wizard-top{
+ display:flex;align-items:center;justify-content:space-between;gap:18px;
+ margin:0 0 15px;padding:13px 14px;border:1px solid #e5eee9;border-radius:13px;
+ background:linear-gradient(110deg,#f7fbf8,#fff);
+}
+.savely-debt-wizard-heading{display:flex;flex-direction:column;gap:3px;min-width:0}
+.savely-debt-wizard-eyebrow{color:#168765;font-size:9px;font-weight:900;letter-spacing:.09em}
+.savely-debt-wizard-heading strong{font-size:14px;color:#21372c}
+.savely-debt-wizard-heading small{font-size:10px;color:#7b8b82}
+.savely-debt-wizard-progress{display:flex;align-items:center;gap:7px;flex:0 0 auto}
+.savely-debt-wizard-step-chip{display:flex;align-items:center;gap:6px;padding:5px 8px;border:1px solid #e4ebe7;border-radius:999px;background:#fff;color:#89958e}
+.savely-debt-wizard-step-chip b{display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:#eef2f0;color:#718078;font-size:10px}
+.savely-debt-wizard-step-chip small{font-size:9px;font-weight:800;white-space:nowrap}
+.savely-debt-wizard-step-chip.active{border-color:#a7dfc1;background:#f1fbf5;color:#087d57}
+.savely-debt-wizard-step-chip.active b,.savely-debt-wizard-step-chip.complete b{background:#128765;color:#fff}
+.savely-debt-wizard-step-chip.complete{border-color:#d4eadf;color:#168765}
+.savely-debt-wizard-step{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px;align-content:start;min-width:0}
+.savely-debt-wizard-step[hidden]{display:none!important}
+.savely-debt-wizard-step>.full{grid-column:1/-1}
+.savely-debt-form-dialog .savely-debt-wizard-next{background:var(--green,#168765)!important;border-color:var(--green,#168765)!important}
+.savely-debt-form-dialog .savely-debt-wizard-back[hidden],
+.savely-debt-form-dialog .savely-debt-wizard-next[hidden],
+.savely-debt-form-dialog .form-actions button[hidden]{display:none!important}
+@media(max-width:760px){
+ .savely-debt-wizard-top{align-items:flex-start;flex-direction:column;gap:10px}
+ .savely-debt-wizard-progress{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+ .savely-debt-wizard-step-chip{justify-content:center;gap:4px;padding:5px 4px}
+ .savely-debt-wizard-step-chip small{font-size:8px}
+ .savely-debt-wizard-step{grid-template-columns:minmax(0,1fr)}
+ .savely-debt-wizard-step>.field{grid-column:1/-1}
+}
+</style>
+
 </head>
 <body>
 
@@ -2874,6 +3003,7 @@ button.link-btn{
     <button data-page="financial-list" aria-label="Savings" title="Savings"><span class="ico">☷</span><span class="nav-text">Savings</span></button>
     <button data-page="salary" aria-label="Salary" title="Salary"><span class="ico">₱</span><span class="nav-text">Salary</span></button>
     <button data-page="debt" aria-label="Debt" title="Debt"><span class="ico">▦</span><span class="nav-text">Debt</span></button>
+    <button data-page="budget" aria-label="Expenses" title="Expenses"><span class="ico">↘</span><span class="nav-text">Expenses</span></button>
     
     
     <button data-page="goals" aria-label="Savings goals" title="Savings goals"><span class="ico">◎</span><span class="nav-text">Savings goals</span></button>
@@ -2919,18 +3049,7 @@ button.link-btn{
       <div class="live-location-consent-icon">⌖</div>
       <div class="live-location-consent-copy">
         <strong>Location sharing stays under your control</strong>
-        <span>Press Start tracking and allow your browser to access location. Tracking runs only while this page is open and visible. Points stay in this browser tab and are not sent to Savely. Refreshing or closing the tab clears the route.</span>
-      </div>
-    </div>
-    <div class="live-location-toolbar panel">
-      <div class="live-location-status-wrap">
-        <span class="live-location-status-dot" id="liveLocationStatusDot"></span>
-        <div><strong id="liveLocationStatus">Not tracking</strong><small id="liveLocationStatusHelp">Start tracking to show your current position.</small></div>
-      </div>
-      <div class="live-location-actions">
-        <button type="button" class="btn btn-primary" id="liveLocationStart" onclick="startSavelyLiveLocation()">Start tracking</button>
-        <button type="button" class="btn btn-secondary" id="liveLocationStop" onclick="stopSavelyLiveLocation('Tracking stopped by you.')" disabled>Stop</button>
-        <button type="button" class="btn btn-light" id="liveLocationClear" onclick="clearSavelyLocationTrail()">Clear trail</button>
+        <span>Opening this page requests browser location permission and starts tracking automatically when allowed. Tracking runs only while this page is open and visible. Points stay in this browser tab and are not sent to Savely. Refreshing or closing the tab clears the route.</span>
       </div>
     </div>
     <div class="live-location-stat-grid">
@@ -2941,12 +3060,20 @@ button.link-btn{
     </div>
     <section class="panel live-location-map-panel">
       <div class="panel-head"><div><h2>Live movement map</h2><div class="panel-sub" id="liveLocationMapSubtitle">Your map will center on you after you allow location access.</div></div><span class="live-location-local-badge">This tab only</span></div>
-      <div id="savelyLiveLocationMap" class="savely-live-location-map" role="region" aria-label="Map showing your current position and movement trail"></div>
+      <div class="live-location-map-shell">
+       <div id="savelyLiveLocationMap" class="savely-live-location-map" role="region" aria-label="Map showing your current position and movement trail"></div>
+       <div class="live-location-map-controls" aria-label="Live map controls">
+        <div class="live-location-map-live-state"><span class="live-location-status-dot" id="liveLocationStatusDot"></span><span><strong id="liveLocationStatus">Connecting to GPS</strong><small id="liveLocationStatusHelp">Waiting for browser permission.</small></span></div>
+        <button type="button" class="live-location-map-action" id="liveLocationStop" onclick="stopSavelyLiveLocation('Tracking stopped by you.')" disabled>Stop tracking</button>
+        <button type="button" class="live-location-map-action" onclick="centerSavelyLiveLocation()">Recenter</button>
+        <button type="button" class="live-location-map-action danger" id="liveLocationClear" onclick="clearSavelyLocationTrail()">Clear trail</button>
+       </div>
+      </div>
       <div class="live-location-map-footer"><span><i class="live-location-legend-dot current"></i> Current / last position</span><span><i class="live-location-legend-line"></i> Recorded movement trail</span><span id="liveLocationLastUpdate">No location update yet</span></div>
     </section>
     <section class="panel live-location-history-panel">
       <div class="panel-head"><div><h2>Recent location points</h2><div class="panel-sub">Latest points from this tracking session.</div></div><span class="pill" id="liveLocationPointCount">0 points</span></div>
-      <div id="liveLocationRecentPoints" class="live-location-recent-points"><div class="live-location-empty">No location points recorded yet. Press Start tracking to begin.</div></div>
+      <div id="liveLocationRecentPoints" class="live-location-recent-points"><div class="live-location-empty">No location points yet. Open Live Location and allow browser permission to begin.</div></div>
     </section>
   </section>
   <section class="page" id="page-interest">
@@ -3102,7 +3229,7 @@ button.link-btn{
 </div></div></div><div class="table-wrap" id="savingsListTable"></div>
     </div>
     </section>
-  <section class="page" id="page-budget"><div class="layout"><div class="panel"><div class="panel-head"><div><h2>Monthly budgets</h2><div class="panel-sub" id="budgetMonth"></div></div><button class="btn btn-primary" onclick="openModal('budget')">＋ Set budget</button></div><div id="budgetList"></div></div><div class="panel"><div class="panel-head"><div><h2>Expense summary</h2><div class="panel-sub">This calendar month</div></div></div><div id="expenseSummary"></div></div></div></section>
+  <section class="page" id="page-budget"><div class="layout"><div class="panel"><div class="panel-head"><div><h2>Monthly budgets</h2><div class="panel-sub" id="budgetMonth"></div></div><button class="btn btn-primary" onclick="openModal('budget')">＋ Set budget</button></div><div id="budgetList"></div></div><div class="panel"><div class="panel-head"><div><h2>Expense summary</h2><div class="panel-sub">This calendar month</div></div></div><div id="expenseSummary"></div></div></div><div class="panel" style="margin-top:16px"><div class="panel-head"><div><h2>Recent expenses</h2><div class="panel-sub">Latest expense entries recorded in Savely.</div></div></div><div id="expensesRecentList" class="expenses-recent-list"></div></div></section>
   <section class="page" id="page-interest"><div class="section-grid"><div class="panel"><div class="panel-head"><div><h2>Interest calculator</h2><div class="panel-sub">Estimate growth using a fixed annual rate.</div></div></div><form id="interestForm"><div class="form-grid"><div class="field full"><label>Principal amount (₱)</label><input id="principal" type="number" min="0" step=".01" value="50000" required></div><div class="field"><label>Annual interest rate (%)</label><input id="rate" type="number" min="0" step=".01" value="6" required></div><div class="field"><label>Duration (days)</label><input id="days" type="number" min="1" value="30" required></div><div class="field full"><label>Compounding</label><select id="compound"><option value="simple">Simple interest</option><option value="daily">Daily compounding (estimate)</option></select></div></div><div class="form-actions"><button class="btn btn-primary">Calculate interest</button></div></form><div id="interestResult" style="margin-top:18px"></div></div><div class="panel"><h2>How this estimate works</h2><p class="panel-sub" style="line-height:1.8">This calculator estimates interest before tax, fees, and provider-specific rules. Actual bank or e-wallet earnings may differ. It does not connect to a financial institution.</p><div class="notice" style="margin-top:18px">Interest is not automatically added to your account. Record credited interest as a transaction when it arrives.</div></div></div></section>
   <section class="page" id="page-reports"><div class="cards" id="reportStats"></div><div class="panel"><div class="panel-head"><div><h2>Transaction report</h2><div class="panel-sub">Filter a date range and export a CSV file.</div></div><button class="btn btn-light" onclick="exportCSV()">↓ Export CSV</button></div><div class="form-grid" style="margin-bottom:18px"><div class="field"><label>From date</label><input id="reportFrom" type="date"></div><div class="field"><label>To date</label><input id="reportTo" type="date"></div></div><div class="table-wrap" id="reportTable"></div></div></section>
   <section class="page" id="page-settings"><div class="settings-tabs-wrap"><div class="settings-tabs" role="tablist" aria-label="Settings sections" style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;padding-bottom:12px;border-bottom:1px solid var(--line)">
@@ -4659,7 +4786,99 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
   </form>
  </div>`;
  modal.addEventListener('click',e=>{if(e.target===modal)closeDebtForm();});
+
+function initSavelyDebtFormWizard(modal){
+ const form=modal&&modal.querySelector('#savelyDebtForm');
+ const grid=form&&form.querySelector('.debt-form-grid');
+ if(!form||!grid||grid.dataset.wizardReady==='1')return;
+ const children=[...grid.children];
+ const planIndex=children.findIndex(el=>el.classList.contains('savely-debt-plan-card'));
+ if(planIndex<0)return;
+ const sourceCount=modal.querySelector('#debtProviderTabs')?2:1;
+ const groups=[
+  {title:'Debt source',subtitle:'Choose the lender, platform, or money source.',label:'01'},
+  {title:'Loan details',subtitle:'Add the amount, loan details, and first due date.',label:'02'},
+  {title:'Repayment plan',subtitle:'Set the payment frequency and installment schedule.',label:'03'}
+ ];
+ const sourceChildren=children.slice(0,Math.min(sourceCount,planIndex));
+ const detailChildren=children.slice(Math.min(sourceCount,planIndex),planIndex);
+ const planChildren=children.slice(planIndex);
+ const stepEls=[];
+ const stepHead=document.createElement('div');
+ stepHead.className='savely-debt-wizard-top';
+ stepHead.innerHTML=`<div class="savely-debt-wizard-heading"><span class="savely-debt-wizard-eyebrow">PAYMENT SETUP</span><strong id="savelyDebtWizardTitle">Debt source</strong><small id="savelyDebtWizardSubtitle">${groups[0].subtitle}</small></div><div class="savely-debt-wizard-progress" role="group" aria-label="Form steps">${groups.map((g,i)=>`<span class="savely-debt-wizard-step-chip${i===0?' active':''}" data-wizard-chip="${i+1}"><b>${i+1}</b><small>${g.title}</small></span>`).join('')}</div>`;
+ grid.parentNode.insertBefore(stepHead,grid);
+ grid.innerHTML='';
+ [sourceChildren,detailChildren,planChildren].forEach((els,index)=>{
+  const step=document.createElement('div');
+  step.className='savely-debt-wizard-step';
+  step.dataset.wizardStep=String(index+1);
+  els.forEach(el=>step.appendChild(el));
+  grid.appendChild(step);
+  stepEls.push(step);
+ });
+ const actions=form.querySelector('.form-actions');
+ const cancel=actions&&actions.querySelector('button[type="button"]');
+ const submit=actions&&actions.querySelector('button[type="submit"]');
+ if(!actions||!submit)return;
+ const back=document.createElement('button');
+ back.type='button';back.className='btn btn-secondary savely-debt-wizard-back';back.textContent='← Back';
+ const next=document.createElement('button');
+ next.type='button';next.className='btn btn-primary savely-debt-wizard-next';next.textContent='Continue →';
+ actions.insertBefore(back,submit);
+ actions.insertBefore(next,submit);
+ let currentStep=1;
+ const setStep=stepNumber=>{
+  currentStep=Math.max(1,Math.min(3,stepNumber));
+  stepEls.forEach((el,index)=>{
+   const isActive=index===currentStep-1;
+   el.hidden=!isActive;
+   el.querySelectorAll('input,select,textarea,button').forEach(control=>{
+    if(control.dataset.wizardOriginalDisabled===undefined)control.dataset.wizardOriginalDisabled=control.disabled?'1':'0';
+    control.disabled=isActive?control.dataset.wizardOriginalDisabled==='1':true;
+   });
+  });
+  const active=groups[currentStep-1];
+  const title=form.querySelector('#savelyDebtWizardTitle');
+  const subtitle=form.querySelector('#savelyDebtWizardSubtitle');
+  if(title)title.textContent=active.title;
+  if(subtitle)subtitle.textContent=active.subtitle;
+  stepHead.querySelectorAll('[data-wizard-chip]').forEach(chip=>{
+   const n=Number(chip.dataset.wizardChip);
+   chip.classList.toggle('active',n===currentStep);
+   chip.classList.toggle('complete',n<currentStep);
+   chip.setAttribute('aria-current',n===currentStep?'step':'false');
+  });
+  back.hidden=currentStep===1;
+  next.hidden=currentStep===3;
+  submit.hidden=currentStep!==3;
+  if(cancel)cancel.textContent='Cancel';
+  const shell=modal.querySelector('.savely-debt-form-dialog');
+  if(shell)shell.scrollTo({top:0,behavior:'smooth'});
+ };
+ const validateStep=()=>{
+  const active=stepEls[currentStep-1];
+  const fields=[...active.querySelectorAll('input,select,textarea')].filter(el=>!el.disabled&&el.type!=='hidden'&&el.required);
+  for(const field of fields){
+   if(!field.checkValidity()){field.reportValidity();field.focus({preventScroll:true});return false;}
+  }
+  return true;
+ };
+ back.addEventListener('click',()=>setStep(currentStep-1));
+ next.addEventListener('click',()=>{if(validateStep())setStep(currentStep+1);});
+ form.addEventListener('submit',event=>{
+  if(currentStep<3){
+   event.preventDefault();
+   event.stopImmediatePropagation();
+   if(validateStep())setStep(currentStep+1);
+  }
+ },true);
+ grid.dataset.wizardReady='1';
+ setStep(1);
+}
+
  document.body.appendChild(modal);
+ initSavelyDebtFormWizard(modal);
  if(current){
   if(isOwed){const kindSelect=modal.querySelector('#debtKind');if(kindSelect)kindSelect.value=current.kind||'Other';}
   modal.querySelector('#debtTitle').value=current.title||'';
@@ -5120,7 +5339,7 @@ function renderGoals(){
  }).join('')||'<div class="goals-empty-state-center"><div class="empty">No goals yet. Create one to start tracking.</div></div>';
 }
 
-function renderBudget(){let m=todayISO().slice(0,7);document.getElementById('budgetMonth').textContent=new Date().toLocaleDateString('en-PH',{month:'long',year:'numeric'});let spent=c=>data.transactions.filter(t=>t.type==='expense'&&t.category===c&&t.date.slice(0,7)===m).reduce((s,t)=>s+ +t.amount,0);document.getElementById('budgetList').innerHTML=data.budgets.map(b=>{let s=spent(b.category),p=b.limit?Math.min(100,s/b.limit*100):0;return `<div class="budget-row"><div class="budget-top"><div><strong>${esc(b.category)}</strong><div class="muted" style="font-size:11px">${peso(s)} spent of ${peso(b.limit)}</div></div></div><button class="delete-btn" onclick="deleteBudget('${b.id}')">Remove</button></div><div class="small-progress"><span style="width:${p}%;background:${p>=100?'var(--red)':'var(--blue)'}"></span></div></div>`}).join('')||'<div class="empty">No budgets set.</div>';let total=totalExpenses(true),limit=data.budgets.reduce((s,b)=>s+ +b.limit,0);document.getElementById('expenseSummary').innerHTML=`<div class="goal-amount">${peso(total)}</div><div class="panel-sub">Total expenses this month</div><div class="progress"><span style="width:${limit?Math.min(100,total/limit*100):0}%;background:${total>limit?'var(--red)':'var(--blue)'}"></span></div><div class="between"><span>Budget total</span><strong>${peso(limit)}</strong></div><div class="between" style="margin-top:8px"><span>Remaining budget</span><strong style="color:${limit-total<0?'var(--red)':'var(--green)'}">${peso(limit-total)}</strong></div>`}
+function renderBudget(){let m=todayISO().slice(0,7);document.getElementById('budgetMonth').textContent=new Date().toLocaleDateString('en-PH',{month:'long',year:'numeric'});let spent=c=>data.transactions.filter(t=>t.type==='expense'&&t.category===c&&t.date.slice(0,7)===m).reduce((s,t)=>s+ +t.amount,0);document.getElementById('budgetList').innerHTML=data.budgets.map(b=>{let s=spent(b.category),p=b.limit?Math.min(100,s/b.limit*100):0;return `<div class="budget-row"><div class="budget-top"><div><strong>${esc(b.category)}</strong><div class="muted" style="font-size:11px">${peso(s)} spent of ${peso(b.limit)}</div></div></div><button class="delete-btn" onclick="deleteBudget('${b.id}')">Remove</button></div><div class="small-progress"><span style="width:${p}%;background:${p>=100?'var(--red)':'var(--blue)'}"></span></div></div>`}).join('')||'<div class="empty">No budgets set.</div>';let total=totalExpenses(true),limit=data.budgets.reduce((s,b)=>s+ +b.limit,0);document.getElementById('expenseSummary').innerHTML=`<div class="goal-amount">${peso(total)}</div><div class="panel-sub">Total expenses this month</div><div class="progress"><span style="width:${limit?Math.min(100,total/limit*100):0}%;background:${total>limit?'var(--red)':'var(--blue)'}"></span></div><div class="between"><span>Budget total</span><strong>${peso(limit)}</strong></div><div class="between" style="margin-top:8px"><span>Remaining budget</span><strong style="color:${limit-total<0?'var(--red)':'var(--green)'}">${peso(limit-total)}</strong></div>`;const recent=document.getElementById('expensesRecentList');if(recent){const rows=data.transactions.filter(t=>t.type==='expense').sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).slice(0,12);recent.innerHTML=rows.length?rows.map(t=>`<div class="expenses-recent-row"><div class="expenses-recent-icon">↘</div><div class="expenses-recent-main"><strong>${esc(t.description||t.category||'Expense')}</strong><small>${esc(t.category||'Uncategorized')} · ${fmtDate(t.date)}</small></div><strong class="expenses-recent-amount">−${peso(t.amount)}</strong></div>`).join(''):'<div class="expenses-empty">No expense entries yet. Add an expense transaction to see it here.</div>';}}
 function renderReports(){let from=document.getElementById('reportFrom')?.value||'0000-00-00',to=document.getElementById('reportTo')?.value||'9999-99-99';let list=data.transactions.filter(t=>t.date>=from&&t.date<=to);let dep=list.filter(t=>t.type==='deposit'||t.type==='interest').reduce((s,t)=>s+ +t.amount,0),out=list.filter(t=>t.type==='withdrawal'||t.type==='expense').reduce((s,t)=>s+ +t.amount,0);document.getElementById('reportStats').innerHTML=`<div class="stat"><div class="stat-top">Opening balances</div><div class="stat-value">${peso(data.accounts.reduce((s,a)=>s+ +a.opening,0))}</div></div><div class="stat"><div class="stat-top">Money in</div><div class="stat-value positive">${peso(dep)}</div></div><div class="stat"><div class="stat-top">Money out</div><div class="stat-value" style="color:var(--red)">${peso(out)}</div></div><div class="stat"><div class="stat-top">Net movement</div><div class="stat-value">${peso(dep-out)}</div></div>`;document.getElementById('reportTable').innerHTML=txRows(list)}
 
 let activeFinancialCategory='Savings';
@@ -6015,11 +6234,58 @@ const interestBankRates = {
  ]
 };
 let activeInterestGroup='Traditional', selectedInterestBank=null;
+const SAVELY_REMOVED_INTEREST_BANKS_KEY='savelyInterestRemovedBanksV1';
+let savelyRemovedInterestBanks=new Set();
+try{
+ const storedRemoved=JSON.parse(localStorage.getItem(SAVELY_REMOVED_INTEREST_BANKS_KEY)||'[]');
+ if(Array.isArray(storedRemoved))savelyRemovedInterestBanks=new Set(storedRemoved.map(String));
+}catch(error){}
+function saveSavelyRemovedInterestBanks(){
+ try{localStorage.setItem(SAVELY_REMOVED_INTEREST_BANKS_KEY,JSON.stringify([...savelyRemovedInterestBanks]));}catch(error){}
+}
+function closeInterestBankMenus(){
+ document.querySelectorAll('.interest-bank-menu-wrap.is-open').forEach(w=>{
+  w.classList.remove('is-open');
+  const trigger=w.querySelector('.interest-bank-more');
+  if(trigger)trigger.setAttribute('aria-expanded','false');
+ });
+}
+function deleteInterestBankProvider(name){
+ const exists=Object.values(interestBankRates).some(list=>list.some(bank=>bank.name===name));
+ if(!exists)return;
+ savelyRemovedInterestBanks.add(name);
+ saveSavelyRemovedInterestBanks();
+ if(selectedInterestBank&&selectedInterestBank.name===name){
+  selectedInterestBank=null;
+  const rateInput=document.getElementById('interestCalcRate');
+  const mayaWrap=document.getElementById('interestCalcMayaBonusWrap');
+  if(rateInput)rateInput.value=0;
+  if(mayaWrap)mayaWrap.style.display='none';
+  const note=document.getElementById('interestSelectedNote');
+  if(note)note.textContent='Choose a bank to load its listed base rate.';
+  updateInterestCalculator();
+ }
+ closeInterestBankMenus();
+ renderInterestBanks();
+ if(typeof toast==='function')toast(`${name} removed from the Interest Calculator list.`);
+}
+document.addEventListener('click',event=>{
+ if(!event.target.closest('.interest-bank-menu-wrap'))closeInterestBankMenus();
+});
 function renderInterestBanks(){
  const grid=document.getElementById('interestBankGrid');if(!grid)return;
  document.querySelectorAll('[data-interest-group]').forEach(b=>b.classList.toggle('active',b.dataset.interestGroup===activeInterestGroup));
- const banks=interestBankRates[activeInterestGroup]||[];
- grid.innerHTML=banks.map((b,i)=>`<button type="button" class="interest-bank-card ${selectedInterestBank&&selectedInterestBank.name===b.name?'active':''}" data-interest-bank="${esc(b.name)}"><span class="interest-bank-logo" style="--bank-color:${b.color}">${esc(b.short)}</span><span style="min-width:0"><span class="interest-bank-name">${esc(b.name)}</span><div class="interest-bank-rate">${b.rate}% p.a. base</div></span></button>`).join('');
+ const banks=(interestBankRates[activeInterestGroup]||[]).filter(bank=>!savelyRemovedInterestBanks.has(bank.name));
+ grid.innerHTML=banks.map(b=>`<div class="interest-bank-menu-wrap">
+  <button type="button" class="interest-bank-card interest-bank-select ${selectedInterestBank&&selectedInterestBank.name===b.name?'active':''}" data-interest-bank="${esc(b.name)}" aria-label="Select ${esc(b.name)}">
+   <span class="interest-bank-logo" style="--bank-color:${b.color}">${esc(b.short)}</span>
+   <span class="interest-bank-copy"><span class="interest-bank-name">${esc(b.name)}</span><span class="interest-bank-rate">${b.rate}% p.a. base</span></span>
+  </button>
+  <button type="button" class="interest-bank-more" aria-label="More options for ${esc(b.name)}" aria-haspopup="menu" aria-expanded="false" title="More options">⋯</button>
+  <div class="interest-bank-menu" role="menu">
+   <button type="button" class="interest-bank-delete" role="menuitem" data-delete-interest-bank="${esc(b.name)}">Delete</button>
+  </div>
+ </div>`).join('');
  grid.querySelectorAll('[data-interest-bank]').forEach(button=>button.addEventListener('click',()=>{
   selectedInterestBank=banks.find(b=>b.name===button.dataset.interestBank)||null;
   const rateInput=document.getElementById('interestCalcRate');
@@ -6037,6 +6303,17 @@ function renderInterestBanks(){
   const b=selectedInterestBank;
   document.getElementById('interestSelectedNote').innerHTML=b?`${esc(b.note)} <span class="interest-bank-source">Official source: <a href="${esc(b.source)}" target="_blank" rel="noopener noreferrer">${esc(b.name)} website ↗</a></span>`:'Choose a bank to load its listed base rate.';
   updateInterestCalculator();
+ }));
+ grid.querySelectorAll('.interest-bank-more').forEach(button=>button.addEventListener('click',event=>{
+  event.preventDefault();event.stopPropagation();
+  const wrap=button.closest('.interest-bank-menu-wrap');
+  const wasOpen=wrap.classList.contains('is-open');
+  closeInterestBankMenus();
+  if(!wasOpen){wrap.classList.add('is-open');button.setAttribute('aria-expanded','true');}
+ }));
+ grid.querySelectorAll('[data-delete-interest-bank]').forEach(button=>button.addEventListener('click',event=>{
+  event.preventDefault();event.stopPropagation();
+  deleteInterestBankProvider(button.dataset.deleteInterestBank);
  }));
 }
 document.querySelectorAll('[data-interest-group]').forEach(button=>button.addEventListener('click',()=>{
@@ -6454,7 +6731,8 @@ function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavin
   }
   savelyLiveLocationMap.invalidateSize();
  }
-},100);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Budget & expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LOCATION TOOLS','Live Location'],holidays:['CALENDAR · PHILIPPINES','Calendar']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Plan your spending and keep monthly expenses within your limits.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'',holidays:'View Philippine regular holidays, special non-working days, and live countdowns.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
+  if(window.__savelyLiveLocationWatchId===null||window.__savelyLiveLocationWatchId===undefined)startSavelyLiveLocation();
+},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LOCATION TOOLS','Live Location'],holidays:['CALENDAR · PHILIPPINES','Calendar']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Track your spending, manage monthly budgets, and review expense activity.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'',holidays:'View Philippine regular holidays, special non-working days, and live countdowns.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
 document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
 function openModal(kind,goalToEdit=null){const form=document.getElementById('modalForm'),title=document.getElementById('modalTitle'),desc=document.getElementById('modalDesc');let accountOptions=data.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');let field=(label,name,type='text',value='',extra='')=>`<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let select=(label,name,opts)=>`<div class="field"><label>${label}</label><select name="${name}">${opts}</select></div>`;let fullfield=(label,name,type='text',value='',extra='')=>`<div class="field full"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let body='';
 if(kind==='transaction'){title.textContent='Add transaction';desc.textContent='Record a deposit, withdrawal, interest credit, or expense.';body=`<div class="form-grid">${fullfield('Description','description','text','','required maxlength="100"')}${select('Transaction type','type','<option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option><option value="expense">Expense</option><option value="interest">Interest credit</option>')}${select('Account','accountId',accountOptions)}${field('Amount (₱)','amount','number','','required min=".01" step=".01"')}${field('Date','date','date',todayISO(),'required')}${field('Category','category','text','General','maxlength="60"')}</div>`}
@@ -10166,7 +10444,7 @@ function renderSavelyLiveLocationPoints(){
  const list=document.getElementById('liveLocationRecentPoints'),count=document.getElementById('liveLocationPointCount');
  if(!list||!count)return;
  count.textContent=`${savelyLiveLocationPoints.length} point${savelyLiveLocationPoints.length===1?'':'s'}`;
- if(!savelyLiveLocationPoints.length){list.innerHTML='<div class="live-location-empty">No location points recorded yet. Press Start tracking to begin.</div>';return;}
+ if(!savelyLiveLocationPoints.length){list.innerHTML='<div class="live-location-empty">No location points yet. Open Live Location and allow browser permission to begin.</div>';return;}
  list.innerHTML=savelyLiveLocationPoints.slice(-8).reverse().map((p,i)=>`<div class="live-location-point"><span class="live-location-point-index">${savelyLiveLocationPoints.length-i}</span><div class="live-location-point-main"><strong>${p.lat.toFixed(6)}, ${p.lng.toFixed(6)}</strong><small>${savelyFormatClock(p.at)} PHT</small></div><span class="live-location-point-accuracy">${p.accuracy?`±${Math.round(p.accuracy)} m`:'GPS'}</span></div>`).join('');
 }
 function startSavelyLiveLocation(){
@@ -10176,11 +10454,11 @@ function startSavelyLiveLocation(){
  initSavelyLiveLocationMap();
  savelyLocationSetStatus('Requesting permission…','Your browser will ask whether Savely may access your location.');
  window.__savelyLiveLocationWatchId=navigator.geolocation.watchPosition(updateSavelyLiveLocation,error=>{
-  const messages={1:['Permission denied','Allow location access in your browser site settings, then press Start tracking again.'],2:['Position unavailable','GPS or network location could not determine your position. Try again outdoors.'],3:['Location timed out','No position arrived in time. Press Start tracking to retry.']};
+  const messages={1:['Permission denied','Allow location access in your browser site settings, then leave and reopen Live Location.'],2:['Position unavailable','GPS or network location could not determine your position. Try again outdoors.'],3:['Location timed out','No position arrived in time. Press Start tracking to retry.']};
   const info=messages[error.code]||['Location error','Try starting location tracking again.'];
   stopSavelyLiveLocation(info[1]);savelyLocationSetStatus(info[0],info[1]);toast(info[0]+'.');
  },{enableHighAccuracy:true,maximumAge:3000,timeout:20000});
- savelyLocationSetStatus('Tracking active','Your live position is updating in this visible page.',true);
+ savelyLocationSetStatus('Tracking active','GPS is updating while this page stays open and visible.',true);
  setSavelyLiveLocationMarkerState(true);
 }
 function stopSavelyLiveLocation(message='Tracking stopped.'){
@@ -10190,6 +10468,16 @@ function stopSavelyLiveLocation(message='Tracking stopped.'){
  window.__savelyLiveLocationWatchId=null;
  setSavelyLiveLocationMarkerState(false);
  if(document.getElementById('liveLocationStatus'))savelyLocationSetStatus('Not tracking',message,false);
+}
+function centerSavelyLiveLocation(){
+ const point=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
+ if(!savelyLiveLocationMap){initSavelyLiveLocationMap();}
+ if(point&&savelyLiveLocationMap){
+  savelyLiveLocationMap.setView([point.lat,point.lng],18,{animate:true});
+  savelyLiveLocationMap.invalidateSize();
+  return;
+ }
+ toast('Waiting for a GPS location fix.');
 }
 function clearSavelyLocationTrail(){
  stopSavelyLiveLocation('Trail cleared. Start tracking again when ready.');
