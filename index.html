@@ -2606,6 +2606,103 @@ button.link-btn{
 }
 </style>
 
+
+<style id="savely-debt-tabs-inline-payment-live-location-v2">
+/* Compact side-by-side Debt content switcher */
+.debt-record-view-switcher{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 14px}
+.debt-record-view-switcher button{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;min-height:54px!important;height:54px!important;padding:0 17px!important;border:1px solid #e2eaf0!important;border-radius:13px!important;background:#fff!important;color:#68778a!important;box-shadow:0 4px 14px rgba(20,40,70,.035);font-size:12px!important;font-weight:850!important}
+.debt-record-view-switcher button.active{border-color:#a8ddc2!important;background:linear-gradient(110deg,#effaf4,#fff)!important;color:#087a55!important;box-shadow:inset 0 0 0 1px #ccebd9,0 5px 15px rgba(16,130,88,.07)!important}
+.debt-record-view-switcher button small{display:grid;place-items:center;min-width:26px;height:24px;padding:0 7px;border-radius:999px;background:#edf2f5;color:#617284;font-size:10px;font-weight:900}
+.debt-record-view-switcher button.active small{background:#d9f3e4;color:#087a55}
+.debt-view-panel[hidden]{display:none!important}
+.debt-view-panel{margin-bottom:16px}
+.debt-inline-paid-confirm{margin:8px 0;padding:16px;border:1px solid #bce6cf;border-radius:14px;background:linear-gradient(120deg,#effaf4,#fff);box-shadow:0 5px 16px rgba(13,130,83,.05)}
+.debt-inline-paid-confirm-top{display:flex;align-items:center;gap:10px;min-width:0}
+.debt-inline-paid-check{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border-radius:11px;background:#dff5e8;color:#0c9463;font-size:18px;font-weight:900}
+.debt-inline-paid-confirm-top>div{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.debt-inline-paid-confirm-top strong{font-size:13px;color:#1f4633}
+.debt-inline-paid-confirm-top small{font-size:10px;color:#74877d;overflow-wrap:anywhere}
+.debt-inline-paid-amount{margin-left:auto;color:#0d8a5c;font-size:17px;font-weight:900;white-space:nowrap}
+.debt-inline-paid-confirm p{margin:10px 0 12px 44px;color:#6c8175;font-size:10px;line-height:1.5}
+.debt-inline-paid-actions{display:flex;justify-content:flex-end;gap:8px}
+.debt-inline-paid-actions button{min-width:115px}
+.debt-inline-paid-success{display:flex;align-items:center;gap:12px;margin:8px 0;padding:15px;border:1px solid #bce6cf;border-radius:13px;background:#effaf4}
+.debt-inline-paid-success-icon{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border-radius:50%;background:#d9f4e4;color:#0a8a5d;font-size:18px;font-weight:900}
+.debt-inline-paid-success>div{display:flex;flex:1;flex-direction:column;gap:3px;min-width:0}
+.debt-inline-paid-success strong{color:#176442;font-size:12px}
+.debt-inline-paid-success small{color:#6e8378;font-size:10px;line-height:1.45}
+.debt-inline-paid-success button{flex:0 0 auto}
+/* Debt interest / lender fee details */
+.savely-debt-interest-card{padding:15px!important;border:1px solid #e3ece7!important;border-radius:14px!important;background:linear-gradient(180deg,#fbfefc,#f7fbf9)!important}
+.savely-debt-interest-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:11px}
+.savely-debt-interest-head strong{display:block;color:#2d493b;font-size:12px}
+.savely-debt-interest-head small{display:block;margin-top:3px;color:#79887f;font-size:10px;line-height:1.45}
+.savely-debt-interest-tag{padding:6px 8px;border-radius:8px;background:#e5f5ec;color:#13805b;font-size:9px;font-weight:900;letter-spacing:.06em;white-space:nowrap}
+.savely-debt-interest-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.savely-debt-interest-grid .field.full{grid-column:1/-1}
+.savely-debt-interest-reference{margin-top:10px;padding:10px 11px;border:1px solid #e0ece5;border-radius:10px;background:#fff;color:#657a6e;font-size:10px;line-height:1.55}
+.savely-debt-interest-reference strong{color:#24563f}
+.savely-debt-interest-reference a{color:#087d59;font-weight:800;text-decoration:none}
+.savely-debt-interest-reference a:hover{text-decoration:underline}
+.savely-debt-interest-note{margin-top:8px;color:#7b8990;font-size:9px;line-height:1.5}
+/* Live Location */
+.live-location-consent{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;margin-bottom:14px;border:1px solid #cfe7dc;border-radius:14px;background:linear-gradient(110deg,#f1faf5,#fbfefd)}
+.live-location-consent-icon{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:12px;background:#dff4e8;color:#0d8a60;font-size:22px;font-weight:900}
+.live-location-consent-copy{display:flex;flex-direction:column;gap:3px;min-width:0}
+.live-location-consent-copy strong{font-size:12px;color:#245340}
+.live-location-consent-copy span{font-size:10px;line-height:1.5;color:#6f8479}
+.live-location-toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:14px;padding:14px 16px}
+.live-location-status-wrap{display:flex;align-items:center;gap:11px;min-width:0}
+.live-location-status-dot{width:10px;height:10px;flex:0 0 10px;border-radius:50%;background:#aab5bf;box-shadow:0 0 0 4px #aab5bf20}
+.live-location-status-dot.is-live{background:#11a56e;box-shadow:0 0 0 5px #11a56e20;animation:savelyLocationPulse 1.8s infinite}
+.live-location-status-wrap strong{display:block;color:var(--text);font-size:12px}
+.live-location-status-wrap small{display:block;margin-top:3px;color:var(--muted);font-size:10px}
+.live-location-actions{display:flex;gap:8px;flex-wrap:wrap}
+.live-location-actions button{min-width:100px}
+.live-location-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-bottom:14px}
+.live-location-stat{display:flex;align-items:center;gap:10px;min-width:0;padding:13px;border:1px solid var(--line);border-radius:13px;background:#fff;box-shadow:var(--shadow)}
+.live-location-stat-icon{display:grid;place-items:center;flex:0 0 35px;width:35px;height:35px;border-radius:10px;background:#e8f7ef;color:#128765;font-size:17px;font-weight:900}
+.live-location-stat small{display:block;color:var(--muted);font-size:9px}
+.live-location-stat strong{display:block;margin-top:3px;color:var(--text);font-size:11px;font-weight:850;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.live-location-map-panel{padding:18px;margin-bottom:14px}
+.live-location-map-panel .panel-head{align-items:center;margin-bottom:13px}
+.live-location-local-badge{display:inline-flex;align-items:center;padding:6px 9px;border-radius:999px;background:#edf8f2;color:#14845f;font-size:9px;font-weight:850;white-space:nowrap}
+.savely-live-location-map{width:100%;height:430px;min-height:280px;border:1px solid #e2eaf0;border-radius:13px;overflow:hidden;background:#edf2f4;z-index:0}
+.live-location-map-footer{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:11px;color:var(--muted);font-size:9px}
+.live-location-map-footer span{display:inline-flex;align-items:center;gap:6px}
+.live-location-legend-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#148b66}
+.live-location-legend-line{display:inline-block;width:18px;height:3px;border-radius:9px;background:#168765}
+.live-location-recent-points{display:grid;gap:7px}
+.live-location-point{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:9px;padding:9px 11px;border:1px solid #e9eef2;border-radius:10px;background:#fbfcfd}
+.live-location-point-index{display:grid;place-items:center;width:23px;height:23px;border-radius:8px;background:#e5f6ed;color:#10845f;font-size:10px;font-weight:900}
+.live-location-point-main strong{display:block;color:#24372e;font-size:10px}
+.live-location-point-main small{display:block;margin-top:3px;color:#7d8990;font-size:9px}
+.live-location-point-accuracy{color:#718096;font-size:9px;text-align:right}
+.live-location-empty{padding:23px;border:1px dashed #d9e5df;border-radius:12px;background:#fbfdfc;color:#7a8981;font-size:10px;text-align:center}
+@keyframes savelyLocationPulse{0%,100%{box-shadow:0 0 0 4px #11a56e20}50%{box-shadow:0 0 0 8px #11a56e09}}
+@media(max-width:760px){
+ .debt-record-view-switcher{gap:7px}
+ .debt-record-view-switcher button{padding:0 10px!important;min-height:49px!important;height:49px!important;font-size:11px!important}
+ .savely-debt-interest-grid{grid-template-columns:1fr}
+ .savely-debt-interest-grid .field.full{grid-column:auto}
+ .live-location-toolbar{align-items:flex-start;flex-direction:column}
+ .live-location-actions{width:100%}
+ .live-location-actions button{flex:1}
+ .live-location-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .savely-live-location-map{height:360px}
+ .debt-inline-paid-success{align-items:flex-start;flex-wrap:wrap}
+ .debt-inline-paid-success button{width:100%}
+}
+@media(max-width:480px){
+ .debt-inline-paid-confirm-top{flex-wrap:wrap}
+ .debt-inline-paid-amount{margin-left:44px}
+ .debt-inline-paid-confirm p{margin-left:0}
+ .debt-inline-paid-actions{flex-direction:column-reverse}
+ .debt-inline-paid-actions button{width:100%}
+ .savely-live-location-map{height:300px}
+}
+</style>
+
 </head>
 <body>
 
@@ -2720,7 +2817,41 @@ button.link-btn{
 
   
   <section class="page" id="page-cards" aria-label="Cards"></section>
-  <section class="page" id="page-live-location" aria-label="Live Location"></section>
+  <section class="page" id="page-live-location" aria-label="Live Location">
+    <div class="live-location-consent">
+      <div class="live-location-consent-icon">⌖</div>
+      <div class="live-location-consent-copy">
+        <strong>Location sharing stays under your control</strong>
+        <span>Press Start tracking and allow your browser to access location. Tracking runs only while this page is open and visible. Points stay in this browser tab and are not sent to Savely. Refreshing or closing the tab clears the route.</span>
+      </div>
+    </div>
+    <div class="live-location-toolbar panel">
+      <div class="live-location-status-wrap">
+        <span class="live-location-status-dot" id="liveLocationStatusDot"></span>
+        <div><strong id="liveLocationStatus">Not tracking</strong><small id="liveLocationStatusHelp">Start tracking to show your current position.</small></div>
+      </div>
+      <div class="live-location-actions">
+        <button type="button" class="btn btn-primary" id="liveLocationStart" onclick="startSavelyLiveLocation()">Start tracking</button>
+        <button type="button" class="btn btn-secondary" id="liveLocationStop" onclick="stopSavelyLiveLocation('Tracking stopped by you.')" disabled>Stop</button>
+        <button type="button" class="btn btn-light" id="liveLocationClear" onclick="clearSavelyLocationTrail()">Clear trail</button>
+      </div>
+    </div>
+    <div class="live-location-stat-grid">
+      <div class="live-location-stat"><span class="live-location-stat-icon">⌖</span><div><small>Current position</small><strong id="liveLocationCoordinates">Waiting for permission</strong></div></div>
+      <div class="live-location-stat"><span class="live-location-stat-icon">◎</span><div><small>GPS accuracy</small><strong id="liveLocationAccuracy">—</strong></div></div>
+      <div class="live-location-stat"><span class="live-location-stat-icon">↗</span><div><small>Current speed</small><strong id="liveLocationSpeed">—</strong></div></div>
+      <div class="live-location-stat"><span class="live-location-stat-icon">⇢</span><div><small>Distance tracked</small><strong id="liveLocationDistance">0 m</strong></div></div>
+    </div>
+    <section class="panel live-location-map-panel">
+      <div class="panel-head"><div><h2>Live movement map</h2><div class="panel-sub" id="liveLocationMapSubtitle">Your map will center on you after you allow location access.</div></div><span class="live-location-local-badge">This tab only</span></div>
+      <div id="savelyLiveLocationMap" class="savely-live-location-map" role="region" aria-label="Map showing your current position and movement trail"></div>
+      <div class="live-location-map-footer"><span><i class="live-location-legend-dot current"></i> Current / last position</span><span><i class="live-location-legend-line"></i> Recorded movement trail</span><span id="liveLocationLastUpdate">No location update yet</span></div>
+    </section>
+    <section class="panel live-location-history-panel">
+      <div class="panel-head"><div><h2>Recent location points</h2><div class="panel-sub">Latest points from this tracking session.</div></div><span class="pill" id="liveLocationPointCount">0 points</span></div>
+      <div id="liveLocationRecentPoints" class="live-location-recent-points"><div class="live-location-empty">No location points recorded yet. Press Start tracking to begin.</div></div>
+    </section>
+  </section>
   <section class="page" id="page-interest">
     <div class="panel">
       <div class="panel-head"><div><h2>Interest calculator</h2><div class="panel-sub">Compare Philippine bank and app-based savings rates (October 2026 snapshots).</div></div><span class="panel-sub" id="interestRateUpdated">October 2026 rate snapshots · verify with bank</span></div>
@@ -2827,12 +2958,20 @@ button.link-btn{
         <span><i class="debt-dot debt-dot-paid"></i> Paid</span>
       </div>
     </section>
-    <section class="panel debt-upcoming-panel">
+    <div class="debt-record-view-switcher" role="tablist" aria-label="Debt records view">
+      <button type="button" class="active" id="debtUpcomingViewButton" role="tab" aria-selected="true" onclick="setDebtRecordsView('upcoming')">
+        <span>Upcoming payments</span><small id="debtUpcomingTabCount">0</small>
+      </button>
+      <button type="button" id="debtPaidViewButton" role="tab" aria-selected="false" onclick="setDebtRecordsView('paid')">
+        <span>Paid records</span><small id="debtPaidTabCount">0</small>
+      </button>
+    </div>
+    <section class="panel debt-upcoming-panel debt-view-panel is-active" id="debtUpcomingPanel">
       <div class="panel-head debt-upcoming-head"><div><h2>Upcoming payments &amp; collections</h2><div class="panel-sub">Your next unpaid due dates, including overdue items.</div></div><span class="pill" id="debtUpcomingCount">0 records</span></div>
       <div class="debt-upcoming-filters" role="group" aria-label="Upcoming record type"><button type="button" class="active" data-upcoming-filter="all" onclick="setDebtUpcomingFilter('all')">All records</button><button type="button" data-upcoming-filter="owed" onclick="setDebtUpcomingFilter('owed')">I owe</button><button type="button" data-upcoming-filter="lent" onclick="setDebtUpcomingFilter('lent')">Owed to me</button></div>
       <div id="debtUpcomingList"></div>
     </section>
-    <section class="panel debt-paid-panel" id="debtPaidPanel">
+    <section class="panel debt-paid-panel debt-view-panel" id="debtPaidPanel" hidden>
       <div class="panel-head debt-upcoming-head">
         <div><h2>Paid records</h2><div class="panel-sub">A history of fully paid debts and completed collections.</div></div>
         <span class="pill" id="debtPaidCount">0 records</span>
@@ -2856,7 +2995,7 @@ button.link-btn{
     </div>
     <div class="panel">
       <div class="panel-head financial-items-head"><div><h2 id="financialItemsTitle">Savings items</h2><div class="panel-sub">Items in the selected category.</div></div><div class="financial-items-actions"><div class="financial-settings-wrap" id="financialSettingsWrap">
-<button class="btn btn-light financial-settings-button" type="button" id="financialSettingsButton" aria-label="Savings items settings" aria-haspopup="true" aria-expanded="false" onclick="toggleFinancialSettingsMenu(event)">⚙ Settings</button>
+<button class="btn btn-light financial-settings-button" type="button" id="financialSettingsButton" aria-label="Savings items settings" aria-haspopup="true" aria-expanded="false" onclick="toggleFinancialSettingsMenu(event)">Settings</button>
 <div class="financial-settings-menu" id="financialSettingsMenu" hidden>
 <button type="button" onclick="openAllSavingsHistory();closeFinancialSettingsMenu()">▤ Overall History</button>
 <button type="button" onclick="exportFinancialCSV();closeFinancialSettingsMenu()">↓ Export list</button>
@@ -3579,6 +3718,8 @@ let debtSelectedDate=debtLocalISO(new Date());
 let debtDirectionFilter='all';
 let debtUpcomingFilter='all';
 let debtPaidFilter='all';
+let debtRecordsView='upcoming';
+let debtPaidConfirmId=null,debtPaidConfirmSurface='upcoming',debtInlinePaymentSuccess=null;
 function debtLocalISO(date){
  const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,'0'),d=String(date.getDate()).padStart(2,'0');
  return `${y}-${m}-${d}`;
@@ -3915,7 +4056,7 @@ function renderDebtCalendar(){
  }
  grid.innerHTML=cells.join('');
 }
-function debtCard(item){
+function debtCard(item,surface='upcoming'){
  const st=debtStatus(item),isOwed=item.direction==='owed',directionLabel=isOwed?'I OWE':'OWED TO ME';
  const person=item.counterparty?` · ${esc(item.counterparty)}`:'';
  const installment=item.totalInstallments>1?` · Installment ${item.installmentNumber}/${item.totalInstallments}`:'';
@@ -3923,7 +4064,7 @@ function debtCard(item){
  const menu=`<div class="debt-card-menu-wrap">
   <button type="button" class="debt-card-menu-button" aria-label="More options for ${esc(item.title||'debt record')}" aria-haspopup="true" aria-expanded="false" onclick="toggleDebtCardMenu(event,'${id}')">⋯</button>
   <div class="debt-card-menu" data-debt-menu="${id}">
-   ${st!=='paid'?`<button type="button" onclick="markDebtAsPaid('${id}');closeDebtCardMenus()">${isOwed?'Mark as paid':'Mark as collected'}</button><button type="button" onclick="openDebtPayment('${id}');closeDebtCardMenus()">${isOwed?'Partial payment':'Partial collection'}</button><div class="menu-divider"></div>`:''}
+   ${st!=='paid'?`<button type="button" onclick="markDebtAsPaid('${id}','${surface}');closeDebtCardMenus()">${isOwed?'Mark as paid':'Mark as collected'}</button><button type="button" onclick="openDebtPayment('${id}');closeDebtCardMenus()">${isOwed?'Partial payment':'Partial collection'}</button><div class="menu-divider"></div>`:''}
    <button type="button" onclick="editDebtRecord('${id}');closeDebtCardMenus()">Edit record</button>
    <button type="button" onclick="viewDebtHistory('${id}');closeDebtCardMenus()">${st==='paid'?'Payment history':'View history'}</button>
    <div class="menu-divider"></div>
@@ -3997,7 +4138,15 @@ function renderDebtDateDetails(openModal=false){
  const meta=modal.querySelector('#debtDateModalMeta'),body=modal.querySelector('#debtDateModalBody'),title=modal.querySelector('#debtDateModalTitle');
  if(title)title.textContent=dateLabel;
  if(meta)meta.textContent=`${items.length} record${items.length===1?'':'s'} · ${peso(remainingTotal)} remaining`;
- if(body)body.innerHTML=items.length?items.map(debtCard).join(''):'<div class="debt-empty">No payments or collections scheduled for this date.</div>';
+ if(body){
+  if(debtInlinePaymentSuccess&&debtInlinePaymentSuccess.surface==='date'&&debtInlinePaymentSuccess.date===debtSelectedDate){
+   if(title)title.textContent='Payment completed';
+   if(meta)meta.textContent='Your payment has been recorded.';
+   body.innerHTML=debtInlinePaymentSuccessCard(debtInlinePaymentSuccess);
+  }else{
+   body.innerHTML=items.length?items.map(item=>debtPaymentConfirmMatches(item,'date')?debtInlinePaymentConfirmCard(item,'date'):debtCard(item,'date')).join(''):'<div class="debt-empty">No payments or collections scheduled for this date.</div>';
+  }
+ }
 }
 function closeDebtDateModal(){
  const modal=document.getElementById('savelyDebtDateModal');
@@ -4005,6 +4154,20 @@ function closeDebtDateModal(){
  if(modal._escapeHandler)document.removeEventListener('keydown',modal._escapeHandler);
  modal.remove();
 }
+
+function setDebtRecordsView(view){
+ debtRecordsView=view==='paid'?'paid':'upcoming';
+ const upcoming=document.getElementById('debtUpcomingPanel');
+ const paid=document.getElementById('debtPaidPanel');
+ const upBtn=document.getElementById('debtUpcomingViewButton');
+ const paidBtn=document.getElementById('debtPaidViewButton');
+ if(upcoming){upcoming.hidden=debtRecordsView!=='upcoming';upcoming.classList.toggle('is-active',debtRecordsView==='upcoming');}
+ if(paid){paid.hidden=debtRecordsView!=='paid';paid.classList.toggle('is-active',debtRecordsView==='paid');}
+ if(upBtn){upBtn.classList.toggle('active',debtRecordsView==='upcoming');upBtn.setAttribute('aria-selected',String(debtRecordsView==='upcoming'));}
+ if(paidBtn){paidBtn.classList.toggle('active',debtRecordsView==='paid');paidBtn.setAttribute('aria-selected',String(debtRecordsView==='paid'));}
+ if(debtRecordsView==='upcoming')renderDebtUpcoming();else renderDebtPaidRecords();
+}
+
 function setDebtUpcomingFilter(filter){
  debtUpcomingFilter=['all','owed','lent'].includes(filter)?filter:'all';
  document.querySelectorAll('[data-upcoming-filter]').forEach(button=>button.classList.toggle('active',button.dataset.upcomingFilter===debtUpcomingFilter));
@@ -4015,8 +4178,11 @@ function renderDebtUpcoming(){
  const all=(Array.isArray(data.debtRecords)?data.debtRecords:[]).filter(x=>debtRemaining(x)>0.005).sort((a,b)=>String(a.dueDate).localeCompare(String(b.dueDate)));
  const items=all.filter(item=>debtUpcomingFilter==='all'||item.direction===debtUpcomingFilter).slice(0,12);
  count.textContent=`${items.length} record${items.length===1?'':'s'}`;
+ const tabCount=document.getElementById('debtUpcomingTabCount');if(tabCount)tabCount.textContent=String(all.length);
  document.querySelectorAll('[data-upcoming-filter]').forEach(button=>button.classList.toggle('active',button.dataset.upcomingFilter===debtUpcomingFilter));
- list.innerHTML=items.length?items.map(debtCard).join(''):'<div class="debt-empty">No unpaid records in this section yet.</div>';
+ const confirmItem=items.find(item=>debtPaymentConfirmMatches(item,'upcoming'));
+ const successHtml=debtInlinePaymentSuccess&&debtInlinePaymentSuccess.surface==='upcoming'?debtInlinePaymentSuccessCard(debtInlinePaymentSuccess):'';
+ list.innerHTML=(successHtml||'')+(items.length?items.map(item=>debtPaymentConfirmMatches(item,'upcoming')?debtInlinePaymentConfirmCard(item,'upcoming'):debtCard(item,'upcoming')).join(''):'<div class="debt-empty">No unpaid records in this section yet.</div>');
 }
 
 function setDebtPaidFilter(filter){
@@ -4061,6 +4227,7 @@ function renderDebtPaidRecords(){
   .sort((a,b)=>String(debtPaidDate(b)||'').localeCompare(String(debtPaidDate(a)||'')));
  const items=paid.filter(item=>debtPaidFilter==='all'||item.direction===debtPaidFilter);
  count.textContent=`${items.length} record${items.length===1?'':'s'}`;
+ const tabCount=document.getElementById('debtPaidTabCount');if(tabCount)tabCount.textContent=String(paid.length);
  document.querySelectorAll('[data-paid-filter]').forEach(button=>button.classList.toggle('active',button.dataset.paidFilter===debtPaidFilter));
  list.innerHTML=items.length?items.map(debtPaidCard).join(''):'<div class="debt-empty debt-paid-empty"><span class="debt-paid-empty-icon">✓</span><strong>No completed records here yet</strong><span>Fully paid debts and completed collections will appear here.</span></div>';
 }
@@ -4180,6 +4347,28 @@ function savelyDebtProviderGroup(kind,counterparty){
  if(/bank|credit card|bdo|bpi|metrobank|unionbank|rcbc|pnb|landbank|security bank|china bank|eastwest|psbank|aub|pbcom|philtrust/.test(k+' '+c))return 'Banks';
  return 'Other';
 }
+
+function updateDebtInterestProviderHint(modal,identifier){
+ const hint=modal&&modal.querySelector('#debtInterestProviderHint');if(!hint)return;
+ const value=String(identifier||'').toLowerCase();
+ const link=(url,label)=>`<a href="${url}" target="_blank" rel="noopener">${label}</a>`;
+ let html='No verified public rate is shown for this selection. Enter the exact rate and charges from your loan agreement or repayment screen.';
+ if(/mari.?loan/.test(value)){
+  html=`<strong>MariLoan published reference:</strong> as low as <strong>0.95% monthly add-on</strong> for selected customers. Your actual offer may differ. ${link('https://www.maribank.ph/product/mari-loan','View MariLoan details')}`;
+ }else if(/mari.?credit/.test(value)){
+  html=`<strong>MariCredit disclosure reference:</strong> monthly contractual rate listed as <strong>4.36% (3 months), 4.86% (6 months), 5.00% (12 months)</strong>. Confirm the latest disclosure and approved offer. ${link('https://banking-aka-storage.maribank.ph/maribank/ph/cmps-website/file-hosting/MariBank-Credit-Product-Disclosure-Sheet.pdf','View product disclosure sheet')}`;
+ }else if(/shopee|spaylater/.test(value)){
+  html=`<strong>SPayLater published reference:</strong> processing fee <strong>0%–7%</strong>, interest up to <strong>3.95% per month</strong>, and late fee <strong>2.5%–5%</strong> on outstanding amounts. Offers vary by user and product. ${link('https://help.shopee.ph/portal/4/article/81098','View Shopee Help Center')}`;
+ }else if(/atome/.test(value)){
+  html=`<strong>Atome Cash published reference:</strong> interest <strong>0%–6% per month</strong>; facilitation/origination fees may also apply. Check the offer in-app. ${link('https://help.atome.ph/hc/en-gb/articles/54871283707417-What-fees-will-I-be-charged','View Atome fee guide')}`;
+ }else if(/bill.?ease|billease/.test(value)){
+  html=`<strong>BillEase published reference:</strong> interest from <strong>0%–5% monthly</strong>, with 0% at selected partner merchants. Exact terms are shown in the app. ${link('https://billease.ph/','View BillEase')}`;
+ }else if(/maya/.test(value)){
+  html=`<strong>Maya published reference:</strong> Maya Easy Credit uses a user-specific service fee (not a fixed universal interest rate); its current offer is shown in-app. ${link('https://support.maya.ph/s/article/Why-do-I-have-a-new-credit-limit-and-or-service-fee-rate-for-Maya-Easy-Credit-and-Maya-Personal-Loan','View Maya Help Center')}`;
+ }
+ hint.innerHTML=html;
+}
+
 function renderDebtProviderPicker(modal,group,selectedKind='',selectedCounterparty=''){
  const tabs=modal.querySelectorAll('[data-debt-provider-group]');
  const grid=modal.querySelector('#debtProviderGrid');
@@ -4200,11 +4389,13 @@ function renderDebtProviderPicker(modal,group,selectedKind='',selectedCounterpar
   return `<button type="button" class="savely-debt-provider-option${selected?' selected':''}" data-debt-provider="${esc(provider.name)}" data-debt-kind="${esc(provider.kind)}" title="${esc(provider.name)}"><span class="savely-debt-provider-logo" style="--provider-color:${provider.color}">${esc(provider.short)}</span><span class="savely-debt-provider-name">${esc(provider.name)}</span><span class="savely-debt-provider-check">${selected?'✓':''}</span></button>`;
  }).join('');
  if(help)help.textContent=activeGroup==='Other'?'Choose a common debt type, or select Other and enter your own lender / platform.':'Choose a provider to fill the lender / platform field. You can still edit the name manually.';
+ updateDebtInterestProviderHint(modal,selectedCounterparty||selectedKind);
  grid.querySelectorAll('[data-debt-provider]').forEach(button=>button.addEventListener('click',()=>{
   const providerName=button.dataset.debtProvider;
   const mappedKind=button.dataset.debtKind;
   if(counterpartyInput)counterpartyInput.value=providerName==='Other bank'||providerName==='Other digital lender'||providerName==='Other PayLater'||providerName==='Other'?'':providerName;
   if(kindOptions.includes(mappedKind))kindSelect.value=mappedKind;
+  updateDebtInterestProviderHint(modal,providerName+' '+mappedKind);
   grid.querySelectorAll('.savely-debt-provider-option').forEach(item=>{
    item.classList.toggle('selected',item===button);
    const mark=item.querySelector('.savely-debt-provider-check');if(mark)mark.textContent=item===button?'✓':'';
@@ -4220,6 +4411,7 @@ function renderDebtProviderPicker(modal,group,selectedKind='',selectedCounterpar
  if(counterpartyInput && !counterpartyInput.dataset.debtProviderManualBound){
   counterpartyInput.addEventListener('input',()=>{
    const value=counterpartyInput.value.trim().toLowerCase();
+   updateDebtInterestProviderHint(modal,value+' '+kindSelect.value);
    grid.querySelectorAll('[data-debt-provider]').forEach(button=>{
     const selected=value && button.dataset.debtProvider.toLowerCase()===value;
     button.classList.toggle('selected',!!selected);
@@ -4227,6 +4419,10 @@ function renderDebtProviderPicker(modal,group,selectedKind='',selectedCounterpar
    });
   });
   counterpartyInput.dataset.debtProviderManualBound='1';
+ }
+ if(!kindSelect.dataset.debtInterestHintBound){
+  kindSelect.addEventListener('change',()=>updateDebtInterestProviderHint(modal,(counterpartyInput&&counterpartyInput.value||'')+' '+kindSelect.value));
+  kindSelect.dataset.debtInterestHintBound='1';
  }
 }
 
@@ -4242,7 +4438,7 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
  const paid=current?debtPaidAmount(current):0;
  const formTitle=current?`Edit ${isOwed?'payment':'collection'} record`:isOwed?'Add payment schedule':'Add money to collect';
  const formSubtitle=isOwed?'Track a bill, loan, or installment that you need to pay.':'Track money you lent and the payments you expect to collect.';
- const typeOptions=`<option>Digital bank loan</option><option>Shopee SPayLater</option><option>Lazada LazPayLater</option><option>Atome</option><option>GCash GLoan / GGives</option><option>Maya Easy Credit</option><option>SLoan / Billease</option><option>Home Credit</option><option>Tala / online lending app</option><option>Credit card</option><option>Bank / salary loan</option><option>SSS / Pag-IBIG loan</option><option>Utility / subscription bill</option><option>Personal loan / money lent</option><option>Other</option>`;
+ const typeOptions=`<option>Digital bank loan</option><option>MariLoan</option><option>MariCredit</option><option>MariCard Credit</option><option>Akulaku</option><option>Kredivo PH</option><option>Plentina</option><option>TendoPay</option><option>Cashalo</option><option>JuanHand</option><option>Skyro</option><option>Salmon Finance</option><option>ACOM</option><option>CashMart</option><option>MoneyCat</option><option>CashMe</option><option>GrabFinance</option><option>Bukas</option><option>Shopee SPayLater</option><option>Lazada LazPayLater</option><option>Atome</option><option>GCash GLoan / GGives</option><option>Maya Easy Credit</option><option>SLoan / Billease</option><option>Home Credit</option><option>Tala / online lending app</option><option>Credit card</option><option>Bank / salary loan</option><option>SSS / Pag-IBIG loan</option><option>Utility / subscription bill</option><option>Personal loan / money lent</option><option>Other</option>`;
  modal.innerHTML=`<div class="modal savely-debt-form-dialog" role="dialog" aria-modal="true" aria-labelledby="debtFormTitle" style="width:min(760px,100%);max-height:92vh;overflow:auto">
   <div class="panel-head savely-debt-form-header"><div><div class="savely-debt-kicker">DEBT SCHEDULE</div><h2 id="debtFormTitle">${formTitle}</h2><div class="panel-sub">${formSubtitle}</div></div><button type="button" class="btn btn-light" onclick="closeDebtForm()">✕ Close</button></div>
   <div class="savely-debt-direction-banner ${isOwed?'is-owed':'is-lent'}"><span class="savely-debt-direction-icon">${isOwed?'↗':'↙'}</span><span>${isOwed?'I OWE · PAYMENT TO MAKE':'OWED TO ME · MONEY TO COLLECT'}</span></div>
@@ -4260,8 +4456,18 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
       <div class="savely-debt-provider-help" id="debtProviderHelp">Choose a bank or platform to fill the lender / platform field. You can still edit it manually.</div>
      </div>
      <div class="field full"><label for="debtKind">Debt product / type</label><select id="debtKind" required>${typeOptions}</select></div>`:`<div class="field full"><label>Debt type</label><div class="savely-debt-fixed-kind"><span class="savely-debt-fixed-kind-icon">↙</span><span><strong>Personal loan / money lent</strong><small>For money you lend directly to another person.</small></span></div></div>`}
-    <div class="field full"><label for="debtTitle">${isOwed?'Bill / payment name':'Loan / collection name'}</label><input id="debtTitle" maxlength="90" required placeholder="${isOwed?'e.g. Shopee SPayLater · November bill':'e.g. Money lent to Juan'}"></div>
+    <div class="field full"><label for="debtTitle">${isOwed?'Bill / payment name (optional)':'Loan / collection name (optional)'}</label><input id="debtTitle" maxlength="90" placeholder="${isOwed?'Optional · e.g. Shopee SPayLater November bill':'Optional · e.g. Money lent to Juan'}"></div>
     <div class="field full"><label for="debtCounterparty" id="debtCounterpartyLabel">${isOwed?'Lender / platform':'Borrower / person who owes you'}</label><input id="debtCounterparty" maxlength="70" placeholder="${isOwed?'e.g. Shopee, Lazada, GCash, or bank':'e.g. Friend, family member, or colleague'}"></div>
+    ${isOwed?`<div class="field full savely-debt-interest-card">
+      <div class="savely-debt-interest-head"><div><strong>Interest &amp; lender charges</strong><small>Optional · record the rate and charges shown in your loan or credit offer.</small></div><span class="savely-debt-interest-tag">LOAN DETAILS</span></div>
+      <div class="savely-debt-interest-grid">
+       <div class="field"><label for="debtInterestRate">Interest / service rate (%)</label><input id="debtInterestRate" type="number" min="0" max="100" step="0.0001" value="${current&&current.interestRate!==undefined&&current.interestRate!==null?Number(current.interestRate):''}" placeholder="e.g. 3.95"></div>
+       <div class="field"><label for="debtInterestBasis">Rate basis</label><select id="debtInterestBasis"><option value="monthly"${current&&current.interestBasis==='monthly'?' selected':''}>Per month</option><option value="annual"${current&&current.interestBasis==='annual'?' selected':''}>Per year (p.a.)</option><option value="daily"${current&&current.interestBasis==='daily'?' selected':''}>Per day</option><option value="flat"${current&&current.interestBasis==='flat'?' selected':''}>Flat / one-time</option><option value="service"${current&&current.interestBasis==='service'?' selected':''}>Service fee</option></select></div>
+       <div class="field full"><label for="debtInterestCharges">Additional interest / fees (₱)</label><input id="debtInterestCharges" type="number" min="0" step="0.01" value="${current&&current.interestCharges!==undefined?Number(current.interestCharges):''}" placeholder="e.g. 150.00"></div>
+      </div>
+      <div class="savely-debt-interest-reference" id="debtInterestProviderHint">Select a source to see any available published reference. Enter the exact terms from your own approved offer.</div>
+      <div class="savely-debt-interest-note">Use the full repayment amount below, including interest and fees. These reference fields are for tracking only and are not added a second time.</div>
+     </div>`:''}
     <div class="field"><label for="debtTotalAmount">${current?'Scheduled amount (₱)':isOwed?'Total amount to pay (₱)':'Total amount to collect (₱)'}</label><input id="debtTotalAmount" type="number" min="0.01" step="0.01" required value="${current?Number(current.amount).toFixed(2):''}" placeholder="e.g. 3500"></div>
     <div class="field"><label for="debtFirstDue">${isOwed?'First due date':'Expected collection date'}</label><input id="debtFirstDue" type="date" required value="${current?esc(current.dueDate):(defaultDate||debtLocalISO(new Date()))}"></div>
     <div class="savely-debt-plan-card field full">
@@ -4362,7 +4568,13 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
  updateSchedulePreview();
  modal.querySelector('#savelyDebtForm').addEventListener('submit',e=>{
   e.preventDefault();
-  const dir=directionValue,kind=isOwed?modal.querySelector('#debtKind').value:'Personal loan / money lent',title=modal.querySelector('#debtTitle').value.trim(),counterparty=modal.querySelector('#debtCounterparty').value.trim();
+  const dir=directionValue,kind=isOwed?modal.querySelector('#debtKind').value:'Personal loan / money lent',counterparty=modal.querySelector('#debtCounterparty').value.trim();
+  let title=modal.querySelector('#debtTitle').value.trim();
+  if(!title)title=counterparty||kind||(isOwed?'Debt payment':'Money lent');
+  const interestRaw=String(modal.querySelector('#debtInterestRate')?.value||'').trim();
+  const interestRate=interestRaw===''?null:Number(interestRaw);
+  const interestBasis=modal.querySelector('#debtInterestBasis')?.value||'monthly';
+  const interestCharges=Math.max(0,Number(modal.querySelector('#debtInterestCharges')?.value)||0);
   const amount=Number(modal.querySelector('#debtTotalAmount').value),dueDate=modal.querySelector('#debtFirstDue').value;
   let repeat=frequency.value;
   const enteredCount=Number(installments.value);
@@ -4370,6 +4582,8 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
   const count=current?1:(repeat==='once'?1:enteredCount);
   if(!title){toast('Enter a name or description.');return;}
   if(!Number.isFinite(amount)||amount<=0){toast('Enter an amount greater than zero.');return;}
+  if(interestRate!==null&&(!Number.isFinite(interestRate)||interestRate<0||interestRate>100)){toast('Enter a valid interest rate from 0 to 100%.');return;}
+  if(!Number.isFinite(interestCharges)||interestCharges<0){toast('Enter a valid additional interest / fee amount.');return;}
   if(!dueDate){toast('Choose a date.');return;}
   if(!current&&(!Number.isInteger(count)||count<1||count>48)){toast('Enter a whole number of payments from 1 to 48.');installments.focus();return;}
   if(!current && Math.floor(amount*100)+0.000001<count){toast('The total amount is too small for that number of installments. Reduce the installment count.');return;}
@@ -4377,7 +4591,7 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
    if(amount+0.000001<paid){toast('Scheduled amount cannot be lower than amounts already recorded.');return;}
    const editSnapshot=JSON.stringify(data);
    const previousRemaining=debtRemaining(current);
-   current.direction=dir;current.kind=kind;current.title=title;current.counterparty=counterparty;current.amount=amount;current.remainingAmount=Math.max(0,amount-paid);current.dueDate=dueDate;
+   current.direction=dir;current.kind=kind;current.title=title;current.counterparty=counterparty;current.interestRate=interestRate;current.interestBasis=interestBasis;current.interestCharges=interestCharges;current.amount=amount;current.remainingAmount=Math.max(0,amount-paid);current.dueDate=dueDate;
    current.status=current.remainingAmount<=0.005?'paid':(paid>0?'partial':'unpaid');
    const updatedReceivable=current.direction==='lent'?debtFindReceivableItem(current):null;
    if(updatedReceivable){
@@ -4395,7 +4609,7 @@ function openDebtForm(id=null,defaultDate=null,directionChoice=null){
     const dt=debtDateFromISO(dueDate);dt.setDate(dt.getDate()+i*(repeat==='weekly'?7:14));date=debtLocalISO(dt);
    }else if(repeat==='monthly')date=debtAddMonths(dueDate,i);
    const part=i===count-1?Math.round((amount-base*(count-1))*100)/100:base;
-   created.push({id:uid(),seriesId,direction:dir,kind,title,counterparty,amount:part,remainingAmount:part,dueDate:date,frequency:repeat,installmentNumber:i+1,totalInstallments:count,status:'unpaid',payments:[],createdAt:Date.now()});
+   created.push({id:uid(),seriesId,direction:dir,kind,title,counterparty,interestRate,interestBasis,interestCharges,amount:part,remainingAmount:part,dueDate:date,frequency:repeat,installmentNumber:i+1,totalInstallments:count,status:'unpaid',payments:[],createdAt:Date.now()});
   }
   if(!Array.isArray(data.debtRecords))data.debtRecords=[];
   let receivableItem=null;
@@ -4451,94 +4665,71 @@ function deleteDebtRecord(id){
  catch(error){try{data=JSON.parse(snapshot);}catch(e){}toast('Debt record could not be deleted. No changes were saved.');return;}
  render();toast('Debt record deleted.');
 }
-function markDebtAsPaid(id){
+
+function debtPaymentConfirmMatches(item,surface){return String(debtPaidConfirmId||'')===String(item.id)&&debtPaidConfirmSurface===surface;}
+function debtInlinePaymentConfirmCard(item,surface){
+ const remaining=debtRemaining(item);
+ return `<article class="debt-inline-paid-confirm">
+  <div class="debt-inline-paid-confirm-top">
+   <span class="debt-inline-paid-check">✓</span>
+   <div><strong>Confirm full payment</strong><small>${esc(item.title||item.counterparty||item.kind||'Debt record')}</small></div>
+   <span class="debt-inline-paid-amount">${peso(remaining)}</span>
+  </div>
+  <p>This will record the remaining balance as your final payment and move this record to Paid records.</p>
+  <div class="debt-inline-paid-actions">
+   <button type="button" class="btn btn-secondary" onclick="cancelDebtPaidConfirmation()">Cancel</button>
+   <button type="button" class="btn btn-primary" onclick="confirmDebtFullPayment('${esc(item.id)}')">Confirm payment</button>
+  </div>
+ </article>`;
+}
+function debtInlinePaymentSuccessCard(success){
+ return `<div class="debt-inline-paid-success">
+  <span class="debt-inline-paid-success-icon">✓</span>
+  <div><strong>Payment recorded successfully</strong><small>${peso(success.amount)} · The debt is now fully paid and saved to Paid records.</small></div>
+  <button type="button" class="btn btn-light" onclick="closeDebtDateModal();setDebtRecordsView('paid')">View paid records</button>
+ </div>`;
+}
+function markDebtAsPaid(id,surface='upcoming'){
  const item=(data.debtRecords||[]).find(x=>String(x.id)===String(id));
  if(!item)return;
  const remaining=debtRemaining(item);
  if(remaining<=0.005){toast('This debt record is already settled.');return;}
- // Owed-to-me collections use the Savings deposit/transfer flow.
  if(item.direction==='lent'){openDebtCollectionDeposit(id);return;}
- openDebtFullPaymentConfirm(id);
+ debtPaidConfirmId=String(id);
+ debtPaidConfirmSurface=surface==='date'?'date':'upcoming';
+ debtInlinePaymentSuccess=null;
+ closeDebtCardMenus();
+ if(debtPaidConfirmSurface==='date')renderDebtDateDetails(false);
+ else renderDebtUpcoming();
 }
-function closeDebtFullPaymentConfirm(){
- const modal=document.getElementById('savelyDebtFullPaymentModal');
- if(modal){
-  if(modal._escapeHandler)document.removeEventListener('keydown',modal._escapeHandler);
-  modal.remove();
- }
-}
-function openDebtFullPaymentConfirm(id){
- const item=(data.debtRecords||[]).find(x=>String(x.id)===String(id));
- if(!item||item.direction!=='owed')return;
- const remaining=debtRemaining(item);
- if(remaining<=0.005)return;
- closeDebtFullPaymentConfirm();
- const modal=document.createElement('div');
- modal.id='savelyDebtFullPaymentModal';modal.className='modal-backdrop';
- modal.style.cssText='display:flex;z-index:100150;align-items:center;justify-content:center;padding:18px';
- modal.innerHTML=`<div class="modal savely-debt-full-payment-dialog" role="dialog" aria-modal="true" aria-labelledby="debtFullPaymentTitle">
-  <div class="savely-debt-payment-modal-top">
-   <div class="savely-debt-payment-check">✓</div>
-   <button type="button" class="btn btn-light savely-debt-payment-close" onclick="closeDebtFullPaymentConfirm()" aria-label="Close payment confirmation">✕</button>
-  </div>
-  <div class="savely-debt-payment-kicker">PAYMENT COMPLETION</div>
-  <h2 id="debtFullPaymentTitle">Mark this debt as fully paid?</h2>
-  <p class="savely-debt-payment-description">Review the details below. This records the remaining balance as one final payment.</p>
-  <div class="savely-debt-payment-record">
-   <div class="savely-debt-payment-record-main">
-    <span class="savely-debt-payment-side">I OWE · PAYMENT TO MAKE</span>
-    <strong>${esc(item.title||'Debt record')}</strong>
-    <small>${esc(item.kind||'Other')}${item.counterparty?' · '+esc(item.counterparty):''}</small>
-   </div>
-   <div class="savely-debt-payment-total"><small>Final payment</small><strong>${peso(remaining)}</strong></div>
-  </div>
-  <div class="savely-debt-payment-note"><span>✓</span><div><strong>What happens next?</strong><small>The remaining balance becomes ₱0.00, the record moves to Paid records, and its payment history is retained.</small></div></div>
-  <div class="savely-debt-payment-actions">
-   <button type="button" class="btn btn-secondary" onclick="closeDebtFullPaymentConfirm()">Cancel</button>
-   <button type="button" class="btn btn-primary" id="confirmDebtFullPaymentButton">Confirm payment</button>
-  </div>
- </div>`;
- modal.addEventListener('click',event=>{if(event.target===modal)closeDebtFullPaymentConfirm();});
- document.body.appendChild(modal);
- modal.querySelector('#confirmDebtFullPaymentButton').addEventListener('click',()=>confirmDebtFullPayment(id));
- modal._escapeHandler=event=>{if(event.key==='Escape')closeDebtFullPaymentConfirm();};
- document.addEventListener('keydown',modal._escapeHandler);
+function cancelDebtPaidConfirmation(){
+ const surface=debtPaidConfirmSurface;
+ debtPaidConfirmId=null;
+ if(surface==='date')renderDebtDateDetails(false);else renderDebtUpcoming();
 }
 function confirmDebtFullPayment(id){
  const item=(data.debtRecords||[]).find(x=>String(x.id)===String(id));
- if(!item||item.direction!=='owed'){closeDebtFullPaymentConfirm();return;}
+ if(!item||item.direction!=='owed'){cancelDebtPaidConfirmation();return;}
  const remaining=debtRemaining(item);
- if(remaining<=0.005){closeDebtFullPaymentConfirm();renderDebtPage();return;}
+ if(remaining<=0.005){cancelDebtPaidConfirmation();renderDebtPage();return;}
  const before={...item,payments:Array.isArray(item.payments)?item.payments.map(payment=>({...payment})):[]};
  const now=Date.now(),date=debtLocalISO(new Date());
  if(!Array.isArray(item.payments))item.payments=[];
  item.payments.push({id:uid(),amount:remaining,date,at:now,note:'Marked as paid'});
- item.remainingAmount=0;item.status='paid';item.paidAt=now;
+ item.remainingAmount=0;
+ item.status='paid';
+ item.paidAt=now;
  if(!saveDebtRecords()){
   Object.assign(item,before);
   if(before.paidAt===undefined)delete item.paidAt;
   return;
  }
- closeDebtFullPaymentConfirm();
+ debtInlinePaymentSuccess={id:String(item.id),amount:remaining,date:item.dueDate,surface:debtPaidConfirmSurface};
+ const surface=debtPaidConfirmSurface;
+ debtPaidConfirmId=null;
  renderDebtPage();
- openDebtPaymentSuccess(item,remaining);
+ if(surface==='date'&&document.getElementById('savelyDebtDateModal'))renderDebtDateDetails(false);
  toast('Debt marked as paid and added to Paid records.');
-}
-function openDebtPaymentSuccess(item,amount){
- const modal=document.createElement('div');
- modal.id='savelyDebtPaymentSuccessModal';modal.className='modal-backdrop';
- modal.style.cssText='display:flex;z-index:100160;align-items:center;justify-content:center;padding:18px';
- modal.innerHTML=`<div class="modal savely-debt-payment-success" role="dialog" aria-modal="true" aria-labelledby="debtPaymentSuccessTitle">
-  <div class="savely-debt-success-icon">✓</div>
-  <div class="savely-debt-payment-kicker">PAYMENT RECORDED</div>
-  <h2 id="debtPaymentSuccessTitle">Debt fully paid</h2>
-  <p>${esc(item.title||'Debt record')} has been marked as paid.</p>
-  <div class="savely-debt-success-amount">${peso(amount)}<small>Final payment</small></div>
-  <div class="savely-debt-payment-note"><span>✓</span><div><strong>Saved to Paid records</strong><small>Find it under Debt → Paid records → I owe · Paid.</small></div></div>
-  <div class="savely-debt-payment-actions"><button type="button" class="btn btn-primary" onclick="document.getElementById('savelyDebtPaymentSuccessModal')?.remove()">Done</button></div>
- </div>`;
- modal.addEventListener('click',event=>{if(event.target===modal)modal.remove();});
- document.body.appendChild(modal);
 }
 
 function openDebtPayment(id){
@@ -6052,7 +6243,7 @@ async function refreshPhilippineHolidays(manual){
  setInterval(()=>refreshPhilippineHolidays(false),24*60*60*1000);
 })();
 
-function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard')setTimeout(renderOverallTrend,50);document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Budget & expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LOCATION TOOLS','Live Location'],holidays:['CALENDAR · PHILIPPINES','Calendar']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Plan your spending and keep monthly expenses within your limits.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'',holidays:'View Philippine regular holidays, special non-working days, and live countdowns.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
+function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard')setTimeout(renderOverallTrend,50);document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Location.');if(p==='live-location')setTimeout(initSavelyLiveLocationMap,100);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Budget & expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LOCATION TOOLS','Live Location'],holidays:['CALENDAR · PHILIPPINES','Calendar']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Plan your spending and keep monthly expenses within your limits.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'',holidays:'View Philippine regular holidays, special non-working days, and live countdowns.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
 document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
 function openModal(kind,goalToEdit=null){const form=document.getElementById('modalForm'),title=document.getElementById('modalTitle'),desc=document.getElementById('modalDesc');let accountOptions=data.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');let field=(label,name,type='text',value='',extra='')=>`<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let select=(label,name,opts)=>`<div class="field"><label>${label}</label><select name="${name}">${opts}</select></div>`;let fullfield=(label,name,type='text',value='',extra='')=>`<div class="field full"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let body='';
 if(kind==='transaction'){title.textContent='Add transaction';desc.textContent='Record a deposit, withdrawal, interest credit, or expense.';body=`<div class="form-grid">${fullfield('Description','description','text','','required maxlength="100"')}${select('Transaction type','type','<option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option><option value="expense">Expense</option><option value="interest">Interest credit</option>')}${select('Account','accountId',accountOptions)}${field('Amount (₱)','amount','number','','required min=".01" step=".01"')}${field('Date','date','date',todayISO(),'required')}${field('Category','category','text','General','maxlength="60"')}</div>`}
@@ -9670,5 +9861,104 @@ body.dark-theme .app > .sidebar #nav button.active * {
 }
 </style>
 
+<script id="savely-live-location-runtime">
+/* Live Location: opt-in, foreground-only browser geolocation. No server upload or persistent trail. */
+window.__savelyLiveLocationWatchId=null;
+let savelyLiveLocationMap=null,savelyLiveLocationMarker=null,savelyLiveLocationTrail=null;
+let savelyLiveLocationPoints=[],savelyLiveLocationDistance=0,savelyLiveLocationHasCentered=false;
+function initSavelyLiveLocationMap(){
+ const el=document.getElementById('savelyLiveLocationMap');if(!el)return;
+ if(!window.L){el.innerHTML='<div class="live-location-empty">The map library could not be loaded. Check your internet connection and refresh the page.</div>';return;}
+ if(!savelyLiveLocationMap){
+  savelyLiveLocationMap=L.map(el,{zoomControl:true,preferCanvas:true}).setView([12.8797,121.7740],5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'}).addTo(savelyLiveLocationMap);
+  savelyLiveLocationTrail=L.polyline([],{color:'#128765',weight:5,opacity:.8,lineCap:'round',lineJoin:'round'}).addTo(savelyLiveLocationMap);
+ }
+ setTimeout(()=>savelyLiveLocationMap&&savelyLiveLocationMap.invalidateSize(),120);
+ renderSavelyLiveLocationPoints();
+}
+function savelyLocationSetStatus(title,detail,live=false){
+ const t=document.getElementById('liveLocationStatus'),d=document.getElementById('liveLocationStatusHelp'),dot=document.getElementById('liveLocationStatusDot');
+ if(t)t.textContent=title;if(d)d.textContent=detail;if(dot)dot.classList.toggle('is-live',!!live);
+ const start=document.getElementById('liveLocationStart'),stop=document.getElementById('liveLocationStop');
+ if(start)start.disabled=!!live;if(stop)stop.disabled=!live;
+}
+function savelyDistanceMeters(a,b){
+ const rad=x=>x*Math.PI/180,R=6371000;
+ const dLat=rad(b.lat-a.lat),dLon=rad(b.lng-a.lng);
+ const q=Math.sin(dLat/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLon/2)**2;
+ return 2*R*Math.asin(Math.sqrt(q));
+}
+function savelyFormatDistance(m){return m>=1000?(m/1000).toFixed(2)+' km':Math.round(m)+' m';}
+function savelyFormatSpeed(mps){if(!Number.isFinite(mps)||mps<0)return '—';return (mps*3.6).toFixed(1)+' km/h';}
+function savelyFormatClock(ts){return new Intl.DateTimeFormat('en-PH',{timeZone:'Asia/Manila',hour:'numeric',minute:'2-digit',second:'2-digit'}).format(new Date(ts));}
+function updateSavelyLiveLocation(position){
+ const c=position.coords,point={lat:c.latitude,lng:c.longitude,accuracy:c.accuracy||0,speed:c.speed,at:position.timestamp||Date.now()};
+ const last=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
+ if(last){
+  const moved=savelyDistanceMeters(last,point);
+  if(moved>=5||point.at-last.at>=15000){savelyLiveLocationDistance+=moved;savelyLiveLocationPoints.push(point);}
+  else{last.lat=point.lat;last.lng=point.lng;last.accuracy=point.accuracy;last.speed=point.speed;last.at=point.at;}
+ }else savelyLiveLocationPoints.push(point);
+ if(savelyLiveLocationPoints.length>500)savelyLiveLocationPoints=savelyLiveLocationPoints.slice(-500);
+ const coords=document.getElementById('liveLocationCoordinates'),accuracy=document.getElementById('liveLocationAccuracy'),speed=document.getElementById('liveLocationSpeed'),distance=document.getElementById('liveLocationDistance'),update=document.getElementById('liveLocationLastUpdate'),subtitle=document.getElementById('liveLocationMapSubtitle');
+ if(coords)coords.textContent=`${point.lat.toFixed(6)}, ${point.lng.toFixed(6)}`;
+ if(accuracy)accuracy.textContent=point.accuracy?`±${Math.round(point.accuracy)} m`:'—';
+ if(speed)speed.textContent=savelyFormatSpeed(Number.isFinite(c.speed)?c.speed:NaN);
+ if(distance)distance.textContent=savelyFormatDistance(savelyLiveLocationDistance);
+ if(update)update.textContent='Updated '+savelyFormatClock(point.at)+' PHT';
+ if(subtitle)subtitle.textContent='Your current position and movement trail are updating while tracking is active.';
+ if(savelyLiveLocationMap){
+  const latlng=[point.lat,point.lng];
+  if(!savelyLiveLocationMarker)savelyLiveLocationMarker=L.circleMarker(latlng,{radius:9,color:'#fff',weight:3,fillColor:'#0b9365',fillOpacity:1}).addTo(savelyLiveLocationMap).bindPopup('Your current position');
+  else savelyLiveLocationMarker.setLatLng(latlng);
+  if(savelyLiveLocationTrail)savelyLiveLocationTrail.setLatLngs(savelyLiveLocationPoints.map(p=>[p.lat,p.lng]));
+  if(!savelyLiveLocationHasCentered){savelyLiveLocationMap.setView(latlng,17);savelyLiveLocationHasCentered=true;}
+  else savelyLiveLocationMap.panTo(latlng,{animate:true,duration:.5});
+ }
+ renderSavelyLiveLocationPoints();
+}
+function renderSavelyLiveLocationPoints(){
+ const list=document.getElementById('liveLocationRecentPoints'),count=document.getElementById('liveLocationPointCount');
+ if(!list||!count)return;
+ count.textContent=`${savelyLiveLocationPoints.length} point${savelyLiveLocationPoints.length===1?'':'s'}`;
+ if(!savelyLiveLocationPoints.length){list.innerHTML='<div class="live-location-empty">No location points recorded yet. Press Start tracking to begin.</div>';return;}
+ list.innerHTML=savelyLiveLocationPoints.slice(-8).reverse().map((p,i)=>`<div class="live-location-point"><span class="live-location-point-index">${savelyLiveLocationPoints.length-i}</span><div class="live-location-point-main"><strong>${p.lat.toFixed(6)}, ${p.lng.toFixed(6)}</strong><small>${savelyFormatClock(p.at)} PHT</small></div><span class="live-location-point-accuracy">${p.accuracy?`±${Math.round(p.accuracy)} m`:'GPS'}</span></div>`).join('');
+}
+function startSavelyLiveLocation(){
+ if(!navigator.geolocation){savelyLocationSetStatus('Location unavailable','This browser does not support geolocation.');toast('This browser does not support location access.');return;}
+ if(!window.isSecureContext){savelyLocationSetStatus('Secure connection required','Open Savely through its HTTPS GitHub Pages address.');toast('Location access requires HTTPS.');return;}
+ if(window.__savelyLiveLocationWatchId!==null)return;
+ initSavelyLiveLocationMap();
+ savelyLocationSetStatus('Requesting permission…','Your browser will ask whether Savely may access your location.');
+ window.__savelyLiveLocationWatchId=navigator.geolocation.watchPosition(updateSavelyLiveLocation,error=>{
+  const messages={1:['Permission denied','Allow location access in your browser site settings, then press Start tracking again.'],2:['Position unavailable','GPS or network location could not determine your position. Try again outdoors.'],3:['Location timed out','No position arrived in time. Press Start tracking to retry.']};
+  const info=messages[error.code]||['Location error','Try starting location tracking again.'];
+  stopSavelyLiveLocation(info[1]);savelyLocationSetStatus(info[0],info[1]);toast(info[0]+'.');
+ },{enableHighAccuracy:true,maximumAge:3000,timeout:20000});
+ savelyLocationSetStatus('Tracking active','Your live position is updating in this visible page.',true);
+}
+function stopSavelyLiveLocation(message='Tracking stopped.'){
+ if(window.__savelyLiveLocationWatchId!==null&&window.__savelyLiveLocationWatchId!==undefined){
+  navigator.geolocation.clearWatch(window.__savelyLiveLocationWatchId);
+ }
+ window.__savelyLiveLocationWatchId=null;
+ if(document.getElementById('liveLocationStatus'))savelyLocationSetStatus('Not tracking',message,false);
+}
+function clearSavelyLocationTrail(){
+ stopSavelyLiveLocation('Trail cleared. Start tracking again when ready.');
+ savelyLiveLocationPoints=[];savelyLiveLocationDistance=0;savelyLiveLocationHasCentered=false;
+ if(savelyLiveLocationTrail)savelyLiveLocationTrail.setLatLngs([]);
+ if(savelyLiveLocationMarker){savelyLiveLocationMap.removeLayer(savelyLiveLocationMarker);savelyLiveLocationMarker=null;}
+ ['liveLocationCoordinates','liveLocationAccuracy','liveLocationSpeed'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=id==='liveLocationCoordinates'?'Waiting for permission':'—';});
+ const distance=document.getElementById('liveLocationDistance');if(distance)distance.textContent='0 m';
+ const update=document.getElementById('liveLocationLastUpdate');if(update)update.textContent='No location update yet';
+ const subtitle=document.getElementById('liveLocationMapSubtitle');if(subtitle)subtitle.textContent='Your map will center on you after you allow location access.';
+ renderSavelyLiveLocationPoints();
+}
+document.addEventListener('visibilitychange',()=>{
+ if(document.visibilityState==='hidden'&&window.__savelyLiveLocationWatchId!==null)stopSavelyLiveLocation('Tracking paused because this browser tab is hidden.');
+});
+</script>
 </body>
 </html>
