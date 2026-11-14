@@ -3133,6 +3133,27 @@ button.link-btn{
 .savely-mariloan-breakdown .total{border-top:1px solid #dbe8e0!important;margin-top:5px!important;padding-top:10px!important}
 </style>
 
+
+<style id="savely-free-waze-live-traffic-v1">
+.savely-live-map-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.savely-live-map-heading-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.savely-live-map-mode-switch{display:inline-flex;align-items:center;gap:4px;padding:4px;border:1px solid #e0eae4;border-radius:11px;background:#f3f7f5}
+.savely-live-map-mode-switch button{min-height:34px;padding:0 13px;border:0;border-radius:8px;background:transparent;color:#718078;font:inherit;font-size:10px;font-weight:850;cursor:pointer;white-space:nowrap}
+.savely-live-map-mode-switch button.active{background:#138765;color:#fff;box-shadow:0 2px 7px rgba(19,135,101,.18)}
+.savely-waze-traffic-view{width:100%;height:clamp(560px,76vh,900px);min-height:560px;overflow:hidden;border:1px solid #e2eaf0;border-radius:15px;background:#eef3f1}
+.savely-waze-traffic-view[hidden],.savely-live-location-map[hidden],.live-location-map-controls[hidden],.live-location-map-footer[hidden],.savely-waze-map-note[hidden]{display:none!important}
+.savely-waze-traffic-view iframe{display:block;width:100%;height:100%;min-height:560px;border:0;background:#eef3f1}
+.savely-waze-map-controls{top:16px;right:16px}
+.savely-waze-map-note{margin-top:10px;color:var(--muted);font-size:10px;line-height:1.5}
+@media(max-width:650px){
+ .savely-live-map-heading{align-items:flex-start}
+ .savely-live-map-heading-actions{width:100%;justify-content:space-between}
+ .savely-live-map-mode-switch{flex:1}
+ .savely-live-map-mode-switch button{flex:1;padding:0 8px}
+ .savely-waze-traffic-view,.savely-waze-traffic-view iframe{height:68vh;min-height:440px}
+}
+</style>
+
 </head>
 <body>
 
@@ -3263,17 +3284,34 @@ button.link-btn{
       <div class="live-location-stat"><span class="live-location-stat-icon">⇢</span><div><small>Distance tracked</small><strong id="liveLocationDistance">0 m</strong></div></div>
     </div>
     <section class="panel live-location-map-panel">
-      <div class="panel-head"><div><h2>Live movement map</h2><div class="panel-sub" id="liveLocationMapSubtitle">Your map will center on you after you allow location access.</div></div><span class="live-location-local-badge">This tab only</span></div>
+      <div class="panel-head savely-live-map-heading">
+       <div><h2 id="savelyLiveMapTitle">Live movement map</h2><div class="panel-sub" id="liveLocationMapSubtitle">Your map will center on you after you allow location access.</div></div>
+       <div class="savely-live-map-heading-actions">
+        <div class="savely-live-map-mode-switch" role="tablist" aria-label="Map view">
+         <button type="button" class="active" data-savely-map-mode="location" role="tab" aria-selected="true" onclick="setSavelyLiveMapMode('location')">My location</button>
+         <button type="button" data-savely-map-mode="traffic" role="tab" aria-selected="false" onclick="setSavelyLiveMapMode('traffic')">Live traffic</button>
+        </div>
+        <span class="live-location-local-badge">This tab only</span>
+       </div>
+      </div>
       <div class="live-location-map-shell">
-       <div id="savelyLiveLocationMap" class="savely-live-location-map" role="region" aria-label="Map showing your current position and movement trail"></div>
-       <div class="live-location-map-controls" aria-label="Live map controls">
+       <div id="savelyLiveLocationMap" class="savely-live-location-map" role="region" aria-label="Savely GPS map showing your current position and movement trail"></div>
+       <div id="savelyWazeTrafficView" class="savely-waze-traffic-view" role="region" aria-label="Waze live traffic map" hidden>
+        <iframe id="savelyWazeTrafficFrame" title="Waze Live Map traffic view" src="https://embed.waze.com/iframe?zoom=5&amp;lat=12.8797&amp;lon=121.7740&amp;pin=1" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+       </div>
+       <div class="live-location-map-controls" id="savelyGpsMapControls" aria-label="GPS map controls">
         <div class="live-location-map-live-state"><span class="live-location-status-dot" id="liveLocationStatusDot"></span><span><strong id="liveLocationStatus">Connecting to GPS</strong><small id="liveLocationStatusHelp">Waiting for browser permission.</small></span></div>
         <button type="button" class="live-location-map-action" id="liveLocationStop" onclick="stopSavelyLiveLocation('Tracking stopped by you.',true)" disabled>Stop tracking</button>
         <button type="button" class="live-location-map-action" onclick="centerSavelyLiveLocation()">Recenter</button>
         <button type="button" class="live-location-map-action danger" id="liveLocationClear" onclick="clearSavelyLocationTrail()">Clear current route</button>
        </div>
+       <div class="live-location-map-controls savely-waze-map-controls" id="savelyWazeMapControls" aria-label="Traffic map controls" hidden>
+        <div class="live-location-map-live-state"><span class="live-location-status-dot is-live"></span><span><strong>Waze Live Traffic</strong><small>Traffic reports and road alerts in Waze's own map.</small></span></div>
+        <button type="button" class="live-location-map-action" onclick="centerSavelyWazeTraffic()">Center on my location</button>
+       </div>
       </div>
-      <div class="live-location-map-footer"><span><i class="live-location-legend-dot current"></i> Current / last position</span><span><i class="live-location-legend-line"></i> Recorded movement trail</span><span id="liveLocationLastUpdate">No location update yet</span></div>
+      <div class="live-location-map-footer" id="savelyGpsMapFooter"><span><i class="live-location-legend-dot current"></i> Current / last position</span><span><i class="live-location-legend-line"></i> Recorded movement trail</span><span id="liveLocationLastUpdate">No location update yet</span></div>
+      <div class="savely-waze-map-note" id="savelyWazeMapNote" hidden>Live traffic is provided by the Waze Live Map. Traffic conditions and reports depend on Waze coverage and community updates. This view is separate from Savely's GPS route map.</div>
     </section>
     <section class="panel savely-location-history-panel">
       <div class="panel-head"><div><h2>Location history</h2><div class="panel-sub">Your saved routes and places visited on this device.</div></div><div class="savely-location-history-actions"><button type="button" class="btn btn-light btn-sm" onclick="exportSavelyLocationHistory()">Export</button><button type="button" class="btn btn-light btn-sm danger-text" onclick="deleteSavelyLocationHistory()">Delete history</button></div></div>
@@ -7067,6 +7105,7 @@ async function refreshPhilippineHolidays(manual){
 })();
 
 function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard')setTimeout(renderOverallTrend,50);document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Location.');if(p==='live-location')setTimeout(()=>{
+ setSavelyLiveMapMode('location');
  initSavelyLiveLocationMap();
  if(savelyLiveLocationMap){
   const lastPoint=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
@@ -10903,6 +10942,67 @@ function savelyMakeLocationIcon(){
  return L.divIcon({className:'savely-location-marker-host',html:'<div class="savely-location-pin is-live" role="img" aria-label="Your live current location"><span class="savely-location-pulse"></span><svg viewBox="0 0 44 52" width="44" height="52" aria-hidden="true"><path d="M22 2.5C11.6 2.5 3.5 10.4 3.5 20.1c0 13.1 18.5 29.2 18.5 29.2s18.5-16.1 18.5-29.2C40.5 10.4 32.4 2.5 22 2.5Z" fill="#07885f" stroke="#ffffff" stroke-width="2.8" stroke-linejoin="round"/><circle cx="22" cy="19.5" r="7.2" fill="#ffffff"/><circle cx="22" cy="19.5" r="3.1" fill="#07885f"/></svg></div>',iconSize:[44,52],iconAnchor:[22,49],popupAnchor:[0,-44]});
 }
 
+
+/* Waze Live Map is a separate traffic view embedded without an API key. */
+let savelyLiveMapMode='location';
+let savelyWazeLastCenterUrl='';
+let savelyWazeHasCenteredOnGps=false;
+function savelyBuildWazeTrafficUrl(point){
+ const lat=point&&Number.isFinite(Number(point.lat))?Number(point.lat):12.8797;
+ const lng=point&&Number.isFinite(Number(point.lng))?Number(point.lng):121.7740;
+ const zoom=point?15:5;
+ return 'https://embed.waze.com/iframe?zoom='+zoom+'&lat='+lat.toFixed(5)+'&lon='+lng.toFixed(5)+'&pin=1';
+}
+function refreshSavelyWazeTraffic(force=false){
+ const frame=document.getElementById('savelyWazeTrafficFrame');if(!frame)return;
+ const point=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1]||null;
+ const url=savelyBuildWazeTrafficUrl(point);
+ if(!force&&url===savelyWazeLastCenterUrl)return;
+ savelyWazeLastCenterUrl=url;frame.src=url;
+}
+function setSavelyLiveMapMode(mode){
+ savelyLiveMapMode=mode==='traffic'?'traffic':'location';
+ const traffic=savelyLiveMapMode==='traffic';
+ const gpsMap=document.getElementById('savelyLiveLocationMap');
+ const trafficView=document.getElementById('savelyWazeTrafficView');
+ const gpsControls=document.getElementById('savelyGpsMapControls');
+ const trafficControls=document.getElementById('savelyWazeMapControls');
+ const gpsFooter=document.getElementById('savelyGpsMapFooter');
+ const trafficNote=document.getElementById('savelyWazeMapNote');
+ const title=document.getElementById('savelyLiveMapTitle');
+ const subtitle=document.getElementById('liveLocationMapSubtitle');
+ if(gpsMap)gpsMap.hidden=traffic;
+ if(trafficView)trafficView.hidden=!traffic;
+ if(gpsControls)gpsControls.hidden=traffic;
+ if(trafficControls)trafficControls.hidden=!traffic;
+ if(gpsFooter)gpsFooter.hidden=traffic;
+ if(trafficNote)trafficNote.hidden=!traffic;
+ if(title)title.textContent=traffic?'Live traffic':'Live movement map';
+ if(subtitle)subtitle.textContent=traffic?'Real-time traffic information in a separate Waze Live Map.':'Your current position and movement trail are updating while tracking is active.';
+ document.querySelectorAll('[data-savely-map-mode]').forEach(button=>{
+  const active=button.dataset.savelyMapMode===savelyLiveMapMode;
+  button.classList.toggle('active',active);button.setAttribute('aria-selected',active?'true':'false');
+ });
+ if(traffic)refreshSavelyWazeTraffic(true);
+ else{
+  initSavelyLiveLocationMap();
+  setTimeout(()=>{if(savelyLiveLocationMap){savelyLiveLocationMap.invalidateSize();savelyEnsureLastKnownMarker();}},120);
+ }
+}
+function centerSavelyWazeTraffic(){
+ const point=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
+ if(point){refreshSavelyWazeTraffic(true);return;}
+ if(!navigator.geolocation){toast('This browser does not support location access.');return;}
+ if(!window.isSecureContext){toast('Location access requires the HTTPS Savely website.');return;}
+ savelyLocationSetStatus('Finding location…','Requesting a fresh GPS fix to center the traffic map.');
+ navigator.geolocation.getCurrentPosition(position=>{
+  updateSavelyLiveLocation(position);refreshSavelyWazeTraffic(true);
+ },error=>{
+  const message=error.code===1?'Allow location permission in your browser settings.':error.code===2?'Your device could not determine its position. Try again outdoors.':'Location request timed out. Try again.';
+  savelyLocationSetStatus('Waiting for GPS',message,false);toast(message);
+ },{enableHighAccuracy:true,maximumAge:0,timeout:20000});
+}
+
 function savelyEnsureLastKnownMarker(){
  if(!savelyLiveLocationMap||!window.L)return;
  const point=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
@@ -10995,6 +11095,7 @@ function savelyUpdateVisitDetection(point){
 }
 function updateSavelyLiveLocation(position){
  const c=position.coords,point={lat:c.latitude,lng:c.longitude,accuracy:c.accuracy||0,speed:c.speed,heading:c.heading,at:position.timestamp||Date.now()};
+ if(!savelyWazeHasCenteredOnGps){savelyWazeHasCenteredOnGps=true;refreshSavelyWazeTraffic(true);}
  if(point.accuracy>100){savelyLocationSetStatus('Weak GPS signal','Location accuracy is over 100 m. Waiting for a better fix.',true);return;}
  const last=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
  if(last){
@@ -11160,6 +11261,7 @@ async function savelyRestoreLocationState(){
    savelyLiveLocationPoints=latest.points.slice(-12000);savelyLiveLocationDistance=latest.distance||0;
    savelyActiveSession=null;
   }
+  if(savelyLiveLocationPoints.length){savelyWazeHasCenteredOnGps=true;refreshSavelyWazeTraffic(true);}
   renderSavelyLocationHistory();
   if(document.getElementById('page-live-location')?.classList.contains('active')){
    initSavelyLiveLocationMap();
