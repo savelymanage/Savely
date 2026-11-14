@@ -2544,6 +2544,68 @@ button.link-btn{
 #page-debt .debt-dot-today{background:#15966f!important}
 </style>
 
+
+<style id="savely-debt-paid-history-and-payment-ui-v1">
+.debt-paid-panel{margin-top:18px!important;padding:22px!important;border:1px solid #e4ebf2!important;border-radius:18px!important;background:linear-gradient(180deg,#fff 0%,#fbfdfc 100%)!important;box-shadow:0 8px 24px rgba(20,40,70,.045)!important}
+.debt-paid-filters{display:flex;gap:8px;flex-wrap:wrap;padding:5px;margin:0 0 14px;width:max-content;max-width:100%;border:1px solid #e7edf2;border-radius:12px;background:#f5f8fa}
+.debt-paid-filters button{min-height:38px!important;height:38px!important;padding:0 14px!important;border:1px solid transparent!important;border-radius:9px!important;background:transparent!important;color:#718096!important;font-size:11px!important;font-weight:800!important}
+.debt-paid-filters button.active{color:#087a55!important;background:#fff!important;border-color:#dcece4!important;box-shadow:0 2px 7px rgba(20,40,70,.06)!important}
+.debt-paid-list{display:grid;gap:9px}
+.debt-paid-card{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px 17px;border:1px solid #e5edf0;border-radius:13px;background:#fff;transition:border-color .16s ease,box-shadow .16s ease}
+.debt-paid-card:hover{border-color:#bfe5d0;box-shadow:0 5px 15px rgba(12,100,68,.05)}
+.debt-paid-card.is-owed{border-left:3px solid #15966f}.debt-paid-card.is-collected{border-left:3px solid #1689a1}
+.debt-paid-card-main{min-width:0;flex:1}
+.debt-paid-status{display:inline-flex;align-items:center;min-height:21px;padding:4px 8px;border-radius:999px;background:#e5f7ed;color:#087a50;font-size:9px;font-weight:900;letter-spacing:.04em}
+.debt-paid-title{margin-top:7px;color:#1c2e28;font-size:13px;font-weight:850}
+.debt-paid-meta,.debt-paid-date{margin-top:4px;color:#718096;font-size:10px;line-height:1.45}
+.debt-paid-date{color:#168765;font-weight:700}
+.debt-paid-card-end{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:0 0 auto}
+.debt-paid-amount{color:#11845f;font-size:16px;font-weight:900;font-variant-numeric:tabular-nums}
+.debt-paid-amount-label{color:#7b8996;font-size:10px}
+.debt-paid-history-button{margin-top:5px;min-height:34px!important;height:34px!important;font-size:10px!important;padding:0 11px!important}
+.debt-paid-empty{display:flex;flex-direction:column;align-items:center;gap:6px;border:1px dashed #dce7e2;border-radius:13px;background:#fbfdfc}
+.debt-paid-empty-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#e7f7ee;color:#11845f;font-size:20px;font-weight:900}
+.debt-paid-empty strong{color:#263a31;font-size:12px}.debt-paid-empty span:last-child{font-size:10px;color:#7b8996}
+.savely-debt-full-payment-dialog,.savely-debt-payment-success{width:min(520px,calc(100vw - 32px))!important;max-width:520px!important;padding:26px!important;border:1px solid #e2eee7!important;border-radius:21px!important;background:#fff!important;box-shadow:0 24px 75px rgba(15,30,48,.24)!important}
+.savely-debt-payment-modal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.savely-debt-payment-check,.savely-debt-success-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:#e6f7ed;color:#0d9663;font-size:22px;font-weight:900}
+.savely-debt-payment-close{width:38px!important;min-width:38px!important;height:38px!important;min-height:38px!important;padding:0!important}
+.savely-debt-payment-kicker{color:#168765;font-size:10px;font-weight:900;letter-spacing:.09em}
+.savely-debt-full-payment-dialog h2,.savely-debt-payment-success h2{margin:6px 0 5px;color:#1c3027;font-size:22px;line-height:1.25;letter-spacing:-.5px}
+.savely-debt-payment-description,.savely-debt-payment-success>p{margin:0;color:#748279;font-size:12px;line-height:1.55}
+.savely-debt-payment-record{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:19px;padding:15px;border:1px solid #e5eee9;border-radius:13px;background:#f8fbf9}
+.savely-debt-payment-record-main{display:flex;flex-direction:column;gap:5px;min-width:0}
+.savely-debt-payment-side{color:#c04d57;font-size:9px;font-weight:900;letter-spacing:.06em}
+.savely-debt-payment-record-main strong{color:#26372f;font-size:13px;overflow-wrap:anywhere}
+.savely-debt-payment-record-main small{color:#77867e;font-size:10px}
+.savely-debt-payment-total{flex:0 0 auto;text-align:right}
+.savely-debt-payment-total small{display:block;color:#7a8a81;font-size:10px}
+.savely-debt-payment-total strong{display:block;margin-top:3px;color:#d64a58;font-size:17px;font-weight:900}
+.savely-debt-payment-note{display:flex;align-items:flex-start;gap:10px;margin-top:13px;padding:12px;border:1px solid #cfeedd;border-radius:12px;background:#f0faf4}
+.savely-debt-payment-note>span{display:grid;place-items:center;flex:0 0 22px;width:22px;height:22px;border-radius:50%;background:#d8f3e4;color:#0b8c5c;font-size:12px;font-weight:900}
+.savely-debt-payment-note strong{display:block;color:#216345;font-size:11px}
+.savely-debt-payment-note small{display:block;margin-top:3px;color:#648173;font-size:10px;line-height:1.5}
+.savely-debt-payment-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px;padding-top:15px;border-top:1px solid #edf1ee}
+.savely-debt-payment-actions .btn{min-width:120px}
+.savely-debt-payment-success{text-align:center}
+.savely-debt-payment-success .savely-debt-success-icon{margin:0 auto 14px;width:58px;height:58px;border-radius:50%;font-size:27px}
+.savely-debt-success-amount{margin:17px 0 12px;padding:15px;border-radius:13px;background:linear-gradient(120deg,#effaf4,#f8fcfa);color:#0d865e;font-size:25px;font-weight:900}
+.savely-debt-success-amount small{display:block;margin-top:3px;color:#708379;font-size:10px;font-weight:700}
+.savely-debt-payment-success .savely-debt-payment-actions{justify-content:center}
+.savely-debt-payment-success .savely-debt-payment-actions .btn{min-width:150px}
+@media(max-width:620px){
+ .debt-paid-filters{width:100%;display:grid;grid-template-columns:1fr}
+ .debt-paid-filters button{width:100%}
+ .debt-paid-card{align-items:flex-start;gap:10px;padding:13px}
+ .debt-paid-card-end{max-width:120px}.debt-paid-amount{font-size:14px}
+ .savely-debt-full-payment-dialog,.savely-debt-payment-success{padding:20px!important}
+ .savely-debt-payment-record{align-items:flex-start;flex-direction:column}
+ .savely-debt-payment-total{text-align:left}
+ .savely-debt-payment-actions{flex-direction:column-reverse}
+ .savely-debt-payment-actions .btn{width:100%}
+}
+</style>
+
 </head>
 <body>
 
@@ -2769,6 +2831,18 @@ button.link-btn{
       <div class="panel-head debt-upcoming-head"><div><h2>Upcoming payments &amp; collections</h2><div class="panel-sub">Your next unpaid due dates, including overdue items.</div></div><span class="pill" id="debtUpcomingCount">0 records</span></div>
       <div class="debt-upcoming-filters" role="group" aria-label="Upcoming record type"><button type="button" class="active" data-upcoming-filter="all" onclick="setDebtUpcomingFilter('all')">All records</button><button type="button" data-upcoming-filter="owed" onclick="setDebtUpcomingFilter('owed')">I owe</button><button type="button" data-upcoming-filter="lent" onclick="setDebtUpcomingFilter('lent')">Owed to me</button></div>
       <div id="debtUpcomingList"></div>
+    </section>
+    <section class="panel debt-paid-panel" id="debtPaidPanel">
+      <div class="panel-head debt-upcoming-head">
+        <div><h2>Paid records</h2><div class="panel-sub">A history of fully paid debts and completed collections.</div></div>
+        <span class="pill" id="debtPaidCount">0 records</span>
+      </div>
+      <div class="debt-paid-filters" role="group" aria-label="Filter paid records">
+        <button type="button" class="active" data-paid-filter="all" onclick="setDebtPaidFilter('all')">All paid</button>
+        <button type="button" data-paid-filter="owed" onclick="setDebtPaidFilter('owed')">I owe · Paid</button>
+        <button type="button" data-paid-filter="lent" onclick="setDebtPaidFilter('lent')">Owed to me · Collected</button>
+      </div>
+      <div id="debtPaidList" class="debt-paid-list" aria-live="polite"></div>
     </section>
   </section>
 
@@ -3504,6 +3578,7 @@ let debtCalendarCursor=new Date(new Date().getFullYear(),new Date().getMonth(),1
 let debtSelectedDate=debtLocalISO(new Date());
 let debtDirectionFilter='all';
 let debtUpcomingFilter='all';
+let debtPaidFilter='all';
 function debtLocalISO(date){
  const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,'0'),d=String(date.getDate()).padStart(2,'0');
  return `${y}-${m}-${d}`;
@@ -3813,6 +3888,7 @@ function renderDebtPage(){
  renderDebtCalendar();
  if(document.getElementById('savelyDebtDateModal'))renderDebtDateDetails(false);
  renderDebtUpcoming();
+ renderDebtPaidRecords();
 }
 function renderDebtCalendar(){
  const grid=document.getElementById('debtCalendarGrid'),label=document.getElementById('debtCalendarMonthLabel');
@@ -3942,6 +4018,53 @@ function renderDebtUpcoming(){
  document.querySelectorAll('[data-upcoming-filter]').forEach(button=>button.classList.toggle('active',button.dataset.upcomingFilter===debtUpcomingFilter));
  list.innerHTML=items.length?items.map(debtCard).join(''):'<div class="debt-empty">No unpaid records in this section yet.</div>';
 }
+
+function setDebtPaidFilter(filter){
+ debtPaidFilter=['all','owed','lent'].includes(filter)?filter:'all';
+ document.querySelectorAll('[data-paid-filter]').forEach(button=>button.classList.toggle('active',button.dataset.paidFilter===debtPaidFilter));
+ renderDebtPaidRecords();
+}
+function debtPaidDate(item){
+ const payments=Array.isArray(item.payments)?item.payments:[];
+ const dated=payments.filter(payment=>payment&&(payment.date||payment.at)).sort((a,b)=>{
+  const av=Number(a.at)||new Date(a.date||0).getTime(),bv=Number(b.at)||new Date(b.date||0).getTime();
+  return bv-av;
+ });
+ return dated[0]?.date||(item.paidAt?debtLocalISO(new Date(item.paidAt)):item.dueDate);
+}
+function debtPaidCard(item){
+ const isOwed=item.direction==='owed';
+ const amount=Math.max(0,Number(debtPaidAmount(item))||Number(item.amount)||0);
+ const paidDate=debtPaidDate(item);
+ const id=esc(item.id);
+ const sideLabel=isOwed?'I OWE':'OWED TO ME';
+ return `<article class="debt-paid-card ${isOwed?'is-owed':'is-collected'}">
+  <div class="debt-paid-card-main">
+   <div class="debt-item-top"><span class="debt-direction-tag${isOwed?'':' lent'}">${sideLabel}</span><span class="debt-paid-status">${isOwed?'PAID':'COLLECTED'}</span></div>
+   <div class="debt-paid-title">${esc(item.title||'Debt record')}</div>
+   <div class="debt-paid-meta">${esc(item.kind||'Other')}${item.counterparty?' · '+esc(item.counterparty):''}${item.totalInstallments>1?` · Installment ${item.installmentNumber}/${item.totalInstallments}`:''} · Due ${fmtDate(item.dueDate)}</div>
+   <div class="debt-paid-date">Completed ${fmtDate(paidDate)}</div>
+  </div>
+  <div class="debt-paid-card-end">
+   <div class="debt-paid-amount">${peso(amount)}</div>
+   <div class="debt-paid-amount-label">${isOwed?'Total paid':'Total collected'}</div>
+   <button type="button" class="btn btn-light debt-paid-history-button" onclick="viewDebtHistory('${id}')">View history</button>
+  </div>
+ </article>`;
+}
+function renderDebtPaidRecords(){
+ const list=document.getElementById('debtPaidList'),count=document.getElementById('debtPaidCount');
+ if(!list||!count)return;
+ const paid=(Array.isArray(data.debtRecords)?data.debtRecords:[])
+  .filter(item=>debtRemaining(item)<=0.005)
+  .filter(item=>item.status==='paid'||item.paidAt||debtPaidAmount(item)>=Math.max(0,Number(item.amount)||0)-0.005)
+  .sort((a,b)=>String(debtPaidDate(b)||'').localeCompare(String(debtPaidDate(a)||'')));
+ const items=paid.filter(item=>debtPaidFilter==='all'||item.direction===debtPaidFilter);
+ count.textContent=`${items.length} record${items.length===1?'':'s'}`;
+ document.querySelectorAll('[data-paid-filter]').forEach(button=>button.classList.toggle('active',button.dataset.paidFilter===debtPaidFilter));
+ list.innerHTML=items.length?items.map(debtPaidCard).join(''):'<div class="debt-empty debt-paid-empty"><span class="debt-paid-empty-icon">✓</span><strong>No completed records here yet</strong><span>Fully paid debts and completed collections will appear here.</span></div>';
+}
+
 function openDebtSideChooser(defaultDate=null){
  const existing=document.getElementById('savelyDebtSideModal');
  if(existing)closeDebtSideChooser();
@@ -4333,27 +4456,89 @@ function markDebtAsPaid(id){
  if(!item)return;
  const remaining=debtRemaining(item);
  if(remaining<=0.005){toast('This debt record is already settled.');return;}
- // Owed to me: collect it through the destination-account transfer flow.
- if(item.direction==='lent'){
-  openDebtCollectionDeposit(id);
-  return;
+ // Owed-to-me collections use the Savings deposit/transfer flow.
+ if(item.direction==='lent'){openDebtCollectionDeposit(id);return;}
+ openDebtFullPaymentConfirm(id);
+}
+function closeDebtFullPaymentConfirm(){
+ const modal=document.getElementById('savelyDebtFullPaymentModal');
+ if(modal){
+  if(modal._escapeHandler)document.removeEventListener('keydown',modal._escapeHandler);
+  modal.remove();
  }
- const confirmation='mark this debt as fully paid';
- if(!confirm(`Are you sure you want to ${confirmation}?\n\n${item.title||'Debt record'}\nRemaining balance: ${peso(remaining)}`))return;
- const before={...item,payments:Array.isArray(item.payments)?item.payments.map(p=>({...p})):[]};
+}
+function openDebtFullPaymentConfirm(id){
+ const item=(data.debtRecords||[]).find(x=>String(x.id)===String(id));
+ if(!item||item.direction!=='owed')return;
+ const remaining=debtRemaining(item);
+ if(remaining<=0.005)return;
+ closeDebtFullPaymentConfirm();
+ const modal=document.createElement('div');
+ modal.id='savelyDebtFullPaymentModal';modal.className='modal-backdrop';
+ modal.style.cssText='display:flex;z-index:100150;align-items:center;justify-content:center;padding:18px';
+ modal.innerHTML=`<div class="modal savely-debt-full-payment-dialog" role="dialog" aria-modal="true" aria-labelledby="debtFullPaymentTitle">
+  <div class="savely-debt-payment-modal-top">
+   <div class="savely-debt-payment-check">✓</div>
+   <button type="button" class="btn btn-light savely-debt-payment-close" onclick="closeDebtFullPaymentConfirm()" aria-label="Close payment confirmation">✕</button>
+  </div>
+  <div class="savely-debt-payment-kicker">PAYMENT COMPLETION</div>
+  <h2 id="debtFullPaymentTitle">Mark this debt as fully paid?</h2>
+  <p class="savely-debt-payment-description">Review the details below. This records the remaining balance as one final payment.</p>
+  <div class="savely-debt-payment-record">
+   <div class="savely-debt-payment-record-main">
+    <span class="savely-debt-payment-side">I OWE · PAYMENT TO MAKE</span>
+    <strong>${esc(item.title||'Debt record')}</strong>
+    <small>${esc(item.kind||'Other')}${item.counterparty?' · '+esc(item.counterparty):''}</small>
+   </div>
+   <div class="savely-debt-payment-total"><small>Final payment</small><strong>${peso(remaining)}</strong></div>
+  </div>
+  <div class="savely-debt-payment-note"><span>✓</span><div><strong>What happens next?</strong><small>The remaining balance becomes ₱0.00, the record moves to Paid records, and its payment history is retained.</small></div></div>
+  <div class="savely-debt-payment-actions">
+   <button type="button" class="btn btn-secondary" onclick="closeDebtFullPaymentConfirm()">Cancel</button>
+   <button type="button" class="btn btn-primary" id="confirmDebtFullPaymentButton">Confirm payment</button>
+  </div>
+ </div>`;
+ modal.addEventListener('click',event=>{if(event.target===modal)closeDebtFullPaymentConfirm();});
+ document.body.appendChild(modal);
+ modal.querySelector('#confirmDebtFullPaymentButton').addEventListener('click',()=>confirmDebtFullPayment(id));
+ modal._escapeHandler=event=>{if(event.key==='Escape')closeDebtFullPaymentConfirm();};
+ document.addEventListener('keydown',modal._escapeHandler);
+}
+function confirmDebtFullPayment(id){
+ const item=(data.debtRecords||[]).find(x=>String(x.id)===String(id));
+ if(!item||item.direction!=='owed'){closeDebtFullPaymentConfirm();return;}
+ const remaining=debtRemaining(item);
+ if(remaining<=0.005){closeDebtFullPaymentConfirm();renderDebtPage();return;}
+ const before={...item,payments:Array.isArray(item.payments)?item.payments.map(payment=>({...payment})):[]};
  const now=Date.now(),date=debtLocalISO(new Date());
  if(!Array.isArray(item.payments))item.payments=[];
  item.payments.push({id:uid(),amount:remaining,date,at:now,note:'Marked as paid'});
- item.remainingAmount=0;
- item.status='paid';
- item.paidAt=now;
+ item.remainingAmount=0;item.status='paid';item.paidAt=now;
  if(!saveDebtRecords()){
   Object.assign(item,before);
   if(before.paidAt===undefined)delete item.paidAt;
   return;
  }
+ closeDebtFullPaymentConfirm();
  renderDebtPage();
- toast('Debt marked as paid.');
+ openDebtPaymentSuccess(item,remaining);
+ toast('Debt marked as paid and added to Paid records.');
+}
+function openDebtPaymentSuccess(item,amount){
+ const modal=document.createElement('div');
+ modal.id='savelyDebtPaymentSuccessModal';modal.className='modal-backdrop';
+ modal.style.cssText='display:flex;z-index:100160;align-items:center;justify-content:center;padding:18px';
+ modal.innerHTML=`<div class="modal savely-debt-payment-success" role="dialog" aria-modal="true" aria-labelledby="debtPaymentSuccessTitle">
+  <div class="savely-debt-success-icon">✓</div>
+  <div class="savely-debt-payment-kicker">PAYMENT RECORDED</div>
+  <h2 id="debtPaymentSuccessTitle">Debt fully paid</h2>
+  <p>${esc(item.title||'Debt record')} has been marked as paid.</p>
+  <div class="savely-debt-success-amount">${peso(amount)}<small>Final payment</small></div>
+  <div class="savely-debt-payment-note"><span>✓</span><div><strong>Saved to Paid records</strong><small>Find it under Debt → Paid records → I owe · Paid.</small></div></div>
+  <div class="savely-debt-payment-actions"><button type="button" class="btn btn-primary" onclick="document.getElementById('savelyDebtPaymentSuccessModal')?.remove()">Done</button></div>
+ </div>`;
+ modal.addEventListener('click',event=>{if(event.target===modal)modal.remove();});
+ document.body.appendChild(modal);
 }
 
 function openDebtPayment(id){
