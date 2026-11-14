@@ -3268,9 +3268,8 @@ button.link-btn{
        <div id="savelyLiveLocationMap" class="savely-live-location-map" role="region" aria-label="Map showing your current position and movement trail"></div>
        <div class="live-location-map-controls" aria-label="Live map controls">
         <div class="live-location-map-live-state"><span class="live-location-status-dot" id="liveLocationStatusDot"></span><span><strong id="liveLocationStatus">Connecting to GPS</strong><small id="liveLocationStatusHelp">Waiting for browser permission.</small></span></div>
-        <button type="button" class="live-location-map-action" id="liveLocationStop" onclick="stopSavelyLiveLocation('Tracking stopped by you.')" disabled>Stop tracking</button>
+        <button type="button" class="live-location-map-action" id="liveLocationStop" onclick="stopSavelyLiveLocation('Tracking stopped by you.',true)" disabled>Stop tracking</button>
         <button type="button" class="live-location-map-action" onclick="centerSavelyLiveLocation()">Recenter</button>
-        <button type="button" class="live-location-map-action" id="liveLocationTrafficToggle" onclick="toggleSavelyTraffic()">Traffic: Off</button>
         <button type="button" class="live-location-map-action danger" id="liveLocationClear" onclick="clearSavelyLocationTrail()">Clear current route</button>
        </div>
       </div>
@@ -10815,12 +10814,13 @@ body.dark-theme .app > .sidebar #nav button.active * {
 </style>
 
 <script id="savely-live-location-runtime">
-/* Savely Live Location v2: foreground GPS, IndexedDB route history, visit detection, optional TomTom traffic overlay. */
+/* Savely Live Location v2: foreground GPS, IndexedDB route history, and visit detection. */
 window.__savelyLiveLocationWatchId=null;
-let savelyLiveLocationMap=null,savelyLiveLocationMarker=null,savelyLiveLocationTrail=null,savelyTrafficLayer=null;
+window.__savelyLocationUserStopped=false;
+let savelyLiveLocationMap=null,savelyLiveLocationMarker=null,savelyLiveLocationTrail=null;
 let savelyLiveLocationPoints=[],savelyLiveLocationDistance=0,savelyLiveLocationHasCentered=false;
 let savelyLocationDb=null,savelyActiveSession=null,savelyStopCandidate=null,savelyActiveVisit=null;
-let savelyLocationHistoryTab='routes',savelyTrafficEnabled=false,savelyLastReverseLookup=0;
+let savelyLocationHistoryTab='routes',savelyLastReverseLookup=0;
 const SAVELY_LOCATION_DB='savely_location_history_v2',SAVELY_LOCATION_DB_VERSION=1;
 const SAVELY_VISIT_RADIUS=75,SAVELY_VISIT_MIN_DWELL=7*60*1000,SAVELY_VISIT_EXIT_RADIUS=130;
 function savelyLocationId(){return 'loc_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);}
@@ -10902,6 +10902,22 @@ function setSavelyLiveLocationMarkerState(isLive){
 function savelyMakeLocationIcon(){
  return L.divIcon({className:'savely-location-marker-host',html:'<div class="savely-location-pin is-live" role="img" aria-label="Your live current location"><span class="savely-location-pulse"></span><svg viewBox="0 0 44 52" width="44" height="52" aria-hidden="true"><path d="M22 2.5C11.6 2.5 3.5 10.4 3.5 20.1c0 13.1 18.5 29.2 18.5 29.2s18.5-16.1 18.5-29.2C40.5 10.4 32.4 2.5 22 2.5Z" fill="#07885f" stroke="#ffffff" stroke-width="2.8" stroke-linejoin="round"/><circle cx="22" cy="19.5" r="7.2" fill="#ffffff"/><circle cx="22" cy="19.5" r="3.1" fill="#07885f"/></svg></div>',iconSize:[44,52],iconAnchor:[22,49],popupAnchor:[0,-44]});
 }
+
+function savelyEnsureLastKnownMarker(){
+ if(!savelyLiveLocationMap||!window.L)return;
+ const point=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
+ if(!point)return;
+ const latlng=[point.lat,point.lng];
+ if(!savelyLiveLocationMarker){
+  savelyLiveLocationMarker=L.marker(latlng,{icon:savelyMakeLocationIcon(),keyboard:true,title:'Your last recorded location',alt:'Your last recorded location'}).addTo(savelyLiveLocationMap);
+  savelyLiveLocationMarker.bindPopup('<strong>Your last recorded location</strong><br>Waiting for a new GPS update.');
+ }else{
+  savelyLiveLocationMarker.setLatLng(latlng);
+  if(!savelyLiveLocationMarker.getPopup())savelyLiveLocationMarker.bindPopup('<strong>Your last recorded location</strong><br>Waiting for a new GPS update.');
+ }
+ setSavelyLiveLocationMarkerState(window.__savelyLiveLocationWatchId!==null&&window.__savelyLiveLocationWatchId!==undefined);
+}
+
 function initSavelyLiveLocationMap(){
  const el=document.getElementById('savelyLiveLocationMap');if(!el)return;
  if(!window.L){el.innerHTML='<div class="live-location-empty">The map library could not be loaded. Check your internet connection and refresh the page.</div>';return;}
@@ -10912,37 +10928,11 @@ function initSavelyLiveLocationMap(){
   savelyLiveLocationHasCentered=!!lastKnown;
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,maxNativeZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors',crossOrigin:true}).addTo(savelyLiveLocationMap);
   savelyLiveLocationTrail=L.polyline([],{color:'#128765',weight:5,opacity:.82,lineCap:'round',lineJoin:'round'}).addTo(savelyLiveLocationMap);
-  const last=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
-  if(last){savelyLiveLocationMarker=L.marker([last.lat,last.lng],{icon:savelyMakeLocationIcon(),keyboard:true,title:'Your last recorded location'}).addTo(savelyLiveLocationMap);}
  }
  setTimeout(()=>savelyLiveLocationMap&&savelyLiveLocationMap.invalidateSize(),150);
  if(savelyLiveLocationTrail)savelyLiveLocationTrail.setLatLngs(savelyLiveLocationPoints.map(p=>[p.lat,p.lng]));
+ savelyEnsureLastKnownMarker();
  renderSavelyLiveLocationPoints();
-}
-function savelyTomTomKey(){return localStorage.getItem('savelyTomTomTrafficKey')||'';}
-function setSavelyTrafficButton(){const b=document.getElementById('liveLocationTrafficToggle');if(b)b.textContent=savelyTrafficEnabled?'Traffic: On':'Traffic: Off';}
-function toggleSavelyTraffic(){
- if(!savelyLiveLocationMap)initSavelyLiveLocationMap();
- if(savelyTrafficEnabled){
-  if(savelyTrafficLayer&&savelyLiveLocationMap)savelyLiveLocationMap.removeLayer(savelyTrafficLayer);
-  savelyTrafficLayer=null;savelyTrafficEnabled=false;setSavelyTrafficButton();return;
- }
- let key=savelyTomTomKey();
- if(!key){
-  key=window.prompt('Paste your TomTom Traffic API key to enable live traffic. The key is saved only in this browser on this device.','');
-  if(!key)return;
-  key=key.trim();if(!key)return;
-  localStorage.setItem('savelyTomTomTrafficKey',key);
- }
- if(!savelyLiveLocationMap)return;
- const url='https://api.tomtom.com/traffic/map/4/tile/flow/relative0/{z}/{x}/{y}.png?key='+encodeURIComponent(key);
- savelyTrafficLayer=L.tileLayer(url,{opacity:.78,maxZoom:22,maxNativeZoom:22,attribution:'Traffic data &copy; <a href="https://www.tomtom.com/" target="_blank" rel="noopener noreferrer">TomTom</a>'});
- savelyTrafficLayer.on('tileerror',()=>{
-  if(savelyTrafficLayer&&savelyLiveLocationMap)savelyLiveLocationMap.removeLayer(savelyTrafficLayer);
-  savelyTrafficLayer=null;savelyTrafficEnabled=false;setSavelyTrafficButton();
-  toast('Traffic tiles could not load. Check your TomTom API key and traffic API access.');
- });
- savelyTrafficLayer.addTo(savelyLiveLocationMap);savelyTrafficEnabled=true;setSavelyTrafficButton();
 }
 function savelyStartNewSession(){
  if(savelyActiveSession)return;
@@ -11108,6 +11098,7 @@ async function deleteSavelyLocationHistory(){
  renderSavelyLiveLocationPoints();renderSavelyLocationHistory();toast('Location history deleted from this browser.');
 }
 function startSavelyLiveLocation(){
+ window.__savelyLocationUserStopped=false;
  if(!navigator.geolocation){savelyLocationSetStatus('Location unavailable','This browser does not support geolocation.');toast('This browser does not support location access.');return;}
  if(!window.isSecureContext){savelyLocationSetStatus('Secure connection required','Open Savely through its HTTPS GitHub Pages address.');toast('Location access requires HTTPS.');return;}
  if(window.__savelyLiveLocationWatchId!==null)return;
@@ -11121,7 +11112,8 @@ function startSavelyLiveLocation(){
  savelyLocationSetStatus('Tracking active','GPS is updating while this page stays open and visible.',true);
  setSavelyLiveLocationMarkerState(true);
 }
-function stopSavelyLiveLocation(message='Tracking stopped.'){
+function stopSavelyLiveLocation(message='Tracking stopped.',userInitiated=false){
+ if(userInitiated)window.__savelyLocationUserStopped=true;
  if(window.__savelyLiveLocationWatchId!==null&&window.__savelyLiveLocationWatchId!==undefined)navigator.geolocation.clearWatch(window.__savelyLiveLocationWatchId);
  window.__savelyLiveLocationWatchId=null;setSavelyLiveLocationMarkerState(false);
  if(savelyActiveVisit)savelyFinishVisit(Date.now());
@@ -11132,8 +11124,22 @@ function stopSavelyLiveLocation(message='Tracking stopped.'){
 function centerSavelyLiveLocation(){
  const point=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
  if(!savelyLiveLocationMap)initSavelyLiveLocationMap();
- if(point&&savelyLiveLocationMap){savelyLiveLocationMap.setView([point.lat,point.lng],18,{animate:true});savelyLiveLocationMap.invalidateSize();return;}
- toast('Waiting for a GPS location fix.');
+ if(point&&savelyLiveLocationMap){
+  savelyEnsureLastKnownMarker();
+  savelyLiveLocationMap.setView([point.lat,point.lng],18,{animate:true});
+  savelyLiveLocationMap.invalidateSize();return;
+ }
+ if(!navigator.geolocation){toast('This browser does not support location access.');return;}
+ if(!window.isSecureContext){toast('Location access requires the HTTPS Savely website.');return;}
+ savelyLocationSetStatus('Finding location…','Requesting a fresh GPS fix from this device.');
+ navigator.geolocation.getCurrentPosition(position=>{
+  updateSavelyLiveLocation(position);
+  const latest=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
+  if(latest&&savelyLiveLocationMap)savelyLiveLocationMap.setView([latest.lat,latest.lng],18,{animate:true});
+ },error=>{
+  const message=error.code===1?'Allow location permission in your browser settings.':error.code===2?'Your device could not determine its position. Try again outdoors.':'Location request timed out. Try again.';
+  savelyLocationSetStatus('Waiting for GPS',message,false);toast(message);
+ },{enableHighAccuracy:true,maximumAge:0,timeout:20000});
 }
 function clearSavelyLocationTrail(){
  if(!confirm('Clear the current route? Previously saved routes and visited places will remain.'))return;
@@ -11155,10 +11161,27 @@ async function savelyRestoreLocationState(){
    savelyActiveSession=null;
   }
   renderSavelyLocationHistory();
+  if(document.getElementById('page-live-location')?.classList.contains('active')){
+   initSavelyLiveLocationMap();
+   savelyEnsureLastKnownMarker();
+   if(savelyLiveLocationPoints.length&&savelyLiveLocationMap){
+    const p=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
+    savelyLiveLocationMap.setView([p.lat,p.lng],17,{animate:false});
+    savelyLiveLocationHasCentered=true;
+   }
+  }
  }catch(e){console.warn('Location history restore failed:',e);}
 }
 document.addEventListener('visibilitychange',()=>{
  if(document.visibilityState==='hidden'&&window.__savelyLiveLocationWatchId!==null)stopSavelyLiveLocation('Tracking paused because this browser tab is hidden. Your route was saved.');
+ if(document.visibilityState==='visible'){
+  const page=document.getElementById('page-live-location');
+  if(page&&page.classList.contains('active')&&!window.__savelyLocationUserStopped&&(window.__savelyLiveLocationWatchId===null||window.__savelyLiveLocationWatchId===undefined))startSavelyLiveLocation();
+ }
+});
+window.addEventListener('pageshow',()=>{
+ const page=document.getElementById('page-live-location');
+ if(page&&page.classList.contains('active')&&!window.__savelyLocationUserStopped&&(window.__savelyLiveLocationWatchId===null||window.__savelyLiveLocationWatchId===undefined))startSavelyLiveLocation();
 });
 savelyRestoreLocationState();
 </script>
@@ -11172,6 +11195,10 @@ document.addEventListener('click',function(event){
 document.addEventListener('keydown',function(event){
  if(event.key==='Escape')document.querySelectorAll('.goal-card-menu[open]').forEach(function(menu){menu.open=false;});
 });
+</script>
+
+<script id="savely-remove-old-traffic-key">
+try{localStorage.removeItem(['savely','TomTomTrafficKey'].join(''));}catch(e){}
 </script>
 
 </body>
