@@ -3273,6 +3273,43 @@ button.link-btn{
 @media(max-width:600px){.savely-shopee-product-row{grid-template-columns:minmax(0,1fr) 112px 34px;gap:6px}.savely-shopee-product-row input{font-size:12px;padding:9px}.savely-shopee-remove-product{width:34px}}
 </style>
 
+
+<style id="savely-salary-year-view-and-remaining-v1">
+#page-salary .salary-summary-cards{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+#page-salary .salary-annual-remaining-stat{border-top:3px solid #10a373;background:linear-gradient(155deg,#f1fbf6 0%,#fff 72%)}
+#page-salary .salary-calendar-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.salary-calendar-view-toggle,.salary-calendar-nav{display:flex;align-items:center;gap:6px}
+.salary-calendar-view-toggle{padding:4px;background:#f1f5f9;border:1px solid var(--line);border-radius:11px}
+.salary-calendar-view-toggle button{min-height:36px;padding:0 14px;border:0;border-radius:8px;background:transparent;color:var(--muted);font-size:11px;font-weight:800;cursor:pointer}
+.salary-calendar-view-toggle button.active{background:var(--green);color:#fff;box-shadow:0 2px 8px rgba(16,140,100,.18)}
+.salary-calendar-nav .btn:disabled{opacity:.35;cursor:not-allowed;pointer-events:none}
+.salary-calendar-year-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.salary-calendar-year-grid[hidden]{display:none!important}
+.salary-year-month-card{min-width:0;padding:12px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(180deg,#fbfefd 0%,#fff 100%)}
+.salary-year-month-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.salary-year-month-title strong{font-size:12px;font-weight:850;color:var(--text)}
+.salary-year-month-title span{font-size:9px;color:var(--muted)}
+.salary-year-weekdays,.salary-year-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
+.salary-year-weekdays span{text-align:center;font-size:8px;font-weight:800;color:#8a94a7;padding:3px 0}
+.salary-year-day,.salary-year-blank{position:relative;display:grid;place-items:center;min-width:0;aspect-ratio:1/1;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--text);font-size:9px;font-weight:700;padding:0}
+.salary-year-day{cursor:pointer}
+.salary-year-day:hover{background:#f0faf5;border-color:#a8e0c5}
+.salary-year-day.is-today{background:#07875f;color:#fff}
+.salary-year-day.is-selected{outline:2px solid var(--green);outline-offset:1px}
+.salary-year-day.has-payday:not(.is-today){background:#e5f7ee;color:#087a56}
+.salary-year-day.is-holiday:not(.is-today){box-shadow:inset 0 -2px 0 #f97316}
+.salary-year-day.is-special:not(.is-today){box-shadow:inset 0 -2px 0 #3b82f6}
+.salary-year-day.has-payday.is-holiday:not(.is-today),.salary-year-day.has-payday.is-special:not(.is-today){border:1px solid #a8e0c5}
+.salary-year-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;color:var(--muted);font-size:10px}
+.salary-year-legend span{display:inline-flex;align-items:center;gap:5px}
+.salary-year-legend i{width:7px;height:7px;border-radius:50%;display:inline-block;background:#07875f}
+.salary-year-legend .holiday-dot{background:#f97316}.salary-year-legend .special-dot{background:#3b82f6}
+.salary-calendar-day.is-outside-empty{border:1px solid transparent;background:transparent;min-height:clamp(76px,8vw,112px);pointer-events:none}
+@media(max-width:1100px){.salary-calendar-year-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){#page-salary .salary-summary-cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}.salary-calendar-year-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.salary-calendar-controls{width:100%;justify-content:space-between}.salary-calendar-view-toggle button{padding:0 10px}.salary-calendar-nav{flex:1;justify-content:flex-end}.salary-calendar-nav .btn{min-width:40px}}
+@media(max-width:420px){#page-salary .salary-summary-cards{grid-template-columns:1fr!important}.salary-calendar-year-grid{grid-template-columns:1fr}.salary-year-month-card{padding:13px}.salary-year-day{font-size:10px}}
+</style>
+
 </head>
 <body>
 
@@ -3486,14 +3523,21 @@ button.link-btn{
     <div class="cards salary-summary-cards" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:18px">
       <div class="stat"><div class="stat-top">Monthly take-home salary</div><div class="stat-value" id="salaryMonthlyDisplay" style="color:var(--green)">₱0.00</div><div class="stat-foot" id="salaryPayDayDisplay">Set your monthly salary below</div></div>
       <div class="stat"><div class="stat-top">Annual projection</div><div class="stat-value" id="salaryAnnualDisplay" style="color:var(--blue)">₱0.00</div><div class="stat-foot">Monthly salary × 12, before any changes or bonuses</div></div>
+      <div class="stat salary-annual-remaining-stat"><div class="stat-top">Remaining salary this year</div><div class="stat-value" id="salaryAnnualRemainingDisplay" style="color:#07875f">₱0.00</div><div class="stat-foot" id="salaryAnnualRemainingFoot">Estimated future cutoffs through December</div></div>
     </div>
     <section class="panel salary-calendar-panel" aria-labelledby="salaryCalendarTitle" style="margin-bottom:18px">
       <div class="panel-head salary-calendar-head">
         <div><h2 id="salaryCalendarTitle" style="font-size:19px">Salary calendar</h2><div class="panel-sub">View both monthly cutoff paydays. If a payday falls on a weekend or recognized Philippine holiday, it moves to the previous working day.</div></div>
         <div class="salary-calendar-controls">
-          <button type="button" class="btn btn-light" onclick="changeSalaryCalendarMonth(-1)" aria-label="Previous month">‹</button>
-          <button type="button" class="btn btn-light" onclick="goToCurrentSalaryCalendarMonth()">Today</button>
-          <button type="button" class="btn btn-light" onclick="changeSalaryCalendarMonth(1)" aria-label="Next month">›</button>
+          <div class="salary-calendar-view-toggle" role="group" aria-label="Calendar view">
+            <button type="button" class="active" data-salary-calendar-view="month" onclick="setSalaryCalendarView('month')" aria-pressed="true">Monthly</button>
+            <button type="button" data-salary-calendar-view="year" onclick="setSalaryCalendarView('year')" aria-pressed="false">Yearly</button>
+          </div>
+          <div class="salary-calendar-nav">
+            <button type="button" class="btn btn-light" id="salaryCalendarPrev" onclick="changeSalaryCalendarMonth(-1)" aria-label="Previous month">‹</button>
+            <button type="button" class="btn btn-light" onclick="goToCurrentSalaryCalendarMonth()">Today</button>
+            <button type="button" class="btn btn-light" id="salaryCalendarNext" onclick="changeSalaryCalendarMonth(1)" aria-label="Next month">›</button>
+          </div>
         </div>
       </div>
       <div class="salary-calendar-month-row"><strong id="salaryCalendarMonthLabel">Month Year</strong><span style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span class="salary-calendar-key"><i></i> Payday</span><span class="salary-calendar-key"><i style="background:#f97316;box-shadow:0 0 0 3px #ffedd5"></i> Regular holiday</span><span class="salary-calendar-key"><i style="background:#2563eb;box-shadow:0 0 0 3px #dbeafe"></i> Special non-working</span></span></div>
@@ -3501,6 +3545,7 @@ button.link-btn{
         <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
       </div>
       <div id="salaryCalendarGrid" class="salary-calendar-grid" role="grid" aria-label="Monthly salary calendar"></div>
+      <div id="salaryCalendarYearGrid" class="salary-calendar-year-grid" role="group" aria-label="Yearly salary calendar" hidden></div>
       <div id="salaryCalendarDetails" class="salary-calendar-details" aria-live="polite"></div><div id="salaryHolidayUpdateStatus" class="salary-calendar-holiday-status">Philippine holidays: checking for updates…</div>
     </section>
     <div id="salaryDetailsBackdrop" hidden onclick="if(event.target===this)toggleSalaryDetails(false)" style="position:fixed;inset:0;background:rgba(15,23,42,.48);backdrop-filter:blur(3px);z-index:9998;display:none;align-items:center;justify-content:center;padding:20px;overflow:auto">
@@ -4202,19 +4247,50 @@ function renderSalaryPage(){
  const payday=document.getElementById('monthlySalaryPayDay');if(payday)payday.value=paydayValue;
  const notes=document.getElementById('monthlySalaryNotes');if(notes&&document.activeElement!==notes)notes.value=String(data.salaryNotes||'');
  const updated=document.getElementById('monthlySalaryUpdatedAt');if(updated)updated.textContent=data.salaryUpdatedAt?`Last updated: ${new Date(data.salaryUpdatedAt).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'})}`:'Not saved yet';
+ updateSalaryAnnualRemainingCard();
  renderSalaryCalendar();
 }
 let salaryCalendarCursor=new Date(new Date().getFullYear(),new Date().getMonth(),1);
-setTimeout(()=>refreshPhilippineHolidays([new Date().getFullYear()-1,new Date().getFullYear(),new Date().getFullYear()+1]),250);
+let salaryCalendarViewMode='month';
+setTimeout(()=>refreshPhilippineHolidays([new Date().getFullYear(),new Date().getFullYear()+1]),250);
 setInterval(()=>refreshPhilippineHolidays([new Date().getFullYear(),new Date().getFullYear()+1]),24*60*60*1000);
 let salaryCalendarSelectedDate=null;
+function salaryCalendarCurrentMonthStart(){
+ const now=new Date();return new Date(now.getFullYear(),now.getMonth(),1);
+}
 function changeSalaryCalendarMonth(delta){
- salaryCalendarCursor=new Date(salaryCalendarCursor.getFullYear(),salaryCalendarCursor.getMonth()+Number(delta||0),1);
- salaryCalendarSelectedDate=null;renderSalaryCalendar();refreshPhilippineHolidays([salaryCalendarCursor.getFullYear()]);
+ const now=new Date(),step=Number(delta||0);
+ if(salaryCalendarViewMode==='year'){
+  const minYear=now.getFullYear(),targetYear=salaryCalendarCursor.getFullYear()+step;
+  const year=Math.max(minYear,targetYear);
+  salaryCalendarCursor=new Date(year,year===minYear?now.getMonth():0,1);
+ }else{
+  const candidate=new Date(salaryCalendarCursor.getFullYear(),salaryCalendarCursor.getMonth()+step,1);
+  const minimum=salaryCalendarCurrentMonthStart();
+  salaryCalendarCursor=candidate<minimum?minimum:candidate;
+ }
+ salaryCalendarSelectedDate=null;
+ renderSalaryCalendar();
+ refreshPhilippineHolidays([salaryCalendarCursor.getFullYear()]);
+}
+function setSalaryCalendarView(mode){
+ salaryCalendarViewMode=mode==='year'?'year':'month';
+ const now=new Date();
+ if(salaryCalendarCursor<salaryCalendarCurrentMonthStart())salaryCalendarCursor=salaryCalendarCurrentMonthStart();
+ if(salaryCalendarViewMode==='year'&&salaryCalendarCursor.getFullYear()<now.getFullYear())salaryCalendarCursor=salaryCalendarCurrentMonthStart();
+ const selectedParts=String(salaryCalendarSelectedDate||'').split('-').map(Number);
+ const selectedYear=selectedParts[0],selectedMonth=(selectedParts[1]||1)-1;
+ const minVisibleMonth=salaryCalendarCursor.getFullYear()===now.getFullYear()?now.getMonth():0;
+ if(!salaryCalendarSelectedDate||selectedYear!==salaryCalendarCursor.getFullYear()||selectedMonth<minVisibleMonth){
+  const fallbackMonth=salaryCalendarCursor.getFullYear()===now.getFullYear()?Math.max(salaryCalendarCursor.getMonth(),now.getMonth()):salaryCalendarCursor.getMonth();
+  salaryCalendarSelectedDate=salaryCalendarISO(salaryCalendarCursor.getFullYear(),fallbackMonth,fallbackMonth===now.getMonth()&&salaryCalendarCursor.getFullYear()===now.getFullYear()?now.getDate():1);
+ }
+ renderSalaryCalendar();
+ refreshPhilippineHolidays([salaryCalendarCursor.getFullYear()]);
 }
 function goToCurrentSalaryCalendarMonth(){
  const now=new Date();salaryCalendarCursor=new Date(now.getFullYear(),now.getMonth(),1);
- salaryCalendarSelectedDate=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+ salaryCalendarSelectedDate=salaryCalendarISO(now.getFullYear(),now.getMonth(),now.getDate());
  renderSalaryCalendar();
 }
 function salaryCalendarISO(year,monthIndex,day){return year+'-'+String(monthIndex+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');}
@@ -4258,61 +4334,178 @@ async function refreshPhilippineHolidays(years){
   }));
   if(status){const live=results.some(Boolean);status.textContent=live?'Philippine holidays auto-updated from the holiday feed. Check official proclamations for last-minute changes.':'Showing saved/default Philippine holidays; live update is temporarily unavailable.';}
   if(typeof renderSalaryCalendar==='function')renderSalaryCalendar();
+  if(typeof updateSalaryAnnualRemainingCard==='function')updateSalaryAnnualRemainingCard();
  }finally{requests.forEach(y=>holidayFetchInFlight.delete(y));}
 }
 function getSalaryPaydayEntries(schedule,year,monthIndex){
+ schedule=({'1':'5-20','5':'5-20','10':'10-25','15':'15-30','20':'5-20','25':'10-25','30':'15-30'})[String(schedule)]||String(schedule||'custom');
  const daysInMonth=new Date(year,monthIndex+1,0).getDate();
  let scheduled=[];
  if(schedule==='15-30')scheduled=[15,daysInMonth];
  else if(schedule==='5-20')scheduled=[5,20];
  else if(schedule==='10-25')scheduled=[10,25];
  else {const legacy=Number(schedule);if([1,5,10,15,20,25,30].includes(legacy))scheduled=[Math.min(legacy,daysInMonth)];}
- const holidays=getPhilippineHolidays(year);
  return scheduled.map((scheduledDay,index)=>{
-  let actualDay=scheduledDay,dt=new Date(year,monthIndex,actualDay),reason='';
-  // If payday lands on a weekend or recognized holiday, move it to the previous working day.
-  while(dt.getDay()===0||dt.getDay()===6||holidays.has(salaryCalendarISO(dt.getFullYear(),dt.getMonth(),dt.getDate()))){
-   reason=dt.getDay()===0||dt.getDay()===6?'weekend':'holiday';
-   dt.setDate(dt.getDate()-1);actualDay=dt.getDate();
+  const dt=new Date(year,monthIndex,scheduledDay);
+  const scheduledIso=salaryCalendarISO(year,monthIndex,scheduledDay);
+  let reason='',guard=0;
+  // If payday lands on a weekend or recognized holiday, move to the previous working day.
+  while(guard++<20){
+   const iso=salaryCalendarISO(dt.getFullYear(),dt.getMonth(),dt.getDate());
+   const isWeekend=dt.getDay()===0||dt.getDay()===6;
+   const isHoliday=getPhilippineHolidays(dt.getFullYear()).has(iso);
+   if(!isWeekend&&!isHoliday)break;
+   reason=isWeekend?'weekend':'holiday';
+   dt.setDate(dt.getDate()-1);
   }
-  return {day:actualDay,scheduledDay,index,reason:actualDay!==scheduledDay?reason:''};
+  const actualIso=salaryCalendarISO(dt.getFullYear(),dt.getMonth(),dt.getDate());
+  return {day:dt.getDate(),year:dt.getFullYear(),monthIndex:dt.getMonth(),date:actualIso,scheduledDate:scheduledIso,scheduledDay,index,reason:actualIso!==scheduledIso?reason:''};
  });
 }
 function getSalaryPaydays(schedule,year,monthIndex){return getSalaryPaydayEntries(schedule,year,monthIndex).map(entry=>entry.day);}
+function getSalaryRemainingProjection(){
+ const amount=Math.max(0,Number(data.monthlySalary)||0);
+ if(!amount)return {amount:0,count:0,description:'Add your monthly salary to calculate the remaining projection.'};
+ const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+ const raw=String(data.salaryPayDay||'custom');
+ const schedule=({'1':'5-20','5':'5-20','10':'10-25','15':'15-30','20':'5-20','25':'10-25','30':'15-30'})[raw]||raw;
+ if(schedule==='custom'){
+  const months=Math.max(0,12-now.getMonth());
+  return {amount:Math.round(amount*months*100)/100,count:months,description:`Approx. ${months} monthly period${months===1?'':'s'} remaining · payday varies`};
+ }
+ let remaining=0,count=0;
+ for(let month=now.getMonth();month<12;month++){
+  const year=now.getFullYear(),lastDay=new Date(year,month+1,0).getDate();
+  const scheduled=schedule==='15-30'?[15,lastDay]:schedule==='10-25'?[10,25]:[5,20];
+  for(const day of scheduled){
+   const payoutDate=new Date(year,month,Math.min(day,lastDay));
+   let guard=0;
+   while(guard++<20){
+    const iso=salaryCalendarISO(payoutDate.getFullYear(),payoutDate.getMonth(),payoutDate.getDate());
+    const isWeekend=payoutDate.getDay()===0||payoutDate.getDay()===6;
+    const isHoliday=getPhilippineHolidays(payoutDate.getFullYear()).has(iso);
+    if(!isWeekend&&!isHoliday)break;
+    payoutDate.setDate(payoutDate.getDate()-1);
+   }
+   if(payoutDate>=today){remaining+=amount/2;count++;}
+  }
+ }
+ return {amount:Math.round(remaining*100)/100,count,description:`${count} scheduled cutoff payout${count===1?'':'s'} remaining this year`};
+}
+function updateSalaryAnnualRemainingCard(){
+ const value=document.getElementById('salaryAnnualRemainingDisplay');
+ const foot=document.getElementById('salaryAnnualRemainingFoot');
+ if(!value||!foot)return;
+ const projection=getSalaryRemainingProjection();
+ value.textContent=peso(projection.amount);
+ foot.textContent=projection.description;
+}
+function renderSalaryYearCalendar(year){
+ const root=document.getElementById('salaryCalendarYearGrid');
+ if(!root)return;
+ const now=new Date(),firstMonth=year===now.getFullYear()?now.getMonth():0;
+ const amount=Math.max(0,Number(data.monthlySalary)||0),schedule=String(data.salaryPayDay||'custom');
+ const hasSchedule=amount>0&&schedule!=='custom'&&!!data.salaryUpdatedAt;
+ const weekday=['S','M','T','W','T','F','S'];
+ const months=[];
+ for(let month=firstMonth;month<12;month++){
+  const first=new Date(year,month,1).getDay(),days=new Date(year,month+1,0).getDate();
+  const payoutEntries=hasSchedule?getSalaryPaydayEntries(schedule,year,month):[];
+  const cells=[];
+  for(let blank=0;blank<first;blank++)cells.push('<span class="salary-year-blank" aria-hidden="true"></span>');
+  for(let day=1;day<=days;day++){
+   const iso=salaryCalendarISO(year,month,day),holiday=getPhilippineHolidayMap(year)[iso];
+   const entry=payoutEntries.find(item=>item.date===iso);
+   const isToday=iso===salaryCalendarISO(now.getFullYear(),now.getMonth(),now.getDate());
+   const isSelected=salaryCalendarSelectedDate===iso;
+   const classes=['salary-year-day',isToday?'is-today':'',isSelected?'is-selected':'',entry?'has-payday':'',holiday&&holiday.type!=='special_working'?'is-holiday':'',holiday&&holiday.type==='special_non_working'?'is-special':''].filter(Boolean).join(' ');
+   const tooltip=[holiday?holiday.name:'',entry?(entry.index===0?'1st cutoff':'2nd cutoff')+' · '+peso(amount/2):''].filter(Boolean).join(' · ')||new Date(year,month,day).toLocaleDateString('en-PH',{dateStyle:'full'});
+   cells.push(`<button type="button" class="${classes}" title="${esc(tooltip)}" aria-label="${esc(tooltip)}" aria-pressed="${isSelected?'true':'false'}" onclick="selectSalaryCalendarDate('${iso}')">${day}</button>`);
+  }
+  months.push(`<section class="salary-year-month-card" aria-label="${new Date(year,month,1).toLocaleDateString('en-PH',{month:'long',year:'numeric'})}"><div class="salary-year-month-title"><strong>${new Date(year,month,1).toLocaleDateString('en-PH',{month:'long'})}</strong><span>${hasSchedule?payoutEntries.length+' cutoffs':' '}</span></div><div class="salary-year-weekdays">${weekday.map(day=>`<span>${day}</span>`).join('')}</div><div class="salary-year-days">${cells.join('')}</div></section>`);
+ }
+ root.innerHTML=months.length?months.join(''):'<div class="salary-calendar-empty">No future months remain in this year.</div>';
+}
 function renderSalaryCalendar(){
  const grid=document.getElementById('salaryCalendarGrid'),label=document.getElementById('salaryCalendarMonthLabel'),details=document.getElementById('salaryCalendarDetails');
+ const yearGrid=document.getElementById('salaryCalendarYearGrid');
+ const weekdays=document.querySelector('#page-salary .salary-calendar-weekdays');
  if(!grid||!label||!details)return;
+ const now=new Date(),minimum=salaryCalendarCurrentMonthStart();
+ if(salaryCalendarCursor<minimum)salaryCalendarCursor=minimum;
  const year=salaryCalendarCursor.getFullYear(),month=salaryCalendarCursor.getMonth();
- label.textContent=salaryCalendarCursor.toLocaleDateString('en-PH',{month:'long',year:'numeric'});
- const amount=Math.max(0,Number(data.monthlySalary)||0),payday=String(data.salaryPayDay||'custom');
- const hasSchedule=amount>0&&payday!=='custom'&&!!data.salaryUpdatedAt;
- const today=new Date(),todayISOString=salaryCalendarISO(today.getFullYear(),today.getMonth(),today.getDate());
- const firstDay=new Date(year,month,1).getDay(),daysInMonth=new Date(year,month+1,0).getDate();
- const prevMonthDays=new Date(year,month,0).getDate(),totalCells=Math.ceil((firstDay+daysInMonth)/7)*7;
- const cells=[];
- for(let i=0;i<totalCells;i++){
-  let day,cellYear=year,cellMonth=month,outside=false;
-  if(i<firstDay){day=prevMonthDays-firstDay+i+1;cellMonth=month-1;outside=true;if(cellMonth<0){cellMonth=11;cellYear--;}}
-  else if(i>=firstDay+daysInMonth){day=i-(firstDay+daysInMonth)+1;cellMonth=month+1;outside=true;if(cellMonth>11){cellMonth=0;cellYear++;}}
-  else day=i-firstDay+1;
-  const iso=salaryCalendarISO(cellYear,cellMonth,day);
-  const isToday=iso===todayISOString;
-  const paydayEntries=hasSchedule?getSalaryPaydayEntries(payday,cellYear,cellMonth):[];
-  const paydayEntry=paydayEntries.find(entry=>entry.day===day);
-  const paydayIndex=paydayEntry?paydayEntry.index:-1;
-  const isPayday=!!paydayEntry;
-  const holiday=getPhilippineHolidayMap(cellYear)[iso];
-  const isHoliday=!!holiday&&holiday.type!=='special_working';
-  const selected=salaryCalendarSelectedDate===iso;
-  const payoutAmount=amount/2;
-  const accessibleDate=new Date(cellYear,cellMonth,day).toLocaleDateString('en-PH',{dateStyle:'full'});
-  cells.push(`<button type="button" role="gridcell" aria-label="${accessibleDate}${isPayday?', payday':''}${holiday?', '+holiday.name:''}" title="${holiday?esc(holiday.name)+' · '+(holiday.type==='regular'?'REGULAR HOLIDAY':holiday.type==='special_working'?'SPECIAL WORKING DAY':holiday.type==='special_non_working'?'SPECIAL NON-WORKING HOLIDAY':'LOCAL HOLIDAY'):''}" class="salary-calendar-day${outside?' is-outside':''}${isToday?' is-today':''}${isPayday?' is-payday':''}${isHoliday?' is-holiday':''}${holiday&&holiday.type==='special_non_working'?' is-special-non-working':''}${selected?' is-selected':''}" onclick="selectSalaryCalendarDate('${iso}')"><span class="salary-calendar-day-number">${day}</span>${isPayday?`<span class="salary-calendar-event">${paydayIndex===0?'1st cutoff':'2nd cutoff'}${paydayEntry.reason?' · moved':''}</span><span class="salary-calendar-event-amount">${peso(payoutAmount)}</span>`:''}${holiday?`<span class="salary-calendar-holiday${holiday.type==='special_non_working'?' is-special-non-working':''}"><b>${holiday.type==='regular'?'REGULAR':holiday.type==='special_non_working'?'SPECIAL NON-WORKING':holiday.type==='special_working'?'SPECIAL WORKING':'LOCAL'}</b> · ${esc(holiday.name)}</span>`:''}</button>`);
+ const yearMode=salaryCalendarViewMode==='year';
+ const viewButtons=document.querySelectorAll('[data-salary-calendar-view]');
+ viewButtons.forEach(button=>{
+  const active=button.dataset.salaryCalendarView===(yearMode?'year':'month');
+  button.classList.toggle('active',active);
+  button.setAttribute('aria-pressed',active?'true':'false');
+ });
+ const previous=document.getElementById('salaryCalendarPrev');
+ const next=document.getElementById('salaryCalendarNext');
+ const isAtCurrent=yearMode?year===now.getFullYear():year===now.getFullYear()&&month===now.getMonth();
+ if(previous)previous.disabled=isAtCurrent;
+ if(next)next.setAttribute('aria-label',yearMode?'Next year':'Next month');
+ if(previous)previous.setAttribute('aria-label',yearMode?'Previous year':'Previous month');
+ if(yearMode){
+  label.textContent=year===now.getFullYear()?`${year} · Current and upcoming months`:`${year} · Yearly view`;
+  grid.hidden=true;
+  if(weekdays)weekdays.hidden=true;
+  if(yearGrid){yearGrid.hidden=false;renderSalaryYearCalendar(year);}
+ }else{
+  label.textContent=salaryCalendarCursor.toLocaleDateString('en-PH',{month:'long',year:'numeric'});
+  grid.hidden=false;
+  if(weekdays)weekdays.hidden=false;
+  if(yearGrid)yearGrid.hidden=true;
+  const amount=Math.max(0,Number(data.monthlySalary)||0),payday=String(data.salaryPayDay||'custom');
+  const hasSchedule=amount>0&&payday!=='custom'&&!!data.salaryUpdatedAt;
+  const todayISOString=salaryCalendarISO(now.getFullYear(),now.getMonth(),now.getDate());
+  const firstDay=new Date(year,month,1).getDay(),daysInMonth=new Date(year,month+1,0).getDate();
+  const totalCells=Math.ceil((firstDay+daysInMonth)/7)*7,cells=[];
+  for(let i=0;i<totalCells;i++){
+   if(i<firstDay||i>=firstDay+daysInMonth){
+    cells.push('<div class="salary-calendar-day is-outside-empty" aria-hidden="true"></div>');
+    continue;
+   }
+   const day=i-firstDay+1,iso=salaryCalendarISO(year,month,day);
+   const isToday=iso===todayISOString;
+   const paydayEntries=hasSchedule?getSalaryPaydayEntries(payday,year,month):[];
+   const paydayEntry=paydayEntries.find(entry=>entry.date===iso);
+   const paydayIndex=paydayEntry?paydayEntry.index:-1;
+   const isPayday=!!paydayEntry;
+   const holiday=getPhilippineHolidayMap(year)[iso];
+   const isHoliday=!!holiday&&holiday.type!=='special_working';
+   const selected=salaryCalendarSelectedDate===iso;
+   const accessibleDate=new Date(year,month,day).toLocaleDateString('en-PH',{dateStyle:'full'});
+   cells.push(`<button type="button" role="gridcell" aria-label="${accessibleDate}${isPayday?', payday':''}${holiday?', '+holiday.name:''}" title="${holiday?esc(holiday.name)+' · '+(holiday.type==='regular'?'REGULAR HOLIDAY':holiday.type==='special_working'?'SPECIAL WORKING DAY':holiday.type==='special_non_working'?'SPECIAL NON-WORKING HOLIDAY':'LOCAL HOLIDAY'):''}" class="salary-calendar-day${isToday?' is-today':''}${isPayday?' is-payday':''}${isHoliday?' is-holiday':''}${holiday&&holiday.type==='special_non_working'?' is-special-non-working':''}${selected?' is-selected':''}" onclick="selectSalaryCalendarDate('${iso}')"><span class="salary-calendar-day-number">${day}</span>${isPayday?`<span class="salary-calendar-event">${paydayIndex===0?'1st cutoff':'2nd cutoff'}${paydayEntry.reason?' · moved':''}</span><span class="salary-calendar-event-amount">${peso(amount/2)}</span>`:''}${holiday?`<span class="salary-calendar-holiday${holiday.type==='special_non_working'?' is-special-non-working':''}"><b>${holiday.type==='regular'?'REGULAR':holiday.type==='special_non_working'?'SPECIAL NON-WORKING':holiday.type==='special_working'?'SPECIAL WORKING':'LOCAL'}</b> · ${esc(holiday.name)}</span>`:''}</button>`);
+  }
+  grid.innerHTML=cells.join('');
  }
- grid.innerHTML=cells.join('');
- if(!salaryCalendarSelectedDate) salaryCalendarSelectedDate=hasSchedule?salaryCalendarISO(year,month,getSalaryPaydays(payday,year,month)[0]||1):todayISOString;
+ const selectedParts=String(salaryCalendarSelectedDate||'').split('-').map(Number);
+ const selectedMonth=(selectedParts[1]||1)-1;
+ const firstVisibleMonth=year===now.getFullYear()?now.getMonth():0;
+ const selectionFits=selectedParts[0]===year&&(yearMode?selectedMonth>=firstVisibleMonth:selectedMonth===month);
+ if(!selectionFits){
+  const fallbackMonth=year===now.getFullYear()?Math.max(month,now.getMonth()):month;
+  const fallbackDay=year===now.getFullYear()&&fallbackMonth===now.getMonth()?now.getDate():1;
+  salaryCalendarSelectedDate=salaryCalendarISO(year,fallbackMonth,fallbackDay);
+ }
  renderSalaryCalendarDetails(salaryCalendarSelectedDate);
 }
-function selectSalaryCalendarDate(iso){salaryCalendarSelectedDate=iso;renderSalaryCalendar();}
+function selectSalaryCalendarDate(iso){
+ const date=String(iso||'').split('-').map(Number);
+ const target=new Date(date[0],date[1]-1,1),minimum=salaryCalendarCurrentMonthStart();
+ if(target<minimum){toast('Past months are hidden from the salary calendar.');return;}
+ salaryCalendarCursor=target;
+ salaryCalendarSelectedDate=iso;
+ renderSalaryCalendar();
+} 
+setInterval(()=>{
+ const minimum=salaryCalendarCurrentMonthStart();
+ if(salaryCalendarCursor<minimum)salaryCalendarCursor=minimum;
+ renderSalaryCalendar();
+ updateSalaryAnnualRemainingCard();
+},60*1000);
 function renderSalaryCalendarDetails(iso){
  const details=document.getElementById('salaryCalendarDetails');if(!details)return;
  const amount=Math.max(0,Number(data.monthlySalary)||0),payday=String(data.salaryPayDay||'custom');
@@ -4322,7 +4515,7 @@ function renderSalaryCalendarDetails(iso){
  const holiday=getPhilippineHolidayMap(parts[0])[String(iso||'')];
  const holidayTypeLabel=holiday?(holiday.type==='regular'?'Regular holiday':holiday.type==='special_working'?'Special working day':holiday.type==='special_non_working'?'Special non-working holiday':'Local holiday'):'';
  const paydayEntries=hasSchedule?getSalaryPaydayEntries(payday,parts[0],parts[1]-1):[];
- const paydayEntry=paydayEntries.find(entry=>entry.day===parts[2]);
+ const paydayEntry=paydayEntries.find(entry=>entry.date===String(iso||''));
  const paydayIndex=paydayEntry?paydayEntry.index:-1;
  if(hasSchedule&&paydayEntry){
   const movedNote=paydayEntry.reason?`<div style="margin-top:4px;color:var(--green)">Moved earlier from the ${paydayEntry.scheduledDay}${paydayEntry.scheduledDay===1?'st':paydayEntry.scheduledDay===2?'nd':paydayEntry.scheduledDay===3?'rd':'th'} because the scheduled payday falls on a ${esc(paydayEntry.reason)}.</div>`:'';
