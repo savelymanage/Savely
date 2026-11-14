@@ -3149,8 +3149,13 @@ button.link-btn{
 .savely-railway-live-head h3{margin:4px 0;font-size:18px;color:var(--text)}
 .savely-railway-live-head p{margin:0;color:var(--muted);font-size:11px}
 .savely-railway-live-head>a{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 13px;border:1px solid #cfe5da;border-radius:9px;background:#f4faf7;color:#087b5b;text-decoration:none;font-size:11px;font-weight:800;white-space:nowrap}
-.savely-railway-live-frame-wrap{height:clamp(560px,76vh,900px);min-height:560px;overflow:hidden;border:1px solid #e2eaf0;border-radius:12px;background:#f2f6f4}
-.savely-railway-live-frame-wrap iframe{display:block;width:100%;height:100%;min-height:560px;border:0;background:#f2f6f4}
+.savely-railway-access-panel{min-height:300px;display:flex;align-items:center;justify-content:center;padding:34px 22px;border:1px solid #e2eaf0;border-radius:12px;background:linear-gradient(135deg,#f5faf7,#edf5f1);text-align:center}
+.savely-railway-access-inner{width:min(520px,100%);display:flex;flex-direction:column;align-items:center;gap:12px}
+.savely-railway-access-icon{width:58px;height:58px;display:grid;place-items:center;border-radius:18px;background:#dff3e9;color:#087b5b;font-size:28px}
+.savely-railway-access-inner h4{margin:0;color:var(--text);font-size:17px}
+.savely-railway-access-inner p{max-width:440px;margin:0;color:var(--muted);font-size:12px;line-height:1.6}
+.savely-railway-open-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 18px;border:1px solid #087b5b;border-radius:10px;background:#087b5b;color:#fff;text-decoration:none;font-size:12px;font-weight:850;box-shadow:0 5px 14px rgba(8,123,91,.15)}
+.savely-railway-open-button:hover{background:#06694e}
 .savely-railway-live-note{margin-top:10px;color:var(--muted);font-size:10px;line-height:1.55}
 .savely-railway-live-note strong{color:var(--text)}
 .savely-waze-map-controls{top:16px;right:16px}
@@ -3162,7 +3167,7 @@ button.link-btn{
  .savely-live-map-mode-switch button{flex:1;padding:0 8px}
  .savely-waze-traffic-view,.savely-waze-traffic-view iframe{height:68vh;min-height:440px}
  .savely-railway-live-view{padding:10px}
- .savely-railway-live-frame-wrap,.savely-railway-live-frame-wrap iframe{height:68vh;min-height:440px}
+ .savely-railway-access-panel{min-height:280px;padding:24px 16px}
  .savely-railway-live-head{align-items:flex-start;flex-direction:column}
 }
 </style>
@@ -3665,10 +3670,15 @@ button.link-btn{
          <div><span class="savely-cctv-eyebrow">PUBLIC RAILWAY TRACKER</span><h3>Metro Manila Railway Live</h3><p>TrainSight · LRT-1 · LRT-2 · MRT-3</p></div>
          <a href="https://rail.trainsight.app/" target="_blank" rel="noopener noreferrer">Open TrainSight ↗</a>
         </div>
-        <div class="savely-railway-live-frame-wrap">
-         <iframe id="savelyRailwayLiveFrame" title="TrainSight live train tracker for Metro Manila" src="https://rail.trainsight.app/" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="geolocation"></iframe>
+        <div class="savely-railway-access-panel">
+         <div class="savely-railway-access-inner">
+          <div class="savely-railway-access-icon" aria-hidden="true">🚆</div>
+          <h4>View live train positions on TrainSight</h4>
+          <p>TrainSight does not currently allow its tracker to be displayed inside Savely. Open the public tracker in a new tab to view available LRT-1, LRT-2, and MRT-3 train positions.</p>
+          <a class="savely-railway-open-button" href="https://rail.trainsight.app/" target="_blank" rel="noopener noreferrer">Open TrainSight Live ↗</a>
+         </div>
         </div>
-        <div class="savely-railway-live-note"><strong>Embedding is experimental.</strong> If TrainSight blocks third-party framing or the panel stays blank, use “Open TrainSight” above to view the live tracker directly. Train positions and update frequency are controlled by TrainSight; Savely does not independently verify or generate train locations.</div>
+        <div class="savely-railway-live-note"><strong>External tracker.</strong> Live positions, estimated locations, and update frequency are provided by TrainSight. Savely does not independently verify or generate train locations.</div>
        </section>
        <div id="savelyPublicCCTVView" class="savely-public-cctv-view" role="region" aria-label="Metro Manila public CCTV directory" hidden>
         <aside class="savely-cctv-city-sidebar">
