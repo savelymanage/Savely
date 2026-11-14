@@ -2703,6 +2703,54 @@ button.link-btn{
 }
 </style>
 
+
+<style id="savely-live-location-pin-icon-v1">
+/* A distinct map pin for the user's current/last GPS position. */
+.savely-location-marker-host{
+ background:transparent!important;
+ border:0!important;
+}
+.savely-location-pin{
+ position:relative;
+ display:block;
+ width:44px;
+ height:52px;
+ overflow:visible;
+ filter:drop-shadow(0 4px 5px rgba(11,42,31,.28));
+}
+.savely-location-pin svg{
+ position:absolute;
+ inset:0;
+ display:block;
+ z-index:2;
+ overflow:visible;
+}
+.savely-location-pulse{
+ position:absolute;
+ z-index:1;
+ width:22px;
+ height:22px;
+ left:11px;
+ top:8px;
+ border:2px solid rgba(7,136,95,.55);
+ border-radius:50%;
+ background:rgba(7,136,95,.12);
+ opacity:0;
+ transform:scale(.75);
+}
+.savely-location-pin.is-live .savely-location-pulse{
+ animation:savely-location-pulse 1.8s ease-out infinite;
+}
+@keyframes savely-location-pulse{
+ 0%{opacity:.7;transform:scale(.7)}
+ 80%,100%{opacity:0;transform:scale(2.5)}
+}
+.savely-location-pin:not(.is-live) .savely-location-pulse{display:none}
+@media(prefers-reduced-motion:reduce){
+ .savely-location-pin.is-live .savely-location-pulse{animation:none;opacity:.35;transform:scale(1.2)}
+}
+</style>
+
 </head>
 <body>
 
@@ -9877,6 +9925,12 @@ function initSavelyLiveLocationMap(){
  setTimeout(()=>savelyLiveLocationMap&&savelyLiveLocationMap.invalidateSize(),120);
  renderSavelyLiveLocationPoints();
 }
+function setSavelyLiveLocationMarkerState(isLive){
+ if(!savelyLiveLocationMarker)return;
+ const element=savelyLiveLocationMarker.getElement();
+ const pin=element&&element.querySelector('.savely-location-pin');
+ if(pin)pin.classList.toggle('is-live',!!isLive);
+}
 function savelyLocationSetStatus(title,detail,live=false){
  const t=document.getElementById('liveLocationStatus'),d=document.getElementById('liveLocationStatusHelp'),dot=document.getElementById('liveLocationStatusDot');
  if(t)t.textContent=title;if(d)d.textContent=detail;if(dot)dot.classList.toggle('is-live',!!live);
@@ -9910,8 +9964,17 @@ function updateSavelyLiveLocation(position){
  if(subtitle)subtitle.textContent='Your current position and movement trail are updating while tracking is active.';
  if(savelyLiveLocationMap){
   const latlng=[point.lat,point.lng];
-  if(!savelyLiveLocationMarker)savelyLiveLocationMarker=L.circleMarker(latlng,{radius:9,color:'#fff',weight:3,fillColor:'#0b9365',fillOpacity:1}).addTo(savelyLiveLocationMap).bindPopup('Your current position');
-  else savelyLiveLocationMarker.setLatLng(latlng);
+  if(!savelyLiveLocationMarker){
+   const locationIcon=L.divIcon({
+    className:'savely-location-marker-host',
+    html:'<div class="savely-location-pin is-live" role="img" aria-label="Your live current location"><span class="savely-location-pulse"></span><svg viewBox="0 0 44 52" width="44" height="52" aria-hidden="true"><path d="M22 2.5C11.6 2.5 3.5 10.4 3.5 20.1c0 13.1 18.5 29.2 18.5 29.2s18.5-16.1 18.5-29.2C40.5 10.4 32.4 2.5 22 2.5Z" fill="#07885f" stroke="#ffffff" stroke-width="2.8" stroke-linejoin="round"/><circle cx="22" cy="19.5" r="7.2" fill="#ffffff"/><circle cx="22" cy="19.5" r="3.1" fill="#07885f"/></svg></div>',
+    iconSize:[44,52],
+    iconAnchor:[22,49],
+    popupAnchor:[0,-44]
+   });
+   savelyLiveLocationMarker=L.marker(latlng,{icon:locationIcon,keyboard:true,title:'Your current location',alt:'Your current location'}).addTo(savelyLiveLocationMap).bindPopup('<strong>Your current location</strong><br>Updated while tracking is active.');
+  }else savelyLiveLocationMarker.setLatLng(latlng);
+  setSavelyLiveLocationMarkerState(window.__savelyLiveLocationWatchId!==null);
   if(savelyLiveLocationTrail)savelyLiveLocationTrail.setLatLngs(savelyLiveLocationPoints.map(p=>[p.lat,p.lng]));
   if(!savelyLiveLocationHasCentered){savelyLiveLocationMap.setView(latlng,17);savelyLiveLocationHasCentered=true;}
   else savelyLiveLocationMap.panTo(latlng,{animate:true,duration:.5});
@@ -9937,12 +10000,14 @@ function startSavelyLiveLocation(){
   stopSavelyLiveLocation(info[1]);savelyLocationSetStatus(info[0],info[1]);toast(info[0]+'.');
  },{enableHighAccuracy:true,maximumAge:3000,timeout:20000});
  savelyLocationSetStatus('Tracking active','Your live position is updating in this visible page.',true);
+ setSavelyLiveLocationMarkerState(true);
 }
 function stopSavelyLiveLocation(message='Tracking stopped.'){
  if(window.__savelyLiveLocationWatchId!==null&&window.__savelyLiveLocationWatchId!==undefined){
   navigator.geolocation.clearWatch(window.__savelyLiveLocationWatchId);
  }
  window.__savelyLiveLocationWatchId=null;
+ setSavelyLiveLocationMarkerState(false);
  if(document.getElementById('liveLocationStatus'))savelyLocationSetStatus('Not tracking',message,false);
 }
 function clearSavelyLocationTrail(){
