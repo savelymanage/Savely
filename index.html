@@ -3861,8 +3861,17 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
       </div>
       <div class="live-location-map-shell">
        <div id="savelyLiveLocationMap" class="savely-live-location-map" role="region" aria-label="Savely GPS map showing your current position and movement trail"></div>
-       <div id="savelyWazeTrafficView" class="savely-waze-traffic-view" role="region" aria-label="Waze live traffic map" hidden>
-        <iframe id="savelyWazeTrafficFrame" title="Waze Live Map traffic view" src="https://embed.waze.com/iframe?zoom=5&amp;lat=12.8797&amp;lon=121.7740&amp;pin=1" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+       <div id="savelyWazeTrafficView" class="savely-waze-traffic-view" role="region" aria-label="TomTom live traffic map" hidden>
+        <div id="savelyTomTomTrafficMap" class="savely-tomtom-traffic-map" role="application" aria-label="Metro Manila live traffic map"></div>
+        <div id="savelyTomTomTrafficStatus" class="savely-tomtom-traffic-status">TomTom traffic · Metro Manila</div>
+        <div class="savely-tomtom-key-prompt" id="savelyTomTomKeyPrompt">
+         <div class="savely-tomtom-key-card">
+          <strong>Connect TomTom Live Traffic</strong>
+          <span>Add your free TomTom API key to display continuous traffic-flow overlays across Metro Manila.</span>
+          <button type="button" onclick="savelyConnectTomTomKey()">Connect API key</button>
+          <a href="https://my.tomtom.com/" target="_blank" rel="noopener noreferrer">Get a free TomTom API key ↗</a>
+         </div>
+        </div>
        </div>
 <div id="savelyPublicCCTVView" class="savely-public-cctv-view" role="region" aria-label="Metro Manila public CCTV directory" hidden>
         <div class="savely-cctv-main savely-cctv-main-full">
@@ -3909,11 +3918,11 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
         <button type="button" class="live-location-map-action danger" id="liveLocationClear" onclick="clearSavelyLocationTrail()">Clear current route</button>
        </div>
        <div class="live-location-map-controls savely-waze-map-controls" id="savelyWazeMapControls" aria-label="Traffic map controls" hidden>
-        <div class="live-location-map-live-state"><span class="live-location-status-dot is-live"></span><span><strong>Waze Live Traffic</strong><small>Traffic reports and road alerts in Waze's own map.</small></span></div>
-        <button type="button" class="live-location-map-action" onclick="centerSavelyWazeTraffic()">Center on my location</button>
+        <div class="live-location-map-live-state"><span class="live-location-status-dot is-live"></span><span><strong>TomTom Live Traffic</strong><small>Live traffic-flow overlay across Metro Manila.</small></span></div>
+        <button type="button" class="live-location-map-action" onclick="centerSavelyTomTomTraffic()">Center on my location</button>
        </div>
       <div class="live-location-map-footer" id="savelyGpsMapFooter"><span><i class="live-location-legend-dot current"></i> Current / last position</span><span><i class="live-location-legend-line"></i> Recorded movement trail</span><span id="liveLocationLastUpdate">No location update yet</span></div>
-      <div class="savely-waze-map-note" id="savelyWazeMapNote" hidden>Live traffic is provided by the Waze Live Map. Traffic conditions and reports depend on Waze coverage and community updates. This view is separate from Savely's GPS route map.</div>
+      <div class="savely-waze-map-note" id="savelyWazeMapNote" hidden>Traffic flow is provided by TomTom Traffic and displayed over the Metro Manila street map. Coverage and refresh frequency depend on TomTom data availability.</div>
      </div>
     </section>
     </div>
@@ -12109,25 +12118,64 @@ function savelyMakeLocationIcon(){
  return L.divIcon({className:'savely-location-marker-host',html:'<div class="savely-location-pin is-live" role="img" aria-label="Your live current location"><span class="savely-location-pulse"></span><svg viewBox="0 0 44 52" width="44" height="52" aria-hidden="true"><path d="M22 2.5C11.6 2.5 3.5 10.4 3.5 20.1c0 13.1 18.5 29.2 18.5 29.2s18.5-16.1 18.5-29.2C40.5 10.4 32.4 2.5 22 2.5Z" fill="#07885f" stroke="#ffffff" stroke-width="2.8" stroke-linejoin="round"/><circle cx="22" cy="19.5" r="7.2" fill="#ffffff"/><circle cx="22" cy="19.5" r="3.1" fill="#07885f"/></svg></div>',iconSize:[44,52],iconAnchor:[22,49],popupAnchor:[0,-44]});
 }
 
-/* Waze Live Map is a separate traffic view embedded without an API key. */
+/* TomTom Live Traffic: Leaflet base map with transparent TomTom traffic-flow tiles. */
 let savelyLiveMapMode='location';
-let savelyWazeLastCenterUrl='';
-let savelyWazeHasCenteredOnGps=false;
-function savelyBuildWazeTrafficUrl(point){
- const lat=point&&Number.isFinite(Number(point.lat))?Number(point.lat):12.8797;
- const lng=point&&Number.isFinite(Number(point.lng))?Number(point.lng):121.7740;
- const zoom=point?15:5;
- return 'https://embed.waze.com/iframe?zoom='+zoom+'&lat='+lat.toFixed(5)+'&lon='+lng.toFixed(5)+'&pin=1';
+let savelyTomTomTrafficMap=null;
+let savelyTomTomTrafficLayer=null;
+let savelyTomTomBaseLayer=null;
+const SAVELY_TOMTOM_KEY_STORE='savelyTomTomTrafficKeyV1';
+function savelyGetTomTomKey(){try{return localStorage.getItem(SAVELY_TOMTOM_KEY_STORE)||'';}catch(e){return '';}}
+function savelyConnectTomTomKey(){
+ const existing=savelyGetTomTomKey();
+ const key=prompt('Paste your TomTom API key. It will be stored only in this browser for Savely.',existing);
+ if(key===null)return;
+ const cleaned=key.trim();
+ if(!cleaned){toast('No API key entered.');return;}
+ try{localStorage.setItem(SAVELY_TOMTOM_KEY_STORE,cleaned);}catch(e){toast('This browser could not save the API key.');return;}
+ savelyInitTomTomTrafficMap(true);toast('TomTom key saved in this browser. Checking traffic tiles…');
 }
-function refreshSavelyWazeTraffic(force=false){
- const frame=document.getElementById('savelyWazeTrafficFrame');if(!frame)return;
- const point=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1]||null;
- const pin=document.getElementById('savelyWazeCurrentLocationPin');
- if(pin)pin.hidden=!point;
- const url=savelyBuildWazeTrafficUrl(point);
- if(!force&&url===savelyWazeLastCenterUrl)return;
- savelyWazeLastCenterUrl=url;frame.src=url;
+function savelyInitTomTomTrafficMap(force=false){
+ const el=document.getElementById('savelyTomTomTrafficMap');if(!el||!window.L)return;
+ if(!savelyTomTomTrafficMap){
+  savelyTomTomTrafficMap=L.map(el,{zoomControl:true,preferCanvas:true,scrollWheelZoom:true});
+  const point=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1]||null;
+  savelyTomTomTrafficMap.setView(point?[point.lat,point.lng]:[14.5995,120.9842],point?15:11);
+  savelyTomTomBaseLayer=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+   maxZoom:19,maxNativeZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors'
+  }).addTo(savelyTomTomTrafficMap);
+ }
+ const key=savelyGetTomTomKey(),promptEl=document.getElementById('savelyTomTomKeyPrompt'),status=document.getElementById('savelyTomTomTrafficStatus');
+ if(!key){
+  if(promptEl)promptEl.hidden=false;
+  if(status)status.textContent='Base map ready · Connect TomTom for live traffic';
+  if(savelyTomTomTrafficLayer){savelyTomTomTrafficMap.removeLayer(savelyTomTomTrafficLayer);savelyTomTomTrafficLayer=null;}
+ }else{
+  if(promptEl)promptEl.hidden=true;
+  const url='https://api.tomtom.com/traffic/map/4/tile/flow/relative0/{z}/{x}/{y}.png?key='+encodeURIComponent(key)+'&tileSize=256';
+  if(savelyTomTomTrafficLayer){savelyTomTomTrafficLayer.setUrl(url);}
+  else{
+   savelyTomTomTrafficLayer=L.tileLayer(url,{tileSize:256,zoomOffset:0,minZoom:0,maxZoom:19,opacity:0.94,
+    attribution:'Traffic data &copy; <a href="https://www.tomtom.com/" target="_blank" rel="noopener noreferrer">TomTom</a>'
+   }).addTo(savelyTomTomTrafficMap);
+   savelyTomTomTrafficLayer.on('tileerror',function(){if(status)status.textContent='Traffic tiles unavailable · check API key and monthly quota';});
+   savelyTomTomTrafficLayer.on('load',function(){if(status)status.textContent='TomTom traffic flow loaded · Metro Manila';});
+  }
+ }
+ setTimeout(()=>{if(savelyTomTomTrafficMap)savelyTomTomTrafficMap.invalidateSize();},180);
 }
+function refreshSavelyWazeTraffic(force=false){savelyInitTomTomTrafficMap(force);}
+function centerSavelyTomTomTraffic(){
+ const point=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
+ if(point){savelyInitTomTomTrafficMap();if(savelyTomTomTrafficMap)savelyTomTomTrafficMap.setView([point.lat,point.lng],15);return;}
+ if(!navigator.geolocation){toast('This browser does not support location access.');return;}
+ if(!window.isSecureContext){toast('Location access requires the HTTPS Savely website.');return;}
+ navigator.geolocation.getCurrentPosition(position=>{
+  updateSavelyLiveLocation(position);const p={lat:position.coords.latitude,lng:position.coords.longitude};
+  savelyInitTomTomTrafficMap();if(savelyTomTomTrafficMap)savelyTomTomTrafficMap.setView([p.lat,p.lng],15);
+ },error=>{const message=error.code===1?'Allow location permission in your browser settings.':error.code===2?'Your device could not determine its position. Try again outdoors.':'Location request timed out. Try again.';toast(message);},
+ {enableHighAccuracy:true,maximumAge:0,timeout:20000});
+}
+
 function setSavelyLiveMapMode(mode){
  savelyLiveMapMode=['traffic','cctv','construction'].includes(mode)?mode:'location';
  const location=savelyLiveMapMode==='location',traffic=savelyLiveMapMode==='traffic',cctv=savelyLiveMapMode==='cctv',construction=savelyLiveMapMode==='construction';
@@ -12150,12 +12198,12 @@ function setSavelyLiveMapMode(mode){
  if(gpsFooter)gpsFooter.hidden=!location;
  if(trafficNote)trafficNote.hidden=!traffic;
  if(title)title.textContent=location?'Live movement map':traffic?'Live traffic':cctv?'Metro Manila Public CCTV':'Construction project map';
- if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Real-time traffic information in a separate Waze Live Map.':cctv?'View the available Quezon City public webcam.':'Explore DPWH-recorded public infrastructure project locations.';
+ if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Live TomTom traffic flow across Metro Manila.':cctv?'View the available Quezon City public webcam.':'Explore DPWH-recorded public infrastructure project locations.';
  document.querySelectorAll('[data-savely-map-mode]').forEach(button=>{
   const active=button.dataset.savelyMapMode===savelyLiveMapMode;
   button.classList.toggle('active',active);button.setAttribute('aria-selected',active?'true':'false');
  });
- if(traffic)refreshSavelyWazeTraffic(true);
+ if(traffic){refreshSavelyWazeTraffic(true);setTimeout(()=>{if(savelyTomTomTrafficMap)savelyTomTomTrafficMap.invalidateSize();},180);}
  if(location){
   initSavelyLiveLocationMap();
   setTimeout(()=>{if(savelyLiveLocationMap){savelyLiveLocationMap.invalidateSize();savelyEnsureLastKnownMarker();}},120);
@@ -12520,10 +12568,6 @@ document.addEventListener('click',function(event){
 document.addEventListener('keydown',function(event){
  if(event.key==='Escape')document.querySelectorAll('.goal-card-menu[open]').forEach(function(menu){menu.open=false;});
 });
-</script>
-
-<script id="savely-remove-old-traffic-key">
-try{localStorage.removeItem(['savely','TomTomTrafficKey'].join(''));}catch(e){}
 </script>
 
 <script id="savely-metro-manila-public-cctv-directory-v1">
@@ -13010,6 +13054,23 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
  #page-salary .salary-calendar-year-tabs{gap:6px!important}
  #page-salary .salary-calendar-year-tab{min-width:54px!important;padding:7px 9px!important}
 }
+</style>
+
+<style id="savely-tomtom-live-traffic-v1">
+.savely-waze-traffic-view{position:relative!important;width:100%;height:clamp(560px,76vh,900px)!important;min-height:560px!important;overflow:hidden!important;border:1px solid #e2eaf0!important;border-radius:15px!important;background:#eef3f1!important}
+.savely-tomtom-traffic-map{position:absolute;inset:0;width:100%;height:100%;z-index:1;background:#eef3f1}
+.savely-tomtom-traffic-status{position:absolute;z-index:500;left:12px;bottom:10px;padding:6px 9px;border-radius:8px;background:rgba(255,255,255,.94);color:#527064;font-size:9px;font-weight:800;pointer-events:none}
+.savely-tomtom-key-prompt{position:absolute;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(245,249,247,.34);pointer-events:none}
+.savely-tomtom-key-prompt[hidden]{display:none!important}
+.savely-tomtom-key-card{display:grid;gap:9px;width:min(360px,calc(100% - 30px));padding:20px;border:1px solid #dce9e2;border-radius:15px;background:rgba(255,255,255,.97);box-shadow:0 12px 36px rgba(20,55,40,.16);pointer-events:auto}
+.savely-tomtom-key-card strong{font-size:14px;color:#173c2e}
+.savely-tomtom-key-card span{font-size:11px;line-height:1.6;color:#718078}
+.savely-tomtom-key-card button{min-height:38px;border:0;border-radius:9px;background:#138765;color:#fff;font:inherit;font-size:11px;font-weight:850;cursor:pointer}
+.savely-tomtom-key-card a{font-size:10px;color:#138765;text-align:center;text-decoration:none;font-weight:800}
+.savely-tomtom-key-card a:hover{text-decoration:underline}
+.savely-tomtom-traffic-map .leaflet-control-zoom a{color:#156d50!important}
+.savely-tomtom-traffic-map .leaflet-control-attribution{font-size:9px!important}
+@media(max-width:650px){.savely-waze-traffic-view{height:68vh!important;min-height:460px!important}}
 </style>
 
 </body>
