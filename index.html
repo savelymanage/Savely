@@ -14131,6 +14131,7 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   function actionForPage(){
     const page=activePage();
     if(page==='page-financial-list')return {label:'Add Savings',icon:'＋',run:()=>document.getElementById('topbarAddSavingsButton')?.click()};
+    if(page==='page-salary')return {label:'Add Salary Amount',icon:'＋',run:()=>document.getElementById('salaryDetailsOpenButton')?.click()};
     if(page==='page-debt')return {label:'Add Debt',icon:'＋',run:()=>document.getElementById('topbarAddDebtButton')?.click()};
     if(page==='page-budget')return {label:'Add Expense',icon:'＋',run:()=>window.openExpenseEntry?.()};
     if(page==='page-goals')return {label:'Create Savings Goal',icon:'＋',run:()=>window.openModal?.('goal')};
@@ -14818,5 +14819,139 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   #savelyMobileFabToggle{width:54px!important;height:54px!important}
   #savelyMobileFabMenu{bottom:66px!important;gap:8px!important}
   .savely-mobile-fab-icon{width:42px!important;height:42px!important;flex-basis:42px!important}
+}
+</style>
+
+
+<style id="savely-global-fab-desktop-v1">
+/* Savely uses one FAB system on desktop and mobile, not mobile-only. */
+#savelyMobileFabRoot {
+  display: block !important;
+  position: fixed !important;
+  right: 28px !important;
+  bottom: 28px !important;
+  z-index: 26000 !important;
+  width: 68px !important;
+  height: auto !important;
+  pointer-events: none !important;
+}
+
+/* Move the utility controls out of the page header at every viewport size. */
+#holidayRefreshButton,
+#overviewPrivacyToggle,
+#savelyWeather,
+#today,
+#topbarAddSavingsButton,
+#topbarAddDebtButton,
+#salaryDetailsOpenButton,
+#savelyCalculatorFab,
+#page-goals .panel-head button,
+#page-budget .expenses-add-button {
+  display: none !important;
+}
+
+#savelyMobileFabToggle {
+  pointer-events: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 62px !important;
+  height: 62px !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: linear-gradient(145deg,#15966f,#087b5a) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 24px rgba(0,70,48,.28) !important;
+  cursor: pointer !important;
+  transition: transform .18s ease, box-shadow .18s ease !important;
+}
+#savelyMobileFabToggle:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 11px 28px rgba(0,70,48,.34) !important;
+}
+#savelyMobileFabToggle:active { transform: scale(.94) !important; }
+
+#savelyMobileFabMenu {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  gap: 12px !important;
+  position: absolute !important;
+  right: 0 !important;
+  bottom: 78px !important;
+  width: max-content !important;
+  max-width: min(360px, calc(100vw - 40px)) !important;
+  max-height: calc(100vh - 150px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 6px 3px 9px !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translateY(10px) !important;
+  transition: opacity .18s ease, transform .18s ease, visibility .18s ease !important;
+  scrollbar-width: none !important;
+}
+#savelyMobileFabMenu::-webkit-scrollbar { display:none !important; }
+#savelyMobileFabRoot.is-open #savelyMobileFabMenu {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
+}
+
+.savely-mobile-fab-item {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  min-height: 50px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #fff !important;
+  font: inherit !important;
+  cursor: pointer !important;
+}
+.savely-mobile-fab-item[hidden] { display:none !important; }
+.savely-mobile-fab-label {
+  display: block !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  background: rgba(13,34,29,.9) !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  font-weight: 750 !important;
+  line-height: 1.25 !important;
+  white-space: nowrap !important;
+  box-shadow: 0 3px 12px rgba(0,0,0,.15) !important;
+}
+.savely-mobile-fab-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 50px !important;
+  height: 50px !important;
+  flex: 0 0 50px !important;
+  border-radius: 50% !important;
+  background: #ed625e !important;
+  color: #fff !important;
+  font-size: 25px !important;
+  line-height: 1 !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,.2) !important;
+}
+.savely-mobile-fab-utility { background:#149879 !important; font-size:22px !important; }
+.savely-mobile-fab-secondary { background:#3985ec !important; font-size:21px !important; }
+.savely-mobile-fab-plus {
+  font-size: 36px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  transition: transform .2s ease !important;
+}
+#savelyMobileFabRoot.is-open .savely-mobile-fab-plus { transform:rotate(45deg) !important; }
+
+@media (min-width: 761px) {
+  #savelyMobileFabRoot { right:30px !important; bottom:30px !important; }
 }
 </style>
