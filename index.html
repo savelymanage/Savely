@@ -4872,8 +4872,9 @@ function renderSalaryYearCalendar(year){
  const root=document.getElementById('salaryCalendarYearGrid');
  if(!root)return;
  const now=new Date(),firstMonth=year===now.getFullYear()?now.getMonth():0;
- const amount=Math.max(0,Number(data.monthlySalary)||0),schedule=String(data.salaryPayDay||'custom');
- const hasSchedule=amount>0&&schedule!=='custom'&&!!data.salaryUpdatedAt;
+ const yearSettings=salarySettingsForYear(year);
+ const amount=Math.max(0,Number(yearSettings.monthlySalary)||0),schedule=String(yearSettings.salaryPayDay||'custom');
+ const hasSchedule=amount>0&&schedule!=='custom'&&!!yearSettings.salaryUpdatedAt;
  const weekday=['S','M','T','W','T','F','S'];
  const months=[];
  for(let month=firstMonth;month<12;month++){
@@ -4941,8 +4942,9 @@ function renderSalaryCalendar(){
  grid.hidden=false;
  if(weekdays)weekdays.hidden=false;
  if(yearGrid)yearGrid.hidden=true;
- const amount=Math.max(0,Number(data.monthlySalary)||0),payday=String(data.salaryPayDay||'custom');
- const hasSchedule=amount>0&&payday!=='custom'&&!!data.salaryUpdatedAt;
+ const yearSettings=salarySettingsForYear(year);
+ const amount=Math.max(0,Number(yearSettings.monthlySalary)||0),payday=String(yearSettings.salaryPayDay||'custom');
+ const hasSchedule=amount>0&&payday!=='custom'&&!!yearSettings.salaryUpdatedAt;
  const todayISOString=salaryCalendarISO(now.getFullYear(),now.getMonth(),now.getDate());
  const firstDay=new Date(year,month,1).getDay(),daysInMonth=new Date(year,month+1,0).getDate();
  const totalCells=Math.ceil((firstDay+daysInMonth)/7)*7,cells=[];
@@ -4988,10 +4990,12 @@ setInterval(()=>{
 },60*1000);
 function renderSalaryCalendarDetails(iso){
  const details=document.getElementById('salaryCalendarDetails');if(!details)return;
- const amount=Math.max(0,Number(data.monthlySalary)||0),payday=String(data.salaryPayDay||'custom');
- const parts=String(iso||'').split('-').map(Number),date=new Date(parts[0],parts[1]-1,parts[2]);
+ const parts=String(iso||'').split('-').map(Number),yearSettings=salarySettingsForYear(parts[0]);
+ const amount=Math.max(0,Number(yearSettings.monthlySalary)||0),payday=String(yearSettings.salaryPayDay||'custom');
+ const partsDate=new Date(parts[0],parts[1]-1,parts[2]);
+ const date=partsDate;
  const dateLabel=date.toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
- const hasSchedule=amount>0&&payday!=='custom'&&!!data.salaryUpdatedAt;
+ const hasSchedule=amount>0&&payday!=='custom'&&!!yearSettings.salaryUpdatedAt;
  const holiday=getPhilippineHolidayMap(parts[0])[String(iso||'')];
  const holidayTypeLabel=holiday?(holiday.type==='regular'?'Regular holiday':holiday.type==='special_working'?'Special working day':holiday.type==='special_non_working'?'Special non-working holiday':'Local holiday'):'';
  const paydayEntries=hasSchedule?getSalaryPaydayEntries(payday,parts[0],parts[1]-1):[];
@@ -4999,11 +5003,11 @@ function renderSalaryCalendarDetails(iso){
  const paydayIndex=paydayEntry?paydayEntry.index:-1;
  if(hasSchedule&&paydayEntry){
   const movedNote=paydayEntry.reason?`<div style="margin-top:4px;color:var(--green)">Moved earlier from the ${paydayEntry.scheduledDay}${paydayEntry.scheduledDay===1?'st':paydayEntry.scheduledDay===2?'nd':paydayEntry.scheduledDay===3?'rd':'th'} because the scheduled payday falls on a ${esc(paydayEntry.reason)}.</div>`:'';
-  details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">₱</div><div><strong>${paydayIndex===0?'1st cutoff':'2nd cutoff'} · ${esc(dateLabel)}</strong><div>Estimated payout: ${peso(amount/2)} (half of your saved monthly salary of ${peso(amount)}).</div>${movedNote}${data.salaryNotes?`<div style="margin-top:4px">Note: ${esc(data.salaryNotes)}</div>`:''}</div>`;
+  details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">₱</div><div><strong>${paydayIndex===0?'1st cutoff':'2nd cutoff'} · ${esc(dateLabel)}</strong><div>Estimated payout: ${peso(amount/2)} (half of your saved monthly salary of ${peso(amount)}).</div>${movedNote}${yearSettings.salaryNotes?`<div style="margin-top:4px">Note: ${esc(yearSettings.salaryNotes)}</div>`:''}</div>`;
  }else if(amount>0&&payday==='custom'){
   details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">📅</div><div><strong>${esc(dateLabel)}</strong><div>Your payday is set to “Varies / not fixed,” so no automatic payday is scheduled on this date.</div></div>`;
- }else if(amount<=0||!data.salaryUpdatedAt){
-  details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">📅</div><div><strong>${esc(dateLabel)}</strong><div>Save your salary amount and usual payday in <b>Salary details</b> to show payday events on this calendar.</div></div>`;
+ }else if(amount<=0||!yearSettings.salaryUpdatedAt){
+  details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">📅</div><div><strong>${esc(dateLabel)}</strong><div>No salary rate has been saved for ${parts[0]} yet. Add a salary rate for this year in <b>Salary details</b> to show payday events.</div></div>`;
  }else{
   details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">📅</div><div><strong>${esc(dateLabel)}</strong><div>No salary event scheduled for this date.</div></div>`;
  }
