@@ -3928,10 +3928,10 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
       </div>
     </div>
     <section class="panel salary-calendar-panel" aria-labelledby="salaryCalendarTitle" style="margin-bottom:18px">
+      <div class="salary-calendar-year-tabs-row"><div id="salaryCalendarYearTabs" class="salary-calendar-year-tabs" role="tablist" aria-label="Choose salary calendar year"></div></div>
       <div class="panel-head salary-calendar-head">
         <div><h2 id="salaryCalendarTitle" style="font-size:19px">Salary calendar</h2><div class="panel-sub">View both monthly cutoff paydays. If a payday falls on a weekend or recognized Philippine holiday, it moves to the previous working day.</div></div>
         <div class="salary-calendar-controls">
-          <div id="salaryCalendarYearTabs" class="salary-calendar-year-tabs" role="tablist" aria-label="Choose salary calendar year"></div>
           <div class="salary-calendar-nav">
             <button type="button" class="btn btn-light" id="salaryCalendarPrev" onclick="changeSalaryCalendarMonth(-1)" aria-label="Previous month">‹</button>
             <button type="button" class="btn btn-light" onclick="goToCurrentSalaryCalendarMonth()">Today</button>
@@ -4673,7 +4673,8 @@ function updateSavingsTotalAsOf(){
 function salarySettingsForYear(year){
  const y=String(Number(year)||new Date().getFullYear());
  const all=data.salaryYearSettings&&typeof data.salaryYearSettings==='object'?data.salaryYearSettings:{};
- if(all[y])return all[y];
+ // Future-year rates count only when explicitly saved by the user in that year's salary form.
+ if(all[y]&&all[y].salaryRateExplicit===true)return all[y];
  if(Number(y)===new Date().getFullYear()){
   return {monthlySalary:Number(data.monthlySalary)||0,salaryPayDay:data.salaryPayDay||'custom',salaryNotes:data.salaryNotes||'',salaryUpdatedAt:data.salaryUpdatedAt||null};
  }
@@ -5040,7 +5041,7 @@ function saveMonthlySalary(event){
  const input=document.getElementById('monthlySalaryAmount');const amount=Number(input?.value);
  if(!Number.isFinite(amount)||amount<0){toast('Enter a valid monthly salary amount.');return;}
  const year=Number(document.getElementById('monthlySalaryYear')?.value)||new Date().getFullYear();
- const record={monthlySalary:amount,salaryPayDay:document.getElementById('monthlySalaryPayDay')?.value||'custom',salaryNotes:(document.getElementById('monthlySalaryNotes')?.value||'').trim(),salaryUpdatedAt:new Date().toISOString()};
+ const record={monthlySalary:amount,salaryPayDay:document.getElementById('monthlySalaryPayDay')?.value||'custom',salaryNotes:(document.getElementById('monthlySalaryNotes')?.value||'').trim(),salaryUpdatedAt:new Date().toISOString(),salaryRateExplicit:true};
  if(!data.salaryYearSettings||typeof data.salaryYearSettings!=='object')data.salaryYearSettings={};
  data.salaryYearSettings[String(year)]=record;
  if(year===new Date().getFullYear()){
@@ -12931,6 +12932,47 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
 @media(max-width:680px){
  #page-salary .salary-calendar-controls{align-items:flex-start!important}
  #page-salary .salary-calendar-nav{margin-left:auto!important}
+}
+</style>
+
+
+<style id="savely-salary-year-tabs-top-row-v2">
+#page-salary .salary-calendar-year-tabs-row{
+ display:flex!important;
+ width:100%!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ margin:0 0 16px!important;
+ padding:0 0 12px!important;
+ border-bottom:1px solid var(--border,#e4eaf2)!important;
+}
+#page-salary .salary-calendar-year-tabs{
+ display:flex!important;
+ flex-direction:row!important;
+ flex-wrap:wrap!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ gap:8px!important;
+ width:100%!important;
+}
+#page-salary .salary-calendar-year-tab{
+ min-width:64px!important;
+}
+#page-salary .salary-calendar-head{
+ display:flex!important;
+ align-items:center!important;
+ justify-content:space-between!important;
+ gap:12px!important;
+}
+#page-salary .salary-calendar-controls{
+ display:flex!important;
+ align-items:center!important;
+ justify-content:flex-end!important;
+}
+@media(max-width:700px){
+ #page-salary .salary-calendar-head{align-items:flex-start!important;flex-wrap:wrap!important}
+ #page-salary .salary-calendar-year-tabs{gap:6px!important}
+ #page-salary .salary-calendar-year-tab{min-width:54px!important;padding:7px 9px!important}
 }
 </style>
 
