@@ -3707,6 +3707,16 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
 }
 </style>
 
+
+<style id="savely-live-location-city-in-sidebar-v1">
+.savely-location-subnav{display:flex;flex-direction:column;gap:3px;margin:-2px 0 5px 38px;padding-left:11px;border-left:1px solid rgba(255,255,255,.24)}
+.savely-location-place{display:flex;align-items:center;gap:8px;width:100%;min-height:31px;padding:6px 9px;border:0;border-radius:8px;background:transparent;color:rgba(255,255,255,.78);text-align:left;font:inherit;font-size:11px;font-weight:650;cursor:pointer}
+.savely-location-place:hover,.savely-location-place.active{background:rgba(255,255,255,.13);color:#fff}
+.savely-location-place-dot{width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:#8be0b9}
+.savely-cctv-main-full{grid-column:1/-1;width:100%;padding:20px 22px}
+.savely-public-cctv-view{grid-template-columns:minmax(0,1fr)!important}
+@media(max-width:720px){.savely-location-subnav{margin-left:8px;padding-left:8px}.savely-location-place{white-space:nowrap}.savely-cctv-main-full{padding:13px}}
+</style>
 </head>
 <body>
 
@@ -3790,6 +3800,10 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
     
     
     <button data-page="live-location" aria-label="Live Location" title="Live Location"><span class="ico">⌖</span><span class="nav-text">Live Location</span></button>
+    <div class="savely-location-subnav" aria-label="Live Location places">
+      <button type="button" class="savely-location-place active" data-savely-location-place="quezon-city" onclick="showPage('live-location');setSavelyLiveMapMode('cctv');setSavelyCCTVSelectedCity('Quezon City')"><span class="savely-location-place-dot"></span><span>Quezon City</span></button>
+      <button type="button" class="savely-location-place" data-page="metro-snapshot" aria-label="Metro Manila Snapshot" title="Metro Manila Snapshot" onclick="showPage('metro-snapshot')"><span class="savely-location-place-dot"></span><span>Metro Manila Snapshot</span></button>
+    </div>
     <button data-page="radio" aria-label="Radio" title="Radio"><span class="ico">📻</span><span class="nav-text">Radio</span></button>
     <button data-page="settings" aria-label="Settings & backup" title="Settings & backup"><span class="ico">⚙</span><span class="nav-text">Settings & backup</span></button>
   </nav></div>
@@ -3855,11 +3869,7 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
         <iframe id="savelyWazeTrafficFrame" title="Waze Live Map traffic view" src="https://embed.waze.com/iframe?zoom=5&amp;lat=12.8797&amp;lon=121.7740&amp;pin=1" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
        </div>
 <div id="savelyPublicCCTVView" class="savely-public-cctv-view" role="region" aria-label="Metro Manila public CCTV directory" hidden>
-        <aside class="savely-cctv-city-sidebar">
-         <div class="savely-cctv-sidebar-heading"><span>METRO MANILA</span><strong>Choose a city</strong><small>1 city currently available</small></div>
-                  <nav id="savelyCCTVCityList" class="savely-cctv-city-list" aria-label="Available CCTV city"></nav>
-        </aside>
-        <div class="savely-cctv-main">
+        <div class="savely-cctv-main savely-cctv-main-full">
          <div class="savely-cctv-main-head">
           <div><span class="savely-cctv-eyebrow">PUBLIC CAMERA DIRECTORY · NCR</span><h3 id="savelyCCTVSelectedCity">Quezon City</h3><p id="savelyCCTVSelectedCityDescription">Browse major roads and intersections in this area.</p></div>
           <span class="savely-cctv-coverage-pill"><i></i> Road directory</span>
@@ -3913,6 +3923,22 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
     </div>
     
 </section>
+
+  <section class="page" id="page-metro-snapshot" aria-label="Metro Manila Snapshot Monitor">
+    <div class="panel" style="padding:20px">
+      <div class="panel-head" style="align-items:flex-start;flex-wrap:wrap">
+        <div><span class="savely-cctv-eyebrow">PUBLIC CAMERA SNAPSHOTS · NCR</span><h2 style="font-size:20px;margin-top:5px">Metro Manila Snapshot Monitor</h2><div class="panel-sub">Latest still images from publicly accessible cameras, with source timestamps and automatic refresh when a verified snapshot feed is connected.</div></div>
+        <span class="savely-cctv-coverage-pill"><i></i> Snapshot monitor</span>
+      </div>
+      <div class="savely-snapshot-empty" role="status">
+        <div class="savely-snapshot-empty-icon">▧</div>
+        <strong>No public snapshot feeds connected yet</strong>
+        <p>Metro Manila agencies operate CCTV networks, but a publicly accessible, direct still-image URL that Savely can refresh automatically has not yet been verified. This monitor will show camera images here once a source provides a public snapshot endpoint.</p>
+        <small>Only publicly released camera images will be displayed. Private or restricted CCTV feeds will not be embedded.</small>
+      </div>
+      <div class="footer-note" style="margin-top:14px">The existing Quezon City Live Sky Camera remains under Live Location → Quezon City. This page is reserved for periodic image snapshots, not video streams.</div>
+    </div>
+  </section>
 
   <section class="page" id="page-salary">
     <div class="cards salary-summary-cards" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:18px">
@@ -8217,7 +8243,7 @@ function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavin
   savelyLiveLocationMap.invalidateSize();
  }
   if(window.__savelyLiveLocationWatchId===null||window.__savelyLiveLocationWatchId===undefined)startSavelyLiveLocation();
-},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LOCATION TOOLS','Live Location'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['CALENDAR · PHILIPPINES','Calendar']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:'View Philippine regular holidays, special non-working days, and live countdowns.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
+},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LOCATION TOOLS','Live Location'],'metro-snapshot':['PUBLIC CAMERA IMAGES','Metro Manila Snapshot'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['CALENDAR · PHILIPPINES','Calendar']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','metro-snapshot':'View the latest available public camera snapshots across Metro Manila.','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:'View Philippine regular holidays, special non-working days, and live countdowns.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
 document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
 function openModal(kind,goalToEdit=null){const form=document.getElementById('modalForm'),title=document.getElementById('modalTitle'),desc=document.getElementById('modalDesc');let accountOptions=data.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');let field=(label,name,type='text',value='',extra='')=>`<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let select=(label,name,opts)=>`<div class="field"><label>${label}</label><select name="${name}">${opts}</select></div>`;let fullfield=(label,name,type='text',value='',extra='')=>`<div class="field full"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let body='';
 if(kind==='transaction'){title.textContent='Add transaction';desc.textContent='Record a deposit, withdrawal, interest credit, or expense.';body=`<div class="form-grid">${fullfield('Description','description','text','','required maxlength="100"')}${select('Transaction type','type','<option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option><option value="expense">Expense</option><option value="interest">Interest credit</option>')}${select('Account','accountId',accountOptions)}${field('Amount (₱)','amount','number','','required min=".01" step=".01"')}${field('Date','date','date',todayISO(),'required')}${field('Category','category','text','General','maxlength="60"')}</div>`}
@@ -12579,6 +12605,7 @@ try{localStorage.removeItem(['savely','TomTomTrafficKey'].join(''));}catch(e){}
    const active=button.dataset.savelyMapMode===next;
    button.classList.toggle('active',active);button.setAttribute('aria-selected',active?'true':'false');
   });
+  document.querySelectorAll('[data-savely-location-place]').forEach(button=>button.classList.toggle('active',cctv));
   if(traffic)refreshSavelyWazeTraffic(true);
   if(location){
    initSavelyLiveLocationMap();
@@ -12990,3 +13017,11 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
 
 </body>
 </html>
+<style id="savely-metro-snapshot-monitor-v1">
+#page-metro-snapshot .savely-snapshot-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:290px;padding:34px 22px;border:1px dashed #cfe3d8;border-radius:15px;background:linear-gradient(145deg,#f4faf6,#fbfdfc)}
+#page-metro-snapshot .savely-snapshot-empty-icon{display:grid;place-items:center;width:54px;height:54px;margin-bottom:13px;border-radius:16px;background:#e3f4ea;color:#13845f;font-size:25px;font-weight:800}
+#page-metro-snapshot .savely-snapshot-empty strong{font-size:14px;color:#244638}
+#page-metro-snapshot .savely-snapshot-empty p{max-width:650px;margin:8px 0;color:#71847a;font-size:11px;line-height:1.7}
+#page-metro-snapshot .savely-snapshot-empty small{max-width:650px;color:#87968e;font-size:10px;line-height:1.6}
+.savely-location-subnav .savely-location-place[data-page="metro-snapshot"]{width:100%}
+</style>
