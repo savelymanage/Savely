@@ -3691,6 +3691,13 @@ body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number:
 }
 </style>
 
+
+<style id="savely-salary-future-year-field-v1">
+#monthlySalaryYear{width:100%}
+#monthlySalaryForm .field:has(#monthlySalaryYear){min-width:0}
+@media(max-width:620px){#monthlySalaryForm{grid-template-columns:1fr!important}#monthlySalaryForm .field[style*="grid-column"]{grid-column:1!important}}
+</style>
+
 </head>
 <body>
 
@@ -3941,6 +3948,8 @@ body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number:
       <form id="monthlySalaryForm" onsubmit="saveMonthlySalary(event)" class="form-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
         <div class="field"><label for="monthlySalaryAmount">Monthly salary (₱)</label><input id="monthlySalaryAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 12000" required></div>
         <div class="field"><label for="monthlySalaryPayDay">Usual payday</label><select id="monthlySalaryPayDay"><option value="15-30">15–30 cutoff (15th &amp; end of month)</option><option value="5-20">5–20 cutoff (5th &amp; 20th)</option><option value="10-25">10–25 cutoff (10th &amp; 25th)</option><option value="custom">Varies / not fixed</option></select></div>
+        <div class="field"><label for="monthlySalaryYear">Applies to year</label><select id="monthlySalaryYear" onchange="loadSalaryYearIntoForm()"></select></div>
+
         <div class="field" style="grid-column:1/-1"><label for="monthlySalaryNotes">Notes (optional)</label><input id="monthlySalaryNotes" type="text" maxlength="240" placeholder="e.g. Part-time salary, net of deductions"></div>
         <div style="grid-column:1/-1;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button type="submit" class="btn btn-primary">Save monthly salary</button><span class="panel-sub" id="monthlySalaryUpdatedAt">Not saved yet</span></div>
       </form>
@@ -4163,7 +4172,7 @@ const STORE='savely_html_v1';
 const peso=n=>new Intl.NumberFormat('en-PH',{style:'currency',currency:'PHP',maximumFractionDigits:2}).format(Number(n)||0);
 const todayISO=()=>new Date().toISOString().slice(0,10);
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36);
-const seed=()=>({debtRecords:[],accounts:[{id:'main',name:'Main Savings',type:'Savings',opening:50000,color:'green'},{id:'emergency',name:'Emergency Fund',type:'Savings',opening:0,color:'orange'}],goals:[],transactions:[],budgets:[{id:uid(),category:'Food & groceries',limit:5000},{id:uid(),category:'Transportation',limit:2000},{id:uid(),category:'Shopping',limit:2500},{id:uid(),category:'Bills & utilities',limit:3000}],recurring:[],savingsList:[],monthlySalary:0,salaryPayDay:'custom',salaryNotes:'',salaryUpdatedAt:null});
+const seed=()=>({debtRecords:[],accounts:[{id:'main',name:'Main Savings',type:'Savings',opening:50000,color:'green'},{id:'emergency',name:'Emergency Fund',type:'Savings',opening:0,color:'orange'}],goals:[],transactions:[],budgets:[{id:uid(),category:'Food & groceries',limit:5000},{id:uid(),category:'Transportation',limit:2000},{id:uid(),category:'Shopping',limit:2500},{id:uid(),category:'Bills & utilities',limit:3000}],recurring:[],savingsList:[],monthlySalary:0,salaryPayDay:'custom',salaryNotes:'',salaryUpdatedAt:null,salaryYearSettings:{}});
 let data;
 try{data=JSON.parse(localStorage.getItem(STORE))||seed();if(!Array.isArray(data.savingsList))data.savingsList=[];if(!Array.isArray(data.debtRecords))data.debtRecords=[]}catch(e){data=seed()}
 function save(){try{localStorage.setItem(STORE,JSON.stringify(data))}catch(e){toast('Browser storage is unavailable. Export a backup to keep your data safe.')}render()}
@@ -4655,19 +4664,59 @@ function updateSavingsTotalAsOf(){
   el.title=`Live savings total timestamp · ${timezone}`;
  }catch(err){el.textContent='As of '+new Date().toLocaleString('en-PH');}
 }
+
+function salarySettingsForYear(year){
+ const y=String(Number(year)||new Date().getFullYear());
+ const all=data.salaryYearSettings&&typeof data.salaryYearSettings==='object'?data.salaryYearSettings:{};
+ if(all[y])return all[y];
+ if(Number(y)===new Date().getFullYear()){
+  return {monthlySalary:Number(data.monthlySalary)||0,salaryPayDay:data.salaryPayDay||'custom',salaryNotes:data.salaryNotes||'',salaryUpdatedAt:data.salaryUpdatedAt||null};
+ }
+ return {monthlySalary:0,salaryPayDay:'custom',salaryNotes:'',salaryUpdatedAt:null};
+}
+function populateSalaryYearOptions(){
+ const select=document.getElementById('monthlySalaryYear');if(!select)return;
+ const current=new Date().getFullYear();
+ const previous=Number(select.value)||current;
+ select.innerHTML='';
+ for(let year=current;year<=current+10;year++){
+  const option=document.createElement('option');option.value=String(year);
+  option.textContent=year===current?`${year} (Current year)`:String(year);
+  select.appendChild(option);
+ }
+ select.value=String(Math.min(current+10,Math.max(current,previous)));
+}
+function loadSalaryYearIntoForm(){
+ const select=document.getElementById('monthlySalaryYear');
+ const year=Number(select?.value)||new Date().getFullYear();
+ const settings=salarySettingsForYear(year);
+ const amount=document.getElementById('monthlySalaryAmount');
+ const payday=document.getElementById('monthlySalaryPayDay');
+ const notes=document.getElementById('monthlySalaryNotes');
+ const updated=document.getElementById('monthlySalaryUpdatedAt');
+ if(amount)amount.value=settings.monthlySalary?String(settings.monthlySalary):'';
+ if(payday)payday.value=settings.salaryPayDay||'custom';
+ if(notes)notes.value=settings.salaryNotes||'';
+ if(updated)updated.textContent=settings.salaryUpdatedAt?`Last updated: ${new Date(settings.salaryUpdatedAt).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'})}`:'No salary saved for this year yet';
+ const submit=document.querySelector('#monthlySalaryForm button[type="submit"]');
+ if(submit)submit.textContent=year===new Date().getFullYear()?'Save monthly salary':'Save salary for '+year;
+}
+
 function renderSalaryPage(){
- const amount=Math.max(0,Number(data.monthlySalary)||0);
+ const currentYear=new Date().getFullYear();
+ const currentSettings=salarySettingsForYear(currentYear);
+ const amount=Math.max(0,Number(currentSettings.monthlySalary)||0);
  const display=document.getElementById('salaryMonthlyDisplay');if(display)display.textContent=peso(amount);
  const annual=document.getElementById('salaryAnnualDisplay');if(annual)annual.textContent=peso(amount*12);
- const rawPayday=String(data.salaryPayDay||'custom');
- // Migrate legacy single-date choices to the closest twice-monthly cutoff schedule.
+ const rawPayday=String(currentSettings.salaryPayDay||'custom');
  const paydayValue=({'1':'5-20','5':'5-20','10':'10-25','15':'15-30','20':'5-20','25':'10-25','30':'15-30'})[rawPayday]||rawPayday;
  const payLabels={'15-30':'15th & end of month (15–30 cutoff)','5-20':'5th & 20th of the month (5–20 cutoff)','10-25':'10th & 25th of the month (10–25 cutoff)'};
  const pay=document.getElementById('salaryPayDayDisplay');if(pay){pay.textContent=paydayValue==='custom'?'Payday varies':`Usual paydays: ${payLabels[paydayValue]||paydayValue}`;}
  const input=document.getElementById('monthlySalaryAmount');if(input&&document.activeElement!==input)input.value=amount?String(amount):'';
  const payday=document.getElementById('monthlySalaryPayDay');if(payday)payday.value=paydayValue;
- const notes=document.getElementById('monthlySalaryNotes');if(notes&&document.activeElement!==notes)notes.value=String(data.salaryNotes||'');
- const updated=document.getElementById('monthlySalaryUpdatedAt');if(updated)updated.textContent=data.salaryUpdatedAt?`Last updated: ${new Date(data.salaryUpdatedAt).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'})}`:'Not saved yet';
+ const notes=document.getElementById('monthlySalaryNotes');if(notes&&document.activeElement!==notes)notes.value=String(currentSettings.salaryNotes||'');
+ const updated=document.getElementById('monthlySalaryUpdatedAt');if(updated)updated.textContent=currentSettings.salaryUpdatedAt?`Last updated: ${new Date(currentSettings.salaryUpdatedAt).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'})}`:'Not saved yet';
+ populateSalaryYearOptions();
  updateSalaryAnnualRemainingCard();
  renderSalaryCalendar();
 }
@@ -4950,14 +4999,32 @@ function renderSalaryCalendarDetails(iso){
  }
  if(holiday){const holidayLabel=holiday.type==='regular'?'Regular holiday':holiday.type==='special_working'?'Special working day':holiday.type==='local'?'Local holiday':'Special non-working holiday';details.insertAdjacentHTML('afterbegin',`<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;margin-right:10px;border-radius:10px;background:${holiday.type==='special_non_working'?'#eff6ff':'#fff3eb'};color:${holiday.type==='special_non_working'?'#1d4ed8':'#9a3412'};border:1px solid ${holiday.type==='special_non_working'?'#bfdbfe':'#fed7aa'};min-width:0"><span aria-hidden="true">🎉</span><div><strong>${esc(holiday.name)}</strong><div>${holidayLabel}${holiday.sourceUrl?` · <a href="${esc(holiday.sourceUrl)}" target="_blank" rel="noopener">Official source</a>`:''}</div></div></div>`);}
 }
-function toggleSalaryDetails(open){const backdrop=document.getElementById("salaryDetailsBackdrop");if(!backdrop)return;backdrop.hidden=!open;if(open){backdrop.style.display="flex";setTimeout(()=>{const input=document.getElementById("monthlySalaryAmount");if(input)input.focus();},30);}else{backdrop.style.display="none";}}
+function toggleSalaryDetails(open){
+ const backdrop=document.getElementById("salaryDetailsBackdrop");if(!backdrop)return;
+ backdrop.hidden=!open;
+ if(open){
+  backdrop.style.display="flex";
+  populateSalaryYearOptions();
+  const yearSelect=document.getElementById('monthlySalaryYear');
+  if(yearSelect)yearSelect.value=String(new Date().getFullYear());
+  loadSalaryYearIntoForm();
+  setTimeout(()=>{const input=document.getElementById("monthlySalaryAmount");if(input)input.focus();},30);
+ }else{backdrop.style.display="none";}
+}
 
 function saveMonthlySalary(event){
  if(event)event.preventDefault();
  const input=document.getElementById('monthlySalaryAmount');const amount=Number(input?.value);
  if(!Number.isFinite(amount)||amount<0){toast('Enter a valid monthly salary amount.');return;}
- data.monthlySalary=amount;data.salaryPayDay=document.getElementById('monthlySalaryPayDay')?.value||'custom';data.salaryNotes=(document.getElementById('monthlySalaryNotes')?.value||'').trim();data.salaryUpdatedAt=new Date().toISOString();
- save();renderSalaryPage();toast('Monthly salary saved.');
+ const year=Number(document.getElementById('monthlySalaryYear')?.value)||new Date().getFullYear();
+ const record={monthlySalary:amount,salaryPayDay:document.getElementById('monthlySalaryPayDay')?.value||'custom',salaryNotes:(document.getElementById('monthlySalaryNotes')?.value||'').trim(),salaryUpdatedAt:new Date().toISOString()};
+ if(!data.salaryYearSettings||typeof data.salaryYearSettings!=='object')data.salaryYearSettings={};
+ data.salaryYearSettings[String(year)]=record;
+ if(year===new Date().getFullYear()){
+  data.monthlySalary=record.monthlySalary;data.salaryPayDay=record.salaryPayDay;data.salaryNotes=record.salaryNotes;data.salaryUpdatedAt=record.salaryUpdatedAt;
+ }
+ save();renderSalaryPage();loadSalaryYearIntoForm();
+ toast(year===new Date().getFullYear()?'Monthly salary saved.':`Salary for ${year} saved.`);
 }
 
 let debtCalendarCursor=new Date(new Date().getFullYear(),new Date().getMonth(),1);
