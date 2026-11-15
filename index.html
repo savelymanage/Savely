@@ -3698,6 +3698,15 @@ body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number:
 @media(max-width:620px){#monthlySalaryForm{grid-template-columns:1fr!important}#monthlySalaryForm .field[style*="grid-column"]{grid-column:1!important}}
 </style>
 
+
+<style id="savely-add-savings-button-page-scope">
+/* The global Add Savings action belongs only to the Savings page. */
+#topbarAddSavingsButton{display:none!important}
+body:has(#page-financial-list.active) #topbarAddSavingsButton{
+  display:inline-flex!important;
+}
+</style>
+
 </head>
 <body>
 
@@ -8180,7 +8189,7 @@ function toggleOverviewFigures(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',updateOverviewPrivacyState,{once:true});
 else updateOverviewPrivacyState();
-function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard'){renderDashboard();setTimeout(renderOverallTrend,50);}const targetPage=document.getElementById('page-'+p);if(!targetPage){console.warn('Savely page not found:',p);return;}document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));targetPage.classList.add('active');updateOverviewPrivacyState();if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Location.');if(p==='live-location')setTimeout(()=>{
+function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'inline-flex':'none';if(p==='dashboard'){renderDashboard();setTimeout(renderOverallTrend,50);}const targetPage=document.getElementById('page-'+p);if(!targetPage){console.warn('Savely page not found:',p);return;}document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));targetPage.classList.add('active');updateOverviewPrivacyState();if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Location.');if(p==='live-location')setTimeout(()=>{
  setSavelyLiveMapMode('traffic');
  initSavelyLiveLocationMap();
  if(savelyLiveLocationMap){
