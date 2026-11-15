@@ -14955,3 +14955,15 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   #savelyMobileFabRoot { right:30px !important; bottom:30px !important; }
 }
 </style>
+
+
+<style id="savely-hide-duplicate-header-add-buttons-v1">
+/* Add actions now live in the global FAB. Keep the page-header duplicates hidden
+   on desktop and mobile, even when showPage() applies inline display styles. */
+html body #topbarAddSavingsButton,
+html body #topbarAddDebtButton {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+</style>
