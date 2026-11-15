@@ -14505,3 +14505,160 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   }
 }
 </style>
+
+
+<style id="savely-mobile-header-height-hard-fix-v3">
+@media screen and (max-width: 760px) {
+  /* The sidebar is the green mobile header. Give it a content-sized fixed
+     mobile height so it cannot stretch to the viewport height. */
+  html, body {
+    min-height: 0 !important;
+  }
+  body > .app,
+  body .app,
+  body .app.sidebar-collapsed {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    min-height: 0 !important;
+    height: auto !important;
+    grid-template-rows: none !important;
+  }
+
+  body .app > aside.sidebar,
+  body .app.sidebar-collapsed > aside.sidebar {
+    display: grid !important;
+    position: relative !important;
+    inset: auto !important;
+    flex: 0 0 116px !important;
+    align-self: stretch !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 116px !important;
+    min-height: 116px !important;
+    max-height: 116px !important;
+    grid-template-columns: minmax(0, 1fr) 38px !important;
+    grid-template-rows: 48px 42px !important;
+    grid-auto-rows: 0 !important;
+    align-content: start !important;
+    align-items: center !important;
+    justify-content: stretch !important;
+    gap: 5px 8px !important;
+    margin: 0 !important;
+    padding: 8px 10px 8px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,.18) !important;
+    z-index: 30 !important;
+  }
+
+  body .app > aside.sidebar > .brand,
+  body .app.sidebar-collapsed > aside.sidebar > .brand {
+    display: flex !important;
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    align-items: center !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body .app > aside.sidebar > #savelySidebarToggle,
+  body .app.sidebar-collapsed > aside.sidebar > #savelySidebarToggle {
+    display: grid !important;
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    width: 36px !important;
+    min-width: 36px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body .app > aside.sidebar > div:not(.brand):not(.side-bottom),
+  body .app.sidebar-collapsed > aside.sidebar > div:not(.brand):not(.side-bottom) {
+    display: block !important;
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    max-height: 42px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  body .app > aside.sidebar .nav-label,
+  body .app.sidebar-collapsed > aside.sidebar .nav-label,
+  body .app > aside.sidebar .side-bottom,
+  body .app.sidebar-collapsed > aside.sidebar .side-bottom {
+    display: none !important;
+  }
+
+  body .app > aside.sidebar #nav,
+  body .app.sidebar-collapsed > aside.sidebar #nav {
+    display: flex !important;
+    flex: 0 0 42px !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    max-height: 42px !important;
+    margin: 0 !important;
+    padding: 0 0 2px !important;
+    gap: 4px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  body .app > aside.sidebar #nav::-webkit-scrollbar { display: none !important; }
+
+  body .app > aside.sidebar #nav button,
+  body .app.sidebar-collapsed > aside.sidebar #nav button {
+    display: inline-flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    min-width: 40px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    border-radius: 9px !important;
+    font-size: 11px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+
+  body .app > main.main,
+  body .app.sidebar-collapsed > main.main {
+    display: block !important;
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    grid-column: auto !important;
+  }
+}
+</style>
