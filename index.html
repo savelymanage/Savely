@@ -3900,9 +3900,17 @@ body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number:
 
   <section class="page" id="page-salary">
     <div class="cards salary-summary-cards" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:18px">
-      <div class="stat"><div class="stat-top">Monthly take-home salary</div><div class="stat-value" id="salaryMonthlyDisplay" style="color:var(--green)">₱0.00</div><div class="stat-foot" id="salaryPayDayDisplay">Set your monthly salary below</div></div>
-      <div class="stat"><div class="stat-top">Annual projection</div><div class="stat-value" id="salaryAnnualDisplay" style="color:var(--blue)">₱0.00</div><div class="stat-foot">Monthly salary × 12, before any changes or bonuses</div></div>
-      <div class="stat salary-annual-remaining-stat"><div class="stat-top">Remaining salary this year</div><div class="stat-value" id="salaryAnnualRemainingDisplay" style="color:#07875f">₱0.00</div><div class="stat-foot" id="salaryAnnualRemainingFoot">Estimated future cutoffs through December</div></div>
+      <div class="stat salary-monthly-takehome-stat">
+        <div class="stat-top">Monthly take-home salary</div>
+        <div class="stat-value" id="salaryMonthlyDisplay" style="color:var(--green)">₱0.00</div>
+        <div class="stat-foot" id="salaryPayDayDisplay">Set your monthly salary below</div>
+      </div>
+      <div class="stat salary-annual-remaining-stat salary-remaining-blue">
+        <div class="stat-top">Remaining salary this year</div>
+        <div class="stat-value" id="salaryAnnualRemainingDisplay">₱0.00</div>
+        <div class="stat-foot" id="salaryAnnualRemainingFoot">Estimated future cutoffs through December</div>
+        <span id="salaryAnnualDisplay" hidden aria-hidden="true">₱0.00</span>
+      </div>
     </div>
     <section class="panel salary-calendar-panel" aria-labelledby="salaryCalendarTitle" style="margin-bottom:18px">
       <div class="panel-head salary-calendar-head">
@@ -12628,6 +12636,66 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
 @media(max-width:760px){
  html body #page-salary .salary-summary-cards{grid-template-columns:1fr!important}
  html body #page-salary .salary-summary-cards > .stat{min-height:138px!important}
+}
+</style>
+
+
+<style id="savely-salary-two-summary-cards-v1">
+html body #page-salary .salary-summary-cards{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:14px!important;
+  margin-bottom:21px!important;
+}
+html body #page-salary .salary-summary-cards > .stat{
+  display:block!important;position:relative!important;isolation:isolate!important;
+  overflow:hidden!important;box-sizing:border-box!important;min-height:156px!important;
+  padding:24px 22px 20px!important;border:1px solid rgba(5,130,96,.55)!important;
+  border-radius:18px!important;
+  background:#07875f!important;
+  background-image:linear-gradient(112deg,#07875f 0%,#0b9b70 56%,#2dbb8b 100%)!important;
+  color:#fff!important;box-shadow:0 10px 24px rgba(5,120,87,.12)!important;
+}
+html body #page-salary .salary-summary-cards > .salary-remaining-blue{
+  border-color:rgba(48,105,220,.55)!important;
+  background:#315fce!important;
+  background-image:linear-gradient(112deg,#315fce 0%,#4778e6 56%,#7397f2 100%)!important;
+  box-shadow:0 10px 24px rgba(49,95,206,.14)!important;
+}
+html body #page-salary .salary-summary-cards > .stat::before{
+  content:""!important;display:block!important;position:absolute!important;z-index:0!important;
+  width:158px!important;height:158px!important;right:-48px!important;top:-82px!important;
+  border-radius:50%!important;background:rgba(255,255,255,.12)!important;
+  pointer-events:none!important;
+}
+html body #page-salary .salary-summary-cards > .stat::after{
+  content:"₱"!important;display:grid!important;place-items:center!important;
+  position:absolute!important;z-index:3!important;top:18px!important;right:18px!important;
+  width:32px!important;height:32px!important;border:1px solid rgba(255,255,255,.26)!important;
+  border-radius:11px!important;background:rgba(255,255,255,.16)!important;
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+  font-size:16px!important;font-weight:800!important;
+}
+html body #page-salary .salary-summary-cards > .stat > .stat-top,
+html body #page-salary .salary-summary-cards > .stat > .stat-value,
+html body #page-salary .salary-summary-cards > .stat > .stat-foot{
+  display:block!important;position:relative!important;z-index:2!important;
+  visibility:visible!important;opacity:1!important;color:#fff!important;
+  -webkit-text-fill-color:#fff!important;text-shadow:none!important;
+}
+html body #page-salary .salary-summary-cards > .stat > .stat-top{
+  margin:0!important;padding:0 48px 0 0!important;font-size:12px!important;font-weight:750!important;
+}
+html body #page-salary .salary-summary-cards > .stat > .stat-value{
+  margin:16px 0 5px!important;font-size:clamp(21px,2vw,27px)!important;
+  line-height:1.15!important;font-weight:850!important;letter-spacing:-.65px!important;
+}
+html body #page-salary .salary-summary-cards > .stat > .stat-foot{
+  margin:0!important;font-size:11px!important;line-height:1.45!important;
+}
+@media(max-width:760px){
+  html body #page-salary .salary-summary-cards{grid-template-columns:1fr!important}
+  html body #page-salary .salary-summary-cards > .stat{min-height:138px!important}
 }
 </style>
 
