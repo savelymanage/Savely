@@ -3620,6 +3620,73 @@ body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number:
 })();
 </script>
 
+
+<style id="savely-salary-summary-gradient-cards-v1">
+/* Match the green gradient summary-card treatment used on the Overview page. */
+#page-salary .salary-summary-cards{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+#page-salary .salary-summary-cards>.stat{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  min-height:156px;
+  padding:24px 22px 20px;
+  border:1px solid rgba(5,130,96,.55);
+  border-radius:18px;
+  background:linear-gradient(112deg,#07875f 0%,#0b9b70 56%,#2dbb8b 100%);
+  color:#fff;
+  box-shadow:0 10px 24px rgba(5,120,87,.12);
+}
+#page-salary .salary-summary-cards>.stat::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  width:158px;height:158px;
+  right:-48px;top:-82px;
+  border-radius:50%;
+  background:rgba(255,255,255,.12);
+}
+#page-salary .salary-summary-cards>.stat::after{
+  content:"₱";
+  position:absolute;
+  top:18px;right:18px;
+  display:grid;place-items:center;
+  width:32px;height:32px;
+  border:1px solid rgba(255,255,255,.26);
+  border-radius:11px;
+  background:rgba(255,255,255,.16);
+  color:#fff;font-size:16px;font-weight:800;
+}
+#page-salary .salary-summary-cards .stat-top,
+#page-salary .salary-summary-cards .stat-value,
+#page-salary .salary-summary-cards .stat-foot{
+  position:relative;
+  z-index:1;
+  color:#fff!important;
+}
+#page-salary .salary-summary-cards .stat-top{
+  font-size:12px;font-weight:750;
+  padding-right:48px;
+}
+#page-salary .salary-summary-cards .stat-value{
+  margin:16px 0 5px;
+  font-size:clamp(21px,2vw,27px);
+  font-weight:850;
+  letter-spacing:-.65px;
+}
+#page-salary .salary-summary-cards .stat-foot{
+  font-size:11px;line-height:1.45;
+  opacity:.9;
+}
+@media(max-width:760px){
+  #page-salary .salary-summary-cards{grid-template-columns:1fr}
+  #page-salary .salary-summary-cards>.stat{min-height:138px}
+}
+</style>
+
 </head>
 <body>
 
