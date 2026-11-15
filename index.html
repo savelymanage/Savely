@@ -2,7 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#168765">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Savely">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
 <title>Savely — Savings Manager | v2.8.7</title>
 <style>
 :root{--bg:#f5f7fb;--panel:#fff;--text:#172033;--muted:#758097;--line:#e8edf4;--green:#168765;--green2:#e6f7ef;--blue:#4569e8;--blue2:#edf1ff;--orange:#df8a2f;--red:#d94d5c;--shadow:0 10px 35px #2636550a}
@@ -129,6 +136,7 @@
 .auth-logout{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 10px;color:#586478;font-weight:700;font-size:11px}
 @media(max-width:760px){.auth-gate{grid-template-columns:1fr}.auth-story{min-height:auto;padding:24px 25px 20px}.auth-story-copy{margin:35px 0 20px}.auth-story-copy h1{font-size:36px}.auth-story-copy p{font-size:14px}.auth-perks{grid-template-columns:1fr 1fr;gap:9px}.auth-perk{font-size:11px}.auth-story-foot{display:none}.auth-panel-wrap{min-height:auto;padding:24px 16px 32px}.auth-panel{max-width:480px}}
 
+
 /* Savings drag-and-drop ordering */
 .drag-handle{display:inline-flex;align-items:center;justify-content:center;width:28px;height:30px;border:1px solid var(--line);border-radius:8px;color:var(--muted);font-size:22px;cursor:grab;user-select:none;touch-action:none}.financial-draggable-row[draggable="true"]{cursor:grab}.financial-draggable-row.dragging{opacity:.42;background:var(--soft)}.financial-draggable-row[draggable="false"]{cursor:default}#savingsListTable tbody tr{transition:background .12s,opacity .12s}#savingsListTable tbody tr.dragging td{border-top:2px solid var(--green)}
 
@@ -154,6 +162,7 @@
 #savingsTrendCanvasWrap::-webkit-scrollbar{height:9px}
 #savingsTrendCanvasWrap::-webkit-scrollbar-thumb{background:#b8c7d8;border-radius:99px}
 
+
 /* Savely Themes: persistent, responsive dark mode */
 .theme-choice-card{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
 .theme-choice-copy{display:flex;align-items:center;gap:13px;min-width:0}.theme-choice-copy strong{font-size:14px}.theme-choice-icon{width:42px;height:42px;display:grid;place-items:center;flex:0 0 42px;border-radius:12px;background:var(--green2);color:var(--green);font-size:21px}
@@ -174,6 +183,7 @@ body.dark-theme #savingsListTable .financial-draggable-row { color: var(--text);
 body.dark-theme #savingsListTable .financial-draggable-row td { color: var(--text); }
 @media(max-width:600px){.theme-choice-card{align-items:flex-start;padding:14px}.theme-choice-copy{gap:10px}.theme-choice-copy p{font-size:12px}}
 
+
 .goal-applied-bank-summary strong{display:block;margin-top:3px;color:var(--text)}
 .goal-applied-bank-summary .panel-sub{margin-top:4px}
 #goalBankEditor{padding-top:8px}
@@ -185,6 +195,7 @@ body.dark-theme #savingsListTable .financial-draggable-row td { color: var(--tex
 .weather-copy strong{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
 .weather-copy small{font-size:10px;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:760px){.top-actions{gap:6px}.weather-pill{min-height:44px;padding:6px 8px;gap:5px}.weather-icon{font-size:20px}.weather-copy strong{font-size:12px}.weather-copy small{font-size:9px;max-width:90px}.date-pill{padding:8px!important}}
+
 
 .savely-image-logo{overflow:hidden;border-radius:50%;padding:4px;box-sizing:border-box;background:#fff;border:1px solid #e7edf4}
 .savely-image-logo img{display:block;width:100%;height:100%;object-fit:contain}
@@ -205,6 +216,7 @@ body.dark-theme #savingsListTable .financial-draggable-row td { color: var(--tex
 .confirm-dialog-backdrop[style*="display:none"], .confirm-dialog-backdrop[hidden] {
   pointer-events: none !important;
 }
+
 
 /* Sidebar stays clickable on normal pages, but must remain below modal overlays. */
 .app{position:relative}
@@ -229,12 +241,14 @@ body.dark-theme #savingsListTable .financial-draggable-row td { color: var(--tex
 #savelyDeleteItemsBackdrop{z-index:30050!important}
 #savelyUpdatesBackdrop{z-index:30060!important}
 
+
 /* Salary amount action lives in the global top-right header, only on Salary. */
 #salaryDetailsOpenButton{display:none;white-space:nowrap;flex:0 0 auto}
 body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 @media(max-width:760px){
  body:has(#page-salary.active) #salaryDetailsOpenButton{font-size:11px;padding:8px 10px}
 }
+
 
 /* Philippine Holidays page */
 #page-holidays{max-width:100%;color:var(--text)}
@@ -292,6 +306,7 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 @media(max-width:900px){#page-holidays .holiday-hero{grid-template-columns:1fr}#page-holidays .holiday-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#page-holidays .holiday-row{grid-template-columns:90px minmax(0,1fr) minmax(130px,.8fr)}#page-holidays .holiday-row .holiday-countdown-cell{grid-column:2/4}}
 @media(max-width:600px){#page-holidays .holiday-page-heading h2{font-size:22px}#page-holidays .holiday-hero{padding:18px}#page-holidays .holiday-countdown{gap:5px}#page-holidays .holiday-countdown>div{padding:9px 2px}#page-holidays .holiday-stat-grid{gap:8px}#page-holidays .holiday-stat{padding:11px;gap:8px}#page-holidays .holiday-stat-icon{flex-basis:34px;height:34px}#page-holidays .holiday-row{grid-template-columns:72px minmax(0,1fr);gap:7px 10px;padding:12px}#page-holidays .holiday-row .holiday-type-cell,#page-holidays .holiday-row .holiday-countdown-cell{grid-column:2}#page-holidays .holiday-filter-row{align-items:flex-start}#page-holidays .holiday-filters button{min-height:35px;padding:0 10px;font-size:11px}}
 
+
 #page-holidays .holiday-month-jumps{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-3px 0 13px;color:var(--muted);font-size:11px;font-weight:750}
 #page-holidays .holiday-month-jumps button{border:1px solid #b9e5d1;background:#effaf4;color:#087a55;border-radius:8px;padding:7px 11px;font-size:11px;font-weight:800;cursor:pointer}
 #page-holidays .holiday-month-group{scroll-margin-top:24px}
@@ -305,6 +320,7 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 #settingsRecurringPanel { display: none !important; }
 </style>
 
+
 <style id="savely-v206-remove-version-history">
 /* Version history and changelog are hidden from Settings. */
 #versionHistoryPanel { display: block; }
@@ -316,6 +332,7 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 #modalForm input[name="due"]{cursor:pointer}
 #modalForm input[name="due"]::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.9;width:18px;height:18px}
 </style>
+
 
 <style id="savely-empty-goals-centered-v224">
 .empty-goals-centered {
@@ -330,6 +347,7 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
   margin-right: 0 !important;
 }
 </style>
+
 
 <style id="savely-empty-goals-center-v225">
 /* Center the empty state in the available width and height of the goals panel. */
@@ -349,6 +367,7 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
   text-align: center !important;
 }
 </style>
+
 
 <style id="savely-date-calendar-icon-v228">
 #modalForm input[type="date"]{
@@ -374,6 +393,8 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 
 
 
+
+
 <style id="savely-custom-date-picker-v230">
 .goal-date-control{position:relative;width:100%}
 .goal-date-control input[type="date"]{padding-right:44px!important}
@@ -395,6 +416,7 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 .goal-calendar-footer button{border:0;background:transparent;color:#138765;font-size:12px;font-weight:600;cursor:pointer;padding:5px}
 </style>
 
+
 <style id="savely-goal-bank-picker-v232">
 .goal-bank-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;border:1px solid var(--line);border-radius:10px;padding:10px;max-height:150px;overflow:auto}
 .goal-bank-option{display:flex;align-items:center;gap:7px;min-width:0;font-size:12px;cursor:pointer;padding:5px;border-radius:6px}
@@ -408,6 +430,7 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 .goal-bank-total{display:flex;justify-content:space-between;gap:10px;margin-top:10px;padding:12px;border-radius:9px;background:#eaf7f1;color:#12694f;font-size:13px}
 @media(max-width:600px){.goal-bank-picker{grid-template-columns:repeat(2,minmax(0,1fr))}.goal-bank-balance-row{grid-template-columns:1fr 120px}}
 </style>
+
 
 <style id="savely-goal-bank-picker-ui-v233">
 .goal-bank-picker{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;border:1px solid var(--line);border-radius:12px;padding:10px;max-height:230px!important;overflow-y:auto!important;overflow-x:hidden!important;background:#fff}
@@ -426,6 +449,7 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 @media(max-width:700px){.goal-bank-picker{grid-template-columns:repeat(2,minmax(0,1fr))!important}#modalBackdrop:has(#goalBankPicker) .form-grid{grid-template-columns:1fr}.goal-bank-balance-row{grid-template-columns:minmax(0,1fr) 130px}}
 </style>
 
+
 <style id="savely-goal-bank-tabs-icons-v234">
 .goal-bank-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}
 .goal-bank-tab{border:1px solid var(--line);background:#fff;color:var(--muted);padding:9px 13px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer}
@@ -440,6 +464,7 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 @media(max-width:700px){.goal-bank-picker{grid-template-columns:repeat(2,minmax(0,1fr))!important}.goal-bank-tabs{gap:6px}.goal-bank-tab{padding:8px 10px}}
 </style>
 
+
 <style id="savely-goal-bank-tabs-isolation-v235">
 #goalBankTabs{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
 #goalBankTabs .goal-bank-tab{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap}
@@ -449,6 +474,7 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 #goalBankTabs .goal-bank-tab[data-goal-bank-tab="Other"]{order:4}
 #goalBankPicker .goal-bank-option[style*="display: none"]{display:none!important}
 </style>
+
 
 <style id="savely-goal-bank-no-checkbox-v237">
 #goalBankPicker .goal-bank-option input.goal-bank-check{
@@ -486,6 +512,7 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 }
 </style>
 
+
 <style id="savely-goal-bank-breakdown-v238">
 .goal-bank-breakdown{display:grid;gap:6px;margin:8px 0 10px}
 .goal-bank-breakdown-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:#fbfcfe;font-size:12px}
@@ -493,6 +520,7 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 .goal-bank-breakdown-icon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;flex:0 0 24px;border-radius:7px;color:#fff;font-size:8px;font-weight:800;background:var(--goal-bank-color,#168765)}
 .goal-bank-breakdown-amount{font-weight:750;white-space:nowrap;color:var(--text,#17233b)}
 </style>
+
 
 <style id="savely-goal-bank-straight-lines-v239">
 .goal-bank-breakdown{
@@ -529,6 +557,7 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 }
 </style>
 
+
 <style id="savely-goal-progress-per-bank-v241">
 .goal-bank-progress-list{display:grid;gap:9px;margin:10px 0 8px}
 .goal-bank-progress-item{display:grid;gap:5px}
@@ -540,26 +569,31 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 .goal-bank-progress-track>span{display:block;height:100%;border-radius:inherit;background:var(--green,#168765)}
 </style>
 
+
 <style id="savely-goal-bank-amount-below-bar-v242">
 .goal-bank-breakdown{display:none!important}
 .goal-bank-progress-item{display:grid!important;gap:4px!important;margin:0 0 10px!important}
 .goal-bank-progress-amount{font-size:12px;font-weight:750;text-align:right;color:var(--text,#17233b);font-variant-numeric:tabular-nums;padding:0 2px 2px}
 </style>
 
+
 <style id="savely-goal-allocations-financial-list-v244">
 .goal-linked-item{font-weight:750;color:var(--green,#168765)}
 </style>
+
 
 <style id="savely-add-savings-to-goal-v246">
 #addToGoalBackdrop .modal{background:var(--panel,#fff);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 24px 70px rgba(10,25,50,.22)}
 #addToGoalBackdrop select{min-height:44px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;color:var(--text,#17233b)}
 </style>
 
+
 <style id="savely-interest-calculator-v247">
 @media(max-width:700px){#interestCalcResults{grid-template-columns:1fr!important}}
 #page-interest .cards .panel h2{margin:10px 0 0;font-size:24px;color:var(--text)}
 #page-interest input,#page-interest select{width:100%;box-sizing:border-box}
 </style>
+
 
 <style id="savely-interest-bank-picker-v248">
 .interest-bank-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
@@ -578,6 +612,7 @@ body:has(#page-salary.active) #salaryDetailsOpenButton{display:inline-flex}
 @media(max-width:600px){.interest-bank-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.interest-bank-tab{flex:1}}
 </style>
 
+
 <!-- Savely v2.8.7: modern typography system -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -595,6 +630,7 @@ body, button, input, select, textarea { font-family: var(--font-ui) !important; 
 input::placeholder, textarea::placeholder { color: #9aa4b5; }
 </style>
 
+
 <style id="savely-v289-google-version-history">
 .auth-divider{display:flex;align-items:center;gap:12px;color:#929bad;font-size:11px;margin:17px 0 12px}
 .auth-divider:before,.auth-divider:after{content:"";height:1px;background:#e7ebf0;flex:1}
@@ -605,6 +641,7 @@ input::placeholder, textarea::placeholder { color: #9aa4b5; }
 .settings-tabs .financial-tab{flex:0 0 auto}
 #versionHistoryPanel{display:block}
 </style>
+
 
 <style id="savely-cross-device-compatibility">
 /* Cross-device web layout: keep content inside the viewport without removing desktop behavior. */
@@ -663,6 +700,7 @@ img,svg,canvas{max-width:100%}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
 </style>
 
+
 <style id="savely-interest-calculator-dark-mode-fix-v1">
 /* Interest Calculator: consistent, readable dark-theme surfaces */
 body.dark-theme #page-interest .interest-bank-tab{background:#172235!important;color:#cbd5e1!important;border-color:#334155!important}
@@ -687,6 +725,7 @@ body.dark-theme #page-interest .interest-summary-panel .panel-sub,body.dark-them
 body.dark-theme #page-interest .interest-summary-panel #interestCalcEnding{color:#76e0b5!important}
 @media(max-width:600px){body.dark-theme #page-interest .interest-bank-grid{grid-template-columns:repeat(2,minmax(0,1fr))}body.dark-theme #page-interest .interest-bank-card{padding:9px;gap:8px}}
 </style>
+
 
 <style id="savely-dark-financial-items-final-fix">
 /* Dark mode: Savings interest rates and three-dot action menus */
@@ -730,6 +769,8 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
 
 
 
+
+
 <style id="savely-goal-editor-bank-picker-consistent-v252">
 #modalBackdrop:has(#goalFallbackPicker) .modal{width:min(900px,calc(100vw - 32px));max-width:900px;max-height:92vh;overflow-y:auto;background:#f9fbfd;border:1px solid #e5ebf3;border-radius:16px;padding:20px}
 #modalBackdrop:has(#goalFallbackPicker) #modalTitle{font-size:18px;margin-bottom:5px}
@@ -746,6 +787,7 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
 #goalFallbackBalancesField[hidden]{display:none!important}
 @media(max-width:700px){#modalBackdrop:has(#goalFallbackPicker) .form-grid{grid-template-columns:1fr}#goalFallbackPicker.bank-picker{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
+
 
 <style id="savely-weather-horizontal-layout-v253">
 /* Wide, landscape forecast modal */
@@ -828,6 +870,7 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
 }
 </style>
 
+
 <style id="savely-weather-true-horizontal-scroll-v254">
 #savelySatelliteBackdrop > .modal{
   width:min(1500px,calc(100vw - 36px)) !important;
@@ -901,6 +944,7 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
 }
 </style>
 
+
 <style id="savely-weather-single-active-forecast-v255">
 #savelySatelliteBackdrop #savelyHourlyForecast[style*="display: none"],
 #savelySatelliteBackdrop #savelyDailyForecast[style*="display: none"]{
@@ -911,6 +955,7 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
   display:block !important;
 }
 </style>
+
 
 <style id="savely-financial-items-settings-v256">
 .financial-items-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -928,6 +973,7 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
  .financial-settings-menu{right:0;max-width:calc(100vw - 32px)}
 }
 </style>
+
 
 <style id="savely-delete-all-custom-confirm-v256">
 #savelyDeleteItemsBackdrop{
@@ -961,6 +1007,7 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
 @media(max-width:480px){#savelyDeleteItemsBackdrop .savely-delete-dialog{padding:20px;border-radius:16px}#savelyDeleteItemsBackdrop .savely-delete-actions button{flex:1}}
 </style>
 
+
 <style id="savely-goal-assigned-bank-disabled-v258">
 #bankPicker .bank-option-goal-assigned,
 #bankPicker .bank-option-goal-assigned:disabled{
@@ -976,12 +1023,14 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
 #bankPicker .bank-option-used:disabled{cursor:not-allowed}
 </style>
 
+
 <style id="savely-financial-graph-fit-fix-v259">
 #page-financial-list{min-width:0;max-width:100%;overflow-x:clip}
 #page-financial-list .panel{min-width:0;max-width:100%;box-sizing:border-box}
 #savingsTrendCanvasWrap{width:100%;max-width:100%;min-width:0;overflow-x:hidden!important;overflow-y:hidden!important;contain:layout paint;box-sizing:border-box}
 #savingsTrendChart{display:block;width:100%;min-width:0;max-width:100%;height:100%}
 </style>
+
 
 <style id="savely-selected-bank-graph-compact-v261">
 #savingsTrendCanvasWrap{
@@ -1020,6 +1069,7 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
 }
 </style>
 
+
 <style id="savely-goal-allocation-menu-actions-v262">
 .savings-item-menu .apply-savings-goal-action:disabled,
 .savings-item-menu .apply-savings-goal-action.is-disabled{
@@ -1027,6 +1077,7 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
   opacity:.62;cursor:not-allowed;pointer-events:none;border-color:var(--line,#e4eaf2)!important;
 }
 </style>
+
 
 <style id="savely-hide-savings-move-icon-v263">
 /* Hide the dedicated move handle/button; drag-and-drop remains available on the row. */
@@ -1047,11 +1098,13 @@ body.dark-theme #savingsListTable .financial-draggable-row:hover td { background
 .savings-list [title*="Move"] { display:none!important; }
 </style>
 
+
 <style id="savely-move-handle-visibility-v263">
 /* Keep the drag zone on the row, but remove the visible grip icon and its button chrome. */
 button[draggable="true"],
 [role="button"][draggable="true"] { }
 </style>
+
 
 <style id="savely-growth-chart-larger-scrollable-plot-v2865">
 /* Larger savings growth graph: keep the peso axis in a sticky left overlay, scroll only the plot. */
@@ -1229,6 +1282,7 @@ html.theme-transitioning body *:not(svg):not(path):not(img):not(video):not(canva
 @media(max-width:560px){#savelySatelliteBackdrop > .modal{width:calc(100vw - 20px) !important;padding:16px !important;}#savelySatelliteBackdrop #savelyHourlyForecast > .savely-hourly-cards{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:9px !important;}#savelySatelliteBackdrop .savely-hour-card{min-height:210px;padding:12px;} }
 </style>
 
+
 <style id="savely-weather-card-width-fix">
 /* Give the five hourly forecast cards enough width and make them fill their grid cells. */
 #savelySatelliteBackdrop > .modal{
@@ -1278,6 +1332,7 @@ html.theme-transitioning body *:not(svg):not(path):not(img):not(video):not(canva
   }
 }
 </style>
+
 
 <style id="savely-debt-calendar-styles">
 .debt-intro{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 16px}
@@ -1360,6 +1415,7 @@ html.theme-transitioning body *:not(svg):not(path):not(img):not(video):not(canva
 }
 </style>
 
+
 <style id="savely-debt-topbar-button">
 #topbarAddDebtButton{display:none;flex:0 0 auto;white-space:nowrap}
 body:has(#page-debt.active) #topbarAddDebtButton{display:inline-flex!important}
@@ -1367,6 +1423,7 @@ body:has(#page-debt.active) #topbarAddDebtButton{display:inline-flex!important}
  body:has(#page-debt.active) #topbarAddDebtButton{font-size:11px;padding:8px 10px}
 }
 </style>
+
 
 <style id="savely-debt-typography-alignment">
 #page-debt .debt-calendar-panel .panel-head h2,
@@ -1393,6 +1450,7 @@ body:has(#page-debt.active) #topbarAddDebtButton{display:inline-flex!important}
 #page-debt .debt-summary-cards .stat-foot{font-size:10px;line-height:1.45}
 </style>
 
+
 <style id="savely-goal-financial-items-v1">
 #goalFallbackPicker.goal-item-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;max-height:285px;overflow:auto;padding:2px}
 #goalFallbackPicker .goal-item-option{position:relative;display:flex;align-items:center;gap:9px;min-width:0;min-height:62px;padding:9px 11px;border:1px solid var(--line);border-radius:11px;background:#fff;cursor:pointer;transition:background .15s,border-color .15s,opacity .15s}
@@ -1415,6 +1473,7 @@ body:has(#page-debt.active) #topbarAddDebtButton{display:inline-flex!important}
 @media(max-width:760px){#goalFallbackPicker.goal-item-picker{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:460px){#goalFallbackPicker.goal-item-picker{grid-template-columns:1fr}.goal-item-tabs{gap:5px}.goal-item-tab{padding:7px 9px}}
 </style>
+
 
 <style id="savely-consistent-button-sizing">
 .btn{min-height:40px!important;min-width:108px;padding:9px 14px!important;border-radius:10px;font-size:12px;line-height:1.2;white-space:nowrap}
@@ -1452,6 +1511,7 @@ body.dark-theme .debt-card-menu{background:var(--panel);border-color:var(--line)
 }
 </style>
 
+
 <style id="savely-savings-gradient-weather-hover-v2">
 /* Give the Savings total its own clear green-gradient emphasis. */
 #stats>.stat:nth-child(2){
@@ -1484,6 +1544,7 @@ body.dark-theme .debt-card-menu{background:var(--panel);border-color:var(--line)
 .debt-date-modal-body{overflow-y:auto!important}
 </style>
 
+
 <style id="savely-receivables-graph-and-fixed-sidebar">
 /* Money lent is an asset that originated in Savings; keep the navigation fixed while the document scrolls. */
 @media(min-width:761px){
@@ -1497,6 +1558,7 @@ body.dark-theme .debt-card-menu{background:var(--panel);border-color:var(--line)
  .main{min-width:0;min-height:100vh}
 }
 </style>
+
 
 <style id="savely-savings-interest-ui-v3">
 /* Savings page: focused, modern green-gradient total card */
@@ -1680,6 +1742,7 @@ button:focus-visible{outline:3px solid rgba(22,135,101,.22);outline-offset:2px}
 }
 </style>
 
+
 <style id="savely-dashboard-greeting-sidebar-fixed-v1">
 /* Dashboard greeting: keep the greeting itself neutral black; username styling remains separate. */
 body:has(#page-dashboard.active) #pageTitle{
@@ -1731,6 +1794,7 @@ body:has(#page-dashboard.active) #pageTitle{
 }
 </style>
 
+
 <style id="savely-page-isolation-fix-v1">
 /* Keep every routed page isolated: inactive pages must never leak into the current view.
    The Interest Calculator has its own ID-based layout styles, so explicitly restore its
@@ -1746,6 +1810,7 @@ main.main > #page-interest.page.active{
   flex-direction:column!important;
 }
 </style>
+
 
 <style id="savely-sidebar-viewport-lock-v2">
 /* Desktop navigation is a fixed viewport rail, not part of the scrolling document. */
@@ -1814,6 +1879,7 @@ main.main > #page-interest.page.active{
   }
 }
 </style>
+
 
 <style id="savely-sidebar-toggle-visible-and-menu-cleanup">
 @media (min-width:761px){
@@ -2103,6 +2169,7 @@ body:has(#page-holidays.active) #holidayRefreshButton{display:inline-flex}
 }
 </style>
 
+
 <style id="savely-global-button-consistency-v1">
 /* Site-wide button system: consistent control height, type, alignment and spacing */
 :root{
@@ -2215,6 +2282,7 @@ button.link-btn{
 }
 </style>
 
+
 <style id="savely-debt-side-chooser-responsive-fix">
 /* The two debt direction choices are large selectable cards, not standard action buttons. */
 #savelyDebtSideModal{
@@ -2313,6 +2381,7 @@ button.link-btn{
 }
 </style>
 
+
 <style id="savely-debt-provider-picker-ui-v1">
 .savely-debt-provider-section{
  padding:16px!important;
@@ -2390,6 +2459,7 @@ button.link-btn{
 }
 </style>
 
+
 <style id="savely-add-savings-bank-alignment-v2">
 #financialAddBackdrop #bankPicker{align-items:stretch!important}
 #financialAddBackdrop .bank-option-wrap{position:relative!important;min-width:0!important}
@@ -2412,6 +2482,7 @@ button.link-btn{
  padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important
 }
 </style>
+
 
 <style id="savely-overview-kpi-color-system-v2">
 #stats>.stat:nth-child(1),
@@ -2464,6 +2535,7 @@ button.link-btn{
 }
 </style>
 
+
 <style id="savely-debt-due-today-green-v1">
 #page-debt .debt-status.due,
 #page-debt .debt-day-chip.due,
@@ -2478,6 +2550,7 @@ button.link-btn{
 }
 #page-debt .debt-dot-today{background:#15966f!important}
 </style>
+
 
 <style id="savely-debt-paid-history-and-payment-ui-v1">
 .debt-paid-panel{margin-top:18px!important;padding:22px!important;border:1px solid #e4ebf2!important;border-radius:18px!important;background:linear-gradient(180deg,#fff 0%,#fbfdfc 100%)!important;box-shadow:0 8px 24px rgba(20,40,70,.045)!important}
@@ -2539,6 +2612,7 @@ button.link-btn{
  .savely-debt-payment-actions .btn{width:100%}
 }
 </style>
+
 
 <style id="savely-debt-tabs-inline-payment-live-location-v2">
 /* Compact side-by-side Debt content switcher */
@@ -2636,6 +2710,7 @@ button.link-btn{
 }
 </style>
 
+
 <style id="savely-live-location-pin-icon-v1">
 /* A distinct map pin for the user's current/last GPS position. */
 .savely-location-marker-host{
@@ -2683,6 +2758,7 @@ button.link-btn{
 }
 </style>
 
+
 <style id="savely-debt-auto-interest-computation-v1">
 .savely-auto-interest-card{
  padding:15px!important;border:1px solid #dcece3!important;border-radius:15px!important;
@@ -2712,6 +2788,7 @@ button.link-btn{
 @media(max-width:600px){.savely-auto-rate-metrics{grid-template-columns:1fr}}
 </style>
 
+
 <style id="savely-debt-confirm-footer-and-location-map-v2">
 #savelyDebtDateModal #debtDateModalAddButton[hidden]{display:none!important}
 .savely-live-location-map{
@@ -2729,6 +2806,7 @@ button.link-btn{
  background:#effaf4!important;
 }
 </style>
+
 
 <style id="savely-global-expenses-interest-location-v1">
 /* Interest Calculator provider tiles: fixed logo column and aligned copy. */
@@ -2823,6 +2901,7 @@ button.link-btn{
 }
 </style>
 
+
 <style id="savely-debt-form-three-step-wizard-v1">
 .savely-debt-wizard-top{
  display:flex;align-items:center;justify-content:space-between;gap:18px;
@@ -2857,6 +2936,7 @@ button.link-btn{
 }
 </style>
 
+
 <style id="savely-savings-linked-actions-weather-fixes-v1">
 .savings-item-actions.has-linked-badge{
  display:inline-flex!important;align-items:center!important;justify-content:flex-end!important;
@@ -2880,6 +2960,7 @@ button.link-btn{
  .savely-daily-row>div:nth-child(4),.savely-daily-row>div:nth-child(5){grid-column:1/-1}
 }
 </style>
+
 
 <style id="savely-expense-calendar-paid-menu-free-map-v1">
 /* Paid records: compact view-history + kebab action row. */
@@ -2970,6 +3051,7 @@ button.link-btn{
 #page-live-location .leaflet-control-attribution{font-size:9px!important;background:rgba(255,255,255,.86)!important}
 </style>
 
+
 <style id="savely-overview-three-cards-goal-menu-debt-spacing-v1">
 /* Overview has three summary metrics; let them fill the complete row. */
 #stats.cards{grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%}
@@ -3029,6 +3111,7 @@ button.link-btn{
 .goal-card-menu-popover button.goal-menu-delete{color:var(--red)}
 </style>
 
+
 <style id="savely-location-history-v2-styles">
 .savely-location-history-panel{margin-top:14px!important}
 .savely-location-history-actions{display:flex;gap:7px;flex-wrap:wrap}
@@ -3045,6 +3128,7 @@ button.link-btn{
 @media(max-width:700px){.savely-location-history-item{align-items:flex-start;flex-direction:column}.savely-location-history-item-actions{justify-content:flex-start}.savely-location-history-actions{margin-top:8px}}
 </style>
 
+
 <style id="savely-mariloan-disclosure-computation-v1">
 .savely-mariloan-breakdown .savely-mariloan-receive{
  padding:8px 10px!important;margin:3px 0!important;border:1px solid #d8eee2!important;
@@ -3056,6 +3140,7 @@ button.link-btn{
 .savely-mariloan-breakdown .total{border-top:1px solid #dbe8e0!important;margin-top:5px!important;padding-top:10px!important}
 </style>
 
+
 <style id="savely-free-waze-live-traffic-v1">
 .savely-live-map-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .savely-live-map-heading-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -3065,7 +3150,17 @@ button.link-btn{
 .savely-waze-traffic-view{width:100%;height:clamp(560px,76vh,900px);min-height:560px;overflow:hidden;border:1px solid #e2eaf0;border-radius:15px;background:#eef3f1}
 .savely-waze-traffic-view[hidden],.savely-live-location-map[hidden],.live-location-map-controls[hidden],.live-location-map-footer[hidden],.savely-waze-map-note[hidden]{display:none!important}
 .savely-waze-traffic-view iframe{display:block;width:100%;height:100%;min-height:560px;border:0;background:#eef3f1}
+.savely-waze-map-controls{top:16px;right:16px}
+.savely-waze-map-note{margin-top:10px;color:var(--muted);font-size:10px;line-height:1.5}
+@media(max-width:650px){
+ .savely-live-map-heading{align-items:flex-start}
+ .savely-live-map-heading-actions{width:100%;justify-content:space-between}
+ .savely-live-map-mode-switch{flex:1}
+ .savely-live-map-mode-switch button{flex:1;padding:0 8px}
+ .savely-waze-traffic-view,.savely-waze-traffic-view iframe{height:68vh;min-height:440px}
+}
 </style>
+
 
 <style id="savely-linked-debt-actions-and-series-delete-v1">
 .savings-item-menu .menu-divider{height:1px;margin:5px 2px;background:var(--line,#e7edf1);pointer-events:none}
@@ -3087,6 +3182,7 @@ button.link-btn{
 .savely-debt-series-payment-heading{font-size:13px;margin:18px 0 8px}
 @media(max-width:560px){.savely-debt-series-totals{grid-template-columns:1fr}.savely-debt-series-history-record,.savely-debt-series-payment-row{align-items:flex-start}}
 </style>
+
 
 <style id="savely-transfer-polish-and-gps-fix-v1">
 #financialSettingsButton.financial-settings-button{
@@ -3148,10 +3244,12 @@ button.link-btn{
 }
 </style>
 
+
 <style id="savely-weather-cache-status-style">
 #savelyForecastLoading{line-height:1.55}
 #savelyForecastLoading[style*="display: block"]{color:var(--muted)}
 </style>
+
 
 <style id="savely-shopee-products-and-debt-colors">
 .savely-shopee-products{border:1px solid #cfe9dd;border-radius:13px;background:linear-gradient(145deg,#f7fcf9,#f1faf5);padding:13px;margin:0 0 10px}
@@ -3181,6 +3279,7 @@ button.link-btn{
 #page-debt .debt-summary-cards>.stat:nth-child(4) .stat-value{color:#d97706!important}
 @media(max-width:600px){.savely-shopee-product-row{grid-template-columns:minmax(0,1fr) 112px 34px;gap:6px}.savely-shopee-product-row input{font-size:12px;padding:9px}.savely-shopee-remove-product{width:34px}}
 </style>
+
 
 <style id="savely-salary-year-view-and-remaining-v1">
 #page-salary .salary-summary-cards{grid-template-columns:repeat(3,minmax(0,1fr))!important}
@@ -3218,6 +3317,7 @@ button.link-btn{
 @media(max-width:420px){#page-salary .salary-summary-cards{grid-template-columns:1fr!important}.salary-calendar-year-grid{grid-template-columns:1fr}.salary-year-month-card{padding:13px}.salary-year-day{font-size:10px}}
 </style>
 
+
 <style id="savely-spaylater-zero-interest-fee-v1">
 .savely-shopee-processing-fee{display:grid;grid-template-columns:minmax(0,1fr) minmax(120px,180px);gap:6px 14px;align-items:center;margin-top:12px;padding:12px;border:1px solid #dceee5;border-radius:11px;background:#fff}
 .savely-shopee-processing-fee label{display:block;font-size:11px;font-weight:850;color:var(--text);margin-bottom:3px}
@@ -3228,6 +3328,7 @@ button.link-btn{
 .savely-shopee-processing-help{grid-column:1/-1}
 @media(max-width:560px){.savely-shopee-processing-fee{grid-template-columns:minmax(0,1fr) 105px;gap:7px}.savely-shopee-processing-fee small{font-size:9px}}
 </style>
+
 
 <style id="savely-metro-manila-public-cctv-directory-v1">
 /* Public CCTV directory: city rail + road-specific camera source cards */
@@ -3326,6 +3427,7 @@ button.link-btn{
 }
 </style>
 
+
 <style id="savely-overview-financial-privacy-v1">
 .overview-privacy-toggle{
  display:inline-flex;align-items:center;justify-content:center;gap:8px;
@@ -3341,17 +3443,16 @@ button.link-btn{
 .overview-privacy-toggle[hidden]{display:none!important}
 .overview-privacy-icon{width:17px;height:17px;display:grid;place-items:center;flex:0 0 17px}
 .overview-privacy-icon svg{width:17px;height:17px;display:block}
-/* Financial values are masked only while the dashboard privacy mode is active. */
-#page-dashboard.savely-overview-private .savely-private-number{
+.savely-private-number{
  filter:none!important;
  position:relative;
  display:inline-block;
  user-select:none;
  pointer-events:none;
- -webkit-text-fill-color:transparent!important;
+ -webkit-text-fill-color:transparent;
  text-shadow:none!important;
 }
-#page-dashboard.savely-overview-private .savely-private-number::after{
+.savely-private-number::after{
  content:"******";
  position:absolute;
  inset:0;
@@ -3360,12 +3461,6 @@ button.link-btn{
  white-space:nowrap;
  pointer-events:none;
 }
-#page-dashboard:not(.savely-overview-private) .savely-private-number{
- -webkit-text-fill-color:currentColor!important;
- user-select:text;
- pointer-events:auto;
-}
-#page-dashboard:not(.savely-overview-private) .savely-private-number::after{content:none!important;display:none!important}
 #page-dashboard.savely-overview-private #overallTrendPanel canvas,
 #page-dashboard.savely-overview-private #overallTrendLegend,
 #page-dashboard.savely-overview-private #chart{
@@ -3377,6 +3472,7 @@ button.link-btn{
  .overview-privacy-icon,.overview-privacy-icon svg{width:16px;height:16px}
 }
 </style>
+
 
 <style id="savely-cctv-quezon-city-only-v1">
 /* Only Quezon City currently has a listed public camera source. */
@@ -3408,315 +3504,7 @@ button.link-btn{
  .savely-cctv-featured-foot{flex-direction:column}
 }
 </style>
-<style id="savely-construction-project-map-v1">
-.construction-map-legend{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 12px;color:var(--muted);font-size:11px}
-.construction-map-legend>span:first-child{display:flex;align-items:center;gap:7px;font-weight:750;color:var(--text)}
-.construction-map-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;background:#168765;box-shadow:0 0 0 3px #16876520}
-.construction-map-frame-wrap{position:relative;width:100%;height:clamp(560px,76vh,900px);min-height:500px;overflow:hidden;border:1px solid var(--line);border-radius:13px;background:#edf2f5}
-.construction-map-frame-wrap iframe{display:block;width:100%;height:100%;border:0;background:#edf2f5}
-.construction-map-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:28px;text-align:center;background:#f7faf9;color:var(--text)}
-.construction-map-fallback[hidden]{display:none!important}
-.construction-map-fallback span{max-width:480px;color:var(--muted);font-size:12px}
-.construction-map-fallback a{color:var(--green);font-weight:800;text-decoration:none}
-@media(max-width:650px){.construction-map-frame-wrap{height:70vh;min-height:460px}}
-</style>
 
-<style id="savely-routed-page-content-visibility-fix-v1">
-/* Ensure the selected workspace page and its contents remain visible after navigation. */
-main.main > section.page.active,
-main.main > div.page.active {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  height: auto !important;
-  min-height: 180px;
-  overflow: visible;
-}
-main.main > section.page.active > *,
-main.main > div.page.active > * {
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-main.main > .page:not(.active) { display: none !important; }
-</style>
-
-
-<style id="savely-page-navigation-repair-v4">
-.page{display:none!important}
-.page.active{display:block!important}
-</style>
-
-
-<style id="savely-global-page-isolation-v5">
-  /* Every Savely page is hidden unless it is the single active page.
-     This applies regardless of its DOM nesting level. */
-  body .page:not(.active) {
-    display: none !important;
-    visibility: hidden !important;
-  }
-  body .page.active {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    height: auto !important;
-    min-height: 0 !important;
-    overflow: visible !important;
-  }
-</style>
-<script id="savely-global-page-isolation-script-v5">
-(function () {
-  function enforceSingleActiveSavelyPage() {
-    const pages = Array.from(document.querySelectorAll('body .page'));
-    if (!pages.length) return;
-
-    let active = pages.find(page => page.classList.contains('active'));
-    if (!active) {
-      active = document.getElementById('page-dashboard') || pages[0];
-    }
-
-    pages.forEach(page => {
-      const isActive = page === active;
-      page.classList.toggle('active', isActive);
-      page.setAttribute('aria-hidden', isActive ? 'false' : 'true');
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', enforceSingleActiveSavelyPage, { once: true });
-  } else {
-    enforceSingleActiveSavelyPage();
-  }
-
-  // Observe page class changes from the existing sidebar navigation.
-  const observer = new MutationObserver(() => enforceSingleActiveSavelyPage());
-  const startObserver = () => {
-    document.querySelectorAll('body .page').forEach(page => {
-      observer.observe(page, { attributes: true, attributeFilter: ['class'] });
-    });
-  };
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', startObserver, { once: true });
-  } else {
-    startObserver();
-  }
-})();
-</script>
-
-
-<style id="savely-live-location-subtabs-v1">
-.live-location-section-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px;padding:5px;background:#edf3f1;border:1px solid var(--line);border-radius:13px;width:max-content;max-width:100%}
-.live-location-section-tab{border:0;border-radius:9px;background:transparent;color:#647087;padding:10px 15px;font-weight:750;font-size:13px;white-space:nowrap}
-.live-location-section-tab.active{background:#fff;color:var(--green);box-shadow:0 2px 8px #17203312}
-#constructionMapView[hidden],#liveLocationView[hidden]{display:none!important}
-#constructionMapView .construction-map-frame-wrap{height:min(72vh,780px);min-height:560px}
-#constructionMapView #savelyConstructionMapFrame{width:100%;height:100%;border:0;border-radius:12px}
-@media(max-width:600px){.live-location-section-tabs{width:100%}.live-location-section-tab{flex:1;padding:10px 8px}}
-</style>
-<script id="savely-live-location-subtabs-script-v1">
-(function(){
-  function initLiveLocationSubtabs(){
-    const liveTab=document.getElementById('liveLocationTab');
-    const mapTab=document.getElementById('constructionMapTab');
-    const liveView=document.getElementById('liveLocationView');
-    const mapView=document.getElementById('constructionMapView');
-    if(!liveTab||!mapTab||!liveView||!mapView)return;
-    function activate(which){
-      const showMap=which==='map';
-      liveView.hidden=showMap;
-      mapView.hidden=!showMap;
-      liveTab.classList.toggle('active',!showMap);
-      mapTab.classList.toggle('active',showMap);
-      liveTab.setAttribute('aria-selected',String(!showMap));
-      mapTab.setAttribute('aria-selected',String(showMap));
-      if(showMap){
-        const frame=document.getElementById('savelyConstructionMapFrame');
-        if(frame && frame.dataset.loaded!=='1'){
-          frame.dataset.loaded='1';
-          if(frame.contentWindow) frame.contentWindow.postMessage({type:'resize'},'*');
-        }
-      }
-    }
-    liveTab.addEventListener('click',()=>activate('live'));
-    mapTab.addEventListener('click',()=>activate('map'));
-    activate('live');
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initLiveLocationSubtabs,{once:true});
-  else initLiveLocationSubtabs();
-})();
-</script>
-
-<style id="savely-construction-map-live-mode-v2">
-.savely-construction-map-view{width:100%;height:100%;min-height:560px;overflow:auto;background:var(--surface,#fff);border-radius:12px}
-.savely-construction-map-view[hidden]{display:none!important}
-.savely-construction-map-view>.panel{min-height:100%;box-sizing:border-box}
-.savely-construction-map-view .construction-map-frame-wrap{height:calc(100vh - 290px);min-height:560px;max-height:850px}
-.savely-construction-map-view #savelyConstructionMapFrame{display:block;width:100%;height:100%;min-height:560px;border:0;border-radius:12px}
-@media(max-width:700px){.savely-construction-map-view .construction-map-frame-wrap{height:68vh;min-height:520px}}
-</style>
-
-<style id="savely-privacy-toggle-hard-fix-v2">
-/* A single source of truth on body controls masking, regardless of render timing. */
-body[data-savely-figures="hidden"] #page-dashboard .savely-private-number{
- position:relative!important;display:inline-block!important;
- -webkit-text-fill-color:transparent!important;color:transparent!important;
- text-shadow:none!important;user-select:none!important;pointer-events:none!important;
-}
-body[data-savely-figures="hidden"] #page-dashboard .savely-private-number::after{
- content:"******"!important;display:block!important;position:absolute!important;
- inset:0!important;color:var(--text,#172033)!important;
- -webkit-text-fill-color:currentColor!important;white-space:nowrap!important;
- pointer-events:none!important;
-}
-body[data-savely-figures="visible"] #page-dashboard .savely-private-number,
-body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number{
- -webkit-text-fill-color:currentColor!important;color:inherit;
- user-select:text!important;pointer-events:auto!important;
-}
-body[data-savely-figures="visible"] #page-dashboard .savely-private-number::after,
-body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number::after{
- content:none!important;display:none!important;
-}
-</style>
-
-
-<style id="savely-live-map-shell-controls-fix-v3">
-#page-live-location .live-location-map-shell{position:relative!important;isolation:isolate!important}
-#page-live-location .live-location-map-controls{position:absolute!important;top:16px!important;right:16px!important;z-index:30!important}
-#page-live-location .savely-construction-map-view{position:relative;z-index:1;width:100%;min-height:560px;height:clamp(560px,76vh,900px);overflow:hidden;pointer-events:auto}
-#page-live-location .savely-construction-map-view[hidden]{display:none!important}
-#page-live-location .savely-construction-map-view .panel{height:100%;min-height:560px;overflow:auto}
-#page-live-location .savely-construction-map-view .construction-map-frame-wrap{height:calc(100% - 130px);min-height:420px;max-height:none}
-#page-live-location #savelyConstructionMapFrame{display:block;width:100%;height:100%;min-height:420px;border:0;pointer-events:auto}
-#page-live-location .savely-live-map-mode-switch{position:relative;z-index:50;pointer-events:auto}
-#page-live-location .savely-live-map-mode-switch button{position:relative;z-index:51;pointer-events:auto;cursor:pointer}
-@media(max-width:760px){
- #page-live-location .live-location-map-controls{top:10px!important;right:10px!important;width:146px!important}
- #page-live-location .savely-construction-map-view{height:70vh;min-height:520px}
-}
-</style>
-<script id="savely-live-map-mode-click-fix-v3">
-(function(){
- function bindMapModeButtons(){
-  const switcher=document.querySelector('#page-live-location .savely-live-map-mode-switch');
-  if(!switcher||switcher.dataset.savelyBound==='1')return;
-  switcher.dataset.savelyBound='1';
-  switcher.querySelectorAll('[data-savely-map-mode]').forEach(button=>{
-   button.removeAttribute('onclick');
-   button.addEventListener('click',function(event){
-    event.preventDefault();
-    event.stopPropagation();
-    const mode=this.getAttribute('data-savely-map-mode');
-    if(typeof window.setSavelyLiveMapMode==='function')window.setSavelyLiveMapMode(mode);
-   });
-  });
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindMapModeButtons,{once:true});
- else bindMapModeButtons();
- document.addEventListener('click',function(event){
-  const button=event.target.closest('#page-live-location [data-savely-map-mode]');
-  if(!button)return;
-  if(typeof window.setSavelyLiveMapMode==='function')window.setSavelyLiveMapMode(button.getAttribute('data-savely-map-mode'));
- },true);
-})();
-</script>
-
-
-<style id="savely-salary-summary-gradient-cards-v2">
-/* Apply the Overview savings-card design to the three Salary summary tiles. */
-#page-salary .salary-summary-cards{
-  display:grid!important;
-  grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  gap:14px!important;
-}
-#page-salary .salary-summary-cards .stat{
-  box-sizing:border-box!important;
-  display:block!important;
-  position:relative!important;
-  isolation:isolate!important;
-  overflow:hidden!important;
-  min-height:156px!important;
-  padding:24px 22px 20px!important;
-  border:1px solid rgba(5,130,96,.55)!important;
-  border-radius:18px!important;
-  background:linear-gradient(112deg,#07875f 0%,#0b9b70 56%,#2dbb8b 100%)!important;
-  color:#fff!important;
-  box-shadow:0 10px 24px rgba(5,120,87,.12)!important;
-}
-#page-salary .salary-summary-cards .stat::before{
-  content:""!important;
-  position:absolute!important;
-  z-index:-1!important;
-  width:158px!important;height:158px!important;
-  right:-48px!important;top:-82px!important;
-  border-radius:50%!important;
-  background:rgba(255,255,255,.12)!important;
-}
-#page-salary .salary-summary-cards .stat::after{
-  content:"₱"!important;
-  position:absolute!important;
-  top:18px!important;right:18px!important;
-  display:grid!important;place-items:center!important;
-  width:32px!important;height:32px!important;
-  border:1px solid rgba(255,255,255,.26)!important;
-  border-radius:11px!important;
-  background:rgba(255,255,255,.16)!important;
-  color:#fff!important;font-size:16px!important;font-weight:800!important;
-}
-#page-salary .salary-summary-cards .stat .stat-top,
-#page-salary .salary-summary-cards .stat .stat-value,
-#page-salary .salary-summary-cards .stat .stat-foot{
-  display:block!important;
-  position:relative!important;
-  z-index:2!important;
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
-  opacity:1!important;
-}
-#page-salary .salary-summary-cards .stat .stat-top{
-  font-size:12px!important;font-weight:750!important;
-  padding-right:48px!important;
-}
-#page-salary .salary-summary-cards .stat .stat-value{
-  margin:16px 0 5px!important;
-  font-size:clamp(21px,2vw,27px)!important;
-  font-weight:850!important;
-  letter-spacing:-.65px!important;
-}
-#page-salary .salary-summary-cards .stat .stat-foot{
-  font-size:11px!important;line-height:1.45!important;
-}
-@media(max-width:760px){
-  #page-salary .salary-summary-cards{grid-template-columns:1fr!important}
-  #page-salary .salary-summary-cards .stat{min-height:138px!important}
-}
-</style>
-
-
-<style id="savely-salary-future-year-field-v1">
-#monthlySalaryYear{width:100%}
-#monthlySalaryForm .field:has(#monthlySalaryYear){min-width:0}
-@media(max-width:620px){#monthlySalaryForm{grid-template-columns:1fr!important}#monthlySalaryForm .field[style*="grid-column"]{grid-column:1!important}}
-</style>
-
-
-<style id="savely-add-savings-button-page-scope">
-/* The global Add Savings action belongs only to the Savings page. */
-#topbarAddSavingsButton{display:none!important}
-body:has(#page-financial-list.active) #topbarAddSavingsButton{
-  display:inline-flex!important;
-}
-</style>
-
-
-<style id="savely-live-location-city-in-sidebar-v1">
-.savely-location-subnav{display:flex;flex-direction:column;gap:3px;margin:-2px 0 5px 38px;padding-left:11px;border-left:1px solid rgba(255,255,255,.24)}
-.savely-location-place{display:flex;align-items:center;gap:8px;width:100%;min-height:31px;padding:6px 9px;border:0;border-radius:8px;background:transparent;color:rgba(255,255,255,.78);text-align:left;font:inherit;font-size:11px;font-weight:650;cursor:pointer}
-.savely-location-place:hover,.savely-location-place.active{background:rgba(255,255,255,.13);color:#fff}
-.savely-location-place-dot{width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:#8be0b9}
-.savely-cctv-main-full{grid-column:1/-1;width:100%;padding:20px 22px}
-.savely-public-cctv-view{grid-template-columns:minmax(0,1fr)!important}
-@media(max-width:720px){.savely-location-subnav{margin-left:8px;padding-left:8px}.savely-location-place{white-space:nowrap}.savely-cctv-main-full{padding:13px}}
-</style>
 </head>
 <body>
 
@@ -3792,15 +3580,16 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
     <button data-page="salary" aria-label="Salary" title="Salary"><span class="ico">₱</span><span class="nav-text">Salary</span></button>
     <button data-page="debt" aria-label="Debt" title="Debt"><span class="ico">▦</span><span class="nav-text">Debt</span></button>
     <button data-page="budget" aria-label="Expenses" title="Expenses"><span class="ico">↘</span><span class="nav-text">Expenses</span></button>
-
+    
+    
     <button data-page="goals" aria-label="Savings goals" title="Savings goals"><span class="ico">◎</span><span class="nav-text">Savings goals</span></button>
     <button data-page="interest" aria-label="Interest Calculator" title="Interest Calculator"><span class="ico">％</span><span class="nav-text">Interest Calculator</span></button>
     <button data-page="cards" aria-label="Cards" title="Cards"><span class="ico">▤</span><span class="nav-text">Cards</span></button>
-
     
     
-    <button data-page="live-location" aria-label="Live Monitor" title="Live Monitor"><span class="ico">⌖</span><span class="nav-text">Live Monitor</span></button>
-    <button data-page="radio" aria-label="Radio" title="Radio"><span class="ico">📻</span><span class="nav-text">Radio</span></button>
+    
+    
+    <button data-page="live-location" aria-label="Live Location" title="Live Location"><span class="ico">⌖</span><span class="nav-text">Live Location</span></button>
     <button data-page="settings" aria-label="Settings & backup" title="Settings & backup"><span class="ico">⚙</span><span class="nav-text">Settings & backup</span></button>
   </nav></div>
   <div class="side-bottom"><strong>Small steps add up.</strong><p>Keep your goals in sight and your savings moving forward.</p></div>
@@ -3829,15 +3618,14 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
   <section class="page" id="page-accounts"><div class="panel"><div class="panel-head"><div><h2>Savings accounts</h2><div class="panel-sub">Keep different savings pots organized.</div></div><button class="btn btn-primary" onclick="openModal('account')">＋ New account</button></div><div class="section-grid" id="allAccounts"></div><div class="footer-note">Account balances are calculated from each account's opening balance and transactions.</div></div></section>
   <section class="page" id="page-goals"><div class="panel"><div class="panel-head"><div><h2>Your savings goals</h2><div class="panel-sub">Give your money a purpose and track your progress.</div></div><button class="btn btn-primary" onclick="openModal('goal')">＋ Create Savings Goal</button></div><div class="section-grid" id="allGoals"></div></div></section>
 
-  <section class="page" id="page-cards" aria-label="Cards"></section>
-  <section class="page" id="page-radio" aria-label="Radio"></section>
   
+  <section class="page" id="page-cards" aria-label="Cards"></section>
   <section class="page" id="page-live-location" aria-label="Live Location">
     <div class="live-location-consent">
       <div class="live-location-consent-icon">⌖</div>
       <div class="live-location-consent-copy">
         <strong>Location sharing stays under your control</strong>
-        <span>Opening Live Monitor requests browser permission and starts tracking automatically when allowed. Tracking runs while this page is open and visible. Routes and visited places are saved locally in this browser on this device; they are not uploaded to a Savely server. Background tracking is not guaranteed when the tab is hidden or the phone is locked.</span>
+        <span>Opening Live Location requests browser permission and starts tracking automatically when allowed. Tracking runs while this page is open and visible. Routes and visited places are saved locally in this browser on this device; they are not uploaded to a Savely server. Background tracking is not guaranteed when the tab is hidden or the phone is locked.</span>
       </div>
     </div>
     <div class="live-location-stat-grid">
@@ -3854,27 +3642,21 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
          <button type="button" class="active" data-savely-map-mode="location" role="tab" aria-selected="true" onclick="setSavelyLiveMapMode('location')">My location</button>
          <button type="button" data-savely-map-mode="traffic" role="tab" aria-selected="false" onclick="setSavelyLiveMapMode('traffic')">Live traffic</button>
          <button type="button" data-savely-map-mode="cctv" role="tab" aria-selected="false" onclick="setSavelyLiveMapMode('cctv')">Public CCTV</button>
-         <button type="button" data-savely-map-mode="construction" role="tab" aria-selected="false" onclick="setSavelyLiveMapMode('construction')">Construction Map</button>
         </div>
         <span class="live-location-local-badge">This tab only</span>
        </div>
       </div>
       <div class="live-location-map-shell">
        <div id="savelyLiveLocationMap" class="savely-live-location-map" role="region" aria-label="Savely GPS map showing your current position and movement trail"></div>
-       <div id="savelyWazeTrafficView" class="savely-waze-traffic-view" role="region" aria-label="TomTom live traffic map" hidden>
-        <div id="savelyTomTomTrafficMap" class="savely-tomtom-traffic-map" role="application" aria-label="Metro Manila live traffic map"></div>
-        <div id="savelyTomTomTrafficStatus" class="savely-tomtom-traffic-status">TomTom traffic · Metro Manila</div>
-        <div class="savely-tomtom-key-prompt" id="savelyTomTomKeyPrompt">
-         <div class="savely-tomtom-key-card">
-          <strong>Connect TomTom Live Traffic</strong>
-          <span>Add your free TomTom API key to display continuous traffic-flow overlays across Metro Manila.</span>
-          <button type="button" onclick="savelyConnectTomTomKey()">Connect API key</button>
-          <a href="https://my.tomtom.com/" target="_blank" rel="noopener noreferrer">Get a free TomTom API key ↗</a>
-         </div>
-        </div>
+       <div id="savelyWazeTrafficView" class="savely-waze-traffic-view" role="region" aria-label="Waze live traffic map" hidden>
+        <iframe id="savelyWazeTrafficFrame" title="Waze Live Map traffic view" src="https://embed.waze.com/iframe?zoom=5&amp;lat=12.8797&amp;lon=121.7740&amp;pin=1" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
        </div>
-<div id="savelyPublicCCTVView" class="savely-public-cctv-view" role="region" aria-label="Metro Manila public CCTV directory" hidden>
-        <div class="savely-cctv-main savely-cctv-main-full">
+       <div id="savelyPublicCCTVView" class="savely-public-cctv-view" role="region" aria-label="Metro Manila public CCTV directory" hidden>
+        <aside class="savely-cctv-city-sidebar">
+         <div class="savely-cctv-sidebar-heading"><span>METRO MANILA</span><strong>Choose a city</strong><small>1 city currently available</small></div>
+                  <nav id="savelyCCTVCityList" class="savely-cctv-city-list" aria-label="Available CCTV city"></nav>
+        </aside>
+        <div class="savely-cctv-main">
          <div class="savely-cctv-main-head">
           <div><span class="savely-cctv-eyebrow">PUBLIC CAMERA DIRECTORY · NCR</span><h3 id="savelyCCTVSelectedCity">Quezon City</h3><p id="savelyCCTVSelectedCityDescription">Browse major roads and intersections in this area.</p></div>
           <span class="savely-cctv-coverage-pill"><i></i> Road directory</span>
@@ -3890,27 +3672,16 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
           </div>
           <div class="savely-cctv-featured-foot"><span>This is a public sky/panoramic webcam, not a road-facing traffic CCTV. Playback depends on the publisher's stream being active and allowing embedding.</span><a href="https://www.vision-environnement.com/en/webcam/philippines/grand-manille/19619-quezon-city-live-sky-camera/" target="_blank" rel="noopener noreferrer">Original camera source ↗</a></div>
          </section>
+         <div class="savely-cctv-road-toolbar"><div><strong>Roads & intersections</strong><small id="savelyCCTVRoadCount">0 road references</small></div><label><span>⌕</span><input id="savelyCCTVRoadSearch" type="search" placeholder="Search road or area…" autocomplete="off"></label></div>
+         <div id="savelyCCTVRoadGrid" class="savely-cctv-road-grid"></div>
+         <div class="savely-cctv-sources">
+          <div><strong>Public source checks</strong><small>Open the original source to confirm camera coverage and access terms.</small></div>
           <a href="https://pia.gov.ph/news/mmda-sm-supermalls-partner-for-traffic-information-sharing-project/" target="_blank" rel="noopener noreferrer">MMDA selected-feed partnership <span>↗</span></a>
           <a href="https://lagayngdaan.com/cameras/" target="_blank" rel="noopener noreferrer">External public camera directory <span>↗</span></a>
           <a href="https://mmda.gov.ph/" target="_blank" rel="noopener noreferrer">MMDA official website <span>↗</span></a>
          </div>
         </div>
-       <div id="savelyConstructionMapView" class="savely-construction-map-view" role="region" aria-label="DPWH construction project map" hidden><div class="panel" style="padding:18px">
-      <div class="panel-head" style="align-items:flex-start;flex-wrap:wrap">
-        <div><h2>Philippines Construction Project Map</h2><div class="panel-sub">Explore public works projects recorded by DPWH. Select a marker on the map to view project information.</div></div>
-        <a class="btn btn-light" href="https://proyektoph.com/map" target="_blank" rel="noopener noreferrer">Open full map ↗</a>
-      </div>
-      <div class="construction-map-legend"><span><i></i> DPWH project locations</span><span class="construction-map-source">Source: ProyektoPH · DPWH data</span></div>
-      <div class="construction-map-frame-wrap">
-        <iframe id="savelyConstructionMapFrame" title="Interactive DPWH construction project map of the Philippines" src="https://proyektoph.com/map" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
-        <div class="construction-map-fallback" id="savelyConstructionMapFallback" hidden>
-          <strong>The project map could not be displayed inside Savely.</strong>
-          <span>The source website may restrict iframe embedding or the map may be temporarily unavailable.</span>
-          <a href="https://proyektoph.com/map" target="_blank" rel="noopener noreferrer">Open ProyektoPH project map ↗</a>
-        </div>
-      </div>
-      <div class="footer-note">Project records and map pins are based on DPWH-published data. Coverage depends on whether a project has recorded coordinates. Data is not a live construction camera or independently verified site progress. <a href="https://proyektoph.com/developers" target="_blank" rel="noopener noreferrer">API and data notes</a>.</div>
-    </div></div>
+       </div>
        <div class="live-location-map-controls" id="savelyGpsMapControls" aria-label="GPS map controls">
         <div class="live-location-map-live-state"><span class="live-location-status-dot" id="liveLocationStatusDot"></span><span><strong id="liveLocationStatus">Connecting to GPS</strong><small id="liveLocationStatusHelp">Waiting for browser permission.</small></span></div>
         <button type="button" class="live-location-map-action" id="liveLocationStop" onclick="stopSavelyLiveLocation('Tracking stopped by you.',true)" disabled>Stop tracking</button>
@@ -3918,51 +3689,77 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
         <button type="button" class="live-location-map-action danger" id="liveLocationClear" onclick="clearSavelyLocationTrail()">Clear current route</button>
        </div>
        <div class="live-location-map-controls savely-waze-map-controls" id="savelyWazeMapControls" aria-label="Traffic map controls" hidden>
-        <div class="live-location-map-live-state"><span class="live-location-status-dot is-live"></span><span><strong>TomTom Live Traffic</strong><small>Live traffic-flow overlay across Metro Manila.</small></span></div>
-        <button type="button" class="live-location-map-action" onclick="centerSavelyTomTomTraffic()">Center on my location</button>
+        <div class="live-location-map-live-state"><span class="live-location-status-dot is-live"></span><span><strong>Waze Live Traffic</strong><small>Traffic reports and road alerts in Waze's own map.</small></span></div>
+        <button type="button" class="live-location-map-action" onclick="centerSavelyWazeTraffic()">Center on my location</button>
        </div>
+      </div>
       <div class="live-location-map-footer" id="savelyGpsMapFooter"><span><i class="live-location-legend-dot current"></i> Current / last position</span><span><i class="live-location-legend-line"></i> Recorded movement trail</span><span id="liveLocationLastUpdate">No location update yet</span></div>
-      <div class="savely-waze-map-note" id="savelyWazeMapNote" hidden>Traffic flow is provided by TomTom Traffic and displayed over the Metro Manila street map. Coverage and refresh frequency depend on TomTom data availability.</div>
-     </div>
+      <div class="savely-waze-map-note" id="savelyWazeMapNote" hidden>Live traffic is provided by the Waze Live Map. Traffic conditions and reports depend on Waze coverage and community updates. This view is separate from Savely's GPS route map.</div>
     </section>
+    <section class="panel savely-location-history-panel">
+      <div class="panel-head"><div><h2>Location history</h2><div class="panel-sub">Your saved routes and places visited on this device.</div></div><div class="savely-location-history-actions"><button type="button" class="btn btn-light btn-sm" onclick="exportSavelyLocationHistory()">Export</button><button type="button" class="btn btn-light btn-sm danger-text" onclick="deleteSavelyLocationHistory()">Delete history</button></div></div>
+      <div class="savely-location-history-tabs" role="tablist" aria-label="Location history type">
+       <button type="button" class="active" data-location-history-tab="routes" onclick="setSavelyLocationHistoryTab('routes')">Routes</button>
+       <button type="button" data-location-history-tab="places" onclick="setSavelyLocationHistoryTab('places')">Visited places</button>
+      </div>
+      <div id="savelyLocationHistoryContent"><div class="live-location-empty">Your saved routes and visited places will appear here after GPS tracking records movement.</div></div>
+    </section>
+    <section class="panel live-location-history-panel">
+      <div class="panel-head"><div><h2>Recent location points</h2><div class="panel-sub">Latest GPS points from the current tracking session.</div></div><span class="pill" id="liveLocationPointCount">0 points</span></div>
+      <div id="liveLocationRecentPoints" class="live-location-recent-points"><div class="live-location-empty">No location points yet. Open Live Location and allow browser permission to begin.</div></div>
+    </section>
+  </section>
+  <section class="page" id="page-interest">
+    <div class="panel">
+      <div class="panel-head"><div><h2>Interest calculator</h2><div class="panel-sub">Compare Philippine bank and app-based savings rates (October 2026 snapshots).</div></div><span class="panel-sub" id="interestRateUpdated">October 2026 rate snapshots · verify with bank</span></div>
+      <div class="interest-bank-section">
+      <div class="interest-section-heading"><span class="interest-section-kicker">01 · CHOOSE A PROVIDER</span><h3>Compare savings rates</h3><p>Select a bank or digital wallet to load its listed base rate.</p></div>
+      <div class="interest-bank-tabs" role="tablist" aria-label="Bank type">
+        <button type="button" class="interest-bank-tab active" data-interest-group="Traditional">Traditional Banks</button>
+        <button type="button" class="interest-bank-tab" data-interest-group="Digital">Digital Banks</button>
+      </div>
+      <div class="interest-bank-grid" id="interestBankGrid"></div>
+      <div class="interest-selected-note" id="interestSelectedNote">Choose a bank to load its listed base rate.</div>
+      </div>
+      <div class="interest-input-section">
+      <div class="interest-section-heading"><span class="interest-section-kicker">02 · YOUR SAVINGS</span><h3>Customize your estimate</h3><p>Adjust your balance, applicable rate, and withholding tax.</p></div>
+      <div class="form-grid" style="max-width:100%;margin-top:16px">
+        <div class="field"><label for="interestCalcPrincipal">Starting balance (₱)</label><input id="interestCalcPrincipal" type="number" min="0" step="1" value="50000" placeholder="e.g. 50000"></div>
+        <div class="field"><label for="interestCalcRate">Annual interest rate (% p.a.)</label><input id="interestCalcRate" type="number" min="0" max="100" step="0.01" value="0.0625" readonly aria-readonly="true"></div>
+        <div class="field" id="interestCalcMayaBonusWrap" style="display:none"><label for="interestCalcMayaBonus">Maya bonus interest option</label><select id="interestCalcMayaBonus"><option value="3">3% p.a. — base rate, no bonus</option><option value="5">5% p.a. — +2% bonus</option><option value="6">6% p.a. — +3% bonus</option><option value="7">7% p.a. — +4% bonus</option><option value="8">8% p.a. — +5% bonus</option><option value="10">10% p.a. — +7% bonus</option><option value="12">12% p.a. — +9% bonus</option><option value="13">13% p.a. — eligible users only</option><option value="15">15% p.a. — maximum / eligibility required</option></select><div class="panel-sub">Choose the bonus rate currently shown in your Maya app. This changes the estimate only.</div></div>
+        <div class="field"><label for="interestCalcTax">Withholding tax (%)</label><input id="interestCalcTax" type="number" min="0" max="100" step="0.01" value="20"></div>
+        <div class="field full"><label>Interest period</label><div class="interest-period-grid" id="interestPeriodCards" role="group" aria-label="Choose interest period">
+          <button type="button" class="interest-period-card active" data-interest-period="daily"><span>Daily</span><strong>₱0.00</strong><small>Estimated total</small></button>
+          <button type="button" class="interest-period-card" data-interest-period="monthly"><span>Monthly</span><strong>₱0.00</strong><small>Estimated total</small></button>
+          <button type="button" class="interest-period-card" data-interest-period="quarterly"><span>Quarterly</span><strong>₱0.00</strong><small>Estimated total</small></button>
+          <button type="button" class="interest-period-card" data-interest-period="annually"><span>Annually</span><strong>₱0.00</strong><small>Estimated total</small></button>
+        </div></div>
+      </div>
+      </div>
+      <div class="footer-note" style="margin-top:16px">Estimates use simple interest and the selected rate. Promotional rates may require missions, balance tiers, or eligibility. Rates were checked against available October 2026 bank information where available. They are not live quotes; confirm the bank's official terms before depositing.</div>
     </div>
-    
-</section>
-
-  <section class="page" id="page-metro-snapshot" aria-label="Metro Manila Snapshot Monitor">
-    <div class="panel" style="padding:20px">
-      <div class="panel-head" style="align-items:flex-start;flex-wrap:wrap">
-        <div><span class="savely-cctv-eyebrow">PUBLIC CAMERA SNAPSHOTS · NCR</span><h2 style="font-size:20px;margin-top:5px">Metro Manila Snapshot Monitor</h2><div class="panel-sub">Latest still images from publicly accessible cameras, with source timestamps and automatic refresh when a verified snapshot feed is connected.</div></div>
-        <span class="savely-cctv-coverage-pill"><i></i> Snapshot monitor</span>
-      </div>
-      <div class="savely-snapshot-empty" role="status">
-        <div class="savely-snapshot-empty-icon">▧</div>
-        <strong>No public snapshot feeds connected yet</strong>
-        <p>Metro Manila agencies operate CCTV networks, but a publicly accessible, direct still-image URL that Savely can refresh automatically has not yet been verified. This monitor will show camera images here once a source provides a public snapshot endpoint.</p>
-        <small>Only publicly released camera images will be displayed. Private or restricted CCTV feeds will not be embedded.</small>
-      </div>
-      <div class="footer-note" style="margin-top:14px">The existing Quezon City Live Sky Camera remains under Live Monitor → Quezon City. This page is reserved for periodic image snapshots, not video streams.</div>
+    <div class="panel interest-summary-panel interest-result-card" style="margin-top:18px;background:linear-gradient(135deg,#e8f8ef 0%,#d7f3e3 100%);border:1px solid #9bd8b3;color:#14532d">
+      <div class="panel-sub" id="interestCalcSelectedPeriodLabel" style="color:#26734d">Daily estimated total amount</div>
+      <h2 id="interestCalcEnding" style="font-size:30px;margin-top:8px;color:#166534">₱50,000.00</h2>
+      <div class="panel-sub" id="interestCalcSummary" style="color:#26734d">Includes estimated net interest after withholding tax.</div>
+      <div class="footer-note" style="margin-top:10px;color:#26734d">Interest is estimated using simple interest, with the selected bank rate and withholding tax.</div>
     </div>
   </section>
 
   <section class="page" id="page-salary">
     <div class="cards salary-summary-cards" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:18px">
-      <div class="stat salary-monthly-takehome-stat">
-        <div class="stat-top">Monthly take-home salary</div>
-        <div class="stat-value" id="salaryMonthlyDisplay" style="color:var(--green)">₱0.00</div>
-        <div class="stat-foot" id="salaryPayDayDisplay">Set your monthly salary below</div>
-      </div>
-      <div class="stat salary-annual-remaining-stat salary-remaining-blue">
-        <div class="stat-top">Remaining salary this year</div>
-        <div class="stat-value" id="salaryAnnualRemainingDisplay">₱0.00 <span class="annual-projection-inline">/ <span id="salaryAnnualDisplay">₱0.00</span></span></div>
-        <div class="stat-foot" id="salaryAnnualRemainingFoot">Estimated future cutoffs through December</div>
-      </div>
+      <div class="stat"><div class="stat-top">Monthly take-home salary</div><div class="stat-value" id="salaryMonthlyDisplay" style="color:var(--green)">₱0.00</div><div class="stat-foot" id="salaryPayDayDisplay">Set your monthly salary below</div></div>
+      <div class="stat"><div class="stat-top">Annual projection</div><div class="stat-value" id="salaryAnnualDisplay" style="color:var(--blue)">₱0.00</div><div class="stat-foot">Monthly salary × 12, before any changes or bonuses</div></div>
+      <div class="stat salary-annual-remaining-stat"><div class="stat-top">Remaining salary this year</div><div class="stat-value" id="salaryAnnualRemainingDisplay" style="color:#07875f">₱0.00</div><div class="stat-foot" id="salaryAnnualRemainingFoot">Estimated future cutoffs through December</div></div>
     </div>
     <section class="panel salary-calendar-panel" aria-labelledby="salaryCalendarTitle" style="margin-bottom:18px">
-      <div class="salary-calendar-year-tabs-row"><div id="salaryCalendarYearTabs" class="salary-calendar-year-tabs" role="tablist" aria-label="Choose salary calendar year"></div></div>
       <div class="panel-head salary-calendar-head">
-        <div><h2 id="salaryCalendarTitle" style="font-size:19px">Salary calendar</h2></div>
+        <div><h2 id="salaryCalendarTitle" style="font-size:19px">Salary calendar</h2><div class="panel-sub">View both monthly cutoff paydays. If a payday falls on a weekend or recognized Philippine holiday, it moves to the previous working day.</div></div>
         <div class="salary-calendar-controls">
+          <div class="salary-calendar-view-toggle" role="group" aria-label="Calendar view">
+            <button type="button" class="active" data-salary-calendar-view="month" onclick="setSalaryCalendarView('month')" aria-pressed="true">Monthly</button>
+            <button type="button" data-salary-calendar-view="year" onclick="setSalaryCalendarView('year')" aria-pressed="false">Yearly</button>
+          </div>
           <div class="salary-calendar-nav">
             <button type="button" class="btn btn-light" id="salaryCalendarPrev" onclick="changeSalaryCalendarMonth(-1)" aria-label="Previous month">‹</button>
             <button type="button" class="btn btn-light" onclick="goToCurrentSalaryCalendarMonth()">Today</button>
@@ -3984,15 +3781,14 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
       <form id="monthlySalaryForm" onsubmit="saveMonthlySalary(event)" class="form-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
         <div class="field"><label for="monthlySalaryAmount">Monthly salary (₱)</label><input id="monthlySalaryAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 12000" required></div>
         <div class="field"><label for="monthlySalaryPayDay">Usual payday</label><select id="monthlySalaryPayDay"><option value="15-30">15–30 cutoff (15th &amp; end of month)</option><option value="5-20">5–20 cutoff (5th &amp; 20th)</option><option value="10-25">10–25 cutoff (10th &amp; 25th)</option><option value="custom">Varies / not fixed</option></select></div>
-        <div class="field"><label for="monthlySalaryYear">Applies to year</label><select id="monthlySalaryYear" onchange="loadSalaryYearIntoForm()"></select></div>
-
         <div class="field" style="grid-column:1/-1"><label for="monthlySalaryNotes">Notes (optional)</label><input id="monthlySalaryNotes" type="text" maxlength="240" placeholder="e.g. Part-time salary, net of deductions"></div>
         <div style="grid-column:1/-1;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button type="submit" class="btn btn-primary">Save monthly salary</button><span class="panel-sub" id="monthlySalaryUpdatedAt">Not saved yet</span></div>
       </form>
     </div></div>
   </section>
 
-    <section class="page" id="page-debt">
+
+  <section class="page" id="page-debt">
     <div class="cards debt-summary-cards">
       <div class="stat"><div class="stat-top">I owe</div><div class="stat-value" id="debtOweTotal" style="color:var(--red)">₱0.00</div><div class="stat-foot">Your remaining payments</div></div>
       <div class="stat"><div class="stat-top">Owed to me</div><div class="stat-value" id="debtLentTotal" style="color:var(--green)">₱0.00</div><div class="stat-foot">Money to collect</div></div>
@@ -4102,42 +3898,7 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
   <div class="expenses-calendar-legend"><span><i></i> Expense recorded</span><span>Choose any day to add an expense</span></div>
  </div>
 </section>
-  <section class="page" id="page-interest">
-    <div class="panel">
-      <div class="panel-head"><div><h2>Interest calculator</h2><div class="panel-sub">Compare Philippine bank and app-based savings rates (October 2026 snapshots).</div></div><span class="panel-sub" id="interestRateUpdated">October 2026 rate snapshots · verify with bank</span></div>
-      <div class="interest-bank-section">
-      <div class="interest-section-heading"><span class="interest-section-kicker">01 · CHOOSE A PROVIDER</span><h3>Compare savings rates</h3><p>Select a bank or digital wallet to load its listed base rate.</p></div>
-      <div class="interest-bank-tabs" role="tablist" aria-label="Bank type">
-        <button type="button" class="interest-bank-tab active" data-interest-group="Traditional">Traditional Banks</button>
-        <button type="button" class="interest-bank-tab" data-interest-group="Digital">Digital Banks</button>
-      </div>
-      <div class="interest-bank-grid" id="interestBankGrid"></div>
-      <div class="interest-selected-note" id="interestSelectedNote">Choose a bank to load its listed base rate.</div>
-      </div>
-      <div class="interest-input-section">
-      <div class="interest-section-heading"><span class="interest-section-kicker">02 · YOUR SAVINGS</span><h3>Customize your estimate</h3><p>Adjust your balance, applicable rate, and withholding tax.</p></div>
-      <div class="form-grid" style="max-width:100%;margin-top:16px">
-        <div class="field"><label for="interestCalcPrincipal">Starting balance (₱)</label><input id="interestCalcPrincipal" type="number" min="0" step="1" value="50000" placeholder="e.g. 50000"></div>
-        <div class="field"><label for="interestCalcRate">Annual interest rate (% p.a.)</label><input id="interestCalcRate" type="number" min="0" max="100" step="0.01" value="0.0625" readonly aria-readonly="true"></div>
-        <div class="field" id="interestCalcMayaBonusWrap" style="display:none"><label for="interestCalcMayaBonus">Maya bonus interest option</label><select id="interestCalcMayaBonus"><option value="3">3% p.a. — base rate, no bonus</option><option value="5">5% p.a. — +2% bonus</option><option value="6">6% p.a. — +3% bonus</option><option value="7">7% p.a. — +4% bonus</option><option value="8">8% p.a. — +5% bonus</option><option value="10">10% p.a. — +7% bonus</option><option value="12">12% p.a. — +9% bonus</option><option value="13">13% p.a. — eligible users only</option><option value="15">15% p.a. — maximum / eligibility required</option></select><div class="panel-sub">Choose the bonus rate currently shown in your Maya app. This changes the estimate only.</div></div>
-        <div class="field"><label for="interestCalcTax">Withholding tax (%)</label><input id="interestCalcTax" type="number" min="0" max="100" step="0.01" value="20"></div>
-        <div class="field full"><label>Interest period</label><div class="interest-period-grid" id="interestPeriodCards" role="group" aria-label="Choose interest period">
-          <button type="button" class="interest-period-card active" data-interest-period="daily"><span>Daily</span><strong>₱0.00</strong><small>Estimated total</small></button>
-          <button type="button" class="interest-period-card" data-interest-period="monthly"><span>Monthly</span><strong>₱0.00</strong><small>Estimated total</small></button>
-          <button type="button" class="interest-period-card" data-interest-period="quarterly"><span>Quarterly</span><strong>₱0.00</strong><small>Estimated total</small></button>
-          <button type="button" class="interest-period-card" data-interest-period="annually"><span>Annually</span><strong>₱0.00</strong><small>Estimated total</small></button>
-        </div></div>
-      </div>
-      </div>
-      <div class="footer-note" style="margin-top:16px">Estimates use simple interest and the selected rate. Promotional rates may require missions, balance tiers, or eligibility. Rates were checked against available October 2026 bank information where available. They are not live quotes; confirm the bank's official terms before depositing.</div>
-    </div>
-    <div class="panel interest-summary-panel interest-result-card" style="margin-top:18px;background:linear-gradient(135deg,#e8f8ef 0%,#d7f3e3 100%);border:1px solid #9bd8b3;color:#14532d">
-      <div class="panel-sub" id="interestCalcSelectedPeriodLabel" style="color:#26734d">Daily estimated total amount</div>
-      <h2 id="interestCalcEnding" style="font-size:30px;margin-top:8px;color:#166534">₱50,000.00</h2>
-      <div class="panel-sub" id="interestCalcSummary" style="color:#26734d">Includes estimated net interest after withholding tax.</div>
-      <div class="footer-note" style="margin-top:10px;color:#26734d">Interest is estimated using simple interest, with the selected bank rate and withholding tax.</div>
-    </div>
-  </section>
+  <section class="page" id="page-interest"><div class="section-grid"><div class="panel"><div class="panel-head"><div><h2>Interest calculator</h2><div class="panel-sub">Estimate growth using a fixed annual rate.</div></div></div><form id="interestForm"><div class="form-grid"><div class="field full"><label>Principal amount (₱)</label><input id="principal" type="number" min="0" step=".01" value="50000" required></div><div class="field"><label>Annual interest rate (%)</label><input id="rate" type="number" min="0" step=".01" value="6" required></div><div class="field"><label>Duration (days)</label><input id="days" type="number" min="1" value="30" required></div><div class="field full"><label>Compounding</label><select id="compound"><option value="simple">Simple interest</option><option value="daily">Daily compounding (estimate)</option></select></div></div><div class="form-actions"><button class="btn btn-primary">Calculate interest</button></div></form><div id="interestResult" style="margin-top:18px"></div></div><div class="panel"><h2>How this estimate works</h2><p class="panel-sub" style="line-height:1.8">This calculator estimates interest before tax, fees, and provider-specific rules. Actual bank or e-wallet earnings may differ. It does not connect to a financial institution.</p><div class="notice" style="margin-top:18px">Interest is not automatically added to your account. Record credited interest as a transaction when it arrives.</div></div></div></section>
   <section class="page" id="page-reports"><div class="cards" id="reportStats"></div><div class="panel"><div class="panel-head"><div><h2>Transaction report</h2><div class="panel-sub">Filter a date range and export a CSV file.</div></div><button class="btn btn-light" onclick="exportCSV()">↓ Export CSV</button></div><div class="form-grid" style="margin-bottom:18px"><div class="field"><label>From date</label><input id="reportFrom" type="date"></div><div class="field"><label>To date</label><input id="reportTo" type="date"></div></div><div class="table-wrap" id="reportTable"></div></div></section>
   <section class="page" id="page-settings"><div class="settings-tabs-wrap"><div class="settings-tabs" role="tablist" aria-label="Settings sections" style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;padding-bottom:12px;border-bottom:1px solid var(--line)">
 <button type="button" class="financial-tab active" data-settings-tab="datetime">Date &amp; Time</button>
@@ -4208,7 +3969,7 @@ const STORE='savely_html_v1';
 const peso=n=>new Intl.NumberFormat('en-PH',{style:'currency',currency:'PHP',maximumFractionDigits:2}).format(Number(n)||0);
 const todayISO=()=>new Date().toISOString().slice(0,10);
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36);
-const seed=()=>({debtRecords:[],accounts:[{id:'main',name:'Main Savings',type:'Savings',opening:50000,color:'green'},{id:'emergency',name:'Emergency Fund',type:'Savings',opening:0,color:'orange'}],goals:[],transactions:[],budgets:[{id:uid(),category:'Food & groceries',limit:5000},{id:uid(),category:'Transportation',limit:2000},{id:uid(),category:'Shopping',limit:2500},{id:uid(),category:'Bills & utilities',limit:3000}],recurring:[],savingsList:[],monthlySalary:0,salaryPayDay:'custom',salaryNotes:'',salaryUpdatedAt:null,salaryYearSettings:{}});
+const seed=()=>({debtRecords:[],accounts:[{id:'main',name:'Main Savings',type:'Savings',opening:50000,color:'green'},{id:'emergency',name:'Emergency Fund',type:'Savings',opening:0,color:'orange'}],goals:[],transactions:[],budgets:[{id:uid(),category:'Food & groceries',limit:5000},{id:uid(),category:'Transportation',limit:2000},{id:uid(),category:'Shopping',limit:2500},{id:uid(),category:'Bills & utilities',limit:3000}],recurring:[],savingsList:[],monthlySalary:0,salaryPayDay:'custom',salaryNotes:'',salaryUpdatedAt:null});
 let data;
 try{data=JSON.parse(localStorage.getItem(STORE))||seed();if(!Array.isArray(data.savingsList))data.savingsList=[];if(!Array.isArray(data.debtRecords))data.debtRecords=[]}catch(e){data=seed()}
 function save(){try{localStorage.setItem(STORE,JSON.stringify(data))}catch(e){toast('Browser storage is unavailable. Export a backup to keep your data safe.')}render()}
@@ -4700,60 +4461,19 @@ function updateSavingsTotalAsOf(){
   el.title=`Live savings total timestamp · ${timezone}`;
  }catch(err){el.textContent='As of '+new Date().toLocaleString('en-PH');}
 }
-
-function salarySettingsForYear(year){
- const y=String(Number(year)||new Date().getFullYear());
- const all=data.salaryYearSettings&&typeof data.salaryYearSettings==='object'?data.salaryYearSettings:{};
- // Future-year rates count only when explicitly saved by the user in that year's salary form.
- if(all[y]&&all[y].salaryRateExplicit===true)return all[y];
- if(Number(y)===new Date().getFullYear()){
-  return {monthlySalary:Number(data.monthlySalary)||0,salaryPayDay:data.salaryPayDay||'custom',salaryNotes:data.salaryNotes||'',salaryUpdatedAt:data.salaryUpdatedAt||null};
- }
- return {monthlySalary:0,salaryPayDay:'custom',salaryNotes:'',salaryUpdatedAt:null};
-}
-function populateSalaryYearOptions(){
- const select=document.getElementById('monthlySalaryYear');if(!select)return;
- const current=new Date().getFullYear();
- const previous=Number(select.value)||current;
- select.innerHTML='';
- for(let year=current;year<=current+10;year++){
-  const option=document.createElement('option');option.value=String(year);
-  option.textContent=year===current?`${year} (Current year)`:String(year);
-  select.appendChild(option);
- }
- select.value=String(Math.min(current+10,Math.max(current,previous)));
-}
-function loadSalaryYearIntoForm(){
- const select=document.getElementById('monthlySalaryYear');
- const year=Number(select?.value)||new Date().getFullYear();
- const settings=salarySettingsForYear(year);
- const amount=document.getElementById('monthlySalaryAmount');
- const payday=document.getElementById('monthlySalaryPayDay');
- const notes=document.getElementById('monthlySalaryNotes');
- const updated=document.getElementById('monthlySalaryUpdatedAt');
- if(amount)amount.value=settings.monthlySalary?String(settings.monthlySalary):'';
- if(payday)payday.value=settings.salaryPayDay||'custom';
- if(notes)notes.value=settings.salaryNotes||'';
- if(updated)updated.textContent=settings.salaryUpdatedAt?`Last updated: ${new Date(settings.salaryUpdatedAt).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'})}`:'No salary saved for this year yet';
- const submit=document.querySelector('#monthlySalaryForm button[type="submit"]');
- if(submit)submit.textContent=year===new Date().getFullYear()?'Save monthly salary':'Save salary for '+year;
-}
-
 function renderSalaryPage(){
- const currentYear=new Date().getFullYear();
- const currentSettings=salarySettingsForYear(currentYear);
- const amount=Math.max(0,Number(currentSettings.monthlySalary)||0);
+ const amount=Math.max(0,Number(data.monthlySalary)||0);
  const display=document.getElementById('salaryMonthlyDisplay');if(display)display.textContent=peso(amount);
  const annual=document.getElementById('salaryAnnualDisplay');if(annual)annual.textContent=peso(amount*12);
- const rawPayday=String(currentSettings.salaryPayDay||'custom');
+ const rawPayday=String(data.salaryPayDay||'custom');
+ // Migrate legacy single-date choices to the closest twice-monthly cutoff schedule.
  const paydayValue=({'1':'5-20','5':'5-20','10':'10-25','15':'15-30','20':'5-20','25':'10-25','30':'15-30'})[rawPayday]||rawPayday;
  const payLabels={'15-30':'15th & end of month (15–30 cutoff)','5-20':'5th & 20th of the month (5–20 cutoff)','10-25':'10th & 25th of the month (10–25 cutoff)'};
  const pay=document.getElementById('salaryPayDayDisplay');if(pay){pay.textContent=paydayValue==='custom'?'Payday varies':`Usual paydays: ${payLabels[paydayValue]||paydayValue}`;}
  const input=document.getElementById('monthlySalaryAmount');if(input&&document.activeElement!==input)input.value=amount?String(amount):'';
  const payday=document.getElementById('monthlySalaryPayDay');if(payday)payday.value=paydayValue;
- const notes=document.getElementById('monthlySalaryNotes');if(notes&&document.activeElement!==notes)notes.value=String(currentSettings.salaryNotes||'');
- const updated=document.getElementById('monthlySalaryUpdatedAt');if(updated)updated.textContent=currentSettings.salaryUpdatedAt?`Last updated: ${new Date(currentSettings.salaryUpdatedAt).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'})}`:'Not saved yet';
- populateSalaryYearOptions();
+ const notes=document.getElementById('monthlySalaryNotes');if(notes&&document.activeElement!==notes)notes.value=String(data.salaryNotes||'');
+ const updated=document.getElementById('monthlySalaryUpdatedAt');if(updated)updated.textContent=data.salaryUpdatedAt?`Last updated: ${new Date(data.salaryUpdatedAt).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'})}`:'Not saved yet';
  updateSalaryAnnualRemainingCard();
  renderSalaryCalendar();
 }
@@ -4766,17 +4486,19 @@ function salaryCalendarCurrentMonthStart(){
  const now=new Date();return new Date(now.getFullYear(),now.getMonth(),1);
 }
 function changeSalaryCalendarMonth(delta){
- const now=new Date(),selectedYear=salaryCalendarCursor.getFullYear();
- const minimum=new Date(now.getFullYear(),now.getMonth(),1);
- const yearStart=new Date(selectedYear,0,1),yearEnd=new Date(selectedYear,11,1);
- let candidate=new Date(selectedYear,salaryCalendarCursor.getMonth()+Number(delta||0),1);
- if(candidate<minimum)candidate=minimum;
- if(candidate<yearStart)candidate=yearStart;
- if(candidate>yearEnd)candidate=yearEnd;
- salaryCalendarCursor=candidate;
+ const now=new Date(),step=Number(delta||0);
+ if(salaryCalendarViewMode==='year'){
+  const minYear=now.getFullYear(),targetYear=salaryCalendarCursor.getFullYear()+step;
+  const year=Math.max(minYear,targetYear);
+  salaryCalendarCursor=new Date(year,year===minYear?now.getMonth():0,1);
+ }else{
+  const candidate=new Date(salaryCalendarCursor.getFullYear(),salaryCalendarCursor.getMonth()+step,1);
+  const minimum=salaryCalendarCurrentMonthStart();
+  salaryCalendarCursor=candidate<minimum?minimum:candidate;
+ }
  salaryCalendarSelectedDate=null;
  renderSalaryCalendar();
- refreshPhilippineHolidays([selectedYear]);
+ refreshPhilippineHolidays([salaryCalendarCursor.getFullYear()]);
 }
 function setSalaryCalendarView(mode){
  salaryCalendarViewMode=mode==='year'?'year':'month';
@@ -4868,25 +4590,22 @@ function getSalaryPaydayEntries(schedule,year,monthIndex){
  });
 }
 function getSalaryPaydays(schedule,year,monthIndex){return getSalaryPaydayEntries(schedule,year,monthIndex).map(entry=>entry.day);}
-function getSalaryRemainingProjection(year){
- const targetYear=Number(year)||new Date().getFullYear();
- const settings=salarySettingsForYear(targetYear);
- const amount=Math.max(0,Number(settings.monthlySalary)||0);
- if(!amount||!settings.salaryUpdatedAt)return {amount:0,count:0,description:`No salary rate saved for ${targetYear} yet.`};
+function getSalaryRemainingProjection(){
+ const amount=Math.max(0,Number(data.monthlySalary)||0);
+ if(!amount)return {amount:0,count:0,description:'Add your monthly salary to calculate the remaining projection.'};
  const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
- const raw=String(settings.salaryPayDay||'custom');
+ const raw=String(data.salaryPayDay||'custom');
  const schedule=({'1':'5-20','5':'5-20','10':'10-25','15':'15-30','20':'5-20','25':'10-25','30':'15-30'})[raw]||raw;
- const firstMonth=targetYear===now.getFullYear()?now.getMonth():0;
  if(schedule==='custom'){
-  const months=Math.max(0,12-firstMonth);
+  const months=Math.max(0,12-now.getMonth());
   return {amount:Math.round(amount*months*100)/100,count:months,description:`Approx. ${months} monthly period${months===1?'':'s'} remaining · payday varies`};
  }
  let remaining=0,count=0;
- for(let month=firstMonth;month<12;month++){
-  const lastDay=new Date(targetYear,month+1,0).getDate();
+ for(let month=now.getMonth();month<12;month++){
+  const year=now.getFullYear(),lastDay=new Date(year,month+1,0).getDate();
   const scheduled=schedule==='15-30'?[15,lastDay]:schedule==='10-25'?[10,25]:[5,20];
   for(const day of scheduled){
-   const payoutDate=new Date(targetYear,month,Math.min(day,lastDay));
+   const payoutDate=new Date(year,month,Math.min(day,lastDay));
    let guard=0;
    while(guard++<20){
     const iso=salaryCalendarISO(payoutDate.getFullYear(),payoutDate.getMonth(),payoutDate.getDate());
@@ -4895,38 +4614,25 @@ function getSalaryRemainingProjection(year){
     if(!isWeekend&&!isHoliday)break;
     payoutDate.setDate(payoutDate.getDate()-1);
    }
-   if(targetYear>now.getFullYear()||payoutDate>=today){remaining+=amount/2;count++;}
+   if(payoutDate>=today){remaining+=amount/2;count++;}
   }
  }
- return {amount:Math.round(remaining*100)/100,count,description:`${count} scheduled cutoff payout${count===1?'':'s'} remaining in ${targetYear}`};
+ return {amount:Math.round(remaining*100)/100,count,description:`${count} scheduled cutoff payout${count===1?'':'s'} remaining this year`};
 }
-function updateSalaryAnnualRemainingCard(year){
- const targetYear=Number(year)||salaryCalendarCursor.getFullYear()||new Date().getFullYear();
- const settings=salarySettingsForYear(targetYear);
- const amount=Math.max(0,Number(settings.monthlySalary)||0);
+function updateSalaryAnnualRemainingCard(){
  const value=document.getElementById('salaryAnnualRemainingDisplay');
  const foot=document.getElementById('salaryAnnualRemainingFoot');
- const annual=document.getElementById('salaryAnnualDisplay');
- const monthly=document.getElementById('salaryMonthlyDisplay');
- const paydayFoot=document.getElementById('salaryPayDayDisplay');
  if(!value||!foot)return;
- const projection=getSalaryRemainingProjection(targetYear);
- if(monthly)monthly.textContent=peso(amount);
- if(annual)annual.textContent=peso(amount*12);
- value.childNodes[0].textContent=peso(projection.amount)+' ';
+ const projection=getSalaryRemainingProjection();
+ value.textContent=peso(projection.amount);
  foot.textContent=projection.description;
- const raw=String(settings.salaryPayDay||'custom');
- const schedule=({'1':'5-20','5':'5-20','10':'10-25','15':'15-30','20':'5-20','25':'10-25','30':'15-30'})[raw]||raw;
- const labels={'15-30':'15th & end of month (15–30 cutoff)','5-20':'5th & 20th of the month (5–20 cutoff)','10-25':'10th & 25th of the month (10–25 cutoff)'};
- if(paydayFoot)paydayFoot.textContent=amount&&settings.salaryUpdatedAt?(schedule==='custom'?'Payday varies':`Usual paydays: ${labels[schedule]||schedule}`):`No salary rate saved for ${targetYear}`;
 }
 function renderSalaryYearCalendar(year){
  const root=document.getElementById('salaryCalendarYearGrid');
  if(!root)return;
  const now=new Date(),firstMonth=year===now.getFullYear()?now.getMonth():0;
- const yearSettings=salarySettingsForYear(year);
- const amount=Math.max(0,Number(yearSettings.monthlySalary)||0),schedule=String(yearSettings.salaryPayDay||'custom');
- const hasSchedule=amount>0&&schedule!=='custom'&&!!yearSettings.salaryUpdatedAt;
+ const amount=Math.max(0,Number(data.monthlySalary)||0),schedule=String(data.salaryPayDay||'custom');
+ const hasSchedule=amount>0&&schedule!=='custom'&&!!data.salaryUpdatedAt;
  const weekday=['S','M','T','W','T','F','S'];
  const months=[];
  for(let month=firstMonth;month<12;month++){
@@ -4947,32 +4653,6 @@ function renderSalaryYearCalendar(year){
  }
  root.innerHTML=months.length?months.join(''):'<div class="salary-calendar-empty">No future months remain in this year.</div>';
 }
-
-function renderSalaryCalendarYearTabs(){
- const root=document.getElementById('salaryCalendarYearTabs');
- if(!root)return;
- const currentYear=new Date().getFullYear();
- const selectedYear=salaryCalendarCursor.getFullYear();
- const years=[];
- // Hide elapsed years automatically; keep the current year and the next ten years.
- for(let year=currentYear;year<=currentYear+10;year++)years.push(year);
- root.innerHTML=years.map(year=>{
-  const active=year===selectedYear;
-  const label=year===currentYear?`${year} · Current`:String(year);
-  return `<button type="button" class="salary-calendar-year-tab${active?' active':''}" role="tab" aria-selected="${active?'true':'false'}" onclick="selectSalaryCalendarYear(${year})">${label}</button>`;
- }).join('');
-}
-function selectSalaryCalendarYear(year){
- const currentYear=new Date().getFullYear();
- const target=Math.max(currentYear,Math.min(currentYear+10,Number(year)||currentYear));
- const now=new Date();
- salaryCalendarViewMode='month';
- salaryCalendarCursor=new Date(target,target===currentYear?now.getMonth():0,1);
- salaryCalendarSelectedDate=null;
- renderSalaryCalendar();
- refreshPhilippineHolidays([target]);
-}
-
 function renderSalaryCalendar(){
  const grid=document.getElementById('salaryCalendarGrid'),label=document.getElementById('salaryCalendarMonthLabel'),details=document.getElementById('salaryCalendarDetails');
  const yearGrid=document.getElementById('salaryCalendarYearGrid');
@@ -4981,49 +4661,61 @@ function renderSalaryCalendar(){
  const now=new Date(),minimum=salaryCalendarCurrentMonthStart();
  if(salaryCalendarCursor<minimum)salaryCalendarCursor=minimum;
  const year=salaryCalendarCursor.getFullYear(),month=salaryCalendarCursor.getMonth();
- updateSalaryAnnualRemainingCard(year);
- renderSalaryCalendarYearTabs();
+ const yearMode=salaryCalendarViewMode==='year';
+ const viewButtons=document.querySelectorAll('[data-salary-calendar-view]');
+ viewButtons.forEach(button=>{
+  const active=button.dataset.salaryCalendarView===(yearMode?'year':'month');
+  button.classList.toggle('active',active);
+  button.setAttribute('aria-pressed',active?'true':'false');
+ });
  const previous=document.getElementById('salaryCalendarPrev');
  const next=document.getElementById('salaryCalendarNext');
- const isAtCurrent=year===now.getFullYear()&&month===now.getMonth();
- const isAtEnd=month===11;
+ const isAtCurrent=yearMode?year===now.getFullYear():year===now.getFullYear()&&month===now.getMonth();
  if(previous)previous.disabled=isAtCurrent;
- if(next)next.disabled=isAtEnd;
- if(next)next.setAttribute('aria-label','Next month');
- if(previous)previous.setAttribute('aria-label','Previous month');
- label.textContent=salaryCalendarCursor.toLocaleDateString('en-PH',{month:'long',year:'numeric'});
- grid.hidden=false;
- if(weekdays)weekdays.hidden=false;
- if(yearGrid)yearGrid.hidden=true;
- const yearSettings=salarySettingsForYear(year);
- const amount=Math.max(0,Number(yearSettings.monthlySalary)||0),payday=String(yearSettings.salaryPayDay||'custom');
- const hasSchedule=amount>0&&payday!=='custom'&&!!yearSettings.salaryUpdatedAt;
- const todayISOString=salaryCalendarISO(now.getFullYear(),now.getMonth(),now.getDate());
- const firstDay=new Date(year,month,1).getDay(),daysInMonth=new Date(year,month+1,0).getDate();
- const totalCells=Math.ceil((firstDay+daysInMonth)/7)*7,cells=[];
- for(let i=0;i<totalCells;i++){
-  if(i<firstDay||i>=firstDay+daysInMonth){
-   cells.push('<div class="salary-calendar-day is-outside-empty" aria-hidden="true"></div>');
-   continue;
+ if(next)next.setAttribute('aria-label',yearMode?'Next year':'Next month');
+ if(previous)previous.setAttribute('aria-label',yearMode?'Previous year':'Previous month');
+ if(yearMode){
+  label.textContent=year===now.getFullYear()?`${year} · Current and upcoming months`:`${year} · Yearly view`;
+  grid.hidden=true;
+  if(weekdays)weekdays.hidden=true;
+  if(yearGrid){yearGrid.hidden=false;renderSalaryYearCalendar(year);}
+ }else{
+  label.textContent=salaryCalendarCursor.toLocaleDateString('en-PH',{month:'long',year:'numeric'});
+  grid.hidden=false;
+  if(weekdays)weekdays.hidden=false;
+  if(yearGrid)yearGrid.hidden=true;
+  const amount=Math.max(0,Number(data.monthlySalary)||0),payday=String(data.salaryPayDay||'custom');
+  const hasSchedule=amount>0&&payday!=='custom'&&!!data.salaryUpdatedAt;
+  const todayISOString=salaryCalendarISO(now.getFullYear(),now.getMonth(),now.getDate());
+  const firstDay=new Date(year,month,1).getDay(),daysInMonth=new Date(year,month+1,0).getDate();
+  const totalCells=Math.ceil((firstDay+daysInMonth)/7)*7,cells=[];
+  for(let i=0;i<totalCells;i++){
+   if(i<firstDay||i>=firstDay+daysInMonth){
+    cells.push('<div class="salary-calendar-day is-outside-empty" aria-hidden="true"></div>');
+    continue;
+   }
+   const day=i-firstDay+1,iso=salaryCalendarISO(year,month,day);
+   const isToday=iso===todayISOString;
+   const paydayEntries=hasSchedule?getSalaryPaydayEntries(payday,year,month):[];
+   const paydayEntry=paydayEntries.find(entry=>entry.date===iso);
+   const paydayIndex=paydayEntry?paydayEntry.index:-1;
+   const isPayday=!!paydayEntry;
+   const holiday=getPhilippineHolidayMap(year)[iso];
+   const isHoliday=!!holiday&&holiday.type!=='special_working';
+   const selected=salaryCalendarSelectedDate===iso;
+   const accessibleDate=new Date(year,month,day).toLocaleDateString('en-PH',{dateStyle:'full'});
+   cells.push(`<button type="button" role="gridcell" aria-label="${accessibleDate}${isPayday?', payday':''}${holiday?', '+holiday.name:''}" title="${holiday?esc(holiday.name)+' · '+(holiday.type==='regular'?'REGULAR HOLIDAY':holiday.type==='special_working'?'SPECIAL WORKING DAY':holiday.type==='special_non_working'?'SPECIAL NON-WORKING HOLIDAY':'LOCAL HOLIDAY'):''}" class="salary-calendar-day${isToday?' is-today':''}${isPayday?' is-payday':''}${isHoliday?' is-holiday':''}${holiday&&holiday.type==='special_non_working'?' is-special-non-working':''}${selected?' is-selected':''}" onclick="selectSalaryCalendarDate('${iso}')"><span class="salary-calendar-day-number">${day}</span>${isPayday?`<span class="salary-calendar-event">${paydayIndex===0?'1st cutoff':'2nd cutoff'}${paydayEntry.reason?' · moved':''}</span><span class="salary-calendar-event-amount">${peso(amount/2)}</span>`:''}${holiday?`<span class="salary-calendar-holiday${holiday.type==='special_non_working'?' is-special-non-working':''}"><b>${holiday.type==='regular'?'REGULAR':holiday.type==='special_non_working'?'SPECIAL NON-WORKING':holiday.type==='special_working'?'SPECIAL WORKING':'LOCAL'}</b> · ${esc(holiday.name)}</span>`:''}</button>`);
   }
-  const day=i-firstDay+1,iso=salaryCalendarISO(year,month,day);
-  const isToday=iso===todayISOString;
-  const paydayEntries=hasSchedule?getSalaryPaydayEntries(payday,year,month):[];
-  const paydayEntry=paydayEntries.find(entry=>entry.date===iso);
-  const paydayIndex=paydayEntry?paydayEntry.index:-1;
-  const isPayday=!!paydayEntry;
-  const holiday=getPhilippineHolidayMap(year)[iso];
-  const isHoliday=!!holiday&&holiday.type!=='special_working';
-  const selected=salaryCalendarSelectedDate===iso;
-  const accessibleDate=new Date(year,month,day).toLocaleDateString('en-PH',{dateStyle:'full'});
-  cells.push(`<button type="button" role="gridcell" aria-label="${accessibleDate}${isPayday?', payday':''}${holiday?', '+holiday.name:''}" title="${holiday?esc(holiday.name)+' · '+(holiday.type==='regular'?'REGULAR HOLIDAY':holiday.type==='special_working'?'SPECIAL WORKING DAY':holiday.type==='special_non_working'?'SPECIAL NON-WORKING HOLIDAY':'LOCAL HOLIDAY'):''}" class="salary-calendar-day${isToday?' is-today':''}${isPayday?' is-payday':''}${isHoliday?' is-holiday':''}${holiday&&holiday.type==='special_non_working'?' is-special-non-working':''}${selected?' is-selected':''}" onclick="selectSalaryCalendarDate('${iso}')"><span class="salary-calendar-day-number">${day}</span>${isPayday?`<span class="salary-calendar-event">${paydayIndex===0?'1st cutoff':'2nd cutoff'}${paydayEntry.reason?' · moved':''}</span><span class="salary-calendar-event-amount">${peso(amount/2)}</span>`:''}${holiday?`<span class="salary-calendar-holiday${holiday.type==='special_non_working'?' is-special-non-working':''}"><b>${holiday.type==='regular'?'REGULAR':holiday.type==='special_non_working'?'SPECIAL NON-WORKING':holiday.type==='special_working'?'SPECIAL WORKING':'LOCAL'}</b> · ${esc(holiday.name)}</span>`:''}</button>`);
+  grid.innerHTML=cells.join('');
  }
- grid.innerHTML=cells.join('');
  const selectedParts=String(salaryCalendarSelectedDate||'').split('-').map(Number);
- const selectionFits=selectedParts[0]===year&&(selectedParts[1]||0)-1===month;
+ const selectedMonth=(selectedParts[1]||1)-1;
+ const firstVisibleMonth=year===now.getFullYear()?now.getMonth():0;
+ const selectionFits=selectedParts[0]===year&&(yearMode?selectedMonth>=firstVisibleMonth:selectedMonth===month);
  if(!selectionFits){
-  const fallbackDay=year===now.getFullYear()&&month===now.getMonth()?now.getDate():1;
-  salaryCalendarSelectedDate=salaryCalendarISO(year,month,fallbackDay);
+  const fallbackMonth=year===now.getFullYear()?Math.max(month,now.getMonth()):month;
+  const fallbackDay=year===now.getFullYear()&&fallbackMonth===now.getMonth()?now.getDate():1;
+  salaryCalendarSelectedDate=salaryCalendarISO(year,fallbackMonth,fallbackDay);
  }
  renderSalaryCalendarDetails(salaryCalendarSelectedDate);
 }
@@ -5043,12 +4735,10 @@ setInterval(()=>{
 },60*1000);
 function renderSalaryCalendarDetails(iso){
  const details=document.getElementById('salaryCalendarDetails');if(!details)return;
- const parts=String(iso||'').split('-').map(Number),yearSettings=salarySettingsForYear(parts[0]);
- const amount=Math.max(0,Number(yearSettings.monthlySalary)||0),payday=String(yearSettings.salaryPayDay||'custom');
- const partsDate=new Date(parts[0],parts[1]-1,parts[2]);
- const date=partsDate;
+ const amount=Math.max(0,Number(data.monthlySalary)||0),payday=String(data.salaryPayDay||'custom');
+ const parts=String(iso||'').split('-').map(Number),date=new Date(parts[0],parts[1]-1,parts[2]);
  const dateLabel=date.toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
- const hasSchedule=amount>0&&payday!=='custom'&&!!yearSettings.salaryUpdatedAt;
+ const hasSchedule=amount>0&&payday!=='custom'&&!!data.salaryUpdatedAt;
  const holiday=getPhilippineHolidayMap(parts[0])[String(iso||'')];
  const holidayTypeLabel=holiday?(holiday.type==='regular'?'Regular holiday':holiday.type==='special_working'?'Special working day':holiday.type==='special_non_working'?'Special non-working holiday':'Local holiday'):'';
  const paydayEntries=hasSchedule?getSalaryPaydayEntries(payday,parts[0],parts[1]-1):[];
@@ -5056,42 +4746,24 @@ function renderSalaryCalendarDetails(iso){
  const paydayIndex=paydayEntry?paydayEntry.index:-1;
  if(hasSchedule&&paydayEntry){
   const movedNote=paydayEntry.reason?`<div style="margin-top:4px;color:var(--green)">Moved earlier from the ${paydayEntry.scheduledDay}${paydayEntry.scheduledDay===1?'st':paydayEntry.scheduledDay===2?'nd':paydayEntry.scheduledDay===3?'rd':'th'} because the scheduled payday falls on a ${esc(paydayEntry.reason)}.</div>`:'';
-  details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">₱</div><div><strong>${paydayIndex===0?'1st cutoff':'2nd cutoff'} · ${esc(dateLabel)}</strong><div>Estimated payout: ${peso(amount/2)} (half of your saved monthly salary of ${peso(amount)}).</div>${movedNote}${yearSettings.salaryNotes?`<div style="margin-top:4px">Note: ${esc(yearSettings.salaryNotes)}</div>`:''}</div>`;
+  details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">₱</div><div><strong>${paydayIndex===0?'1st cutoff':'2nd cutoff'} · ${esc(dateLabel)}</strong><div>Estimated payout: ${peso(amount/2)} (half of your saved monthly salary of ${peso(amount)}).</div>${movedNote}${data.salaryNotes?`<div style="margin-top:4px">Note: ${esc(data.salaryNotes)}</div>`:''}</div>`;
  }else if(amount>0&&payday==='custom'){
   details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">📅</div><div><strong>${esc(dateLabel)}</strong><div>Your payday is set to “Varies / not fixed,” so no automatic payday is scheduled on this date.</div></div>`;
- }else if(amount<=0||!yearSettings.salaryUpdatedAt){
-  details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">📅</div><div><strong>${esc(dateLabel)}</strong><div>No salary rate has been saved for ${parts[0]} yet. Add a salary rate for this year in <b>Salary details</b> to show payday events.</div></div>`;
+ }else if(amount<=0||!data.salaryUpdatedAt){
+  details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">📅</div><div><strong>${esc(dateLabel)}</strong><div>Save your salary amount and usual payday in <b>Salary details</b> to show payday events on this calendar.</div></div>`;
  }else{
   details.innerHTML=`<div class="salary-calendar-detail-icon" aria-hidden="true">📅</div><div><strong>${esc(dateLabel)}</strong><div>No salary event scheduled for this date.</div></div>`;
  }
  if(holiday){const holidayLabel=holiday.type==='regular'?'Regular holiday':holiday.type==='special_working'?'Special working day':holiday.type==='local'?'Local holiday':'Special non-working holiday';details.insertAdjacentHTML('afterbegin',`<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;margin-right:10px;border-radius:10px;background:${holiday.type==='special_non_working'?'#eff6ff':'#fff3eb'};color:${holiday.type==='special_non_working'?'#1d4ed8':'#9a3412'};border:1px solid ${holiday.type==='special_non_working'?'#bfdbfe':'#fed7aa'};min-width:0"><span aria-hidden="true">🎉</span><div><strong>${esc(holiday.name)}</strong><div>${holidayLabel}${holiday.sourceUrl?` · <a href="${esc(holiday.sourceUrl)}" target="_blank" rel="noopener">Official source</a>`:''}</div></div></div>`);}
 }
-function toggleSalaryDetails(open){
- const backdrop=document.getElementById("salaryDetailsBackdrop");if(!backdrop)return;
- backdrop.hidden=!open;
- if(open){
-  backdrop.style.display="flex";
-  populateSalaryYearOptions();
-  const yearSelect=document.getElementById('monthlySalaryYear');
-  if(yearSelect)yearSelect.value=String(new Date().getFullYear());
-  loadSalaryYearIntoForm();
-  setTimeout(()=>{const input=document.getElementById("monthlySalaryAmount");if(input)input.focus();},30);
- }else{backdrop.style.display="none";}
-}
+function toggleSalaryDetails(open){const backdrop=document.getElementById("salaryDetailsBackdrop");if(!backdrop)return;backdrop.hidden=!open;if(open){backdrop.style.display="flex";setTimeout(()=>{const input=document.getElementById("monthlySalaryAmount");if(input)input.focus();},30);}else{backdrop.style.display="none";}}
 
 function saveMonthlySalary(event){
  if(event)event.preventDefault();
  const input=document.getElementById('monthlySalaryAmount');const amount=Number(input?.value);
  if(!Number.isFinite(amount)||amount<0){toast('Enter a valid monthly salary amount.');return;}
- const year=Number(document.getElementById('monthlySalaryYear')?.value)||new Date().getFullYear();
- const record={monthlySalary:amount,salaryPayDay:document.getElementById('monthlySalaryPayDay')?.value||'custom',salaryNotes:(document.getElementById('monthlySalaryNotes')?.value||'').trim(),salaryUpdatedAt:new Date().toISOString(),salaryRateExplicit:true};
- if(!data.salaryYearSettings||typeof data.salaryYearSettings!=='object')data.salaryYearSettings={};
- data.salaryYearSettings[String(year)]=record;
- if(year===new Date().getFullYear()){
-  data.monthlySalary=record.monthlySalary;data.salaryPayDay=record.salaryPayDay;data.salaryNotes=record.salaryNotes;data.salaryUpdatedAt=record.salaryUpdatedAt;
- }
- save();renderSalaryPage();loadSalaryYearIntoForm();
- toast(year===new Date().getFullYear()?'Monthly salary saved.':`Salary for ${year} saved.`);
+ data.monthlySalary=amount;data.salaryPayDay=document.getElementById('monthlySalaryPayDay')?.value||'custom';data.salaryNotes=(document.getElementById('monthlySalaryNotes')?.value||'').trim();data.salaryUpdatedAt=new Date().toISOString();
+ save();renderSalaryPage();toast('Monthly salary saved.');
 }
 
 let debtCalendarCursor=new Date(new Date().getFullYear(),new Date().getMonth(),1);
@@ -5836,6 +5508,7 @@ function renderDebtProviderPicker(modal,group,selectedKind='',selectedCounterpar
   kindSelect.dataset.debtInterestHintBound='1';
  }
 }
+
 
 const SAVELY_DEBT_AUTO_RATE_PRESETS = [
  {match:/mari.?loan/i, rate:2.95, basis:'monthly', feeRate:0, label:'2.95% monthly add-on', source:'Based on the MariLoan computation statement you provided: 2.95% monthly add-on, 5.00% monthly contractual rate shown separately, zero processing fee, and documentary stamp tax calculated at 0.75% of the credit facility amount. Your approved disclosure may differ.', url:'https://www.maribank.ph/product/mari-loan', mode:'estimate', mariLoanDisclosure:true, contractualRate:5, documentaryStampTaxRate:0.75, processingFee:0, defaultFrequency:'monthly', defaultInstallments:12},
@@ -6632,8 +6305,7 @@ const categoryDelta=cat=>financialItems.filter(i=>(i.category||'Savings')===cat)
 const savingsDelta=categoryDelta('Savings'),salaryDelta=categoryDelta('Salary'),debtDelta=categoryDelta('Debt'),overallDelta=savingsDelta+salaryDelta-debtDelta;
 const deltaHtml=d=>Math.abs(d)<0.005?'':`<div class="stat-foot savely-private-number" style="color:${d>0?'var(--green)':'var(--red)'};font-weight:800">${d>0?'+':'−'} ${peso(Math.abs(d))}</div>`;
 const savingsAndSalaryTotal=savingsTotal+salaryTotal;const goalBalance=goal&&Array.isArray(goal.banks)&&goal.banks.length?goalCurrentAmount(goal):savingsAndSalaryTotal;const prog=goal?Math.min(100,Math.max(0,goalBalance/goal.target*100)):0;
-const overviewSalaryRemaining=getSalaryRemainingProjection(new Date().getFullYear()).amount;
-document.getElementById('stats').innerHTML=`<div class="stat"><div class="stat-top">Savings total <span class="stat-icon" style="background:#e5f7ef;color:#169b70">₱</span></div><div class="stat-value savely-private-number" style="color:var(--green)">${peso(savingsTotal)}</div><div class="stat-foot">Savings savings</div><div class="stat-foot savings-total-asof" id="savingsTotalAsOf" style="margin-top:5px;font-size:10px">As of —</div>${deltaHtml(savingsDelta)}</div><div class="stat"><div class="stat-top">Salary / income total <span class="stat-icon" style="background:#edf1ff;color:#536be0">↗</span></div><div class="stat-value savely-private-number" style="color:var(--blue)">${peso(overviewSalaryRemaining)}</div><div class="stat-foot">Remaining salary in ${new Date().getFullYear()}</div></div><div class="stat"><div class="stat-top">Debt total <span class="stat-icon" style="background:#fff1e7;color:#e64b5b">−</span></div><div class="stat-value savely-private-number" style="color:var(--red)">${peso(debtTotal)}</div><div class="stat-foot">I owe · remaining balance</div></div>`;
+document.getElementById('stats').innerHTML=`<div class="stat"><div class="stat-top">Savings total <span class="stat-icon" style="background:#e5f7ef;color:#169b70">₱</span></div><div class="stat-value savely-private-number" style="color:var(--green)">${peso(savingsTotal)}</div><div class="stat-foot">Savings savings</div><div class="stat-foot savings-total-asof" id="savingsTotalAsOf" style="margin-top:5px;font-size:10px">As of —</div>${deltaHtml(savingsDelta)}</div><div class="stat"><div class="stat-top">Salary / income total <span class="stat-icon" style="background:#edf1ff;color:#536be0">↗</span></div><div class="stat-value savely-private-number" style="color:var(--blue)">${peso(salaryTotal)}</div><div class="stat-foot">Savings income</div>${deltaHtml(salaryDelta)}</div><div class="stat"><div class="stat-top">Debt total <span class="stat-icon" style="background:#fff1e7;color:#e64b5b">−</span></div><div class="stat-value savely-private-number" style="color:var(--red)">${peso(debtTotal)}</div><div class="stat-foot">I owe · remaining balance</div></div>`;
 document.getElementById('mainGoal').innerHTML=goal?`<div class="between"><span>${esc(goal.name)}</span><span class="savely-private-number">${prog.toFixed(1)}%</span></div><div class="goal-amount savely-private-number">${peso(goalBalance)} <span style="font-size:13px;color:var(--muted);font-weight:600">of ${peso(goal.target)}</span></div><div class="progress"><span style="width:${prog}%"></span></div><div class="between"><span>Current savings + salary / income total</span><strong class="savely-private-number" style="color:var(--text)">${peso(Math.max(0,goal.target-goalBalance))} remaining</strong></div><div class="goal-meta"><div class="mini">✦</div><div><strong>${goalBalance>=goal.target?'Goal reached — amazing work!':'You are building a great habit.'}</strong><small>${goal.due?'Target date: '+fmtDate(goal.due):'Every deposit gets you closer.'}</small></div></div>`:'<div class="empty">Create your first savings goal.</div>';
 const vals=[];for(let i=5;i>=0;i--){let d=new Date();d.setDate(1);d.setMonth(d.getMonth()-i);let m=d.toISOString().slice(0,7);let net=data.transactions.filter(t=>t.date.slice(0,7)===m).reduce((s,t)=>s+((t.type==='deposit'||t.type==='interest')?+t.amount:- +t.amount),0);vals.push({m,label:d.toLocaleDateString('en-PH',{month:'short'}),v:net})}let max=Math.max(1,...vals.map(v=>Math.abs(v.v)));document.getElementById('chart').innerHTML=vals.map((v,i)=>`<div class="bar-wrap" title="${esc(v.m)}: ${peso(v.v)}"><div class="bar ${i===5?'current':''}" style="height:${Math.max(4,Math.abs(v.v)/max*78)}%"></div><div class="bar-label">${v.label}</div></div>`).join('');
 const financialHistory=[];
@@ -6983,6 +6655,7 @@ function updateInterestEstimate(){
 }
 function openMariBankInterest(id){openSavingsInterest(id);}
 function closeMariBankInterest(){document.getElementById('mariBankInterestBackdrop').style.display='none';}
+
 
 let savingsTrendHitTargets=[];
 let savingsTrendSelectedAmount=null;
@@ -7696,6 +7369,7 @@ function confirmAddSavingsToGoal(){
 }
 
 
+
 const interestBankRates = {
  Traditional: [
   {name:'BDO',short:'BDO',rate:0.0625,color:'#0057a8',source:'https://www.bdo.com.ph/',note:'Regular peso savings snapshot; verify your account product rate'},
@@ -8049,6 +7723,7 @@ function closeSavelyUpdates(){const el=document.getElementById('savelyUpdatesBac
 document.addEventListener('DOMContentLoaded',()=>{const el=document.getElementById('savelyUpdatesBackdrop');if(el)el.style.display='none';});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'){const updates=document.getElementById('savelyUpdatesBackdrop');if(updates&&getComputedStyle(updates).display!=='none')closeSavelyUpdates();}});
 
+
 /* Philippine holiday calendar: proclamation-backed dates with periodic public-calendar sync. */
 const SAVELY_PH_HOLIDAYS={
 2026:[
@@ -8197,6 +7872,7 @@ async function refreshPhilippineHolidays(manual){
  setInterval(()=>refreshPhilippineHolidays(false),24*60*60*1000);
 })();
 
+
 let savelyOverviewFiguresVisible=true;
 try{
  const storedPrivacy=localStorage.getItem('savelyOverviewFiguresVisible');
@@ -8212,29 +7888,25 @@ function updateOverviewPrivacyState(){
  const button=document.getElementById('overviewPrivacyToggle');
  const icon=document.getElementById('overviewPrivacyIcon');
  const label=document.getElementById('overviewPrivacyLabel');
- const hidden=!savelyOverviewFiguresVisible;
- if(page){
-  page.classList.toggle('savely-overview-private',hidden);
-  page.setAttribute('data-savely-figures',hidden?'hidden':'visible');
- }
- document.body.setAttribute('data-savely-figures',hidden?'hidden':'visible');
+ const active=!!page&&page.classList.contains('active');
+ if(page)page.classList.toggle('savely-overview-private',!savelyOverviewFiguresVisible);
  if(button){
-  button.hidden=!(page&&page.classList.contains('active'));
-  button.setAttribute('aria-pressed',hidden?'true':'false');
-  button.setAttribute('aria-label',hidden?'Show financial figures':'Hide financial figures');
-  button.title=hidden?'Show financial figures':'Hide financial figures';
+  button.hidden=!active;
+  button.setAttribute('aria-pressed',savelyOverviewFiguresVisible?'false':'true');
+  button.setAttribute('aria-label',savelyOverviewFiguresVisible?'Hide financial figures':'Show financial figures');
+  button.title=savelyOverviewFiguresVisible?'Hide financial figures':'Show financial figures';
  }
- if(icon)icon.innerHTML=savelyEyeSvg(!hidden);
- if(label)label.textContent=hidden?'Show figures':'Hide figures';
+ if(icon)icon.innerHTML=savelyEyeSvg(savelyOverviewFiguresVisible);
+ if(label)label.textContent=savelyOverviewFiguresVisible?'Hide figures':'Show figures';
 }
 function toggleOverviewFigures(){
  savelyOverviewFiguresVisible=!savelyOverviewFiguresVisible;
  try{localStorage.setItem('savelyOverviewFiguresVisible',String(savelyOverviewFiguresVisible));}catch(e){}
  updateOverviewPrivacyState();
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',updateOverviewPrivacyState,{once:true});
-else updateOverviewPrivacyState();
-function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'inline-flex':'none';if(p==='dashboard'){renderDashboard();setTimeout(renderOverallTrend,50);}const targetPage=document.getElementById('page-'+p);if(!targetPage){console.warn('Savely page not found:',p);return;}document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));targetPage.classList.add('active');updateOverviewPrivacyState();if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Monitor.');if(p==='live-location')setTimeout(()=>{
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',updateOverviewPrivacyState,{once:true});else updateOverviewPrivacyState();
+function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'':'none';if(p==='dashboard'){renderDashboard();setTimeout(renderOverallTrend,50);}document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');updateOverviewPrivacyState();if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Location.');if(p==='live-location')setTimeout(()=>{
  setSavelyLiveMapMode('traffic');
  initSavelyLiveLocationMap();
  if(savelyLiveLocationMap){
@@ -8249,7 +7921,7 @@ function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavin
   savelyLiveLocationMap.invalidateSize();
  }
   if(window.__savelyLiveLocationWatchId===null||window.__savelyLiveLocationWatchId===undefined)startSavelyLiveLocation();
-},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LIVE MONITOR','Live Monitor'],'metro-snapshot':['PUBLIC CAMERA IMAGES','Metro Manila Snapshot'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['CALENDAR · PHILIPPINES','Calendar']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','metro-snapshot':'View the latest available public camera snapshots across Metro Manila.','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:'View Philippine regular holidays, special non-working days, and live countdowns.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
+},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LOCATION TOOLS','Live Location'],holidays:['CALENDAR · PHILIPPINES','Calendar']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'',holidays:'View Philippine regular holidays, special non-working days, and live countdowns.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
 document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
 function openModal(kind,goalToEdit=null){const form=document.getElementById('modalForm'),title=document.getElementById('modalTitle'),desc=document.getElementById('modalDesc');let accountOptions=data.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');let field=(label,name,type='text',value='',extra='')=>`<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let select=(label,name,opts)=>`<div class="field"><label>${label}</label><select name="${name}">${opts}</select></div>`;let fullfield=(label,name,type='text',value='',extra='')=>`<div class="field full"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let body='';
 if(kind==='transaction'){title.textContent='Add transaction';desc.textContent='Record a deposit, withdrawal, interest credit, or expense.';body=`<div class="form-grid">${fullfield('Description','description','text','','required maxlength="100"')}${select('Transaction type','type','<option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option><option value="expense">Expense</option><option value="interest">Interest credit</option>')}${select('Account','accountId',accountOptions)}${field('Amount (₱)','amount','number','','required min=".01" step=".01"')}${field('Date','date','date',todayISO(),'required')}${field('Category','category','text','General','maxlength="60"')}</div>`}
@@ -8459,9 +8131,11 @@ accrueRealtimeInterest();
 })();
 </script>
 
+
 <script id="savely-goals-fallback">
 // Goal buttons are handled by the reliable goal-modal layer at the end of this file.
 </script>
+
 
 
 
@@ -8476,6 +8150,7 @@ accrueRealtimeInterest();
     </div>
   </div>
 </div>
+
 
 <script id="savely-auth">
 (function(){
@@ -8799,6 +8474,7 @@ accrueRealtimeInterest();
 })(); 
 </script>
 
+
 <script id="savely-cloud-sync">
 (function(){
   // Cross-device financial sync requires the SQL table and RLS policies supplied with this file.
@@ -8941,6 +8617,7 @@ accrueRealtimeInterest();
 })();
 </script>
 
+
 <script id="savely-visualization-guard">
 (function(){
   function wrap(fnName,canvasId,metaId){
@@ -8973,6 +8650,7 @@ accrueRealtimeInterest();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();
 </script>
+
 
 <script id="savely-cross-device-chart-touch-support">
 (function(){
@@ -9012,6 +8690,7 @@ accrueRealtimeInterest();
   if(document.body)observer.observe(document.body,{childList:true,subtree:true});
 })();
 </script>
+
 
 <!-- Independent live clock fallback: runs separately from the main app script. -->
 <script id="savely-independent-live-clock">
@@ -9228,6 +8907,7 @@ accrueRealtimeInterest();
 })();
 </script>
 
+
 <script id="savely-live-weather">
 (function(){
   const $=id=>document.getElementById(id), STORE_KEY='savely_weather_location_v1', CURRENT_CACHE_KEY='savely_weather_current_cache_v2';
@@ -9370,6 +9050,7 @@ accrueRealtimeInterest();
   setInterval(start,10*60*1000);
 })();
 </script>
+
 
 <script id="savely-weather-location-settings">
 (function(){
@@ -9898,6 +9579,7 @@ function deleteAllSavingsItems(){
 })();
 </script>
 
+
 <style id="savely-sidebar-active-green-and-date-link">
 .nav button.active, body.dark-theme .nav button.active{
  background:var(--green)!important;
@@ -9922,6 +9604,7 @@ function deleteAllSavingsItems(){
 @media(max-width:540px){.goal-bank-progress-actions{gap:5px}.goal-bank-transfer-button{padding:5px 6px;font-size:9px}}
 </style>
 
+
 <style id="savely-sidebar-active-solid-green-white-v2">
 .sidebar .nav button.active,
 .nav button.active,
@@ -9942,6 +9625,7 @@ body.dark-theme .nav button.active {
   stroke: #fff !important;
 }
 </style>
+
 
 <style id="savely-debt-calendar-red-highlights">
 /* Dates with at least one scheduled debt or collection use a red highlight. */
@@ -9977,6 +9661,7 @@ body.dark-theme .nav button.active {
   background: #fff1f1 !important;
 }
 </style>
+
 
 <style id="savely-full-green-sidebar">
 /* Full-height green sidebar with white brand and navigation. */
@@ -10044,6 +9729,7 @@ body.dark-theme .app > .sidebar .nav button.active {
   border: 1px solid rgba(255,255,255,.55) !important;
 }
 </style>
+
 
 <style id="savely-primary-actions-larger">
 #topbarAddSavingsButton,
@@ -10410,6 +10096,7 @@ body.dark-theme .app > .sidebar .nav button.active {
   #page-salary .salary-calendar-holiday { font-size: 9px !important; padding: 3px 4px !important; }
 }
 </style>
+
 
 <style id="savely-floating-calculator-css">
 /* Minimal floating calculator launcher — anchored to the lower-right corner. */
@@ -10990,6 +10677,7 @@ body.dark-theme .app > .sidebar .nav button.active {
 })();
 </script>
 
+
 <style id="savely-global-consistent-typography-v1">
 /*
   Savely global typography scale:
@@ -11121,6 +10809,7 @@ body :where(
   }
 }
 </style>
+
 
 <style id="savely-collapsible-sidebar-css">
 /* Smooth desktop collapse/expand with an icon-only green navigation rail. */
@@ -11254,6 +10943,7 @@ body :where(
 }
 </style>
 
+
 <script id="savely-collapsible-sidebar-js">
 (function(){
   'use strict';
@@ -11287,6 +10977,7 @@ body :where(
 })();
 </script>
 
+
 <style id="savely-sidebar-toggle-white-green-v2">
 #savelySidebarToggle {
   background: #fff !important;
@@ -11308,6 +10999,7 @@ body :where(
   color: #168765 !important;
 }
 </style>
+
 
 <style id="savely-calculator-clean-large-v2">
 #savelyFloatingCalculator {
@@ -11428,6 +11120,7 @@ body :where(
 }
 </style>
 
+
 <style id="savely-global-total-number-size-v2">
 /* Smaller, calmer total figures with one consistent scale across all pages. */
 body :where(.stat-value,
@@ -11470,6 +11163,7 @@ body :where(.goal-amount, .account-balance, .goal-bank-total strong,
 }
 </style>
 
+
 <style id="savely-sidebar-white-hover-green-content-v1">
 .app > .sidebar #nav button:not(.active):hover,
 .app > .sidebar #nav button:not(.active):focus-visible,
@@ -11503,6 +11197,7 @@ body.dark-theme .app > .sidebar #nav button:not(.active):focus-visible * {
   color: #fff !important;
 }
 </style>
+
 
 <style id="savely-debt-direction-colors-v1">
 /* Debt calendar direction colors: I owe = red, Owed to me = green. */
@@ -11574,6 +11269,7 @@ body.dark-theme .app > .sidebar #nav button:not(.active):focus-visible * {
 }
 </style>
 
+
 <style id="savely-sidebar-active-white-green-v2">
 /* Selected and hovered navigation items share the same white/green treatment. */
 .app > .sidebar #nav button.active,
@@ -11600,6 +11296,7 @@ body.dark-theme .app > .sidebar #nav button.active * {
   color: #168765 !important;
 }
 </style>
+
 
 <style id="savely-bigger-calculator-green-page-titles-v1">
 /* Larger, easier-to-tap calculator launcher. */
@@ -11637,6 +11334,7 @@ body.dark-theme .app > .sidebar #nav button.active * {
   color: #168765 !important;
 }
 </style>
+
 
 <style id="savely-debt-installment-form-ui-v2">
 .savely-debt-form-backdrop{
@@ -11905,6 +11603,7 @@ body.dark-theme .app > .sidebar #nav button.active * {
 }
 </style>
 
+
 <style id="savely-debt-receivable-transfer-ui-v1">
 .savely-debt-fixed-kind{
  display:flex;align-items:center;gap:10px;min-height:46px;padding:10px 12px;
@@ -12118,100 +11817,53 @@ function savelyMakeLocationIcon(){
  return L.divIcon({className:'savely-location-marker-host',html:'<div class="savely-location-pin is-live" role="img" aria-label="Your live current location"><span class="savely-location-pulse"></span><svg viewBox="0 0 44 52" width="44" height="52" aria-hidden="true"><path d="M22 2.5C11.6 2.5 3.5 10.4 3.5 20.1c0 13.1 18.5 29.2 18.5 29.2s18.5-16.1 18.5-29.2C40.5 10.4 32.4 2.5 22 2.5Z" fill="#07885f" stroke="#ffffff" stroke-width="2.8" stroke-linejoin="round"/><circle cx="22" cy="19.5" r="7.2" fill="#ffffff"/><circle cx="22" cy="19.5" r="3.1" fill="#07885f"/></svg></div>',iconSize:[44,52],iconAnchor:[22,49],popupAnchor:[0,-44]});
 }
 
-/* TomTom Live Traffic: Leaflet base map with transparent TomTom traffic-flow tiles. */
-let savelyLiveMapMode='location';
-let savelyTomTomTrafficMap=null;
-let savelyTomTomTrafficLayer=null;
-let savelyTomTomBaseLayer=null;
-const SAVELY_TOMTOM_KEY_STORE='savelyTomTomTrafficKeyV1';
-function savelyGetTomTomKey(){try{return localStorage.getItem(SAVELY_TOMTOM_KEY_STORE)||'';}catch(e){return '';}}
-function savelyConnectTomTomKey(){
- const existing=savelyGetTomTomKey();
- const key=prompt('Paste your TomTom API key. It will be stored only in this browser for Savely.',existing);
- if(key===null)return;
- const cleaned=key.trim();
- if(!cleaned){toast('No API key entered.');return;}
- try{localStorage.setItem(SAVELY_TOMTOM_KEY_STORE,cleaned);}catch(e){toast('This browser could not save the API key.');return;}
- savelyInitTomTomTrafficMap(true);toast('TomTom key saved in this browser. Checking traffic tiles…');
-}
-function savelyInitTomTomTrafficMap(force=false){
- const el=document.getElementById('savelyTomTomTrafficMap');if(!el||!window.L)return;
- if(!savelyTomTomTrafficMap){
-  savelyTomTomTrafficMap=L.map(el,{zoomControl:true,preferCanvas:true,scrollWheelZoom:true});
-  const point=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1]||null;
-  savelyTomTomTrafficMap.setView(point?[point.lat,point.lng]:[14.5995,120.9842],point?15:11);
-  savelyTomTomBaseLayer=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
-   maxZoom:19,maxNativeZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors'
-  }).addTo(savelyTomTomTrafficMap);
- }
- const key=savelyGetTomTomKey(),promptEl=document.getElementById('savelyTomTomKeyPrompt'),status=document.getElementById('savelyTomTomTrafficStatus');
- if(!key){
-  if(promptEl)promptEl.hidden=false;
-  if(status)status.textContent='Base map ready · Connect TomTom for live traffic';
-  if(savelyTomTomTrafficLayer){savelyTomTomTrafficMap.removeLayer(savelyTomTomTrafficLayer);savelyTomTomTrafficLayer=null;}
- }else{
-  if(promptEl)promptEl.hidden=true;
-  const url='https://api.tomtom.com/traffic/map/4/tile/flow/relative0/{z}/{x}/{y}.png?key='+encodeURIComponent(key)+'&tileSize=256';
-  if(savelyTomTomTrafficLayer){savelyTomTomTrafficLayer.setUrl(url);}
-  else{
-   savelyTomTomTrafficLayer=L.tileLayer(url,{tileSize:256,zoomOffset:0,minZoom:0,maxZoom:19,opacity:0.94,
-    attribution:'Traffic data &copy; <a href="https://www.tomtom.com/" target="_blank" rel="noopener noreferrer">TomTom</a>'
-   }).addTo(savelyTomTomTrafficMap);
-   savelyTomTomTrafficLayer.on('tileerror',function(){if(status)status.textContent='Traffic tiles unavailable · check API key and monthly quota';});
-   savelyTomTomTrafficLayer.on('load',function(){if(status)status.textContent='TomTom traffic flow loaded · Metro Manila';});
-  }
- }
- setTimeout(()=>{if(savelyTomTomTrafficMap)savelyTomTomTrafficMap.invalidateSize();},180);
-}
-function refreshSavelyWazeTraffic(force=false){savelyInitTomTomTrafficMap(force);}
-function centerSavelyTomTomTraffic(){
- const point=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1];
- if(point){savelyInitTomTomTrafficMap();if(savelyTomTomTrafficMap)savelyTomTomTrafficMap.setView([point.lat,point.lng],15);return;}
- if(!navigator.geolocation){toast('This browser does not support location access.');return;}
- if(!window.isSecureContext){toast('Location access requires the HTTPS Savely website.');return;}
- navigator.geolocation.getCurrentPosition(position=>{
-  updateSavelyLiveLocation(position);const p={lat:position.coords.latitude,lng:position.coords.longitude};
-  savelyInitTomTomTrafficMap();if(savelyTomTomTrafficMap)savelyTomTomTrafficMap.setView([p.lat,p.lng],15);
- },error=>{const message=error.code===1?'Allow location permission in your browser settings.':error.code===2?'Your device could not determine its position. Try again outdoors.':'Location request timed out. Try again.';toast(message);},
- {enableHighAccuracy:true,maximumAge:0,timeout:20000});
-}
 
+/* Waze Live Map is a separate traffic view embedded without an API key. */
+let savelyLiveMapMode='location';
+let savelyWazeLastCenterUrl='';
+let savelyWazeHasCenteredOnGps=false;
+function savelyBuildWazeTrafficUrl(point){
+ const lat=point&&Number.isFinite(Number(point.lat))?Number(point.lat):12.8797;
+ const lng=point&&Number.isFinite(Number(point.lng))?Number(point.lng):121.7740;
+ const zoom=point?15:5;
+ return 'https://embed.waze.com/iframe?zoom='+zoom+'&lat='+lat.toFixed(5)+'&lon='+lng.toFixed(5)+'&pin=1';
+}
+function refreshSavelyWazeTraffic(force=false){
+ const frame=document.getElementById('savelyWazeTrafficFrame');if(!frame)return;
+ const point=savelyLiveLocationPoints[savelyLiveLocationPoints.length-1]||null;
+ const pin=document.getElementById('savelyWazeCurrentLocationPin');
+ if(pin)pin.hidden=!point;
+ const url=savelyBuildWazeTrafficUrl(point);
+ if(!force&&url===savelyWazeLastCenterUrl)return;
+ savelyWazeLastCenterUrl=url;frame.src=url;
+}
 function setSavelyLiveMapMode(mode){
- savelyLiveMapMode=['traffic','cctv','construction'].includes(mode)?mode:'location';
- const location=savelyLiveMapMode==='location',traffic=savelyLiveMapMode==='traffic',cctv=savelyLiveMapMode==='cctv',construction=savelyLiveMapMode==='construction';
+ savelyLiveMapMode=mode==='traffic'?'traffic':'location';
+ const traffic=savelyLiveMapMode==='traffic';
  const gpsMap=document.getElementById('savelyLiveLocationMap');
  const trafficView=document.getElementById('savelyWazeTrafficView');
- const cctvView=document.getElementById('savelyPublicCCTVView');
- const constructionView=document.getElementById('savelyConstructionMapView');
  const gpsControls=document.getElementById('savelyGpsMapControls');
  const trafficControls=document.getElementById('savelyWazeMapControls');
  const gpsFooter=document.getElementById('savelyGpsMapFooter');
  const trafficNote=document.getElementById('savelyWazeMapNote');
  const title=document.getElementById('savelyLiveMapTitle');
  const subtitle=document.getElementById('liveLocationMapSubtitle');
- if(gpsMap)gpsMap.hidden=!location;
+ if(gpsMap)gpsMap.hidden=traffic;
  if(trafficView)trafficView.hidden=!traffic;
- if(cctvView)cctvView.hidden=!cctv;
- if(constructionView)constructionView.hidden=!construction;
- if(gpsControls)gpsControls.hidden=!location;
+ if(gpsControls)gpsControls.hidden=traffic;
  if(trafficControls)trafficControls.hidden=!traffic;
- if(gpsFooter)gpsFooter.hidden=!location;
+ if(gpsFooter)gpsFooter.hidden=traffic;
  if(trafficNote)trafficNote.hidden=!traffic;
- if(title)title.textContent=location?'Live movement map':traffic?'Live traffic':cctv?'Metro Manila Public CCTV':'Construction project map';
- if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Live TomTom traffic flow across Metro Manila.':cctv?'View the available Quezon City public webcam.':'Explore DPWH-recorded public infrastructure project locations.';
+ if(title)title.textContent=traffic?'Live traffic':'Live movement map';
+ if(subtitle)subtitle.textContent=traffic?'Real-time traffic information in a separate Waze Live Map.':'Your current position and movement trail are updating while tracking is active.';
  document.querySelectorAll('[data-savely-map-mode]').forEach(button=>{
   const active=button.dataset.savelyMapMode===savelyLiveMapMode;
   button.classList.toggle('active',active);button.setAttribute('aria-selected',active?'true':'false');
  });
- if(traffic){refreshSavelyWazeTraffic(true);setTimeout(()=>{if(savelyTomTomTrafficMap)savelyTomTomTrafficMap.invalidateSize();},180);}
- if(location){
+ if(traffic)refreshSavelyWazeTraffic(true);
+ else{
   initSavelyLiveLocationMap();
   setTimeout(()=>{if(savelyLiveLocationMap){savelyLiveLocationMap.invalidateSize();savelyEnsureLastKnownMarker();}},120);
- }
- if(cctv&&window.renderSavelyPublicCCTV)window.renderSavelyPublicCCTV();
- if(construction){
-  const frame=document.getElementById('savelyConstructionMapFrame');
-  if(frame&&frame.contentWindow)frame.contentWindow.postMessage({type:'resize'},'*');
  }
 }
 function centerSavelyWazeTraffic(){
@@ -12370,7 +12022,7 @@ async function renderSavelyLocationHistory(){
   const [sessions,places]=await Promise.all([savelyDbGetAll('sessions'),savelyDbGetAll('places')]);
   if(savelyLocationHistoryTab==='routes'){
    const rows=sessions.sort((a,b)=>(b.startedAt||0)-(a.startedAt||0));
-   target.innerHTML=rows.length?rows.map(s=>`<article class="savely-location-history-item"><div class="savely-location-history-item-main"><strong>${savelyFormatDate(s.startedAt)}</strong><small>${savelyFormatDateTime(s.startedAt)}${s.endedAt?' – '+savelyFormatDateTime(s.endedAt):' · In progress'}</small><span>${(s.points||[]).length} GPS points · ${savelyFormatDistance(s.distance||0)}</span></div><div class="savely-location-history-item-actions"><button type="button" class="btn btn-light btn-sm" onclick="viewSavelySavedRoute('${s.id}')">View route</button><button type="button" class="btn btn-light btn-sm danger-text" onclick="deleteSavelySavedRoute('${s.id}')">Delete</button></div></article>`).join(''):'<div class="live-location-empty">No saved routes yet. Open Live Monitor and allow GPS access to begin recording.</div>';
+   target.innerHTML=rows.length?rows.map(s=>`<article class="savely-location-history-item"><div class="savely-location-history-item-main"><strong>${savelyFormatDate(s.startedAt)}</strong><small>${savelyFormatDateTime(s.startedAt)}${s.endedAt?' – '+savelyFormatDateTime(s.endedAt):' · In progress'}</small><span>${(s.points||[]).length} GPS points · ${savelyFormatDistance(s.distance||0)}</span></div><div class="savely-location-history-item-actions"><button type="button" class="btn btn-light btn-sm" onclick="viewSavelySavedRoute('${s.id}')">View route</button><button type="button" class="btn btn-light btn-sm danger-text" onclick="deleteSavelySavedRoute('${s.id}')">Delete</button></div></article>`).join(''):'<div class="live-location-empty">No saved routes yet. Open Live Location and allow GPS access to begin recording.</div>';
   }else{
    const rows=places.sort((a,b)=>(b.startedAt||0)-(a.startedAt||0));
    target.innerHTML=rows.length?rows.map(p=>`<article class="savely-location-history-item"><div class="savely-location-history-item-main"><strong>${savelyEscapeHtml(p.name||'Saved place')}</strong><small>${savelyFormatDateTime(p.startedAt)}${p.endedAt?' – '+savelyFormatDateTime(p.endedAt):' · Current stay'}</small><span>${savelyEscapeHtml(p.lat.toFixed(5)+', '+p.lng.toFixed(5))} · ${savelyFormatDuration(p.durationMs||0)}</span></div><div class="savely-location-history-item-actions"><button type="button" class="btn btn-light btn-sm" onclick="centerSavelyVisitedPlace('${p.id}')">Show on map</button><button type="button" class="btn btn-light btn-sm" onclick="renameSavelyVisitedPlace('${p.id}')">Rename</button><button type="button" class="btn btn-light btn-sm danger-text" onclick="deleteSavelyVisitedPlace('${p.id}')">Delete</button></div></article>`).join(''):'<div class="live-location-empty">Visited places will appear after Savely detects a stop lasting about 7 minutes.</div>';
@@ -12570,6 +12222,11 @@ document.addEventListener('keydown',function(event){
 });
 </script>
 
+<script id="savely-remove-old-traffic-key">
+try{localStorage.removeItem(['savely','TomTomTrafficKey'].join(''));}catch(e){}
+</script>
+
+
 <script id="savely-metro-manila-public-cctv-directory-v1">
 (function(){
  const cities=[
@@ -12635,18 +12292,17 @@ document.addEventListener('keydown',function(event){
   if(page)page.classList.toggle('savely-cctv-active',cctv);
   if(gpsMap)gpsMap.hidden=!location;
   if(trafficView)trafficView.hidden=!traffic;
-   if(cctvView)cctvView.hidden=!cctv;
+  if(cctvView)cctvView.hidden=!cctv;
   if(gpsControls)gpsControls.hidden=!location;
   if(trafficControls)trafficControls.hidden=!traffic;
   if(gpsFooter)gpsFooter.hidden=!location;
   if(trafficNote)trafficNote.hidden=!traffic;
   if(title)title.textContent=location?'Live movement map':traffic?'Live traffic':'Metro Manila Public CCTV';
-  if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Real-time traffic information in a separate Waze Live Map.':'View the available Quezon City public webcam.';
+  if(subtitle)subtitle.textContent=location?'Your current position and movement trail are updating while tracking is active.':traffic?'Real-time traffic information in a separate Waze Live Map.':'View the available Quezon City public webcam and browse road references.';
   document.querySelectorAll('[data-savely-map-mode]').forEach(button=>{
    const active=button.dataset.savelyMapMode===next;
    button.classList.toggle('active',active);button.setAttribute('aria-selected',active?'true':'false');
   });
-  document.querySelectorAll('[data-savely-location-place]').forEach(button=>button.classList.toggle('active',cctv));
   if(traffic)refreshSavelyWazeTraffic(true);
   if(location){
    initSavelyLiveLocationMap();
@@ -12658,428 +12314,23 @@ document.addEventListener('keydown',function(event){
 })();
 </script>
 
-<script id="savely-construction-map-embed-fallback">
+
+<style id="savely-pwa-install-ui">
+#savely-pwa-install{position:fixed;z-index:10050;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);display:none;align-items:center;gap:10px;padding:10px 15px;border:0;border-radius:999px;background:#168765;color:#fff;font:700 13px/1.2 system-ui,sans-serif;box-shadow:0 8px 28px #102b2540;cursor:pointer;white-space:nowrap}
+#savely-pwa-install[hidden]{display:none!important}#savely-pwa-install:not([hidden]){display:flex}
+</style>
+<button id="savely-pwa-install" type="button" hidden aria-label="Install Savely app">＋ Install Savely</button>
+<script id="savely-pwa-registration">
 (()=>{
- const frame=document.getElementById('savelyConstructionMapFrame');
- const fallback=document.getElementById('savelyConstructionMapFallback');
- if(!frame||!fallback)return;
- let loaded=false;
- frame.addEventListener('load',()=>{loaded=true;fallback.hidden=true;});
- window.setTimeout(()=>{if(!loaded)fallback.hidden=false;},12000);
+ const button=document.getElementById('savely-pwa-install');let installPrompt=null;
+ const isStandalone=()=>window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+ if('serviceWorker' in navigator && location.protocol==='https:')window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(err=>console.warn('Savely offline support unavailable:',err)));
+ window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;if(!isStandalone())button.hidden=false;});
+ window.addEventListener('appinstalled',()=>{installPrompt=null;button.hidden=true;});
+ button.addEventListener('click',async()=>{if(installPrompt){installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;button.hidden=true;}else{alert('To install Savely, open Chrome menu (⋮) and choose Install app or Add to Home screen.');}});
+ if(isStandalone())button.hidden=true;
 })();
 </script>
-
-<style id="savely-page-isolation-repair-v3">
-  main.main > section.page,
-  main.main > div.page { display: none !important; }
-  main.main > section.page.active,
-  main.main > div.page.active { display: block !important; }
-  main.main > section.page.active > *,
-  main.main > div.page.active > * { min-width: 0; }
-</style>
-<script id="savely-page-isolation-repair-script-v3">
-(function () {
-  function repairSavelyPageLayout() {
-    const main = document.querySelector('main.main');
-    if (!main) return;
-
-    const pages = Array.from(document.querySelectorAll('.page'));
-    const firstById = new Map();
-
-    pages.forEach((page) => {
-      const id = page.id || '';
-      if (id && firstById.has(id)) {
-        const original = firstById.get(id);
-        // Merge duplicate page sections instead of leaving duplicate page IDs
-        // that make sidebar navigation target the wrong section.
-        while (page.firstChild) original.appendChild(page.firstChild);
-        page.remove();
-        return;
-      }
-      if (id) firstById.set(id, page);
-      if (page.parentElement !== main) main.appendChild(page);
-    });
-
-    // Keep only one page active and make sure the selected page is visible.
-    const current = main.querySelector('.page.active') || main.querySelector('#page-dashboard');
-    main.querySelectorAll('.page').forEach((page) => {
-      page.classList.toggle('active', page === current);
-      page.setAttribute('aria-hidden', page === current ? 'false' : 'true');
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', repairSavelyPageLayout, { once: true });
-  } else {
-    repairSavelyPageLayout();
-  }
-
-  // Re-run after the original app's initial navigation setup, if it changes pages.
-  const originalShowPage = window.showPage;
-  if (typeof originalShowPage === 'function' && !originalShowPage.__savelyPageRepairWrapped) {
-    const wrapped = function (pageId) {
-      repairSavelyPageLayout();
-      const result = originalShowPage.apply(this, arguments);
-      const main = document.querySelector('main.main');
-      if (main) {
-        main.querySelectorAll('.page').forEach((page) => {
-          const active = page.id === 'page-' + pageId;
-          page.classList.toggle('active', active);
-          page.setAttribute('aria-hidden', active ? 'false' : 'true');
-        });
-      }
-      return result;
-    };
-    wrapped.__savelyPageRepairWrapped = true;
-    window.showPage = wrapped;
-  }
-})();
-</script>
-
-
-<style id="savely-salary-summary-final-override-v3">
-html body #page-salary .salary-summary-cards > .stat{
-  display:block!important;
-  position:relative!important;
-  isolation:isolate!important;
-  overflow:hidden!important;
-  box-sizing:border-box!important;
-  min-height:156px!important;
-  padding:24px 22px 20px!important;
-  border:1px solid rgba(5,130,96,.55)!important;
-  border-radius:18px!important;
-  background:#07875f!important;
-  background-image:linear-gradient(112deg,#07875f 0%,#0b9b70 56%,#2dbb8b 100%)!important;
-  color:#fff!important;
-  box-shadow:0 10px 24px rgba(5,120,87,.12)!important;
-}
-html body #page-salary .salary-summary-cards > .stat::before{
-  content:""!important;
-  display:block!important;
-  position:absolute!important;
-  z-index:0!important;
-  width:158px!important;height:158px!important;
-  right:-48px!important;top:-82px!important;
-  border-radius:50%!important;
-  background:rgba(255,255,255,.12)!important;
-  pointer-events:none!important;
-}
-html body #page-salary .salary-summary-cards > .stat::after{
-  content:"₱"!important;
-  display:grid!important;
-  place-items:center!important;
-  position:absolute!important;
-  z-index:3!important;
-  top:18px!important;right:18px!important;
-  width:32px!important;height:32px!important;
-  border:1px solid rgba(255,255,255,.26)!important;
-  border-radius:11px!important;
-  background:rgba(255,255,255,.16)!important;
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
-  font-size:16px!important;font-weight:800!important;
-}
-html body #page-salary .salary-summary-cards > .stat > .stat-top,
-html body #page-salary .salary-summary-cards > .stat > .stat-value,
-html body #page-salary .salary-summary-cards > .stat > .stat-foot{
-  display:block!important;
-  position:relative!important;
-  z-index:2!important;
-  visibility:visible!important;
-  opacity:1!important;
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
-  text-shadow:none!important;
-}
-html body #page-salary .salary-summary-cards > .stat > .stat-top{
-  margin:0!important;padding:0 48px 0 0!important;
-  font-size:12px!important;font-weight:750!important;
-}
-html body #page-salary .salary-summary-cards > .stat > .stat-value{
-  margin:16px 0 5px!important;
-  font-size:clamp(21px,2vw,27px)!important;
-  line-height:1.15!important;font-weight:850!important;
-  letter-spacing:-.65px!important;
-}
-html body #page-salary .salary-summary-cards > .stat > .stat-foot{
-  margin:0!important;font-size:11px!important;line-height:1.45!important;
-}
-@media(max-width:760px){
- html body #page-salary .salary-summary-cards{grid-template-columns:1fr!important}
- html body #page-salary .salary-summary-cards > .stat{min-height:138px!important}
-}
-</style>
-
-
-<style id="savely-salary-two-summary-cards-v1">
-html body #page-salary .salary-summary-cards{
-  display:grid!important;
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  gap:14px!important;
-  margin-bottom:21px!important;
-}
-html body #page-salary .salary-summary-cards > .stat{
-  display:block!important;position:relative!important;isolation:isolate!important;
-  overflow:hidden!important;box-sizing:border-box!important;min-height:156px!important;
-  padding:24px 22px 20px!important;border:1px solid rgba(5,130,96,.55)!important;
-  border-radius:18px!important;
-  background:#07875f!important;
-  background-image:linear-gradient(112deg,#07875f 0%,#0b9b70 56%,#2dbb8b 100%)!important;
-  color:#fff!important;box-shadow:0 10px 24px rgba(5,120,87,.12)!important;
-}
-html body #page-salary .salary-summary-cards > .salary-remaining-blue{
-  border-color:rgba(48,105,220,.55)!important;
-  background:#315fce!important;
-  background-image:linear-gradient(112deg,#315fce 0%,#4778e6 56%,#7397f2 100%)!important;
-  box-shadow:0 10px 24px rgba(49,95,206,.14)!important;
-}
-html body #page-salary .salary-summary-cards > .stat::before{
-  content:""!important;display:block!important;position:absolute!important;z-index:0!important;
-  width:158px!important;height:158px!important;right:-48px!important;top:-82px!important;
-  border-radius:50%!important;background:rgba(255,255,255,.12)!important;
-  pointer-events:none!important;
-}
-html body #page-salary .salary-summary-cards > .stat::after{
-  content:"₱"!important;display:grid!important;place-items:center!important;
-  position:absolute!important;z-index:3!important;top:18px!important;right:18px!important;
-  width:32px!important;height:32px!important;border:1px solid rgba(255,255,255,.26)!important;
-  border-radius:11px!important;background:rgba(255,255,255,.16)!important;
-  color:#fff!important;-webkit-text-fill-color:#fff!important;
-  font-size:16px!important;font-weight:800!important;
-}
-html body #page-salary .salary-summary-cards > .stat > .stat-top,
-html body #page-salary .salary-summary-cards > .stat > .stat-value,
-html body #page-salary .salary-summary-cards > .stat > .stat-foot{
-  display:block!important;position:relative!important;z-index:2!important;
-  visibility:visible!important;opacity:1!important;color:#fff!important;
-  -webkit-text-fill-color:#fff!important;text-shadow:none!important;
-}
-html body #page-salary .salary-summary-cards > .stat > .stat-top{
-  margin:0!important;padding:0 48px 0 0!important;font-size:12px!important;font-weight:750!important;
-}
-html body #page-salary .salary-summary-cards > .stat > .stat-value{
-  margin:16px 0 5px!important;font-size:clamp(21px,2vw,27px)!important;
-  line-height:1.15!important;font-weight:850!important;letter-spacing:-.65px!important;
-}
-html body #page-salary .salary-summary-cards > .stat > .stat-foot{
-  margin:0!important;font-size:11px!important;line-height:1.45!important;
-}
-@media(max-width:760px){
-  html body #page-salary .salary-summary-cards{grid-template-columns:1fr!important}
-  html body #page-salary .salary-summary-cards > .stat{min-height:138px!important}
-}
-</style>
-
-
-<style id="savely-remaining-salary-annual-projection-label-v1">
-#page-salary .salary-annual-remaining-stat #salaryAnnualRemainingDisplay::after{
-  content:" / annual projection";
-  display:inline;
-  margin-left:7px;
-  font-size:clamp(11px,.9vw,14px);
-  font-weight:650;
-  letter-spacing:0;
-  opacity:.9;
-  vertical-align:baseline;
-}
-@media(max-width:600px){
-  #page-salary .salary-annual-remaining-stat #salaryAnnualRemainingDisplay::after{
-    font-size:11px;
-    margin-left:4px;
-  }
-}
-</style>
-
-
-<style id="savely-full-year-annual-projection-v1">
-#page-salary .salary-annual-remaining-stat .annual-projection-inline{
-  display:inline!important;
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
-  font-size:clamp(11px,.9vw,14px)!important;
-  font-weight:650!important;
-  letter-spacing:0!important;
-  opacity:.96!important;
-  white-space:normal!important;
-}
-#page-salary .salary-annual-remaining-stat .annual-projection-inline #salaryAnnualDisplay{
-  display:inline!important;
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
-  font:inherit!important;
-}
-#page-salary .salary-annual-remaining-stat #salaryAnnualRemainingDisplay::after{
-  content:none!important;
-  display:none!important;
-}
-@media(max-width:600px){
-  #page-salary .salary-annual-remaining-stat .annual-projection-inline{font-size:11px!important}
-}
-</style>
-
-
-<style id="savely-salary-year-tabs-side-by-side-v1">
-#page-salary .salary-calendar-controls{align-items:center!important;justify-content:flex-end!important}
-#page-salary .salary-calendar-year-tabs{
- display:flex!important;flex-direction:row!important;align-items:center!important;
- flex-wrap:wrap!important;gap:8px!important;max-width:100%!important;
-}
-#page-salary .salary-calendar-year-tab{
- appearance:none!important;border:1px solid #dbe5ef!important;
- border-radius:11px!important;background:#fff!important;color:#53657b!important;
- padding:9px 15px!important;min-height:38px!important;
- font:700 12px/1.2 inherit!important;cursor:pointer!important;
- transition:background .15s ease,border-color .15s ease,color .15s ease,box-shadow .15s ease!important;
-}
-#page-salary .salary-calendar-year-tab:hover{
- border-color:#0b9870!important;color:#07875f!important;background:#f0fdf7!important;
-}
-#page-salary .salary-calendar-year-tab.active{
- background:#07875f!important;border-color:#07875f!important;color:#fff!important;
- box-shadow:0 4px 12px rgba(7,135,95,.16)!important;
-}
-
-@media(max-width:680px){
- #page-salary .salary-calendar-year-tabs{justify-content:flex-start!important;gap:6px!important}
- #page-salary .salary-calendar-year-tab{padding:8px 11px!important}
-}
-</style>
-
-
-<style id="savely-salary-month-view-and-clean-projection-v1">
-#page-salary .salary-annual-remaining-stat .annual-projection-inline{
- display:inline!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
- font-size:inherit!important;font-weight:750!important;letter-spacing:0!important;
-}
-#page-salary .salary-annual-remaining-stat .annual-projection-inline #salaryAnnualDisplay{
- display:inline!important;color:#fff!important;-webkit-text-fill-color:#fff!important;font:inherit!important;
-}
-#page-salary .salary-annual-remaining-stat #salaryAnnualRemainingDisplay::after{content:none!important;display:none!important}
-#page-salary #salaryCalendarYearGrid{display:none!important}
-#page-salary .salary-calendar-year-tabs{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;gap:8px!important}
-</style>
-
-
-<style id="savely-salary-month-navigation-buttons-v1">
-#page-salary .salary-calendar-controls{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:12px!important;
-  flex-wrap:wrap!important;
-}
-#page-salary .salary-calendar-year-tabs{
-  display:flex!important;
-  align-items:center!important;
-  flex-direction:row!important;
-  flex-wrap:wrap!important;
-  gap:8px!important;
-}
-#page-salary .salary-calendar-nav{
-  display:flex!important;
-  align-items:center!important;
-  gap:8px!important;
-}
-#page-salary .salary-calendar-nav button{
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  min-width:42px!important;
-  min-height:40px!important;
-  padding:0 13px!important;
-  border:1px solid #dbe5ef!important;
-  border-radius:11px!important;
-  background:#fff!important;
-  color:#07875f!important;
-  font-size:18px!important;
-  font-weight:800!important;
-  cursor:pointer!important;
-  box-shadow:0 2px 7px rgba(15,23,42,.04)!important;
-}
-#page-salary .salary-calendar-nav button[onclick="goToCurrentSalaryCalendarMonth()"]{
-  min-width:64px!important;
-  font-size:12px!important;
-  color:#334155!important;
-}
-#page-salary .salary-calendar-nav button:hover:not(:disabled){
-  border-color:#07875f!important;
-  background:#effaf5!important;
-}
-#page-salary .salary-calendar-nav button:disabled{
-  opacity:.35!important;
-  cursor:not-allowed!important;
-}
-@media(max-width:680px){
- #page-salary .salary-calendar-controls{align-items:flex-start!important}
- #page-salary .salary-calendar-nav{margin-left:auto!important}
-}
-</style>
-
-
-<style id="savely-salary-year-tabs-top-row-v2">
-#page-salary .salary-calendar-year-tabs-row{
- display:flex!important;
- width:100%!important;
- align-items:center!important;
- justify-content:flex-start!important;
- margin:0 0 16px!important;
- padding:0 0 12px!important;
- border-bottom:1px solid var(--border,#e4eaf2)!important;
-}
-#page-salary .salary-calendar-year-tabs{
- display:flex!important;
- flex-direction:row!important;
- flex-wrap:wrap!important;
- align-items:center!important;
- justify-content:flex-start!important;
- gap:8px!important;
- width:100%!important;
-}
-#page-salary .salary-calendar-year-tab{
- min-width:64px!important;
-}
-#page-salary .salary-calendar-head{
- display:flex!important;
- align-items:center!important;
- justify-content:space-between!important;
- gap:12px!important;
-}
-#page-salary .salary-calendar-controls{
- display:flex!important;
- align-items:center!important;
- justify-content:flex-end!important;
-}
-@media(max-width:700px){
- #page-salary .salary-calendar-head{align-items:flex-start!important;flex-wrap:wrap!important}
- #page-salary .salary-calendar-year-tabs{gap:6px!important}
- #page-salary .salary-calendar-year-tab{min-width:54px!important;padding:7px 9px!important}
-}
-</style>
-
-<style id="savely-tomtom-live-traffic-v1">
-.savely-waze-traffic-view{position:relative!important;width:100%;height:clamp(560px,76vh,900px)!important;min-height:560px!important;overflow:hidden!important;border:1px solid #e2eaf0!important;border-radius:15px!important;background:#eef3f1!important}
-.savely-tomtom-traffic-map{position:absolute;inset:0;width:100%;height:100%;z-index:1;background:#eef3f1}
-.savely-tomtom-traffic-status{position:absolute;z-index:500;left:12px;bottom:10px;padding:6px 9px;border-radius:8px;background:rgba(255,255,255,.94);color:#527064;font-size:9px;font-weight:800;pointer-events:none}
-.savely-tomtom-key-prompt{position:absolute;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(245,249,247,.34);pointer-events:none}
-.savely-tomtom-key-prompt[hidden]{display:none!important}
-.savely-tomtom-key-card{display:grid;gap:9px;width:min(360px,calc(100% - 30px));padding:20px;border:1px solid #dce9e2;border-radius:15px;background:rgba(255,255,255,.97);box-shadow:0 12px 36px rgba(20,55,40,.16);pointer-events:auto}
-.savely-tomtom-key-card strong{font-size:14px;color:#173c2e}
-.savely-tomtom-key-card span{font-size:11px;line-height:1.6;color:#718078}
-.savely-tomtom-key-card button{min-height:38px;border:0;border-radius:9px;background:#138765;color:#fff;font:inherit;font-size:11px;font-weight:850;cursor:pointer}
-.savely-tomtom-key-card a{font-size:10px;color:#138765;text-align:center;text-decoration:none;font-weight:800}
-.savely-tomtom-key-card a:hover{text-decoration:underline}
-.savely-tomtom-traffic-map .leaflet-control-zoom a{color:#156d50!important}
-.savely-tomtom-traffic-map .leaflet-control-attribution{font-size:9px!important}
-@media(max-width:650px){.savely-waze-traffic-view{height:68vh!important;min-height:460px!important}}
-</style>
 
 </body>
 </html>
-<style id="savely-metro-snapshot-monitor-v1">
-#page-metro-snapshot .savely-snapshot-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:290px;padding:34px 22px;border:1px dashed #cfe3d8;border-radius:15px;background:linear-gradient(145deg,#f4faf6,#fbfdfc)}
-#page-metro-snapshot .savely-snapshot-empty-icon{display:grid;place-items:center;width:54px;height:54px;margin-bottom:13px;border-radius:16px;background:#e3f4ea;color:#13845f;font-size:25px;font-weight:800}
-#page-metro-snapshot .savely-snapshot-empty strong{font-size:14px;color:#244638}
-#page-metro-snapshot .savely-snapshot-empty p{max-width:650px;margin:8px 0;color:#71847a;font-size:11px;line-height:1.7}
-#page-metro-snapshot .savely-snapshot-empty small{max-width:650px;color:#87968e;font-size:10px;line-height:1.6}
-.savely-location-subnav .savely-location-place[data-page="metro-snapshot"]{width:100%}
-</style>
