@@ -3914,9 +3914,8 @@ body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number:
       </div>
       <div class="stat salary-annual-remaining-stat salary-remaining-blue">
         <div class="stat-top">Remaining salary this year</div>
-        <div class="stat-value" id="salaryAnnualRemainingDisplay">₱0.00</div>
+        <div class="stat-value" id="salaryAnnualRemainingDisplay">₱0.00 <span class="annual-projection-inline">/ <span id="salaryAnnualDisplay">₱0.00</span> annual projection</span></div>
         <div class="stat-foot" id="salaryAnnualRemainingFoot">Estimated future cutoffs through December</div>
-        <span id="salaryAnnualDisplay" hidden aria-hidden="true">₱0.00</span>
       </div>
     </div>
     <section class="panel salary-calendar-panel" aria-labelledby="salaryCalendarTitle" style="margin-bottom:18px">
@@ -4865,9 +4864,13 @@ function getSalaryRemainingProjection(){
 function updateSalaryAnnualRemainingCard(){
  const value=document.getElementById('salaryAnnualRemainingDisplay');
  const foot=document.getElementById('salaryAnnualRemainingFoot');
+ const annual=document.getElementById('salaryAnnualDisplay');
  if(!value||!foot)return;
  const projection=getSalaryRemainingProjection();
- value.textContent=peso(projection.amount);
+ // The remaining balance is the amount still scheduled this year.
+ // Annual projection is the full 12-month salary, not the remaining balance.
+ value.childNodes[0].textContent=peso(projection.amount)+' ';
+ if(annual)annual.textContent=peso(Math.max(0,Number(data.monthlySalary)||0)*12);
  foot.textContent=projection.description;
 }
 function renderSalaryYearCalendar(year){
@@ -12783,6 +12786,33 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
     font-size:11px;
     margin-left:4px;
   }
+}
+</style>
+
+
+<style id="savely-full-year-annual-projection-v1">
+#page-salary .salary-annual-remaining-stat .annual-projection-inline{
+  display:inline!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  font-size:clamp(11px,.9vw,14px)!important;
+  font-weight:650!important;
+  letter-spacing:0!important;
+  opacity:.96!important;
+  white-space:normal!important;
+}
+#page-salary .salary-annual-remaining-stat .annual-projection-inline #salaryAnnualDisplay{
+  display:inline!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  font:inherit!important;
+}
+#page-salary .salary-annual-remaining-stat #salaryAnnualRemainingDisplay::after{
+  content:none!important;
+  display:none!important;
+}
+@media(max-width:600px){
+  #page-salary .salary-annual-remaining-stat .annual-projection-inline{font-size:11px!important}
 }
 </style>
 
