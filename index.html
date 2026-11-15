@@ -13935,6 +13935,65 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
 }
 </style>
 
+
+<style id="savely-mobile-contextual-actions-v3">
+@media (max-width: 760px) {
+  /* Hide the desktop sidebar encouragement card completely on phones. */
+  .app > aside.sidebar .side-bottom,
+  .app.sidebar-collapsed > aside.sidebar .side-bottom,
+  aside.sidebar .side-bottom {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Mobile action policy: only the relevant Add Savings action appears
+     while the Savings page is open. Debt and Salary actions stay hidden. */
+  #topbarAddDebtButton,
+  #salaryDetailsOpenButton,
+  .salary-amount-top-button {
+    display: none !important;
+  }
+
+  #topbarAddSavingsButton {
+    display: none !important;
+  }
+  body:has(#page-savings.active) #topbarAddSavingsButton {
+    display: inline-flex !important;
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    min-height: 50px !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 13px 16px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 13px !important;
+    white-space: normal !important;
+    font-size: 15px !important;
+    line-height: 1.25 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Do not let the hidden desktop controls leave gaps in the header. */
+  .top-actions {
+    align-items: stretch !important;
+  }
+  .top-actions > #topbarAddDebtButton,
+  .top-actions > #salaryDetailsOpenButton,
+  .top-actions > #topbarAddSavingsButton {
+    margin: 0 !important;
+  }
+}
+</style>
+
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
