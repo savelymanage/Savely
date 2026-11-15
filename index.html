@@ -14352,3 +14352,156 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   .app > main.main { padding-inline: 10px !important; }
 }
 </style>
+
+
+<style id="savely-mobile-green-header-height-fix-v2">
+@media (max-width: 760px) {
+  /* Collapse the mobile green shell to the actual brand + nav content height. */
+  .app,
+  .app.sidebar-collapsed {
+    min-height: 0 !important;
+    height: auto !important;
+    align-content: start !important;
+    grid-template-rows: max-content minmax(0, 1fr) !important;
+  }
+
+  .app > aside.sidebar,
+  .app.sidebar-collapsed > aside.sidebar,
+  aside.sidebar {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 38px !important;
+    grid-template-rows: 48px 42px !important;
+    grid-auto-rows: max-content !important;
+    align-content: start !important;
+    align-items: center !important;
+    justify-content: stretch !important;
+    flex: 0 0 auto !important;
+    align-self: stretch !important;
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 8px 10px 9px !important;
+    margin: 0 !important;
+    gap: 6px 8px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  .app > aside.sidebar > .brand,
+  .app.sidebar-collapsed > aside.sidebar > .brand {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    height: 48px !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .app > aside.sidebar > #savelySidebarToggle,
+  .app.sidebar-collapsed > aside.sidebar > #savelySidebarToggle {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    position: static !important;
+    inset: auto !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+  }
+
+  .app > aside.sidebar > div:not(.brand):not(.side-bottom),
+  .app.sidebar-collapsed > aside.sidebar > div:not(.brand):not(.side-bottom) {
+    display: block !important;
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    align-self: start !important;
+    width: 100% !important;
+    height: 42px !important;
+    min-height: 0 !important;
+    max-height: 42px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    flex: 0 0 auto !important;
+  }
+
+  .app > aside.sidebar .nav-label,
+  .app.sidebar-collapsed > aside.sidebar .nav-label {
+    display: none !important;
+  }
+
+  .app > aside.sidebar #nav,
+  .app.sidebar-collapsed > aside.sidebar #nav {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    height: 42px !important;
+    min-height: 0 !important;
+    max-height: 42px !important;
+    margin: 0 !important;
+    padding: 0 0 2px !important;
+    gap: 4px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .app > aside.sidebar #nav::-webkit-scrollbar { display: none !important; }
+
+  .app > aside.sidebar #nav button,
+  .app.sidebar-collapsed > aside.sidebar #nav button {
+    display: inline-flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    min-width: 40px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    border-radius: 9px !important;
+    white-space: nowrap !important;
+    font-size: 11px !important;
+    line-height: 1 !important;
+  }
+
+  .app > aside.sidebar #nav button .ico,
+  .app.sidebar-collapsed > aside.sidebar #nav button .ico {
+    display: inline-block !important;
+    width: auto !important;
+    min-width: 0 !important;
+    font-size: 14px !important;
+  }
+
+  .app > aside.sidebar #nav button .nav-text,
+  .app.sidebar-collapsed > aside.sidebar #nav button .nav-text {
+    display: inline !important;
+  }
+
+  .app > aside.sidebar > .side-bottom,
+  .app.sidebar-collapsed > aside.sidebar > .side-bottom {
+    display: none !important;
+  }
+
+  /* Keep the content immediately below the compact green header. */
+  .app > main.main,
+  .app.sidebar-collapsed > main.main {
+    min-height: 0 !important;
+    margin: 0 !important;
+  }
+}
+</style>
