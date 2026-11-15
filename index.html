@@ -13994,6 +13994,168 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
 }
 </style>
 
+
+<div id="savelyMobileFabRoot" aria-label="Quick actions">
+  <div id="savelyMobileFabMenu" aria-hidden="true">
+    <button type="button" class="savely-mobile-fab-item" id="savelyMobileAddAction">
+      <span class="savely-mobile-fab-label" id="savelyMobileAddLabel">Add</span>
+      <span class="savely-mobile-fab-icon" aria-hidden="true">＋</span>
+    </button>
+    <button type="button" class="savely-mobile-fab-item" id="savelyMobileCalculatorAction">
+      <span class="savely-mobile-fab-label">Calculator</span>
+      <span class="savely-mobile-fab-icon savely-mobile-fab-secondary" aria-hidden="true">▦</span>
+    </button>
+  </div>
+  <button type="button" id="savelyMobileFabToggle" aria-label="Open quick actions" aria-expanded="false">
+    <span class="savely-mobile-fab-plus" aria-hidden="true">＋</span>
+  </button>
+</div>
+
+
+<style id="savely-mobile-fab-system-v1">
+#savelyMobileFabRoot{display:none}
+@media(max-width:760px){
+  /* Replace wide text controls with compact icon-only utility buttons. */
+  .top-actions{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;align-items:center!important;gap:7px!important}
+  #holidayRefreshButton{
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    flex:0 0 38px!important;width:38px!important;min-width:38px!important;height:38px!important;min-height:38px!important;
+    padding:0!important;border-radius:50%!important;font-size:0!important;line-height:0!important;overflow:hidden!important;
+  }
+  #holidayRefreshButton::before{content:"↻";font-size:20px!important;line-height:1!important}
+  #savelyWeather{
+    display:flex!important;flex:0 0 40px!important;width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;
+    align-items:center!important;justify-content:center!important;padding:0!important;border-radius:50%!important;overflow:hidden!important;
+  }
+  #savelyWeather .weather-icon{display:block!important;font-size:21px!important;line-height:1!important}
+  #savelyWeather .weather-copy{display:none!important}
+  #today{
+    display:flex!important;flex:0 0 40px!important;width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;
+    align-items:center!important;justify-content:center!important;padding:0!important;border-radius:50%!important;
+    font-size:0!important;line-height:0!important;overflow:hidden!important;
+  }
+  #today::before{content:"▦";font-size:20px!important;line-height:1!important;color:var(--muted,#64748b)}
+  #overviewPrivacyToggle{
+    display:inline-flex!important;flex:0 0 40px!important;width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;
+    justify-content:center!important;padding:0!important;border-radius:50%!important;font-size:0!important;overflow:hidden!important;
+  }
+  #overviewPrivacyToggle #overviewPrivacyLabel{display:none!important}
+  #overviewPrivacyToggle #overviewPrivacyIcon{font-size:17px!important}
+  #topbarAddSavingsButton,#salaryDetailsOpenButton,#topbarAddDebtButton{display:none!important}
+
+  /* Existing calculator launcher is now available from the speed-dial menu. */
+  #savelyCalculatorFab{display:none!important}
+  #savelyMobileFabRoot{
+    display:block!important;position:fixed!important;right:18px!important;
+    bottom:calc(22px + env(safe-area-inset-bottom))!important;z-index:25000!important;
+    width:64px!important;height:auto!important;pointer-events:none!important;
+  }
+  #savelyMobileFabToggle{
+    pointer-events:auto!important;display:flex!important;align-items:center!important;justify-content:center!important;
+    width:58px!important;height:58px!important;border:0!important;border-radius:50%!important;
+    background:linear-gradient(145deg,#15966f,#087b5a)!important;color:#fff!important;
+    box-shadow:0 7px 22px rgba(0,70,48,.3)!important;cursor:pointer!important;
+    transition:transform .18s ease,background .18s ease!important;
+  }
+  #savelyMobileFabToggle:active{transform:scale(.94)!important}
+  .savely-mobile-fab-plus{font-size:34px!important;font-weight:400!important;line-height:1!important;transition:transform .2s ease!important}
+  #savelyMobileFabRoot.is-open .savely-mobile-fab-plus{transform:rotate(45deg)!important}
+  #savelyMobileFabMenu{
+    display:flex!important;flex-direction:column!important;align-items:flex-end!important;gap:12px!important;
+    position:absolute!important;right:0!important;bottom:72px!important;width:max-content!important;
+    pointer-events:none!important;opacity:0!important;visibility:hidden!important;transform:translateY(10px)!important;
+    transition:opacity .18s ease,transform .18s ease,visibility .18s ease!important;
+  }
+  #savelyMobileFabRoot.is-open #savelyMobileFabMenu{
+    pointer-events:auto!important;opacity:1!important;visibility:visible!important;transform:translateY(0)!important;
+  }
+  .savely-mobile-fab-item{
+    display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-end!important;
+    gap:11px!important;padding:0!important;border:0!important;background:transparent!important;
+    color:#fff!important;font:inherit!important;cursor:pointer!important;
+  }
+  .savely-mobile-fab-label{
+    display:block!important;padding:7px 11px!important;border-radius:8px!important;
+    background:rgba(15,35,30,.84)!important;color:#fff!important;font-size:12px!important;
+    font-weight:750!important;line-height:1.2!important;white-space:nowrap!important;
+    box-shadow:0 3px 12px rgba(0,0,0,.15)!important;
+  }
+  .savely-mobile-fab-icon{
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    width:48px!important;height:48px!important;flex:0 0 48px!important;border-radius:50%!important;
+    background:#ed625e!important;color:#fff!important;font-size:25px!important;line-height:1!important;
+    box-shadow:0 5px 15px rgba(0,0,0,.2)!important;
+  }
+  .savely-mobile-fab-secondary{background:#3985ec!important;font-size:21px!important}
+}
+@media(max-width:390px){
+  #savelyMobileFabRoot{right:13px!important;bottom:calc(16px + env(safe-area-inset-bottom))!important}
+  #savelyMobileFabToggle{width:54px!important;height:54px!important}
+  #savelyMobileFabMenu{bottom:66px!important;gap:10px!important}
+  .savely-mobile-fab-icon{width:44px!important;height:44px!important;flex-basis:44px!important}
+}
+</style>
+
+
+<script id="savely-mobile-fab-system-v1">
+(function(){
+  const root=document.getElementById('savelyMobileFabRoot');
+  if(!root)return;
+  const toggle=document.getElementById('savelyMobileFabToggle');
+  const menu=document.getElementById('savelyMobileFabMenu');
+  const addButton=document.getElementById('savelyMobileAddAction');
+  const addLabel=document.getElementById('savelyMobileAddLabel');
+  const calcButton=document.getElementById('savelyMobileCalculatorAction');
+
+  function activePage(){
+    return document.querySelector('.page.active')?.id || 'page-dashboard';
+  }
+  function actionForPage(){
+    const page=activePage();
+    if(page==='page-financial-list')return {label:'Add Savings',run:()=>document.getElementById('topbarAddSavingsButton')?.click()};
+    if(page==='page-salary')return {label:'Add Salary Amount',run:()=>document.getElementById('salaryDetailsOpenButton')?.click()};
+    if(page==='page-debt')return {label:'Add Debt',run:()=>document.getElementById('topbarAddDebtButton')?.click()};
+    return null;
+  }
+  function refresh(){
+    const action=actionForPage();
+    addButton.hidden=!action;
+    if(action)addLabel.textContent=action.label;
+    else addLabel.textContent='Add';
+  }
+  function close(){
+    root.classList.remove('is-open');
+    toggle.setAttribute('aria-expanded','false');
+    toggle.setAttribute('aria-label','Open quick actions');
+    menu.setAttribute('aria-hidden','true');
+  }
+  toggle.addEventListener('click',()=>{
+    refresh();
+    const open=!root.classList.contains('is-open');
+    root.classList.toggle('is-open',open);
+    toggle.setAttribute('aria-expanded',String(open));
+    toggle.setAttribute('aria-label',open?'Close quick actions':'Open quick actions');
+    menu.setAttribute('aria-hidden',String(!open));
+  });
+  addButton.addEventListener('click',()=>{
+    const action=actionForPage();
+    close();
+    if(action)action.run();
+  });
+  calcButton.addEventListener('click',()=>{
+    close();
+    document.getElementById('savelyCalculatorFab')?.click();
+  });
+  document.addEventListener('click',e=>{
+    if(!root.contains(e.target))close();
+  });
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+  const observer=new MutationObserver(refresh);
+  document.querySelectorAll('.page').forEach(el=>observer.observe(el,{attributes:true,attributeFilter:['class']}));
+  refresh();
+})();
+</script>
+
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
