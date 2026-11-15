@@ -3922,10 +3922,7 @@ body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number:
       <div class="panel-head salary-calendar-head">
         <div><h2 id="salaryCalendarTitle" style="font-size:19px">Salary calendar</h2><div class="panel-sub">View both monthly cutoff paydays. If a payday falls on a weekend or recognized Philippine holiday, it moves to the previous working day.</div></div>
         <div class="salary-calendar-controls">
-          <div class="salary-calendar-view-toggle" role="group" aria-label="Calendar view">
-            <button type="button" class="active" data-salary-calendar-view="month" onclick="setSalaryCalendarView('month')" aria-pressed="true">Monthly</button>
-            <button type="button" data-salary-calendar-view="year" onclick="setSalaryCalendarView('year')" aria-pressed="false">Yearly</button>
-          </div>
+          <div id="salaryCalendarYearTabs" class="salary-calendar-year-tabs" role="tablist" aria-label="Choose salary calendar year"></div>
           <div class="salary-calendar-nav">
             <button type="button" class="btn btn-light" id="salaryCalendarPrev" onclick="changeSalaryCalendarMonth(-1)" aria-label="Previous month">‹</button>
             <button type="button" class="btn btn-light" onclick="goToCurrentSalaryCalendarMonth()">Today</button>
@@ -4720,7 +4717,7 @@ function renderSalaryPage(){
  renderSalaryCalendar();
 }
 let salaryCalendarCursor=new Date(new Date().getFullYear(),new Date().getMonth(),1);
-let salaryCalendarViewMode='month';
+let salaryCalendarViewMode='year';
 setTimeout(()=>refreshPhilippineHolidays([new Date().getFullYear(),new Date().getFullYear()+1]),250);
 setInterval(()=>refreshPhilippineHolidays([new Date().getFullYear(),new Date().getFullYear()+1]),24*60*60*1000);
 let salaryCalendarSelectedDate=null;
@@ -4899,6 +4896,32 @@ function renderSalaryYearCalendar(year){
  }
  root.innerHTML=months.length?months.join(''):'<div class="salary-calendar-empty">No future months remain in this year.</div>';
 }
+
+function renderSalaryCalendarYearTabs(){
+ const root=document.getElementById('salaryCalendarYearTabs');
+ if(!root)return;
+ const currentYear=new Date().getFullYear();
+ const selectedYear=salaryCalendarCursor.getFullYear();
+ const years=[];
+ // Hide elapsed years automatically; keep the current year and the next ten years.
+ for(let year=currentYear;year<=currentYear+10;year++)years.push(year);
+ root.innerHTML=years.map(year=>{
+  const active=year===selectedYear;
+  const label=year===currentYear?`${year} · Current`:String(year);
+  return `<button type="button" class="salary-calendar-year-tab${active?' active':''}" role="tab" aria-selected="${active?'true':'false'}" onclick="selectSalaryCalendarYear(${year})">${label}</button>`;
+ }).join('');
+}
+function selectSalaryCalendarYear(year){
+ const currentYear=new Date().getFullYear();
+ const target=Math.max(currentYear,Math.min(currentYear+10,Number(year)||currentYear));
+ const now=new Date();
+ salaryCalendarViewMode='year';
+ salaryCalendarCursor=new Date(target,target===currentYear?now.getMonth():0,1);
+ salaryCalendarSelectedDate=null;
+ renderSalaryCalendar();
+ refreshPhilippineHolidays([target]);
+}
+
 function renderSalaryCalendar(){
  const grid=document.getElementById('salaryCalendarGrid'),label=document.getElementById('salaryCalendarMonthLabel'),details=document.getElementById('salaryCalendarDetails');
  const yearGrid=document.getElementById('salaryCalendarYearGrid');
@@ -4908,12 +4931,7 @@ function renderSalaryCalendar(){
  if(salaryCalendarCursor<minimum)salaryCalendarCursor=minimum;
  const year=salaryCalendarCursor.getFullYear(),month=salaryCalendarCursor.getMonth();
  const yearMode=salaryCalendarViewMode==='year';
- const viewButtons=document.querySelectorAll('[data-salary-calendar-view]');
- viewButtons.forEach(button=>{
-  const active=button.dataset.salaryCalendarView===(yearMode?'year':'month');
-  button.classList.toggle('active',active);
-  button.setAttribute('aria-pressed',active?'true':'false');
- });
+ renderSalaryCalendarYearTabs();
  const previous=document.getElementById('salaryCalendarPrev');
  const next=document.getElementById('salaryCalendarNext');
  const isAtCurrent=yearMode?year===now.getFullYear():year===now.getFullYear()&&month===now.getMonth();
@@ -12813,6 +12831,38 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
 }
 @media(max-width:600px){
   #page-salary .salary-annual-remaining-stat .annual-projection-inline{font-size:11px!important}
+}
+</style>
+
+
+<style id="savely-salary-year-tabs-side-by-side-v1">
+#page-salary .salary-calendar-controls{align-items:center!important;justify-content:flex-end!important}
+#page-salary .salary-calendar-year-tabs{
+ display:flex!important;flex-direction:row!important;align-items:center!important;
+ flex-wrap:wrap!important;gap:8px!important;max-width:100%!important;
+}
+#page-salary .salary-calendar-year-tab{
+ appearance:none!important;border:1px solid #dbe5ef!important;
+ border-radius:11px!important;background:#fff!important;color:#53657b!important;
+ padding:9px 15px!important;min-height:38px!important;
+ font:700 12px/1.2 inherit!important;cursor:pointer!important;
+ transition:background .15s ease,border-color .15s ease,color .15s ease,box-shadow .15s ease!important;
+}
+#page-salary .salary-calendar-year-tab:hover{
+ border-color:#0b9870!important;color:#07875f!important;background:#f0fdf7!important;
+}
+#page-salary .salary-calendar-year-tab.active{
+ background:#07875f!important;border-color:#07875f!important;color:#fff!important;
+ box-shadow:0 4px 12px rgba(7,135,95,.16)!important;
+}
+#page-salary #salaryCalendarPrev,
+#page-salary #salaryCalendarNext,
+#page-salary .salary-calendar-nav button[onclick="goToCurrentSalaryCalendarMonth()"]{
+ display:none!important;
+}
+@media(max-width:680px){
+ #page-salary .salary-calendar-year-tabs{justify-content:flex-start!important;gap:6px!important}
+ #page-salary .salary-calendar-year-tab{padding:8px 11px!important}
 }
 </style>
 
