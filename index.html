@@ -12844,11 +12844,7 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
  background:#07875f!important;border-color:#07875f!important;color:#fff!important;
  box-shadow:0 4px 12px rgba(7,135,95,.16)!important;
 }
-#page-salary #salaryCalendarPrev,
-#page-salary #salaryCalendarNext,
-#page-salary .salary-calendar-nav button[onclick="goToCurrentSalaryCalendarMonth()"]{
- display:none!important;
-}
+
 @media(max-width:680px){
  #page-salary .salary-calendar-year-tabs{justify-content:flex-start!important;gap:6px!important}
  #page-salary .salary-calendar-year-tab{padding:8px 11px!important}
@@ -12867,6 +12863,62 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
 #page-salary .salary-annual-remaining-stat #salaryAnnualRemainingDisplay::after{content:none!important;display:none!important}
 #page-salary #salaryCalendarYearGrid{display:none!important}
 #page-salary .salary-calendar-year-tabs{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;gap:8px!important}
+</style>
+
+
+<style id="savely-salary-month-navigation-buttons-v1">
+#page-salary .salary-calendar-controls{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  flex-wrap:wrap!important;
+}
+#page-salary .salary-calendar-year-tabs{
+  display:flex!important;
+  align-items:center!important;
+  flex-direction:row!important;
+  flex-wrap:wrap!important;
+  gap:8px!important;
+}
+#page-salary .salary-calendar-nav{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+#page-salary .salary-calendar-nav button{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:42px!important;
+  min-height:40px!important;
+  padding:0 13px!important;
+  border:1px solid #dbe5ef!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  color:#07875f!important;
+  font-size:18px!important;
+  font-weight:800!important;
+  cursor:pointer!important;
+  box-shadow:0 2px 7px rgba(15,23,42,.04)!important;
+}
+#page-salary .salary-calendar-nav button[onclick="goToCurrentSalaryCalendarMonth()"]{
+  min-width:64px!important;
+  font-size:12px!important;
+  color:#334155!important;
+}
+#page-salary .salary-calendar-nav button:hover:not(:disabled){
+  border-color:#07875f!important;
+  background:#effaf5!important;
+}
+#page-salary .salary-calendar-nav button:disabled{
+  opacity:.35!important;
+  cursor:not-allowed!important;
+}
+@media(max-width:680px){
+ #page-salary .salary-calendar-controls{align-items:flex-start!important}
+ #page-salary .salary-calendar-nav{margin-left:auto!important}
+}
 </style>
 
 </body>
