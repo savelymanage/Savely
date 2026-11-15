@@ -13007,6 +13007,279 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
 }
 </style>
 
+
+<style id="savely-android-responsive-v1">
+/* Android / narrow-screen layout: prevent the desktop collapsed rail from
+   squeezing the dashboard into a narrow column. Desktop rules stay untouched. */
+@media (max-width: 760px) {
+  html, body {
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body > .app,
+  .app,
+  .app.sidebar-collapsed {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 100vh !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    overflow: visible !important;
+  }
+
+  .app > aside.sidebar,
+  .app.sidebar-collapsed > aside.sidebar {
+    position: relative !important;
+    inset: auto !important;
+    z-index: 20 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 58px !important;
+    max-height: none !important;
+    padding: 9px 12px !important;
+    overflow: visible !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--line) !important;
+    box-sizing: border-box !important;
+  }
+
+  .app > aside.sidebar .brand,
+  .app.sidebar-collapsed > aside.sidebar .brand {
+    display: flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    padding: 0 !important;
+    min-width: 0 !important;
+  }
+  .app > aside.sidebar .brand-mark {
+    width: 36px !important;
+    height: 36px !important;
+    flex: 0 0 36px !important;
+  }
+  .app > aside.sidebar .brand > div:nth-child(2),
+  .app.sidebar-collapsed > aside.sidebar .brand > div:nth-child(2) {
+    display: block !important;
+  }
+
+  .app > aside.sidebar > div:not(.brand),
+  .app.sidebar-collapsed > aside.sidebar > div:not(.brand) {
+    display: contents !important;
+  }
+  .app > aside.sidebar .nav-label,
+  .app.sidebar-collapsed > aside.sidebar .nav-label,
+  .app > aside.sidebar .side-bottom,
+  .app.sidebar-collapsed > aside.sidebar .side-bottom {
+    display: none !important;
+  }
+
+  .app > aside.sidebar #nav,
+  .app.sidebar-collapsed > aside.sidebar #nav {
+    display: flex !important;
+    flex: 1 1 auto !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 4px !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: calc(100% - 52px) !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 0 2px 2px !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .app > aside.sidebar #nav::-webkit-scrollbar { display: none !important; }
+
+  .app > aside.sidebar #nav button,
+  .app.sidebar-collapsed > aside.sidebar #nav button {
+    display: inline-flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    width: auto !important;
+    min-width: 42px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    border-radius: 10px !important;
+    white-space: nowrap !important;
+    font-size: 11px !important;
+  }
+  .app > aside.sidebar #nav button .ico,
+  .app.sidebar-collapsed > aside.sidebar #nav button .ico {
+    display: inline-block !important;
+    width: auto !important;
+    min-width: 0 !important;
+    font-size: 15px !important;
+  }
+  .app > aside.sidebar #nav button .nav-text,
+  .app.sidebar-collapsed > aside.sidebar #nav button .nav-text {
+    display: inline !important;
+  }
+
+  #savelySidebarToggle,
+  .app.sidebar-collapsed #savelySidebarToggle {
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    flex: 0 0 32px !important;
+    width: 32px !important;
+    min-width: 32px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    margin: 0 !important;
+    border: 1px solid rgba(255,255,255,.3) !important;
+    border-radius: 9px !important;
+    box-shadow: none !important;
+  }
+
+  .app > main.main,
+  .app.sidebar-collapsed > main.main {
+    display: block !important;
+    grid-column: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 18px 14px 32px !important;
+    box-sizing: border-box !important;
+  }
+
+  .topbar {
+    align-items: flex-start !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    margin-bottom: 18px !important;
+  }
+  .topbar > :first-child {
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+  }
+  .page-title {
+    font-size: clamp(21px, 5.5vw, 25px) !important;
+    line-height: 1.2 !important;
+    overflow-wrap: anywhere !important;
+  }
+  .page-description {
+    font-size: 11px !important;
+    line-height: 1.45 !important;
+  }
+  .top-actions {
+    display: flex !important;
+    flex: 1 1 100% !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 7px !important;
+    min-width: 0 !important;
+  }
+  .weather-pill {
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+  .stat {
+    min-width: 0 !important;
+    padding: 14px !important;
+    border-radius: 14px !important;
+  }
+  .stat-top {
+    align-items: flex-start !important;
+    gap: 6px !important;
+    font-size: 10px !important;
+    line-height: 1.35 !important;
+  }
+  .stat-value {
+    max-width: 100% !important;
+    font-size: clamp(17px, 4.6vw, 22px) !important;
+    line-height: 1.2 !important;
+    overflow-wrap: anywhere !important;
+  }
+  .panel {
+    min-width: 0 !important;
+    padding: 15px !important;
+    border-radius: 15px !important;
+  }
+  .layout,
+  .section-grid,
+  .financial-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+  .chart {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 150px !important;
+    gap: 7px !important;
+  }
+  .bar-label { font-size: 9px !important; }
+  .table-wrap {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .financial-subnav {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+  }
+  .modal-backdrop {
+    align-items: flex-end !important;
+    padding: 10px !important;
+  }
+  .modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 90dvh !important;
+    overflow-y: auto !important;
+    border-radius: 18px !important;
+    padding: 18px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .app > aside.sidebar,
+  .app.sidebar-collapsed > aside.sidebar {
+    gap: 6px !important;
+    padding-inline: 8px !important;
+  }
+  .app > aside.sidebar .brand > div:nth-child(2) { display: none !important; }
+  .app > aside.sidebar #nav,
+  .app.sidebar-collapsed > aside.sidebar #nav {
+    max-width: calc(100% - 42px) !important;
+    justify-content: flex-start !important;
+  }
+  .app > aside.sidebar #nav button,
+  .app.sidebar-collapsed > aside.sidebar #nav button {
+    padding-inline: 8px !important;
+  }
+  .app > main.main { padding-inline: 11px !important; }
+  .cards { gap: 8px !important; }
+  .stat { padding: 11px !important; }
+  .stat-value { font-size: 17px !important; }
+}
+</style>
+
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
