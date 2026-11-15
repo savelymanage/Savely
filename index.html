@@ -3865,6 +3865,10 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
        <div id="savelyWazeTrafficView" class="savely-waze-traffic-view" role="region" aria-label="Waze live traffic map" hidden>
         <iframe id="savelyWazeTrafficFrame" title="Waze Live Map traffic view" src="https://embed.waze.com/iframe?zoom=10&amp;lat=14.5995&amp;lon=120.9842&amp;pin=1" loading="lazy" allow="geolocation" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
        </div>
+       <div id="savelyTomTomTrafficView" class="savely-waze-traffic-view savely-tomtom-traffic-view" role="region" aria-label="TomTom live traffic map" hidden>
+        <div id="savelyTomTomTrafficMap"></div>
+        <div id="savelyTomTomMapMessage" class="savely-tomtom-map-message">Enter and save your TomTom API key in the traffic controls to load live traffic.</div>
+       </div>
 <div id="savelyPublicCCTVView" class="savely-public-cctv-view" role="region" aria-label="Metro Manila public CCTV directory" hidden>
         <div class="savely-cctv-main savely-cctv-main-full">
          <div class="savely-cctv-main-head">
@@ -3910,8 +3914,19 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
         <button type="button" class="live-location-map-action danger" id="liveLocationClear" onclick="clearSavelyLocationTrail()">Clear current route</button>
        </div>
        <div class="live-location-map-controls savely-waze-map-controls" id="savelyWazeMapControls" aria-label="Traffic map controls" hidden>
-        <div class="live-location-map-live-state"><span class="live-location-status-dot is-live"></span><span><strong>Waze Live Traffic</strong><small>Traffic reports and road alerts in Waze's own map.</small></span></div>
-        <button type="button" class="live-location-map-action" onclick="centerSavelyWazeTraffic()">Center on my location</button>
+        <div class="savely-traffic-provider-switch" role="group" aria-label="Traffic provider">
+         <button type="button" class="active" data-savely-traffic-provider="waze" aria-pressed="true">Waze</button>
+         <button type="button" data-savely-traffic-provider="tomtom" aria-pressed="false">TomTom</button>
+        </div>
+        <div class="live-location-map-live-state" id="savelyTrafficProviderStatus"><span class="live-location-status-dot is-live"></span><span><strong>Waze Live Traffic</strong><small>Traffic reports and road alerts in Waze's own map.</small></span></div>
+        <div id="savelyTomTomKeyPanel" class="savely-tomtom-key-panel" hidden>
+         <label for="savelyTomTomApiKey">TomTom API key</label>
+         <input id="savelyTomTomApiKey" type="password" autocomplete="off" placeholder="Paste your TomTom API key">
+         <button type="button" class="live-location-map-action" id="savelyTomTomSaveKey">Save API key on this device</button>
+         <small>Stored only in this browser. Restrict the key to your Savely domain in TomTom.</small>
+        </div>
+        <button type="button" class="live-location-map-action" id="savelyTrafficCenterButton" onclick="centerSavelyWazeTraffic()">Center on my location</button>
+        <button type="button" class="live-location-map-action" id="savelyTomTomRefreshButton" hidden>Refresh traffic</button>
        </div>
       <div class="live-location-map-footer" id="savelyGpsMapFooter"><span><i class="live-location-legend-dot current"></i> Current / last position</span><span><i class="live-location-legend-line"></i> Recorded movement trail</span><span id="liveLocationLastUpdate">No location update yet</span></div>
       <div class="savely-waze-map-note" id="savelyWazeMapNote" hidden>Live traffic is provided by the Waze Live Map. Traffic conditions and reports depend on Waze coverage and community updates. This view is separate from Savely's GPS route map.</div>
@@ -13279,6 +13294,156 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   .stat-value { font-size: 17px !important; }
 }
 </style>
+
+
+<style id="savely-waze-tomtom-provider-switch-v1">
+.savely-traffic-provider-switch{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border:1px solid #dce8e2;border-radius:10px;background:#f2f7f4}
+.savely-traffic-provider-switch button{min-height:34px;border:0;border-radius:7px;background:transparent;color:#60756b;font-size:11px;font-weight:850;cursor:pointer}
+.savely-traffic-provider-switch button.active{background:#138765;color:#fff;box-shadow:0 2px 7px #13876525}
+.savely-tomtom-traffic-view{background:#e9eff1}
+.savely-tomtom-traffic-view #savelyTomTomTrafficMap{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+.savely-tomtom-map-message{position:absolute;z-index:500;left:50%;top:50%;transform:translate(-50%,-50%);width:min(390px,calc(100% - 36px));padding:16px;border:1px solid #dce7e2;border-radius:13px;background:#ffffffed;color:#435348;text-align:center;font-size:12px;line-height:1.55;box-shadow:0 8px 25px #1c3d2b18;pointer-events:none}
+.savely-tomtom-map-message[hidden]{display:none!important}
+.savely-tomtom-key-panel{display:grid;gap:6px;padding:9px;border:1px solid #e1e9e4;border-radius:10px;background:#f8fbf9}
+.savely-tomtom-key-panel[hidden]{display:none!important}
+.savely-tomtom-key-panel label{font-size:10px;font-weight:800;color:#52665b}
+.savely-tomtom-key-panel input{width:100%;min-width:0;height:36px;padding:7px 9px;border:1px solid #d7e1da;border-radius:8px;background:#fff;color:#20352a;font-size:11px}
+.savely-tomtom-key-panel small{font-size:9px;line-height:1.4;color:#75857c}
+#savelyTomTomTrafficMap .leaflet-control-attribution{font-size:9px}
+@media(max-width:760px){
+ #page-live-location .savely-tomtom-traffic-view{height:72vh;min-height:520px}
+ #page-live-location .savely-waze-map-controls{width:min(210px,calc(100% - 20px))!important}
+}
+</style>
+
+<script id="savely-waze-tomtom-provider-switch-v1">
+(function(){
+ 'use strict';
+ const $=id=>document.getElementById(id);
+ const KEY='savely_tomtom_traffic_key_v1';
+ let provider='waze', tomtomMap=null, baseLayer=null, trafficLayer=null, mapReady=false;
+
+ function currentPoint(){
+  const points=(typeof savelyLiveLocationPoints!=='undefined'&&Array.isArray(savelyLiveLocationPoints))?savelyLiveLocationPoints:[];
+  return points.length?points[points.length-1]:{lat:14.5995,lng:120.9842};
+ }
+ function savedKey(){
+  try{return localStorage.getItem(KEY)||'';}catch(e){return '';}
+ }
+ function setMessage(message,show=true){
+  const el=$('savelyTomTomMapMessage');
+  if(el){el.textContent=message;el.hidden=!show;}
+ }
+ function updateProviderUI(){
+  const waze=provider==='waze';
+  const wv=$('savelyWazeTrafficView'), tv=$('savelyTomTomTrafficView');
+  if(wv)wv.hidden=!waze;
+  if(tv)tv.hidden=waze;
+  document.querySelectorAll('[data-savely-traffic-provider]').forEach(btn=>{
+   const active=btn.dataset.savelyTrafficProvider===provider;
+   btn.classList.toggle('active',active);
+   btn.setAttribute('aria-pressed',active?'true':'false');
+  });
+  const status=$('savelyTrafficProviderStatus');
+  const keyPanel=$('savelyTomTomKeyPanel');
+  const center=$('savelyTrafficCenterButton');
+  const refresh=$('savelyTomTomRefreshButton');
+  if(status){
+   const strong=status.querySelector('strong'),small=status.querySelector('small');
+   if(strong)strong.textContent=waze?'Waze Live Traffic':'TomTom Live Traffic';
+   if(small)small.textContent=waze?'Traffic reports and road alerts in Waze’s own map.':'TomTom real-time traffic flow overlay on a street map.';
+  }
+  if(keyPanel)keyPanel.hidden=waze;
+  if(center)center.hidden=!waze;
+  if(refresh)refresh.hidden=waze;
+  const note=$('savelyWazeMapNote');
+  if(note)note.textContent=waze
+   ?'Live traffic is provided by the Waze Live Map. Traffic conditions and reports depend on Waze coverage and community updates. This view is separate from Savely’s GPS route map.'
+   :'Live traffic flow is provided by TomTom. Coverage, refresh frequency and available detail depend on TomTom’s traffic data and API plan.';
+  if(waze){
+   const keyPanelNow=$('savelyTomTomKeyPanel');
+   if(keyPanelNow)keyPanelNow.hidden=true;
+   if(typeof window.refreshSavelyWazeTraffic==='function')window.refreshSavelyWazeTraffic(true);
+  }else{
+   const key=savedKey();
+   const input=$('savelyTomTomApiKey');
+   if(input&&!input.value)input.value=key;
+   if(key){setMessage('Loading TomTom traffic…');initTomTomMap();}
+   else setMessage('Add your TomTom API key in the traffic controls to load live traffic.');
+  }
+ }
+ function initTomTomMap(){
+  const key=savedKey(), host=$('savelyTomTomTrafficMap');
+  if(!key||!host)return;
+  if(!window.L){setMessage('The map library did not load. Check your internet connection and refresh Savely.');return;}
+  const point=currentPoint();
+  if(!tomtomMap){
+   tomtomMap=L.map(host,{zoomControl:true,preferCanvas:true}).setView([point.lat,point.lng],12);
+   baseLayer=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+   }).addTo(tomtomMap);
+   mapReady=true;
+  }
+  if(trafficLayer)tomtomMap.removeLayer(trafficLayer);
+  const url='https://api.tomtom.com/traffic/map/4/tile/flow/relative0/{z}/{x}/{y}.png?key='+encodeURIComponent(key);
+  trafficLayer=L.tileLayer(url,{tileSize:256,opacity:.88,maxZoom:22,attribution:'Traffic flow &copy; <a href="https://www.tomtom.com/" target="_blank" rel="noopener">TomTom</a>'});
+  trafficLayer.addTo(tomtomMap);
+  setMessage('',false);
+  setTimeout(()=>{if(tomtomMap)tomtomMap.invalidateSize(true);},180);
+ }
+ function selectProvider(next){
+  if(!['waze','tomtom'].includes(next))return;
+  provider=next;
+  updateProviderUI();
+  if(next==='tomtom'&&tomtomMap){
+   const p=currentPoint();
+   tomtomMap.setView([p.lat,p.lng],Math.max(tomtomMap.getZoom(),12));
+   setTimeout(()=>tomtomMap.invalidateSize(true),120);
+  }
+ }
+ function saveKey(){
+  const input=$('savelyTomTomApiKey'),key=(input&&input.value||'').trim();
+  if(!key){setMessage('Paste your TomTom API key first.');return;}
+  try{localStorage.setItem(KEY,key);}catch(e){setMessage('This browser could not save the key. Check its site storage settings.');return;}
+  setMessage('TomTom key saved on this device. Loading traffic…');
+  initTomTomMap();
+ }
+ function centerTomTom(){
+  if(!tomtomMap)return;
+  const p=currentPoint();
+  tomtomMap.setView([p.lat,p.lng],Math.max(tomtomMap.getZoom(),14));
+ }
+ function refreshTomTom(){
+  if(!savedKey()){setMessage('Add your TomTom API key first.');return;}
+  if(trafficLayer)trafficLayer.redraw();
+  else initTomTomMap();
+ }
+ document.addEventListener('click',e=>{
+  const btn=e.target.closest&&e.target.closest('[data-savely-traffic-provider]');
+  if(btn){e.preventDefault();selectProvider(btn.dataset.savelyTrafficProvider);}
+ });
+ document.addEventListener('click',e=>{
+  if(e.target&&e.target.id==='savelyTomTomSaveKey')saveKey();
+  if(e.target&&e.target.id==='savelyTomTomRefreshButton')refreshTomTom();
+ });
+ const original=window.setSavelyLiveMapMode;
+ if(typeof original==='function'){
+  window.setSavelyLiveMapMode=function(mode){
+   original(mode);
+   if(mode==='traffic')updateProviderUI();
+  };
+ }
+ window.centerSavelyTomTomTraffic=centerTomTom;
+ window.selectSavelyTrafficProvider=selectProvider;
+ if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',()=>{
+   const input=$('savelyTomTomApiKey');if(input)input.value=savedKey();
+  },{once:true});
+ }else{
+  const input=$('savelyTomTomApiKey');if(input)input.value=savedKey();
+ }
+})();
+</script>
 
 </body>
 </html>
