@@ -3621,69 +3621,73 @@ body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number:
 </script>
 
 
-<style id="savely-salary-summary-gradient-cards-v1">
-/* Match the green gradient summary-card treatment used on the Overview page. */
+<style id="savely-salary-summary-gradient-cards-v2">
+/* Apply the Overview savings-card design to the three Salary summary tiles. */
 #page-salary .salary-summary-cards{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:14px;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:14px!important;
 }
-#page-salary .salary-summary-cards>.stat{
-  position:relative;
-  isolation:isolate;
-  overflow:hidden;
-  min-height:156px;
-  padding:24px 22px 20px;
-  border:1px solid rgba(5,130,96,.55);
-  border-radius:18px;
-  background:linear-gradient(112deg,#07875f 0%,#0b9b70 56%,#2dbb8b 100%);
-  color:#fff;
-  box-shadow:0 10px 24px rgba(5,120,87,.12);
-}
-#page-salary .salary-summary-cards>.stat::before{
-  content:"";
-  position:absolute;
-  z-index:-1;
-  width:158px;height:158px;
-  right:-48px;top:-82px;
-  border-radius:50%;
-  background:rgba(255,255,255,.12);
-}
-#page-salary .salary-summary-cards>.stat::after{
-  content:"₱";
-  position:absolute;
-  top:18px;right:18px;
-  display:grid;place-items:center;
-  width:32px;height:32px;
-  border:1px solid rgba(255,255,255,.26);
-  border-radius:11px;
-  background:rgba(255,255,255,.16);
-  color:#fff;font-size:16px;font-weight:800;
-}
-#page-salary .salary-summary-cards .stat-top,
-#page-salary .salary-summary-cards .stat-value,
-#page-salary .salary-summary-cards .stat-foot{
-  position:relative;
-  z-index:1;
+#page-salary .salary-summary-cards .stat{
+  box-sizing:border-box!important;
+  display:block!important;
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  min-height:156px!important;
+  padding:24px 22px 20px!important;
+  border:1px solid rgba(5,130,96,.55)!important;
+  border-radius:18px!important;
+  background:linear-gradient(112deg,#07875f 0%,#0b9b70 56%,#2dbb8b 100%)!important;
   color:#fff!important;
+  box-shadow:0 10px 24px rgba(5,120,87,.12)!important;
 }
-#page-salary .salary-summary-cards .stat-top{
-  font-size:12px;font-weight:750;
-  padding-right:48px;
+#page-salary .salary-summary-cards .stat::before{
+  content:""!important;
+  position:absolute!important;
+  z-index:-1!important;
+  width:158px!important;height:158px!important;
+  right:-48px!important;top:-82px!important;
+  border-radius:50%!important;
+  background:rgba(255,255,255,.12)!important;
 }
-#page-salary .salary-summary-cards .stat-value{
-  margin:16px 0 5px;
-  font-size:clamp(21px,2vw,27px);
-  font-weight:850;
-  letter-spacing:-.65px;
+#page-salary .salary-summary-cards .stat::after{
+  content:"₱"!important;
+  position:absolute!important;
+  top:18px!important;right:18px!important;
+  display:grid!important;place-items:center!important;
+  width:32px!important;height:32px!important;
+  border:1px solid rgba(255,255,255,.26)!important;
+  border-radius:11px!important;
+  background:rgba(255,255,255,.16)!important;
+  color:#fff!important;font-size:16px!important;font-weight:800!important;
 }
-#page-salary .salary-summary-cards .stat-foot{
-  font-size:11px;line-height:1.45;
-  opacity:.9;
+#page-salary .salary-summary-cards .stat .stat-top,
+#page-salary .salary-summary-cards .stat .stat-value,
+#page-salary .salary-summary-cards .stat .stat-foot{
+  display:block!important;
+  position:relative!important;
+  z-index:2!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  opacity:1!important;
+}
+#page-salary .salary-summary-cards .stat .stat-top{
+  font-size:12px!important;font-weight:750!important;
+  padding-right:48px!important;
+}
+#page-salary .salary-summary-cards .stat .stat-value{
+  margin:16px 0 5px!important;
+  font-size:clamp(21px,2vw,27px)!important;
+  font-weight:850!important;
+  letter-spacing:-.65px!important;
+}
+#page-salary .salary-summary-cards .stat .stat-foot{
+  font-size:11px!important;line-height:1.45!important;
 }
 @media(max-width:760px){
-  #page-salary .salary-summary-cards{grid-template-columns:1fr}
-  #page-salary .salary-summary-cards>.stat{min-height:138px}
+  #page-salary .salary-summary-cards{grid-template-columns:1fr!important}
+  #page-salary .salary-summary-cards .stat{min-height:138px!important}
 }
 </style>
 
