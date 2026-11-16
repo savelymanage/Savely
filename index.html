@@ -4044,7 +4044,7 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
     </section>
     <div id="salaryDetailsBackdrop" hidden onclick="if(event.target===this)toggleSalaryDetails(false)" style="position:fixed;inset:0;background:rgba(15,23,42,.48);backdrop-filter:blur(3px);z-index:9998;display:none;align-items:center;justify-content:center;padding:20px;overflow:auto">
     <div class="panel" id="salaryDetailsPanel" role="dialog" aria-modal="true" aria-labelledby="salaryDetailsTitle" style="width:min(100%,760px);max-width:760px;max-height:calc(100vh - 40px);overflow:auto;box-shadow:0 24px 80px rgba(15,23,42,.25)">
-      <div class="panel-head"><div><h2 id="salaryDetailsTitle">Salary details</h2><div class="panel-sub">Update this whenever your monthly salary changes.</div></div><button type="button" class="btn btn-light" onclick="toggleSalaryDetails(false)" aria-label="Close salary details">✕ Close</button></div>
+      <div class="panel-head"><div><h2 id="salaryDetailsTitle">Salary details</h2><div class="panel-sub">Update this whenever your monthly salary changes.</div></div></div>
       <form id="monthlySalaryForm" onsubmit="saveMonthlySalary(event)" class="form-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
         <div class="field"><label for="monthlySalaryAmount">Monthly salary (₱)</label><input id="monthlySalaryAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 12000" required></div>
         <div class="field"><label for="monthlySalaryPayDay">Usual payday</label><select id="monthlySalaryPayDay"><option value="15-30">15–30 cutoff (15th &amp; end of month)</option><option value="5-20">5–20 cutoff (5th &amp; 20th)</option><option value="10-25">10–25 cutoff (10th &amp; 25th)</option><option value="custom">Varies / not fixed</option></select></div>
@@ -16343,6 +16343,50 @@ body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number:
 body.dark-theme #page-salary .salary-year-picker-trigger,body.dark-theme #page-salary .salary-year-picker-popover,body.dark-theme #page-salary .salary-year-picker-footer button{background:var(--panel);color:var(--text);border-color:var(--line)}
 body.dark-theme #page-salary .salary-year-picker-grid button{background:#101827;color:var(--text);border-color:var(--line)}
 body.dark-theme #page-salary .salary-year-picker-grid button[aria-current="true"]{background:var(--green);color:#fff;border-color:var(--green)}
+</style>
+
+
+<style id="savely-salary-layout-refinement-v2">
+/* Keep payday label, date and countdown on one horizontal line at the upper-right. */
+html body #page-salary .salary-next-payday{
+ position:absolute!important;top:50%!important;right:clamp(20px,3%,42px)!important;
+ transform:translateY(-50%)!important;width:auto!important;max-width:58%!important;
+ min-height:0!important;margin:0!important;padding:0!important;border:0!important;
+ border-radius:0!important;background:transparent!important;box-shadow:none!important;
+ display:flex!important;flex-direction:row!important;align-items:center!important;
+ justify-content:flex-end!important;gap:8px 14px!important;flex-wrap:wrap!important;
+}
+html body #page-salary .salary-next-payday-label,
+html body #page-salary .salary-next-payday strong,
+html body #page-salary .salary-next-payday-timer{display:inline-flex!important;align-items:center!important;margin:0!important;white-space:nowrap!important}
+html body #page-salary .salary-next-payday-label{font-size:12px!important;font-weight:800!important}
+html body #page-salary .salary-next-payday strong{font-size:14px!important;line-height:1.35!important}
+html body #page-salary .salary-next-payday-timer{font-size:12px!important;padding:7px 11px!important}
+/* Larger, clearer year dropdown caret. */
+#page-salary .salary-year-picker-caret{font-size:23px!important;font-weight:900!important;line-height:1!important;min-width:15px;text-align:center}
+#page-salary .salary-year-picker-trigger{gap:15px!important;padding-right:10px!important}
+/* Larger Salary details dialog and controls; close through backdrop or Escape. */
+#salaryDetailsBackdrop{padding:24px!important}
+#salaryDetailsBackdrop #salaryDetailsPanel{
+ width:min(100%,940px)!important;max-width:940px!important;max-height:calc(100vh - 48px)!important;
+ padding:32px!important;border-radius:20px!important;
+}
+#salaryDetailsBackdrop #salaryDetailsPanel .panel-head{margin-bottom:25px!important}
+#salaryDetailsBackdrop #salaryDetailsPanel .panel-head h2{font-size:24px!important}
+#salaryDetailsBackdrop #monthlySalaryForm{gap:20px!important}
+#salaryDetailsBackdrop #monthlySalaryForm .field{gap:9px!important}
+#salaryDetailsBackdrop #monthlySalaryForm .field label{font-size:14px!important}
+#salaryDetailsBackdrop #monthlySalaryForm input,
+#salaryDetailsBackdrop #monthlySalaryForm select{min-height:54px!important;padding:13px 15px!important;font-size:15px!important;border-radius:11px!important}
+#salaryDetailsBackdrop #monthlySalaryForm .btn{min-height:48px!important;padding:12px 20px!important;font-size:13px!important}
+@media(max-width:760px){
+ html body #page-salary .salary-next-payday{position:static!important;transform:none!important;max-width:100%!important;width:100%!important;justify-content:flex-start!important;margin-top:15px!important;flex-wrap:wrap!important}
+ html body #page-salary .salary-annual-remaining-stat{padding-right:22px!important}
+ #salaryDetailsBackdrop{padding:12px!important}
+ #salaryDetailsBackdrop #salaryDetailsPanel{padding:20px!important;max-height:calc(100vh - 24px)!important}
+ #salaryDetailsBackdrop #monthlySalaryForm{grid-template-columns:1fr!important;gap:14px!important}
+ #salaryDetailsBackdrop #monthlySalaryForm .field{grid-column:1/-1!important}
+}
 </style>
 
 </body>
