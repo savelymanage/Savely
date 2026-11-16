@@ -8271,6 +8271,11 @@ function updateHolidayHeroLabels(){
 }
 function updateHolidayCountdowns(){
  if(typeof savelyCalendarContentTab!=='undefined'&&savelyCalendarContentTab==='personal'){
+  const currentPersonalDay=personalEventTodayISO();
+  if(window.__savelyPersonalEventsRenderedDay!==currentPersonalDay){
+   window.__savelyPersonalEventsRenderedDay=currentPersonalDay;
+   renderPersonalEvents();
+  }
   updatePersonalEventHero();
   updatePersonalEventCountdowns();
   return;
@@ -8354,7 +8359,13 @@ function renderPersonalEvents(){
    <div class="holiday-name-cell">
     <div class="holiday-name">${esc(item.name)}</div>
     <div class="holiday-description">${item.description?esc(item.description):'Personal event'}</div>
-    <div class="personal-event-actions"><button type="button" onclick="editPersonalEvent('${esc(item.id)}')">✎ Edit</button><button type="button" class="delete" onclick="deletePersonalEvent('${esc(item.id)}')">Delete</button></div>
+    <details class="personal-event-menu">
+     <summary aria-label="More event options" title="More options">⋯</summary>
+     <div class="personal-event-menu-popover">
+      <button type="button" onclick="editPersonalEvent('${esc(item.id)}');this.closest('details').open=false">✎ Edit</button>
+      <button type="button" class="delete" onclick="deletePersonalEvent('${esc(item.id)}')">Delete</button>
+     </div>
+    </details>
    </div>
    <div class="holiday-type-cell"><span class="holiday-type personal-event-type">Personal event</span></div>
    <div class="holiday-countdown-cell" data-personal-event-countdown="${esc(item.id)}"><span>${countdown}</span></div>
@@ -15037,6 +15048,94 @@ body:has(#page-holidays.active) .topbar{min-height:0!important;margin-bottom:12p
 @media(max-width:620px){
  #page-holidays.personal-events-mode .holiday-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
  #page-holidays.personal-events-mode .holiday-hero{padding:18px!important}
+}
+</style>
+
+
+<style id="savely-personal-event-three-dot-menu-and-rollover-v1">
+#page-holidays.personal-events-mode .personal-event-row{
+ position:relative;
+ overflow:visible;
+}
+#page-holidays.personal-events-mode .personal-event-actions{
+ display:flex;
+ align-items:center;
+ justify-content:flex-start;
+ margin-top:8px;
+}
+#page-holidays.personal-events-mode .personal-event-menu{
+ position:relative;
+ display:inline-block;
+ flex:0 0 auto;
+ z-index:4;
+}
+#page-holidays.personal-events-mode .personal-event-menu>summary{
+ list-style:none;
+ display:grid;
+ place-items:center;
+ width:36px;
+ height:36px;
+ border:1px solid var(--line);
+ border-radius:10px;
+ background:var(--surface,#fff);
+ color:var(--text);
+ font-size:23px;
+ font-weight:800;
+ line-height:1;
+ cursor:pointer;
+ user-select:none;
+}
+#page-holidays.personal-events-mode .personal-event-menu>summary::-webkit-details-marker{
+ display:none;
+}
+#page-holidays.personal-events-mode .personal-event-menu[open]>summary{
+ border-color:#15966e;
+ color:#087a55;
+ background:#effaf5;
+}
+#page-holidays.personal-events-mode .personal-event-menu-popover{
+ position:absolute;
+ top:calc(100% + 7px);
+ right:0;
+ min-width:132px;
+ padding:5px;
+ display:grid;
+ gap:3px;
+ border:1px solid var(--line);
+ border-radius:11px;
+ background:var(--card,#fff);
+ box-shadow:0 12px 30px #142b3b20;
+ z-index:20;
+}
+#page-holidays.personal-events-mode .personal-event-menu-popover button{
+ width:100%;
+ display:flex;
+ align-items:center;
+ gap:8px;
+ padding:9px 10px;
+ border:0;
+ border-radius:7px;
+ background:transparent;
+ color:var(--text);
+ text-align:left;
+ font-size:12px;
+ font-weight:750;
+ cursor:pointer;
+}
+#page-holidays.personal-events-mode .personal-event-menu-popover button:hover{
+ background:#edf8f3;
+}
+#page-holidays.personal-events-mode .personal-event-menu-popover button.delete{
+ color:#c2414b;
+}
+#page-holidays.personal-events-mode .personal-event-menu-popover button.delete:hover{
+ background:#fff1f1;
+}
+@media(max-width:700px){
+ #page-holidays.personal-events-mode .personal-event-menu-popover{
+  right:0;
+  left:auto;
+ }
 }
 </style>
 
