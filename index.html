@@ -4199,7 +4199,6 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
         <button type="button" class="active" data-holiday-filter="all" onclick="setHolidayFilter('all')">All holidays</button>
         <button type="button" data-holiday-filter="regular" onclick="setHolidayFilter('regular')">Regular</button>
         <button type="button" data-holiday-filter="special" onclick="setHolidayFilter('special')">Special non-working</button>
-        <button type="button" data-holiday-filter="working" onclick="setHolidayFilter('working')">Special working</button>
         <button type="button" data-holiday-filter="regional" onclick="setHolidayFilter('regional')">Regional / local</button>
         <button type="button" id="personalEventsTabButton" class="personal-events-tab-button" onclick="setCalendarContentTab('personal')">Personal Events</button>
       </div>
@@ -4249,7 +4248,7 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
       <div id="holidayList" class="holiday-list" aria-live="polite"></div>
       <div class="holiday-source-note">
         <strong>Official-source note</strong>
-        <span>Dates are based on Presidential proclamations. The calendar checks a public holiday feed periodically; additional special or local days are displayed when confirmed by official announcements. Verify last-minute changes with government sources.</span>
+        <span>Dates for published years are based on Presidential proclamations and public holiday feeds. For future years without an official proclamation, recurring dates are shown as projections only; special, local, and movable declarations may change. Verify each year with government sources.</span>
         <div class="holiday-source-links">
           <a href="https://pco.gov.ph/documents-issuances/" target="_blank" rel="noopener">Presidential Communications Office</a>
           <a href="https://officialgazette.gov.ph/section/executive-issuances/proclamations/" target="_blank" rel="noopener">Official Gazette proclamations</a>
@@ -8145,6 +8144,62 @@ const SAVELY_CANONICAL_HOLIDAY_NAMES={
  '12-08':'Feast of the Immaculate Conception of Mary','12-24':'Christmas Eve',
  '12-25':'Christmas Day','12-30':'Rizal Day','12-31':'Last Day of the Year'
 };
+
+/* Future-year calendar fallback.
+   Philippine holiday proclamations are issued year by year, so dates beyond
+   published proclamation years are marked as projections and must be verified. */
+function savelyEasterSunday(year){
+ const a=year%19,b=Math.floor(year/100),c=year%100,d=Math.floor(b/4),e=b%4,
+ f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,
+ i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,
+ m=Math.floor((a+11*h+22*l)/451),month=Math.floor((h+l-7*m+114)/31),
+ day=((h+l-7*m+114)%31)+1;
+ return new Date(Date.UTC(year,month-1,day));
+}
+function savelyIsoDateUTC(date){
+ return date.getUTCFullYear()+'-'+String(date.getUTCMonth()+1).padStart(2,'0')+'-'+String(date.getUTCDate()).padStart(2,'0');
+}
+function savelyGenerateFutureHolidayProjections(){
+ for(let year=2028;year<=2099;year++){
+  const list=SAVELY_PH_HOLIDAYS[year]||(SAVELY_PH_HOLIDAYS[year]=[]);
+  const add=(date,name,type,desc)=>{
+   if(list.some(item=>item.date===date))return;
+   list.push({date,name,type,desc:`${desc} · Projected recurring date; verify the official Philippine proclamation for ${year}.`,source:'Savely recurring-date projection · not an official proclamation'});
+  };
+  const fixed=[
+   ['01-01',"New Year's Day",'regular','Regular holiday'],
+   ['02-25','EDSA People Power Revolution Anniversary','working','Recurring observance; annual workday classification may change'],
+   ['04-09','Araw ng Kagitingan','regular','Regular holiday'],
+   ['05-01','Labor Day','regular','Regular holiday'],
+   ['06-12','Independence Day','regular','Regular holiday'],
+   ['08-21','Ninoy Aquino Day','special','Recurring special non-working day'],
+   ['11-01',"All Saints' Day",'special','Recurring special non-working day'],
+   ['11-02',"All Souls' Day",'special','Recurring observance; annual declaration may change'],
+   ['11-30','Bonifacio Day','regular','Regular holiday'],
+   ['12-08','Feast of the Immaculate Conception of Mary','special','Recurring special non-working day'],
+   ['12-24','Christmas Eve','special','Commonly declared additional special non-working day'],
+   ['12-25','Christmas Day','regular','Regular holiday'],
+   ['12-30','Rizal Day','regular','Regular holiday'],
+   ['12-31','Last Day of the Year','special','Commonly declared additional special non-working day']
+  ];
+  fixed.forEach(([md,name,type,desc])=>add(`${year}-${md}`,name,type,desc));
+  // National Heroes Day: last Monday of August.
+  const lastAug=new Date(Date.UTC(year,8,0));
+  lastAug.setUTCDate(lastAug.getUTCDate()-((lastAug.getUTCDay()+6)%7));
+  add(savelyIsoDateUTC(lastAug),'National Heroes Day','regular','Last Monday of August');
+  // Holy Week dates are calculated from Gregorian Easter; official status still requires proclamation.
+  const easter=savelyEasterSunday(year);
+  const maundy=new Date(easter);maundy.setUTCDate(easter.getUTCDate()-3);
+  const goodFriday=new Date(easter);goodFriday.setUTCDate(easter.getUTCDate()-2);
+  const blackSaturday=new Date(easter);blackSaturday.setUTCDate(easter.getUTCDate()-1);
+  add(savelyIsoDateUTC(maundy),'Maundy Thursday','regular','Holy Week · date calculated from Gregorian Easter');
+  add(savelyIsoDateUTC(goodFriday),'Good Friday','regular','Holy Week · date calculated from Gregorian Easter');
+  add(savelyIsoDateUTC(blackSaturday),'Black Saturday','special','Holy Week · date calculated from Gregorian Easter');
+  list.sort((a,b)=>a.date.localeCompare(b.date));
+ }
+}
+savelyGenerateFutureHolidayProjections();
+
 function phHolidayEntryScore(h){
  const name=String(h.name||'').trim(),lower=name.toLowerCase();
  let score=0;
@@ -8173,7 +8228,58 @@ function phNormalizeHolidayYear(year){
  SAVELY_PH_HOLIDAYS[year]=normalized;
  return normalized;
 }
-function phNextHoliday(){return phDeduplicateHolidayEntries(Object.keys(SAVELY_PH_HOLIDAYS).flatMap(y=>phNormalizeHolidayYear(y))).filter(h=>['regular','special','regional'].includes(h.type)&&phHolidayIsStillUpcoming(h)).sort((a,b)=>a.date.localeCompare(b.date))[0]||null;}
+
+// Regional holidays follow the same manually selected location as Savely Weather.
+// Unknown-scope local proclamations are not shown as applicable.
+let savelyHolidayLocationSignature='';
+function savelyHolidayWeatherPlace(){
+ try{
+  const p=JSON.parse(localStorage.getItem('savely_weather_location_v1')||'null');
+  return p&&typeof p==='object'?p:null;
+ }catch(e){return null;}
+}
+function savelyHolidayPlaceLabel(){
+ const p=savelyHolidayWeatherPlace();
+ return p?[p.city,p.province,p.region].filter(Boolean).join(', '):'Location not selected in Weather settings';
+}
+function savelyRegionalApplies(h){
+ if(h.type!=='regional')return true;
+ const p=savelyHolidayWeatherPlace();
+ if(!p)return false;
+ const where=[p.city,p.province,p.region].filter(Boolean).join(' ').toLowerCase();
+ const desc=[h.name,h.desc,h.location,h.region,h.province,h.city].filter(Boolean).join(' ').toLowerCase();
+ const ncr=/(national capital region|\bncr\b|metro manila)/i;
+ if(ncr.test(desc))return ncr.test(where)||/\b(taguig|makati|pasig|manila|quezon city|pasay|paranaque|parañaque|mandaluyong|marikina|muntinlupa|las piñas|las pinas|caloocan|malabon|navotas|valenzuela|san juan|pateros)\b/i.test(where);
+ // Require explicit locality matching; never assume every regional holiday is nationwide.
+ return [p.city,p.province,p.region].filter(x=>x&&String(x).length>3).some(x=>desc.includes(String(x).toLowerCase()));
+}
+function savelyApplicableHoliday(h){return h.type!=='regional'||savelyRegionalApplies(h);}
+function phNextHoliday(){return phDeduplicateHolidayEntries(Object.keys(SAVELY_PH_HOLIDAYS).flatMap(y=>phNormalizeHolidayYear(y))).filter(h=>['regular','special','regional'].includes(h.type)&&phHolidayIsStillUpcoming(h)&&savelyApplicableHoliday(h)).sort((a,b)=>a.date.localeCompare(b.date))[0]||null;}
+function phNextHolidayForSelection(){
+ const items=phNormalizeHolidayYear(savelyHolidayYear).filter(h=>phHolidayIsStillUpcoming(h)&&savelyApplicableHoliday(h));
+ const filtered=items.filter(h=>
+  savelyHolidayFilter==='all'?['regular','special','regional'].includes(h.type):
+  savelyHolidayFilter==='regular'?h.type==='regular':
+  savelyHolidayFilter==='special'?(h.type==='special'||h.type==='regional'):
+  savelyHolidayFilter==='regional'?h.type==='regional':
+  false
+ );
+ return filtered.sort((a,b)=>a.date.localeCompare(b.date))[0]||null;
+}
+
+(function(){
+ function refreshWhenWeatherLocationChanges(){
+  const p=savelyHolidayWeatherPlace();
+  const signature=JSON.stringify(p||null);
+  if(signature===savelyHolidayLocationSignature)return;
+  savelyHolidayLocationSignature=signature;
+  if(typeof renderHolidayPage==='function' && document.getElementById('page-holidays'))renderHolidayPage();
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refreshWhenWeatherLocationChanges);
+ else refreshWhenWeatherLocationChanges();
+ window.addEventListener('storage',e=>{if(e.key==='savely_weather_location_v1')refreshWhenWeatherLocationChanges();});
+ setInterval(refreshWhenWeatherLocationChanges,15000);
+})();
 function phCountdownParts(ms){let sec=Math.max(0,Math.floor(ms/1000)),days=Math.floor(sec/86400);sec%=86400;let hours=Math.floor(sec/3600);sec%=3600;let mins=Math.floor(sec/60);sec%=60;return [days,String(hours).padStart(2,'0'),String(mins).padStart(2,'0'),String(sec).padStart(2,'0')];}
 function phHolidayType(type){return type==='regular'?'Regular holiday':type==='special'?'Special non-working':type==='working'?'Special working day':type==='regional'?'Regional / local':'Public holiday · verify';}
 
@@ -8197,8 +8303,9 @@ function ensure2026NovDecHolidays(){
 }
 function renderHolidayPage(){
  ensure2026NovDecHolidays();
+ savelyGenerateFutureHolidayProjections();
  Object.keys(SAVELY_PH_HOLIDAYS).forEach(phNormalizeHolidayYear);
- const yearItems=phNormalizeHolidayYear(savelyHolidayYear),upcomingYearItems=yearItems.filter(phHolidayIsStillUpcoming),next=phNextHoliday();
+ const yearItems=phNormalizeHolidayYear(savelyHolidayYear),upcomingYearItems=yearItems.filter(h=>phHolidayIsStillUpcoming(h)&&savelyApplicableHoliday(h)),next=phNextHolidayForSelection();
  const name=document.getElementById('holidayNextName'),meta=document.getElementById('holidayNextMeta');
  if(name)name.textContent=next?next.name:'No upcoming holidays listed';
  if(meta)meta.textContent=next?`${phHolidayType(next.type)} · ${phHolidayLabel(next.date)}`:'Check back for the next official proclamation';
@@ -8213,7 +8320,7 @@ function renderHolidayPage(){
   const matchesType=savelyHolidayFilter==='all'||(savelyHolidayFilter==='regular'&&h.type==='regular')||(savelyHolidayFilter==='special'&&(h.type==='special'||h.type==='regional'))||(savelyHolidayFilter==='working'&&h.type==='working')||(savelyHolidayFilter==='regional'&&h.type==='regional');
   return monthIsCurrentOrFuture&&matchesType;
  }).sort((a,b)=>a.date.localeCompare(b.date));
- const sub=document.getElementById('holidayListSubtitle');if(sub)sub.textContent=`${filtered.length} upcoming holidays and special days · Past months are automatically hidden`;
+ const sub=document.getElementById('holidayListSubtitle');if(sub)sub.textContent=`${filtered.length} upcoming holidays and special days · Past months are automatically hidden`+(savelyHolidayFilter==='regional'?` · Weather location: ${savelyHolidayPlaceLabel()}`:'');
  const list=document.getElementById('holidayList');
  if(list){
   const months={};
@@ -8277,8 +8384,13 @@ function updatePersonalEventHero(){
 function updateHolidayHeroLabels(){
  const eyebrow=document.getElementById('holidayHeroEyebrow');
  const title=document.getElementById('holidayHeroCountdownTitle');
- if(eyebrow)eyebrow.textContent='NEXT UPCOMING HOLIDAY';
- if(title)title.textContent='Time until the next holiday';
+ const categoryLabel=savelyHolidayFilter==='regular'?'REGULAR HOLIDAY':
+  savelyHolidayFilter==='special'?'SPECIAL NON-WORKING HOLIDAY':
+  savelyHolidayFilter==='regional'?'REGIONAL / LOCAL HOLIDAY':'NEXT UPCOMING HOLIDAY';
+ if(eyebrow)eyebrow.textContent=categoryLabel;
+ if(title)title.textContent=savelyHolidayFilter==='regular'?'Time until the next regular holiday':
+  savelyHolidayFilter==='special'?'Time until the next special non-working holiday':
+  savelyHolidayFilter==='regional'?'Time until the next regional / local holiday':'Time until the next holiday';
 }
 function updateHolidayCountdowns(){
  if(typeof savelyCalendarContentTab!=='undefined'&&savelyCalendarContentTab==='personal'){
@@ -8292,7 +8404,7 @@ function updateHolidayCountdowns(){
   return;
  }
  updateHolidayHeroLabels();
- const next=phNextHoliday(),hero=document.getElementById('holidayHeroCountdown');
+ const next=phNextHolidayForSelection(),hero=document.getElementById('holidayHeroCountdown');
  const nextKey=next?next.date+'|'+next.name:'none';
  if(window.__savelyNextHolidayKey!==undefined&&window.__savelyNextHolidayKey!==nextKey){
   const name=document.getElementById('holidayNextName'),meta=document.getElementById('holidayNextMeta');
@@ -8318,6 +8430,12 @@ function personalEventRemaining(iso){return personalEventDate(iso).getTime()-Dat
 function openPersonalEventForm(id){
  const form=document.getElementById('personalEventForm');if(!form)return;
  const item=(data.personalEvents||[]).find(x=>x.id===id);
+ const dateInput=document.getElementById('personalEventDate');
+ if(dateInput){
+  // Native date picker disables dates before today's Manila date.
+  dateInput.min=personalEventTodayISO();
+  dateInput.setCustomValidity('');
+ }
  document.getElementById('personalEventId').value=item?item.id:'';
  document.getElementById('personalEventName').value=item?item.name:'';
  document.getElementById('personalEventDate').value=item?item.date:'';
@@ -8340,6 +8458,13 @@ function savePersonalEvent(event){
  const date=document.getElementById('personalEventDate').value;
  const description=document.getElementById('personalEventDescription').value.trim();
  if(!name||!date){toast('Enter an event name and date.');return;}
+ const today=personalEventTodayISO();
+ if(date<today){
+  const dateInput=document.getElementById('personalEventDate');
+  if(dateInput){dateInput.min=today;dateInput.setCustomValidity('Please choose today or a future date.');dateInput.reportValidity();}
+  toast('Past dates are not available for personal event countdowns.');
+  return;
+ }
  if(!Array.isArray(data.personalEvents))data.personalEvents=[];
  const record={id:id||uid(),name,date,description,updatedAt:new Date().toISOString()};
  const index=data.personalEvents.findIndex(x=>x.id===record.id);
@@ -14354,6 +14479,10 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
       <span class="savely-mobile-fab-label" id="savelyMobilePageAddLabel">Add</span>
       <span class="savely-mobile-fab-icon" id="savelyMobilePageAddIcon" aria-hidden="true">＋</span>
     </button>
+    <button type="button" class="savely-mobile-fab-item" id="savelyMobileHolidayRefreshAction" hidden>
+      <span class="savely-mobile-fab-label">Refresh holidays</span>
+      <span class="savely-mobile-fab-icon savely-mobile-fab-utility" aria-hidden="true">↻</span>
+    </button>
     <button type="button" class="savely-mobile-fab-item" id="savelyMobileHideFiguresAction">
       <span class="savely-mobile-fab-label" id="savelyMobileHideFiguresLabel">Hide figures</span>
       <span class="savely-mobile-fab-icon savely-mobile-fab-utility" id="savelyMobileHideFiguresIcon" aria-hidden="true">◉</span>
@@ -14471,6 +14600,7 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   const hideFiguresLabel=document.getElementById('savelyMobileHideFiguresLabel');
   const hideFiguresIcon=document.getElementById('savelyMobileHideFiguresIcon');
   const weatherButton=document.getElementById('savelyMobileWeatherAction');
+  const holidayRefreshButton=document.getElementById('savelyMobileHolidayRefreshAction');
   const calcButton=document.getElementById('savelyMobileCalculatorAction');
 
   function activePage(){
@@ -14503,6 +14633,12 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
     }
     // Financial-figure privacy controls belong exclusively to Overview.
     if(hideFiguresButton)hideFiguresButton.hidden=page!=='page-dashboard';
+    // Holiday refresh is available on calendar categories, but not Personal Events.
+    if(holidayRefreshButton){
+      const holidaysPage=document.getElementById('page-holidays');
+      const isPersonalEvents=!!holidaysPage?.classList.contains('personal-events-mode');
+      holidayRefreshButton.hidden=page!=='page-holidays'||isPersonalEvents;
+    }
     syncHideFigures();
   }
   function close(){
@@ -14532,6 +14668,10 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   weatherButton.addEventListener('click',()=>{
     close();
     document.getElementById('savelyWeather')?.click();
+  });
+  if(holidayRefreshButton)holidayRefreshButton.addEventListener('click',()=>{
+    close();
+    if(typeof window.refreshPhilippineHolidays==='function')window.refreshPhilippineHolidays(true);
   });
   personalEventsButton.addEventListener('click',()=>{
     close();
@@ -15698,9 +15838,9 @@ body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number:
     pop.hidden=true;pop.setAttribute('role','dialog');pop.setAttribute('aria-label','Choose calendar year');
     const grid=document.createElement('div');grid.className='savely-year-picker-grid';
     const footer=document.createElement('div');footer.className='savely-year-picker-footer';
-    const prev=document.createElement('button');prev.type='button';prev.textContent='← Previous';
+    const prev=document.createElement('button');prev.type='button';prev.textContent='';prev.setAttribute('aria-label','Previous years');
     const page=document.createElement('span');page.className='savely-year-picker-page';
-    const next=document.createElement('button');next.type='button';next.textContent='Next →';
+    const next=document.createElement('button');next.type='button';next.textContent='';next.setAttribute('aria-label','Next years');
     footer.append(prev,page,next);pop.append(grid,footer);root.append(trigger,pop);
     select.insertAdjacentElement('afterend',root);
     select.style.display='none';
@@ -15739,6 +15879,77 @@ body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number:
   observer.observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
+
+
+<style id="savely-personal-event-disable-past-dates-v1">
+#personalEventDate:invalid{border-color:#e1a0a0}
+#personalEventDate::-webkit-calendar-picker-indicator{cursor:pointer}
+</style>
+<script id="savely-personal-event-date-min-v1">
+(function(){
+ function syncMinDate(){
+  const input=document.getElementById('personalEventDate');
+  if(!input)return;
+  const now=new Date();
+  const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Manila',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now);
+  const get=t=>parts.find(p=>p.type===t)?.value||'';
+  const today=get('year')+'-'+get('month')+'-'+get('day');
+  input.min=today;
+  if(input.value>=today)input.setCustomValidity('');
+ }
+ document.addEventListener('DOMContentLoaded',syncMinDate,{once:true});
+ document.addEventListener('focusin',e=>{if(e.target?.id==='personalEventDate')syncMinDate();});
+})();
+</script>
+
+
+<style id="savely-year-picker-icon-navigation-fix-v2">
+#page-holidays .savely-year-picker-trigger{
+  gap:10px!important;
+}
+#page-holidays .savely-year-picker-trigger > span:last-child{
+  display:inline-flex!important;align-items:center;justify-content:center;
+  width:14px;height:14px;font-size:0!important;line-height:1;
+  transition:transform .18s ease;
+}
+#page-holidays .savely-year-picker-trigger > span:last-child::before{
+  content:"";width:7px;height:7px;border-right:1.8px solid currentColor;
+  border-bottom:1.8px solid currentColor;transform:rotate(45deg);
+  margin-top:-4px;display:block;
+}
+#page-holidays .savely-year-picker-trigger[aria-expanded="true"] > span:last-child{
+  transform:rotate(180deg);
+}
+#page-holidays .savely-year-picker-footer{
+  display:grid!important;
+  grid-template-columns:38px 1fr 38px!important;
+  align-items:center!important;justify-content:initial!important;
+  gap:8px!important;
+}
+#page-holidays .savely-year-picker-footer button{
+  width:38px!important;min-width:38px!important;height:36px!important;
+  min-height:36px!important;padding:0!important;
+  display:inline-flex!important;align-items:center!important;
+  justify-content:center!important;border-radius:10px!important;
+  font-size:0!important;line-height:1!important;
+  color:#087f5b!important;background:#fff!important;
+}
+#page-holidays .savely-year-picker-footer button::before{
+  font-size:23px!important;font-weight:500!important;line-height:1!important;
+}
+#page-holidays .savely-year-picker-footer button:first-child::before{content:"‹"}
+#page-holidays .savely-year-picker-footer button:last-child::before{content:"›"}
+#page-holidays .savely-year-picker-footer button:hover:not(:disabled){
+  background:#eaf8f2!important;border-color:#0b9870!important;
+}
+#page-holidays .savely-year-picker-footer button:disabled{
+  opacity:.28!important;
+}
+#page-holidays .savely-year-picker-page{
+  text-align:center!important;white-space:nowrap!important;
+  font-size:10px!important;letter-spacing:.1px;
+}
+</style>
 
 </body>
 </html>
