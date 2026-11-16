@@ -5372,7 +5372,14 @@ function renderSalaryHistory(){
   const monthly=Math.max(0,Number(settings.monthlySalary)||0);
   const salaryRow=`<article class="salary-history-row salary-history-year-summary"><div class="salary-history-year"><strong>${year} salary</strong><span>${esc(payday)} · Updated ${esc(updated)}</span></div><strong class="salary-history-amount">${peso(monthly)}<small>/ month</small></strong><details class="salary-history-menu"><summary aria-label="Actions for ${year}">⋮</summary><div><button type="button" onclick="editSalaryHistoryYear(${year})">Edit</button><button type="button" class="danger" onclick="deleteSalaryHistoryYear(${year})">Delete</button></div></details></article>`;
   const cutoffs=salaryCutoffHistoryEntries(year,settings);
-  const months=Array.from({length:12},(_,monthIndex)=>{
+  // Show only months that are still active/upcoming in the selected calendar year.
+  // The current month remains visible; fully completed months are hidden.
+  const today=new Date();
+  const currentYear=today.getFullYear();
+  const firstRemainingMonth=year<currentYear?12:(year>currentYear?0:today.getMonth());
+  const remainingMonthCount=Math.max(0,12-firstRemainingMonth);
+  const months=Array.from({length:remainingMonthCount},(_,offset)=>{
+   const monthIndex=firstRemainingMonth+offset;
    const monthEntries=cutoffs.filter(item=>{
     const scheduled=String(item.scheduledDate||item.date||'');
     return Number(scheduled.slice(0,4))===year&&Number(scheduled.slice(5,7))===monthIndex+1;
@@ -5389,7 +5396,8 @@ function renderSalaryHistory(){
    }).join(''):`<div class="salary-month-no-cutoffs">${schedule==='custom'?'No fixed cutoff dates for this month.':'No cutoff entries generated for this month.'}</div>`;
    return `<section class="salary-history-month"><header><div><strong>${monthName}</strong><span>${monthEntries.length} cutoff${monthEntries.length===1?'':'s'} · ${peso(monthly)} monthly salary</span></div><div class="salary-history-month-totals"><span>Gross <b>${peso(monthGross)}</b></span><span>Deductions <b>${peso(monthDeductions)}</b></span><span>Net <b>${peso(monthNet)}</b></span></div></header><div class="salary-history-month-cutoffs">${cutoffMarkup}</div></section>`;
   }).join('');
-  return salaryRow+`<div class="salary-history-months" aria-label="${year} monthly salary records">${months}</div>`;
+  const monthContent=months || `<div class="empty">No remaining months in ${year}. Completed months are hidden from this history view.</div>`;
+  return salaryRow+`<div class="salary-history-months" aria-label="${year} remaining monthly salary records">${monthContent}</div>`;
  }).join('');
 }
 function toggleSalaryHistoryView(){
