@@ -14201,6 +14201,181 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
 })();
 </script>
 
+
+<style id="savely-cutoff-deductions-v1">
+#salaryCutoffBackdrop{position:fixed;inset:0;z-index:30100;background:rgba(15,23,42,.58);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:18px}
+#salaryCutoffModal{width:min(620px,100%);max-height:92vh;overflow:auto;background:var(--panel,#fff);color:var(--text);border:1px solid var(--line);border-radius:19px;padding:22px;box-shadow:0 25px 80px #0003}
+#salaryCutoffModal .sc-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}
+#salaryCutoffModal .sc-head h2{font-size:19px;margin:0 0 4px}
+#salaryCutoffModal .sc-muted{font-size:12px;color:var(--muted)}
+#salaryCutoffModal .sc-field{display:grid;gap:6px;margin-bottom:13px;min-width:0}
+#salaryCutoffModal label{font-size:12px;font-weight:750;color:var(--muted)}
+#salaryCutoffModal input{width:100%;min-width:0;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface,#fff);color:var(--text);box-sizing:border-box}
+#salaryCutoffModal .sc-deduction-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(110px,150px) 36px;gap:8px;margin-bottom:8px;align-items:center}
+#salaryCutoffModal .sc-remove{height:40px;border:1px solid #f3c9cd;background:#fff1f2;color:#c2414b;border-radius:9px;font-size:18px}
+#salaryCutoffModal .sc-add{border:1px dashed #9bcdb8;background:#f0faf5;color:#087a55;padding:9px 12px;border-radius:9px;font-weight:750}
+#salaryCutoffModal .sc-totals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:17px}
+#salaryCutoffModal .sc-total{padding:12px;border:1px solid var(--line);border-radius:11px;background:var(--soft,#f7f9fc);min-width:0}
+#salaryCutoffModal .sc-total small{display:block;color:var(--muted);font-size:10px;font-weight:750;margin-bottom:5px}
+#salaryCutoffModal .sc-total strong{font-size:clamp(13px,2vw,17px);overflow-wrap:anywhere}
+#salaryCutoffModal .sc-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:19px;flex-wrap:wrap}
+#salaryCutoffModal .sc-net{color:var(--green)}
+#salaryCutoffModal .sc-inline-note{font-size:11px;color:var(--muted);margin-top:8px}
+#salaryCutoffModal .sc-detail-button{display:inline-flex;margin-top:10px}
+#salaryCutoffDetails{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:12px}
+#salaryCutoffDetails .sc-detail-line{display:flex;justify-content:space-between;gap:10px;padding:4px 0}
+#salaryCutoffDetails .sc-detail-line.deduct{color:var(--red)}
+@media(max-width:520px){#salaryCutoffModal{padding:17px}#salaryCutoffModal .sc-deduction-row{grid-template-columns:minmax(0,1fr) 105px 34px;gap:5px}#salaryCutoffModal .sc-totals{grid-template-columns:1fr}#salaryCutoffModal .sc-total{display:flex;justify-content:space-between;align-items:center;gap:8px}#salaryCutoffModal .sc-total small{margin:0}}
+</style>
+<div id="salaryCutoffBackdrop" role="dialog" aria-modal="true" aria-labelledby="salaryCutoffTitle">
+ <div id="salaryCutoffModal">
+  <div class="sc-head"><div><h2 id="salaryCutoffTitle">Edit salary cutoff</h2><div class="sc-muted" id="salaryCutoffDateLabel">Cutoff details</div></div><button type="button" class="btn btn-light" onclick="closeSalaryCutoffEditor()">✕ Close</button></div>
+  <div class="sc-field"><label for="salaryCutoffGross">Cutoff salary before deductions (₱)</label><input id="salaryCutoffGross" type="number" min="0" step="0.01" inputmode="decimal"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin:18px 0 9px"><strong style="font-size:13px">Salary deductions</strong><span class="sc-muted">Add each deduction separately</span></div>
+  <div id="salaryCutoffDeductionRows"></div>
+  <button type="button" class="sc-add" onclick="addSalaryCutoffDeduction()">＋ Add deduction</button>
+  <div class="sc-totals">
+   <div class="sc-total"><small>Gross salary</small><strong id="salaryCutoffGrossTotal">₱0.00</strong></div>
+   <div class="sc-total"><small>Total deductions</small><strong id="salaryCutoffDeductionTotal" style="color:var(--red)">₱0.00</strong></div>
+   <div class="sc-total"><small>Net payout</small><strong id="salaryCutoffNetTotal" class="sc-net">₱0.00</strong></div>
+  </div>
+  <div class="sc-inline-note">The net payout is calculated automatically and saved to this specific cutoff.</div>
+  <div class="sc-actions"><button type="button" class="btn btn-light" onclick="closeSalaryCutoffEditor()">Cancel</button><button type="button" class="btn btn-primary" onclick="saveSalaryCutoff()">Save cutoff</button></div>
+ </div>
+</div>
+<script id="savely-cutoff-deductions-script">
+(function(){
+ const money=n=>'₱'+(Number(n)||0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});
+ const isoDate=iso=>String(iso||'').split('-').map(Number);
+ const key=iso=>String(iso);
+ let activeISO='';
+ function ensureStore(){if(!data.salaryCutoffRecords||typeof data.salaryCutoffRecords!=='object')data.salaryCutoffRecords={};}
+ function record(iso){ensureStore();return data.salaryCutoffRecords[key(iso)]||null;}
+ function cutoffInfo(iso){
+  const [y,m]=isoDate(iso),settings=salarySettingsForYear(y);
+  const entries=(Number(settings.monthlySalary)>0&&settings.salaryPayDay!=='custom')?getSalaryPaydayEntries(settings.salaryPayDay,y,m-1):[];
+  const entry=entries.find(x=>x.date===iso);
+  if(!entry)return null;
+  const saved=record(iso),gross=saved&&Number.isFinite(Number(saved.grossAmount))?Math.max(0,Number(saved.grossAmount)):Math.max(0,Number(settings.monthlySalary)||0)/2;
+  const deductions=saved&&Array.isArray(saved.deductions)?saved.deductions:[];
+  const total=deductions.reduce((sum,d)=>sum+Math.max(0,Number(d.amount)||0),0);
+  return {entry,index:entry.index,gross,deductions,total,net:Math.max(0,gross-total)};
+ }
+ function updateTotals(){
+  const gross=Math.max(0,Number(document.getElementById('salaryCutoffGross')?.value)||0);
+  const rows=[...document.querySelectorAll('#salaryCutoffDeductionRows .sc-deduction-row')];
+  const total=rows.reduce((sum,row)=>sum+Math.max(0,Number(row.querySelector('.sc-deduction-amount')?.value)||0),0);
+  document.getElementById('salaryCutoffGrossTotal').textContent=money(gross);
+  document.getElementById('salaryCutoffDeductionTotal').textContent=money(total);
+  document.getElementById('salaryCutoffNetTotal').textContent=money(Math.max(0,gross-total));
+ }
+ function addRow(name='',amount=''){
+  const root=document.getElementById('salaryCutoffDeductionRows'),row=document.createElement('div');
+  row.className='sc-deduction-row';
+  row.innerHTML='<input class="sc-deduction-name" type="text" maxlength="80" placeholder="e.g. Loan payment" aria-label="Deduction name"><input class="sc-deduction-amount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Amount" aria-label="Deduction amount"><button type="button" class="sc-remove" aria-label="Remove deduction">×</button>';
+  row.querySelector('.sc-deduction-name').value=name;
+  row.querySelector('.sc-deduction-amount').value=amount===''?'':String(amount);
+  row.querySelectorAll('input').forEach(input=>input.addEventListener('input',updateTotals));
+  row.querySelector('.sc-remove').addEventListener('click',()=>{row.remove();updateTotals();});
+  root.appendChild(row);updateTotals();
+ }
+ window.addSalaryCutoffDeduction=()=>addRow();
+ window.closeSalaryCutoffEditor=()=>{document.getElementById('salaryCutoffBackdrop').style.display='none';};
+ window.openSalaryCutoffEditor=function(iso){
+  const info=cutoffInfo(iso);if(!info)return;
+  activeISO=iso;
+  const [y,m,d]=isoDate(iso),date=new Date(y,m-1,d);
+  document.getElementById('salaryCutoffTitle').textContent=(info.index===0?'1st':'2nd')+' cutoff';
+  document.getElementById('salaryCutoffDateLabel').textContent=date.toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  document.getElementById('salaryCutoffGross').value=String(info.gross);
+  const root=document.getElementById('salaryCutoffDeductionRows');root.innerHTML='';
+  if(info.deductions.length)info.deductions.forEach(x=>addRow(x.name||'',x.amount||0));else addRow();
+  document.getElementById('salaryCutoffBackdrop').style.display='flex';updateTotals();
+ };
+ window.saveSalaryCutoff=function(){
+  if(!activeISO)return;
+  const gross=Math.max(0,Number(document.getElementById('salaryCutoffGross').value)||0);
+  const deductions=[...document.querySelectorAll('#salaryCutoffDeductionRows .sc-deduction-row')].map(row=>({
+   id:'ded-'+Math.random().toString(36).slice(2,10),
+   name:(row.querySelector('.sc-deduction-name').value||'Other deduction').trim(),
+   amount:Math.max(0,Number(row.querySelector('.sc-deduction-amount').value)||0)
+  })).filter(x=>x.amount>0);
+  const total=deductions.reduce((sum,x)=>sum+x.amount,0);
+  if(total>gross){toast('Deductions cannot exceed the cutoff salary.');return;}
+  ensureStore();
+  data.salaryCutoffRecords[activeISO]={grossAmount:gross,deductions,updatedAt:new Date().toISOString()};
+  save();window.closeSalaryCutoffEditor();
+  if(typeof renderSalaryPage==='function')renderSalaryPage();
+  toast('Cutoff salary and deductions saved.');
+ };
+ const originalRender=window.renderSalaryCalendar;
+ if(typeof originalRender==='function'){
+  window.renderSalaryCalendar=function(){
+   originalRender();
+   document.querySelectorAll('#salaryCalendarGrid .salary-calendar-day.is-payday').forEach(button=>{
+    const match=(button.getAttribute('onclick')||'').match(/selectSalaryCalendarDate\('([^']+)'\)/);
+    if(!match)return;
+    const info=cutoffInfo(match[1]);if(!info)return;
+    const amount=button.querySelector('.salary-calendar-event-amount');
+    if(amount)amount.textContent=money(info.net);
+    button.title=(button.title?button.title+' · ':'')+'Net payout: '+money(info.net)+' · Select to edit deductions';
+   });
+  };
+ }
+ const originalSelect=window.selectSalaryCalendarDate;
+ if(typeof originalSelect==='function'){
+  window.selectSalaryCalendarDate=function(iso){
+   originalSelect(iso);
+   if(cutoffInfo(iso))window.openSalaryCutoffEditor(iso);
+  };
+ }
+ const originalDetails=window.renderSalaryCalendarDetails;
+ if(typeof originalDetails==='function'){
+  window.renderSalaryCalendarDetails=function(iso){
+   originalDetails(iso);
+   const info=cutoffInfo(iso);if(!info)return;
+   const details=document.getElementById('salaryCalendarDetails');if(!details)return;
+   const lines=info.deductions.map(x=>'<div class="sc-detail-line deduct"><span>'+String(x.name||'Deduction').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</span><strong>− '+money(x.amount)+'</strong></div>').join('');
+   const block=document.createElement('div');block.id='salaryCutoffDetails';
+   block.innerHTML='<div class="sc-detail-line"><span>Gross cutoff salary</span><strong>'+money(info.gross)+'</strong></div>'+lines+'<div class="sc-detail-line" style="font-weight:850;color:var(--green)"><span>Net payout</span><strong>'+money(info.net)+'</strong></div><button type="button" class="btn btn-primary sc-detail-button" onclick="openSalaryCutoffEditor(\''+iso+'\')">✎ Edit cutoff & deductions</button>';
+   details.appendChild(block);
+  };
+ }
+ const originalUpdate=window.updateSalaryAnnualRemainingCard;
+ if(typeof originalUpdate==='function'){
+  window.updateSalaryAnnualRemainingCard=function(year){
+   originalUpdate(year);
+   const target=Number(year)||new Date().getFullYear(),settings=salarySettingsForYear(target);
+   const today=new Date(),month=today.getMonth(),thisYear=today.getFullYear();
+   if(target===thisYear){
+    let monthDeductions=0;
+    Object.keys(data.salaryCutoffRecords||{}).forEach(iso=>{const p=isoDate(iso);if(p[0]===thisYear&&p[1]===month+1){const r=record(iso);monthDeductions+=(r?.deductions||[]).reduce((a,x)=>a+Math.max(0,Number(x.amount)||0),0);}});
+    const monthly=document.getElementById('salaryMonthlyDisplay');
+    if(monthly)monthly.textContent=money(Math.max(0,(Number(settings.monthlySalary)||0)-monthDeductions));
+    const foot=document.getElementById('salaryPayDayDisplay');
+    if(foot&&monthDeductions>0)foot.textContent+=' · '+money(monthDeductions)+' deducted this month';
+   }
+   let deductionTotal=0;
+   Object.keys(data.salaryCutoffRecords||{}).forEach(iso=>{
+    const [y,m,d]=isoDate(iso);if(y!==target)return;
+    const dt=new Date(y,m-1,d),nowDay=new Date();nowDay.setHours(0,0,0,0);
+    if(dt<nowDay)return;
+    const r=record(iso),gross=Math.max(0,Number(r?.grossAmount)||0);
+    const deductions=(r?.deductions||[]).reduce((a,x)=>a+Math.max(0,Number(x.amount)||0),0);
+    deductionTotal+=Math.min(gross,deductions);
+   });
+   const projection=document.getElementById('salaryAnnualRemainingDisplay');
+   if(projection&&deductionTotal>0&&target===thisYear){
+    const base=getSalaryRemainingProjection(target);
+    projection.childNodes[0].textContent=money(Math.max(0,base.amount-deductionTotal))+' ';
+    const foot=document.getElementById('salaryAnnualRemainingFoot');
+    if(foot)foot.textContent+=' · includes '+money(deductionTotal)+' cutoff deductions';
+   }
+  };
+ }
+})();
+</script>
+
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
