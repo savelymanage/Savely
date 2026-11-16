@@ -16950,6 +16950,32 @@ html body #page-salary .salary-year-picker-trigger .salary-year-picker-caret{
 })();
 </script>
 
+
+<style id="savely-salary-countdown-vertical-center-v1">
+/* Center the payday countdown vertically within the blue salary hero instead of pinning it to the top edge. */
+html body #page-salary .salary-annual-remaining-stat{position:relative!important;min-height:168px!important}
+html body #page-salary #salaryNextPaydayCountdown{
+  top:50%!important;right:clamp(22px,3%,42px)!important;left:auto!important;
+  transform:translateY(-50%)!important;
+  display:flex!important;flex-direction:column!important;justify-content:center!important;
+  gap:18px!important;margin:0!important;
+}
+html body #page-salary .salary-next-payday-heading{
+  display:flex!important;align-items:center!important;justify-content:flex-end!important;
+  width:100%!important;gap:10px 18px!important;text-align:right!important;
+}
+html body #page-salary .salary-next-payday-parts{margin:0!important}
+@media(max-width:760px){
+  html body #page-salary .salary-annual-remaining-stat{min-height:0!important}
+  html body #page-salary #salaryNextPaydayCountdown{
+    position:static!important;top:auto!important;right:auto!important;left:auto!important;
+    transform:none!important;width:100%!important;max-width:none!important;
+    margin-top:20px!important;gap:16px!important;
+  }
+  html body #page-salary .salary-next-payday-heading{justify-content:flex-start!important;text-align:left!important}
+}
+</style>
+
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
