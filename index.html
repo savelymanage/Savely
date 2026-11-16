@@ -4012,6 +4012,7 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
   <section class="page" id="page-salary">
     <div class="cards salary-summary-cards" style="grid-template-columns:minmax(0,1fr);margin-bottom:18px">
       <div class="stat salary-annual-remaining-stat salary-remaining-blue">
+        <div class="salary-remaining-label">Remaining salary</div>
         <div class="stat-value" id="salaryAnnualRemainingDisplay">₱0.00 <span class="annual-projection-inline">/ <span id="salaryAnnualDisplay">₱0.00</span></span></div>
         <div class="stat-foot" id="salaryAnnualRemainingFoot">Estimated future cutoffs through December</div>
         <div class="salary-next-payday" id="salaryNextPaydayCountdown" aria-live="off">
@@ -5218,12 +5219,30 @@ function renderSalaryCalendarYearTabs(){
  </div><button type="button" class="btn btn-light salary-history-open" onclick="toggleSalaryHistoryView()">${salaryCalendarDisplayMode==='history'?'Calendar':'History'}</button>`;
 }
 function toggleSalaryYearPicker(){salaryYearPickerOpen=!salaryYearPickerOpen;renderSalaryCalendarYearTabs();}
+function closeSalaryYearPicker(){
+ if(!salaryYearPickerOpen)return;
+ salaryYearPickerOpen=false;
+ renderSalaryCalendarYearTabs();
+}
+(function bindSalaryYearPickerDismiss(){
+ if(window.__savelySalaryYearPickerDismissBound)return;
+ window.__savelySalaryYearPickerDismissBound=true;
+ document.addEventListener('pointerdown',event=>{
+  if(!salaryYearPickerOpen)return;
+  const root=document.getElementById('salaryCalendarYearTabs');
+  if(root&&!root.contains(event.target))closeSalaryYearPicker();
+ },true);
+ document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&salaryYearPickerOpen)closeSalaryYearPicker();
+ });
+})();
 function changeSalaryYearPickerPage(direction){
  const currentYear=new Date().getFullYear(),total=11;
  salaryYearPickerPageStart=Math.max(0,Math.min(Math.floor((total-1)/9)*9,salaryYearPickerPageStart+(direction*9)));
  salaryYearPickerOpen=true;renderSalaryCalendarYearTabs();
 }
 function selectSalaryCalendarYear(year){
+ // Close the popover immediately after a year is chosen.
  salaryYearPickerOpen=false;
  const currentYear=new Date().getFullYear();
  const target=Math.max(currentYear,Math.min(currentYear+10,Number(year)||currentYear));
@@ -5232,6 +5251,9 @@ function selectSalaryCalendarYear(year){
  salaryCalendarCursor=new Date(target,target===currentYear?now.getMonth():0,1);
  salaryCalendarSelectedDate=null;
  renderSalaryCalendar();
+ // Re-render the picker in its closed state after the calendar/year update.
+ salaryYearPickerOpen=false;
+ renderSalaryCalendarYearTabs();
  if(salaryCalendarDisplayMode==='history')renderSalaryHistory();
  refreshPhilippineHolidays([target]);
 }
@@ -17164,6 +17186,29 @@ html body #page-salary .salary-annual-remaining-stat > .stat-top::after{
 }
 </style>
 
+
+
+<style id="savely-salary-remaining-label-v1">
+/* Small heading above the remaining salary total, inside the blue summary card. */
+html body #page-salary .salary-annual-remaining-stat > .salary-remaining-label{
+  display:block!important;
+  width:max-content!important;
+  max-width:100%!important;
+  margin:0 0 9px!important;
+  padding:0!important;
+  color:#fff!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  line-height:1.35!important;
+  letter-spacing:.1px!important;
+  text-align:left!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+</style>
+
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
@@ -18489,4 +18534,9 @@ html body #page-salary .salary-next-payday-parts{margin:0!important}
  #page-salary .salary-cutoff-actions{grid-column:2;grid-row:1}
  #page-salary .salary-cutoff-history-values{grid-column:1/-1;grid-row:2;justify-content:flex-start}
 }
+</style>
+
+<style id="savely-year-picker-dismiss-v1">
+#page-salary .salary-year-picker-popover[hidden]{display:none!important;visibility:hidden!important;pointer-events:none!important}
+#page-salary .salary-year-picker-popover:not([hidden]){visibility:visible;pointer-events:auto}
 </style>
