@@ -8500,14 +8500,16 @@ function renderPersonalEvents(){
  events.sort((a,b)=>a.date.localeCompare(b.date)||a.name.localeCompare(b.name));
  if(!events.length){root.innerHTML='<div class="personal-events-empty">No personal events yet. Add your first event to start a countdown.</div>';return;}
  const upcoming=events.filter(x=>x.date>=today),past=events.filter(x=>x.date<today);
+ const firstUpcomingId=upcoming.length?upcoming[0].id:null;
  const row=item=>{
   const isPast=item.date<today,isToday=item.date===today;
+  const isNextUpcoming=!isPast&&firstUpcomingId!==null&&item.id===firstUpcomingId;
   const date=personalEventDate(item.date);
   const weekday=date.toLocaleDateString('en-PH',{timeZone:'Asia/Manila',weekday:'long'});
   const monthDay=date.toLocaleDateString('en-PH',{timeZone:'Asia/Manila',month:'long',day:'numeric'});
   const dateLabel=date.toLocaleDateString('en-PH',{timeZone:'Asia/Manila',weekday:'long',month:'long',day:'numeric',year:'numeric'});
   const countdown=isPast?'Event date passed':isToday?'Event day!':'Loading countdown…';
-  return `<article class="holiday-row personal-event-row${isPast?' is-past':''}" data-personal-event="${esc(item.id)}">
+  return `<article class="holiday-row personal-event-row${isPast?' is-past':''}${isNextUpcoming?' next':''}" data-personal-event="${esc(item.id)}">
    <div class="holiday-date">${esc(weekday)}, ${esc(monthDay)}<small>${esc(dateLabel)}</small></div>
    <div class="holiday-name-cell">
     <div class="holiday-name">${esc(item.name)}</div>
