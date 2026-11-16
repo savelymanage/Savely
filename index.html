@@ -4031,9 +4031,8 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
       </div>
     </div>
     <section class="panel salary-calendar-panel" aria-labelledby="salaryCalendarTitle" style="margin-bottom:18px">
-      <div class="salary-calendar-year-tabs-row"><div id="salaryCalendarYearTabs" class="salary-calendar-year-tabs" role="tablist" aria-label="Choose salary calendar year"></div></div>
+      <div class="salary-calendar-year-tabs-row"><h2 id="salaryCalendarTitle" style="font-size:19px;margin:0">Salary calendar</h2><div id="salaryCalendarYearTabs" class="salary-calendar-year-tabs" role="tablist" aria-label="Choose salary calendar year"></div></div>
       <div class="panel-head salary-calendar-head">
-        <div><h2 id="salaryCalendarTitle" style="font-size:19px">Salary calendar</h2></div>
         <div class="salary-calendar-controls">
           <div class="salary-calendar-nav">
             <button type="button" class="btn btn-light" id="salaryCalendarPrev" onclick="changeSalaryCalendarMonth(-1)" aria-label="Previous month">‹</button>
@@ -17518,5 +17517,76 @@ html body #page-salary #salaryNextPaydayTimer{display:none!important}
  html body #page-salary .salary-next-payday-parts{gap:4px!important}
  html body #page-salary .salary-next-payday-parts strong{font-size:24px!important}
  html body #page-salary .salary-next-payday-parts span{font-size:9px!important}
+}
+</style>
+
+<style id="savely-salary-final-alignment-v2">
+/* Salary calendar title shares the top row with Year and History controls. */
+html body #page-salary .salary-calendar-year-tabs-row{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;
+ width:100%!important;margin:0 0 14px!important;padding:0 0 10px!important;border-bottom:1px solid var(--line)!important;
+}
+html body #page-salary .salary-calendar-year-tabs-row > h2{
+ display:block!important;flex:1 1 auto!important;font-size:19px!important;line-height:1.25!important;
+}
+html body #page-salary #salaryCalendarYearTabs{flex:0 0 auto!important;margin-left:auto!important}
+html body #page-salary .salary-year-picker-trigger{
+ min-width:78px!important;width:78px!important;min-height:48px!important;height:48px!important;
+ padding:5px 8px 3px!important;display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;gap:0!important;
+}
+html body #page-salary .salary-year-picker-trigger > span:first-child{
+ display:block!important;line-height:1.15!important;text-align:center!important
+}
+html body #page-salary .salary-year-picker-caret{
+ display:block!important;min-width:0!important;width:100%!important;text-align:center!important;
+ font-size:17px!important;line-height:14px!important;height:14px!important;margin:0!important;padding:0!important;
+}
+/* Keep Next payday and its date together, with the countdown centered on the right side of the blue banner. */
+html body #page-salary .salary-annual-remaining-stat{
+ position:relative!important;padding-right:clamp(440px,48%,620px)!important;
+}
+html body #page-salary #salaryNextPaydayCountdown{
+ position:absolute!important;top:50%!important;right:clamp(22px,3%,42px)!important;left:auto!important;
+ transform:translateY(-50%)!important;width:min(47%,620px)!important;max-width:620px!important;
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:center!important;
+ gap:12px!important;margin:0!important;padding:0!important;background:transparent!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+}
+html body #page-salary .salary-next-payday-heading{
+ display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;
+ gap:8px 18px!important;flex-wrap:wrap!important;width:100%!important;
+}
+html body #page-salary .salary-next-payday-heading .salary-next-payday-label,
+html body #page-salary .salary-next-payday-heading > strong{
+ display:inline-flex!important;align-items:center!important;margin:0!important;white-space:nowrap!important;
+ color:#fff!important;
+}
+html body #page-salary .salary-next-payday-heading .salary-next-payday-label{font-size:12px!important;font-weight:850!important}
+html body #page-salary .salary-next-payday-heading > strong{font-size:13px!important;font-weight:850!important}
+html body #page-salary .salary-next-payday-parts{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;width:100%!important;
+}
+html body #page-salary .salary-next-payday-parts > div{
+ display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ gap:4px!important;padding:0!important;background:transparent!important;border:0!important;border-radius:0!important;
+}
+html body #page-salary .salary-next-payday-parts strong{
+ font-size:clamp(25px,2.2vw,34px)!important;line-height:1.05!important;font-weight:900!important;
+ font-variant-numeric:tabular-nums!important;color:#fff!important;
+}
+html body #page-salary .salary-next-payday-parts span{font-size:10px!important;font-weight:750!important;color:#fff!important}
+@media(max-width:760px){
+ html body #page-salary .salary-calendar-year-tabs-row{align-items:flex-start!important;gap:10px!important}
+ html body #page-salary .salary-calendar-year-tabs-row > h2{font-size:17px!important}
+ html body #page-salary .salary-annual-remaining-stat{padding:22px!important}
+ html body #page-salary #salaryNextPaydayCountdown{position:static!important;transform:none!important;width:100%!important;max-width:none!important;margin-top:18px!important}
+ html body #page-salary .salary-next-payday-heading{justify-content:flex-start!important;gap:7px 12px!important}
+ html body #page-salary .salary-next-payday-parts{gap:4px!important}
+ html body #page-salary .salary-next-payday-parts strong{font-size:24px!important}
+}
+@media(max-width:420px){
+ html body #page-salary .salary-calendar-year-tabs-row{flex-wrap:wrap!important}
+ html body #page-salary #salaryCalendarYearTabs{margin-left:auto!important}
 }
 </style>
