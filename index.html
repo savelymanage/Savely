@@ -8270,7 +8270,13 @@ function updateHolidayCountdowns(){
  }
  window.__savelyNextHolidayKey=nextKey;
  if(hero){if(next){const p=phCountdownParts(phHolidayRemaining(next.date));hero.innerHTML=p.map((v,i)=>`<div><strong>${v}</strong><span>${['Days','Hours','Minutes','Seconds'][i]}</span></div>`).join('');}else hero.innerHTML='<div><strong>—</strong><span>Days</span></div><div><strong>—</strong><span>Hours</span></div><div><strong>—</strong><span>Minutes</span></div><div><strong>—</strong><span>Seconds</span></div>';}
- document.querySelectorAll('[data-holiday-countdown]').forEach(el=>{const ms=phHolidayRemaining(el.dataset.holidayCountdown);el.textContent=ms<=0?'Holiday date reached':`${Math.floor(ms/86400000)} days · ${Math.floor(ms%86400000/3600000)}h ${Math.floor(ms%3600000/60000)}m remaining`;el.classList.toggle('passed',ms<=0);});
+ document.querySelectorAll('[data-holiday-countdown]').forEach(el=>{
+  const ms=phHolidayRemaining(el.dataset.holidayCountdown);
+  el.classList.toggle('passed',ms<=0);
+  if(ms<=0){el.innerHTML='<span>Holiday date reached</span>';return;}
+  const seconds=Math.floor(ms/1000),days=Math.floor(seconds/86400),hours=Math.floor(seconds%86400/3600),minutes=Math.floor(seconds%3600/60),secs=seconds%60;
+  el.innerHTML=`<span>${days} days</span><span>${String(hours).padStart(2,'0')} hrs</span><span>${String(minutes).padStart(2,'0')} min</span><span>${String(secs).padStart(2,'0')} sec</span>`;
+ });
  updatePersonalEventCountdowns();
 }
 
@@ -14776,6 +14782,79 @@ document.addEventListener('keydown',function(event){
 <style id="savely-calendar-filter-switch-fix-v1">
 #page-holidays .holiday-filters button{position:relative;z-index:3;pointer-events:auto}
 #page-holidays .holiday-filters button[hidden]{display:none!important}
+</style>
+
+
+<style id="savely-salary-wider-and-calendar-countdown-chips-v1">
+/* Salary summary: span the full content width and give the blue panel more room. */
+html body #page-salary .salary-summary-cards{
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr)!important;
+ width:100%!important;
+ max-width:none!important;
+}
+html body #page-salary .salary-summary-cards > .salary-annual-remaining-stat{
+ width:100%!important;
+ min-width:0!important;
+ min-height:188px!important;
+ box-sizing:border-box!important;
+ padding-top:28px!important;
+ padding-bottom:26px!important;
+}
+/* Remove the decorative peso badge from the top-right; keep the soft circle artwork. */
+html body #page-salary .salary-summary-cards > .stat::after{
+ content:none!important;
+ display:none!important;
+}
+html body #page-salary .salary-next-payday{
+ top:25px!important;
+ right:26px!important;
+ width:min(36%,440px)!important;
+ min-height:112px!important;
+ justify-content:center!important;
+}
+@media(max-width:760px){
+ html body #page-salary .salary-summary-cards > .salary-annual-remaining-stat{
+  min-height:0!important;
+  padding:22px!important;
+ }
+ html body #page-salary .salary-next-payday{
+  top:auto!important;right:auto!important;width:auto!important;min-height:0!important;
+ }
+}
+
+/* Holiday list countdown chips now use the same compact visual language as Personal Events. */
+#page-holidays .holiday-countdown-cell{
+ display:flex!important;
+ align-items:center!important;
+ align-content:center!important;
+ gap:7px!important;
+ flex-wrap:wrap!important;
+ min-width:0!important;
+}
+#page-holidays .holiday-countdown-cell span{
+ display:inline-flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+ min-height:29px!important;
+ padding:7px 10px!important;
+ border-radius:9px!important;
+ background:#e9f8f0!important;
+ color:#087a55!important;
+ font-size:11px!important;
+ line-height:1!important;
+ font-weight:800!important;
+ font-variant-numeric:tabular-nums!important;
+ white-space:nowrap!important;
+}
+#page-holidays .holiday-countdown-cell.passed span{
+ background:#f1f3f5!important;
+ color:#788391!important;
+}
+@media(max-width:600px){
+ #page-holidays .holiday-countdown-cell{gap:5px!important}
+ #page-holidays .holiday-countdown-cell span{padding:7px 8px!important;font-size:10px!important}
+}
 </style>
 
 </body>
