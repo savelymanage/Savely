@@ -4057,7 +4057,7 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
       <div class="panel-head"><div><h2 id="salaryDetailsTitle">Salary details</h2><div class="panel-sub">Update this whenever your monthly salary changes.</div></div></div>
       <form id="monthlySalaryForm" onsubmit="saveMonthlySalary(event)" class="form-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
         <div class="field"><label for="monthlySalaryAmount">Monthly salary (₱)</label><input id="monthlySalaryAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 12000" required></div>
-        <div class="field"><label for="monthlySalaryPayDay">Usual payday</label><select id="monthlySalaryPayDay"><option value="15-30">15–30 cutoff (15th &amp; end of month)</option><option value="5-20">5–20 cutoff (5th &amp; 20th)</option><option value="10-25">10–25 cutoff (10th &amp; 25th)</option><option value="custom">Varies / not fixed</option></select></div>
+        <div class="field"><label for="monthlySalaryPayDay">Usual payday</label><select id="monthlySalaryPayDay" required><option value="" selected disabled>Select your payday schedule</option><option value="15-30">15–30 cutoff (15th &amp; end of month)</option><option value="5-20">5–20 cutoff (5th &amp; 20th)</option><option value="10-25">10–25 cutoff (10th &amp; 25th)</option><option value="custom">Varies / not fixed</option></select></div>
         <div class="field"><label for="monthlySalaryYear">Applies to year</label><select id="monthlySalaryYear" onchange="loadSalaryYearIntoForm()"></select></div>
 
         <div class="field" style="grid-column:1/-1"><label for="monthlySalaryNotes">Notes (optional)</label><input id="monthlySalaryNotes" type="text" maxlength="240" placeholder="e.g. Part-time salary, net of deductions"></div>
@@ -4976,7 +4976,8 @@ function loadSalaryYearIntoForm(){
  const notes=document.getElementById('monthlySalaryNotes');
  const updated=document.getElementById('monthlySalaryUpdatedAt');
  if(amount)amount.value=settings.monthlySalary?String(settings.monthlySalary):'';
- if(payday)payday.value=settings.salaryPayDay||'custom';
+ if(payday)payday.value=settings.salaryUpdatedAt?(settings.salaryPayDay||'custom'):'';
+ if(payday&&!payday.dataset.requiredScheduleBound){payday.addEventListener('change',()=>payday.setCustomValidity(''));payday.dataset.requiredScheduleBound='1';}
  if(notes)notes.value=settings.salaryNotes||'';
  if(updated)updated.textContent=settings.salaryUpdatedAt?`Last updated: ${new Date(settings.salaryUpdatedAt).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'})}`:'No salary saved for this year yet';
  const submit=document.querySelector('#monthlySalaryForm button[type="submit"]');
@@ -5397,7 +5398,7 @@ function renderSalaryHistory(){
    return `<section class="salary-history-month"><header><div><strong>${monthName}</strong><span>${monthEntries.length} cutoff${monthEntries.length===1?'':'s'} · ${peso(monthly)} monthly salary</span></div><div class="salary-history-month-totals"><span>Gross <b>${peso(monthGross)}</b></span><span>Deductions <b>${peso(monthDeductions)}</b></span><span>Net <b>${peso(monthNet)}</b></span></div></header><div class="salary-history-month-cutoffs">${cutoffMarkup}</div></section>`;
   }).join('');
   const monthContent=months || `<div class="empty">No remaining months in ${year}. Completed months are hidden from this history view.</div>`;
-  return salaryRow+`<div class="salary-history-months" aria-label="${year} remaining monthly salary records">${monthContent}</div>`;
+  return `<div class="salary-history-months" aria-label="${year} remaining monthly salary records">${monthContent}</div>`;
  }).join('');
 }
 function toggleSalaryHistoryView(){
@@ -5450,8 +5451,12 @@ function saveMonthlySalary(event){
  if(event)event.preventDefault();
  const input=document.getElementById('monthlySalaryAmount');const amount=Number(input?.value);
  if(!Number.isFinite(amount)||amount<0){toast('Enter a valid monthly salary amount.');return;}
+ const paydaySelect=document.getElementById('monthlySalaryPayDay');
+ const paydayValue=String(paydaySelect?.value||'');
+ if(!paydayValue){paydaySelect?.setCustomValidity('Please select your usual payday schedule.');paydaySelect?.reportValidity();return;}
+ paydaySelect?.setCustomValidity('');
  const year=Number(document.getElementById('monthlySalaryYear')?.value)||new Date().getFullYear();
- const record={monthlySalary:amount,salaryPayDay:document.getElementById('monthlySalaryPayDay')?.value||'custom',salaryNotes:(document.getElementById('monthlySalaryNotes')?.value||'').trim(),salaryUpdatedAt:new Date().toISOString(),salaryRateExplicit:true};
+ const record={monthlySalary:amount,salaryPayDay:paydayValue,salaryNotes:(document.getElementById('monthlySalaryNotes')?.value||'').trim(),salaryUpdatedAt:new Date().toISOString(),salaryRateExplicit:true};
  if(!data.salaryYearSettings||typeof data.salaryYearSettings!=='object')data.salaryYearSettings={};
  data.salaryYearSettings[String(year)]=record;
  if(year===new Date().getFullYear()){
@@ -17098,6 +17103,53 @@ html body #page-salary .salary-annual-remaining-stat > .stat-top::after{
 @media(max-width:760px){#page-salary .salary-history-month{padding:11px}#page-salary .salary-history-month-totals{gap:9px}}
 </style>
 
+
+<style id="savely-salary-pill-final-alignment-v2">
+/* Final alignment override: preserve the existing pill size/design, align its label from the left padding. */
+html body #page-salary .salary-annual-remaining-stat > .stat-top{
+  display:flex!important;
+  flex:0 0 194px!important;
+  align-self:flex-start!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  box-sizing:border-box!important;
+  position:static!important;
+  inset:auto!important;
+  transform:none!important;
+  width:194px!important;
+  min-width:194px!important;
+  max-width:calc(100% - 4px)!important;
+  height:32px!important;
+  min-height:32px!important;
+  max-height:32px!important;
+  margin:0 0 12px 0!important;
+  padding:0 14px!important;
+  border-radius:999px!important;
+  line-height:normal!important;
+  text-align:left!important;
+  text-indent:0!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  direction:ltr!important;
+  vertical-align:middle!important;
+}
+html body #page-salary .salary-annual-remaining-stat > .stat-top::before,
+html body #page-salary .salary-annual-remaining-stat > .stat-top::after{
+  content:none!important;
+  display:none!important;
+}
+@media(max-width:520px){
+  html body #page-salary .salary-annual-remaining-stat > .stat-top{
+    flex-basis:194px!important;
+    width:194px!important;
+    min-width:min(194px,100%)!important;
+    max-width:100%!important;
+    padding-inline:14px!important;
+  }
+}
+</style>
+
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
@@ -18379,4 +18431,9 @@ html body #page-salary .salary-next-payday-parts{margin:0!important}
   }
   html body #page-salary .salary-next-payday-heading{justify-content:flex-start!important;text-align:left!important;flex-wrap:wrap!important}
 }
+</style>
+
+<style id="savely-salary-history-summary-row-removed-v1">
+/* Keep history focused on monthly cutoff entries; omit the redundant yearly summary/delete card. */
+#page-salary .salary-history-year-summary{display:none!important}
 </style>
