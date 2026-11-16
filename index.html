@@ -5205,7 +5205,10 @@ function renderSalaryCalendarYearTabs(){
  // Keep the current year and the next ten years, matching the salary settings range.
  for(let year=currentYear;year<=currentYear+10;year++)years.push(year);
  const selectedIndex=Math.max(0,years.indexOf(selectedYear));
- salaryYearPickerPageStart=Math.floor(selectedIndex/9)*9;
+ // Set the initial page from the selected year only while the picker is closed.
+ // When paging is active, preserve the page chosen by the Previous/Next controls.
+ if(!salaryYearPickerOpen) salaryYearPickerPageStart=Math.floor(selectedIndex/9)*9;
+ salaryYearPickerPageStart=Math.max(0,Math.min(Math.floor((years.length-1)/9)*9,salaryYearPickerPageStart));
  const visible=years.slice(salaryYearPickerPageStart,salaryYearPickerPageStart+9);
  root.innerHTML=`<div class="salary-year-picker">
   <button type="button" class="salary-year-picker-trigger" aria-haspopup="dialog" aria-expanded="${salaryYearPickerOpen?'true':'false'}" onclick="toggleSalaryYearPicker()"><span>${selectedYear}</span><span class="salary-year-picker-caret" aria-hidden="true">${salaryYearPickerOpen?'⌃':'⌄'}</span></button>
@@ -5230,6 +5233,7 @@ function selectSalaryCalendarYear(year){
  salaryCalendarCursor=new Date(target,target===currentYear?now.getMonth():0,1);
  salaryCalendarSelectedDate=null;
  renderSalaryCalendar();
+ if(salaryCalendarDisplayMode==='history')renderSalaryHistory();
  refreshPhilippineHolidays([target]);
 }
 
@@ -5327,19 +5331,22 @@ function renderSalaryCalendarDetails(iso){
  }
  if(holiday){const holidayLabel=holiday.type==='regular'?'Regular holiday':holiday.type==='special_working'?'Special working day':holiday.type==='local'?'Local holiday':'Special non-working holiday';details.insertAdjacentHTML('afterbegin',`<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;margin-right:10px;border-radius:10px;background:${holiday.type==='special_non_working'?'#eff6ff':'#fff3eb'};color:${holiday.type==='special_non_working'?'#1d4ed8':'#9a3412'};border:1px solid ${holiday.type==='special_non_working'?'#bfdbfe':'#fed7aa'};min-width:0"><span aria-hidden="true">🎉</span><div><strong>${esc(holiday.name)}</strong><div>${holidayLabel}${holiday.sourceUrl?` · <a href="${esc(holiday.sourceUrl)}" target="_blank" rel="noopener">Official source</a>`:''}</div></div></div>`);}
 }
-function salaryHistoryRecords(){
- const records=data.salaryYearSettings&&typeof data.salaryYearSettings==='object'?data.salaryYearSettings:{};
- const years=new Set(Object.keys(records).filter(year=>records[year]&&records[year].salaryRateExplicit===true));
- const current=String(new Date().getFullYear());
- if((Number(data.monthlySalary)>0&&data.salaryUpdatedAt)||records[current]?.salaryRateExplicit===true)years.add(current);
- return [...years].map(year=>({year:Number(year),settings:salarySettingsForYear(Number(year))}))
-  .filter(item=>item.settings&&Number(item.settings.monthlySalary)>0&&item.settings.salaryUpdatedAt)
-  .sort((a,b)=>b.year-a.year);
+function salaryHistoryRecords(year=salaryCalendarCursor.getFullYear()){
+ const selectedYear=String(Number(year)||salaryCalendarCursor.getFullYear());
+ const settings=salarySettingsForYear(Number(selectedYear));
+ // Each calendar year owns its own monthly salary record. Never display or reuse
+ // another year's salary when the selected year has no saved rate.
+ if(!settings||!(Number(settings.monthlySalary)>0)||!settings.salaryUpdatedAt)return [];
+ return [{year:Number(selectedYear),settings}];
 }
 function renderSalaryHistory(){
  const root=document.getElementById('salaryHistoryList');if(!root)return;
- const records=salaryHistoryRecords();
- if(!records.length){root.innerHTML='<div class="empty">No monthly salary history yet. Add a salary amount to start your yearly history.</div>';return;}
+ const selectedYear=salaryCalendarCursor.getFullYear();
+ const records=salaryHistoryRecords(selectedYear);
+ if(!records.length){
+  root.innerHTML=`<div class="empty">No monthly salary record saved for ${selectedYear} yet. Add a salary for ${selectedYear} to create its history.</div>`;
+  return;
+ }
  root.innerHTML=records.map(({year,settings})=>{
   const schedule=String(settings.salaryPayDay||'custom');
   const payday=({'15-30':'15th & end of month','5-20':'5th & 20th','10-25':'10th & 25th','custom':'Varies / not fixed'})[schedule]||schedule;
@@ -5347,6 +5354,7 @@ function renderSalaryHistory(){
   return `<article class="salary-history-row"><div class="salary-history-year"><strong>${year}</strong><span>${esc(payday)} · Updated ${esc(updated)}</span></div><strong class="salary-history-amount">${peso(settings.monthlySalary)}<small>/ month</small></strong><details class="salary-history-menu"><summary aria-label="Actions for ${year}">⋮</summary><div><button type="button" onclick="editSalaryHistoryYear(${year})">Edit</button><button type="button" class="danger" onclick="deleteSalaryHistoryYear(${year})">Delete</button></div></details></article>`;
  }).join('');
 }
+
 function toggleSalaryHistoryView(){
  salaryCalendarDisplayMode=salaryCalendarDisplayMode==='history'?'calendar':'history';
  const panel=document.querySelector('#page-salary .salary-calendar-panel');
@@ -15148,6 +15156,9 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   document.getElementById('salaryCutoffDeductionTotal').textContent=money(total);
   document.getElementById('salaryCutoffNetTotal').textContent=money(Math.max(0,gross-total));
  }
+ // Recalculate gross, deductions, and net payout immediately as the cutoff salary changes.
+ const grossInput=document.getElementById('salaryCutoffGross');
+ if(grossInput){grossInput.addEventListener('input',updateTotals);grossInput.addEventListener('change',updateTotals);}
  function addRow(name='',amount=''){
   const root=document.getElementById('salaryCutoffDeductionRows'),row=document.createElement('div');
   row.className='sc-deduction-row';
@@ -18048,3 +18059,81 @@ html body #page-salary .salary-calendar-nav{
   html body #page-salary .salary-calendar-nav{width:100%!important;justify-content:flex-end!important}
 }
 </style>
+
+<style id="savely-salary-cutoff-live-calc-and-pill-center-v1">
+/* Cutoff editor: gross input changes immediately refresh gross, deductions, and net totals. */
+#salaryCutoffModal #salaryCutoffGross{font-variant-numeric:tabular-nums}
+/* Remaining salary label: center the text inside the dark-blue pill without clipping or overflow. */
+html body #page-salary .salary-annual-remaining-stat > .stat-top{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+  width:max-content!important;
+  max-width:100%!important;
+  min-width:0!important;
+  min-height:30px!important;
+  height:auto!important;
+  padding:7px 14px!important;
+  margin:0 0 12px 0!important;
+  line-height:1.15!important;
+  text-align:center!important;
+  text-indent:0!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  position:relative!important;
+  inset-inline-start:0!important;
+  transform:none!important;
+}
+html body #page-salary .salary-annual-remaining-stat > .stat-top *{
+  text-align:center!important;
+  text-indent:0!important;
+  margin-inline:0!important;
+}
+@media(max-width:520px){
+ html body #page-salary .salary-annual-remaining-stat > .stat-top{
+   max-width:100%!important;padding-inline:11px!important;white-space:normal!important;
+ }
+}
+</style>
+
+<style id="savely-salary-year-picker-next-page-and-payday-right-v1">
+/* Keep the year picker's paging state interactive and its footer above nearby calendar layers. */
+html body #page-salary .salary-year-picker{position:relative!important;z-index:40!important}
+html body #page-salary .salary-year-picker-popover{z-index:1200!important;pointer-events:auto!important}
+html body #page-salary .salary-year-picker-footer{position:relative!important;z-index:2!important}
+html body #page-salary .salary-year-picker-footer button:not(:disabled){pointer-events:auto!important;cursor:pointer!important}
+/* The Next payday label and date belong together at the far upper-right, not at the left edge of the timer. */
+html body #page-salary #salaryNextPaydayCountdown{
+  top:12px!important;
+  right:clamp(22px,3%,42px)!important;
+  left:auto!important;
+  width:min(47%,620px)!important;
+  max-width:620px!important;
+}
+html body #page-salary .salary-next-payday-heading{
+  width:100%!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px 16px!important;
+  text-align:right!important;
+}
+html body #page-salary .salary-next-payday-heading .salary-next-payday-label,
+html body #page-salary .salary-next-payday-heading>strong{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  flex:0 0 auto!important;
+  margin:0!important;
+  text-align:right!important;
+  white-space:nowrap!important;
+}
+@media(max-width:760px){
+ html body #page-salary #salaryNextPaydayCountdown{top:auto!important;right:auto!important;left:auto!important;width:100%!important;max-width:none!important}
+ html body #page-salary .salary-next-payday-heading{justify-content:flex-end!important}
+}
+</style>
+
