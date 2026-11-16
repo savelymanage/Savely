@@ -4048,7 +4048,6 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
       <div id="salaryCalendarGrid" class="salary-calendar-grid" role="grid" aria-label="Monthly salary calendar"></div>
       <div id="salaryCalendarYearGrid" class="salary-calendar-year-grid" role="group" aria-label="Yearly salary calendar" hidden></div>
       <div id="salaryHistoryView" class="salary-history-inline" hidden>
-        <div class="salary-history-inline-heading"><h3>Monthly salary history</h3><p>Saved monthly salary rates, organized by year.</p></div>
         <div id="salaryHistoryList" class="salary-history-list"></div>
       </div>
       <div id="salaryCalendarDetails" class="salary-calendar-details" aria-live="polite"></div><div id="salaryHolidayUpdateStatus" class="salary-calendar-holiday-status">Philippine holidays: checking for updates…</div>
@@ -5357,10 +5356,13 @@ function renderSalaryHistory(){
 
 function toggleSalaryHistoryView(){
  salaryCalendarDisplayMode=salaryCalendarDisplayMode==='history'?'calendar':'history';
+ const isHistory=salaryCalendarDisplayMode==='history';
  const panel=document.querySelector('#page-salary .salary-calendar-panel');
- if(panel)panel.classList.toggle('is-history-view',salaryCalendarDisplayMode==='history');
- const history=document.getElementById('salaryHistoryView');if(history)history.hidden=salaryCalendarDisplayMode!=='history';
- if(salaryCalendarDisplayMode==='history')renderSalaryHistory();
+ if(panel)panel.classList.toggle('is-history-view',isHistory);
+ const history=document.getElementById('salaryHistoryView');if(history)history.hidden=!isHistory;
+ const title=document.getElementById('salaryCalendarTitle');
+ if(title)title.textContent=isHistory?'Monthly history':'Salary calendar';
+ if(isHistory)renderSalaryHistory();
  renderSalaryCalendarYearTabs();
 }
 function openSalaryHistory(){if(salaryCalendarDisplayMode!=='history')toggleSalaryHistoryView();}
@@ -18137,3 +18139,50 @@ html body #page-salary .salary-next-payday-heading>strong{
 }
 </style>
 
+
+
+<style id="savely-salary-hero-pill-reference-alignment-v1">
+/* Match the holiday hero badge: a true centered pill with balanced vertical spacing. */
+html body #page-salary .salary-annual-remaining-stat > .stat-top{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  vertical-align:middle!important;
+  box-sizing:border-box!important;
+  width:max-content!important;
+  min-width:0!important;
+  max-width:calc(100% - 4px)!important;
+  height:32px!important;
+  min-height:32px!important;
+  padding:0 16px!important;
+  margin:0 0 12px 0!important;
+  border-radius:999px!important;
+  line-height:1!important;
+  text-align:center!important;
+  text-indent:0!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  transform:none!important;
+  inset:auto!important;
+}
+html body #page-salary .salary-annual-remaining-stat{
+  box-sizing:border-box!important;
+  padding-top:26px!important;
+  padding-bottom:26px!important;
+}
+html body #page-salary .salary-annual-remaining-stat > .stat-value{
+  margin-top:0!important;
+}
+@media(max-width:760px){
+  html body #page-salary .salary-annual-remaining-stat{padding:22px 20px!important}
+  html body #page-salary .salary-annual-remaining-stat > .stat-top{
+    height:32px!important;min-height:32px!important;max-width:100%!important;
+  }
+}
+</style>
+
+<style id="savely-history-title-cleanup-v1">
+#page-salary .salary-history-inline-heading{display:none!important}
+#page-salary .salary-history-inline{padding-top:8px!important}
+</style>
