@@ -4228,6 +4228,17 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
           <div class="form-actions" style="justify-content:flex-end"><button type="button" class="btn btn-light" onclick="closePersonalEventForm()">Cancel</button><button type="submit" class="btn btn-primary" id="personalEventSaveButton">Save event</button></div>
         </div>
       </form>
+      <div id="personalEventDeleteModal" class="personal-event-delete-modal" hidden>
+        <div class="personal-event-delete-card" role="dialog" aria-modal="true" aria-labelledby="personalEventDeleteTitle">
+          <div class="personal-event-delete-icon" aria-hidden="true">!</div>
+          <h3 id="personalEventDeleteTitle">Delete personal event?</h3>
+          <p>Are you sure you want to delete <strong id="personalEventDeleteName"></strong>? This action cannot be undone.</p>
+          <div class="personal-event-delete-actions">
+            <button type="button" class="btn btn-light" onclick="closePersonalEventDelete()">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="confirmDeletePersonalEvent()">Delete event</button>
+          </div>
+        </div>
+      </div>
       <div id="personalEventsList" class="personal-events-list" aria-live="polite"></div>
     </section>
     <section class="panel holiday-list-panel">
@@ -8336,10 +8347,27 @@ function savePersonalEvent(event){
  save();closePersonalEventForm();renderPersonalEvents();toast(index>=0?'Personal event updated.':'Personal event added.');
 }
 function editPersonalEvent(id){openPersonalEventForm(id);}
+let savelyPendingPersonalEventDeleteId=null;
 function deletePersonalEvent(id){
  const item=(data.personalEvents||[]).find(x=>x.id===id);if(!item)return;
- if(!confirm('Delete "'+item.name.replace(/["\\]/g,'')+'" from Personal Events?'))return;
- data.personalEvents=data.personalEvents.filter(x=>x.id!==id);save();renderPersonalEvents();toast('Personal event deleted.');
+ savelyPendingPersonalEventDeleteId=id;
+ const modal=document.getElementById('personalEventDeleteModal');
+ const name=document.getElementById('personalEventDeleteName');
+ if(name)name.textContent=item.name;
+ if(modal){modal.hidden=false;document.body.classList.add('personal-event-delete-open');}
+}
+function closePersonalEventDelete(){
+ const modal=document.getElementById('personalEventDeleteModal');
+ if(modal)modal.hidden=true;
+ document.body.classList.remove('personal-event-delete-open');
+ savelyPendingPersonalEventDeleteId=null;
+}
+function confirmDeletePersonalEvent(){
+ const id=savelyPendingPersonalEventDeleteId;
+ const item=(data.personalEvents||[]).find(x=>x.id===id);
+ if(!item){closePersonalEventDelete();return;}
+ data.personalEvents=data.personalEvents.filter(x=>x.id!==id);
+ save();closePersonalEventDelete();renderPersonalEvents();toast('Personal event deleted.');
 }
 function renderPersonalEvents(){
  const root=document.getElementById('personalEventsList');if(!root)return;
@@ -8359,16 +8387,16 @@ function renderPersonalEvents(){
    <div class="holiday-name-cell">
     <div class="holiday-name">${esc(item.name)}</div>
     <div class="holiday-description">${item.description?esc(item.description):'Personal event'}</div>
-    <details class="personal-event-menu">
-     <summary aria-label="More event options" title="More options">⋯</summary>
-     <div class="personal-event-menu-popover">
-      <button type="button" onclick="editPersonalEvent('${esc(item.id)}');this.closest('details').open=false">✎ Edit</button>
-      <button type="button" class="delete" onclick="deletePersonalEvent('${esc(item.id)}')">Delete</button>
-     </div>
-    </details>
    </div>
    <div class="holiday-type-cell"><span class="holiday-type personal-event-type">Personal event</span></div>
    <div class="holiday-countdown-cell" data-personal-event-countdown="${esc(item.id)}"><span>${countdown}</span></div>
+   <details class="personal-event-menu">
+    <summary aria-label="More event options" title="More options">⋯</summary>
+    <div class="personal-event-menu-popover">
+     <button type="button" onclick="editPersonalEvent('${esc(item.id)}');this.closest('details').open=false">✎ Edit</button>
+     <button type="button" class="delete" onclick="deletePersonalEvent('${esc(item.id)}')">Delete</button>
+    </div>
+   </details>
   </article>`;
  };
  const monthGroups=(items)=>{
@@ -8413,6 +8441,9 @@ function setCalendarContentTab(tab){
  document.querySelectorAll('#page-holidays [data-holiday-filter]').forEach(btn=>btn.hidden=false);
  const tabButton=document.getElementById('personalEventsTabButton');
  if(tabButton){tabButton.classList.toggle('active',personal);tabButton.setAttribute('aria-pressed',String(personal));}
+ document.querySelectorAll('#page-holidays [data-holiday-filter]').forEach(btn=>{
+  btn.classList.toggle('active',!personal&&btn.dataset.holidayFilter===savelyHolidayFilter);
+ });
  if(personal){renderPersonalEvents();updatePersonalEventHero();}
  else renderHolidayPage();
  document.getElementById('savelyMobileFabToggle')?.dispatchEvent(new Event('savely:refresh'));
@@ -15194,6 +15225,121 @@ body:has(#page-holidays.active) .topbar{min-height:0!important;margin-bottom:12p
  -webkit-text-fill-color:#fff!important;
 }
 </style>
+
+
+<style id="savely-personal-events-final-polish-v2">
+/* Keep the action menu at the far-right edge of each event row. */
+#page-holidays.personal-events-mode .personal-event-row{
+ position:relative!important;
+ padding-right:66px!important;
+}
+#page-holidays.personal-events-mode .personal-event-row .personal-event-menu{
+ position:absolute!important;
+ right:13px!important;
+ top:50%!important;
+ transform:translateY(-50%)!important;
+ z-index:12!important;
+}
+#page-holidays.personal-events-mode .personal-event-row .holiday-countdown-cell{
+ padding-right:8px!important;
+}
+#page-holidays.personal-events-mode .personal-event-menu-popover{
+ right:0!important;
+ left:auto!important;
+ top:calc(100% + 6px)!important;
+}
+@media(max-width:700px){
+ #page-holidays.personal-events-mode .personal-event-row{
+  padding-right:58px!important;
+ }
+ #page-holidays.personal-events-mode .personal-event-row .holiday-countdown-cell{
+  padding-right:0!important;
+ }
+}
+/* Larger, more comfortable Add/Edit event form. */
+#page-holidays .personal-event-modal-card{
+ width:min(100%,760px)!important;
+ max-height:min(90dvh,820px)!important;
+ padding:32px!important;
+}
+#page-holidays .personal-event-modal-card .form-grid{gap:19px!important}
+#page-holidays .personal-event-modal-card .field input{
+ min-height:52px!important;
+ padding:14px 15px!important;
+ font-size:14px!important;
+}
+#page-holidays .personal-event-modal-card .field textarea{
+ min-height:140px!important;
+ padding:14px 15px!important;
+ font-size:14px!important;
+}
+#page-holidays .personal-event-modal-card .field label{font-size:13px!important}
+#page-holidays .personal-event-modal-card .form-actions{margin-top:25px!important}
+#page-holidays .personal-event-modal-card .form-actions .btn{
+ min-height:46px!important;padding:0 20px!important;font-size:13px!important;
+}
+/* Savely confirmation dialog instead of the browser's default alert box. */
+.personal-event-delete-modal{
+ position:fixed!important;inset:0!important;z-index:40050!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ padding:20px!important;background:rgba(15,23,42,.58)!important;
+ backdrop-filter:blur(5px)!important;
+}
+.personal-event-delete-modal[hidden]{display:none!important}
+.personal-event-delete-card{
+ width:min(100%,480px)!important;padding:30px!important;
+ border:1px solid var(--line,#e2e8f0)!important;border-radius:20px!important;
+ background:var(--card,#fff)!important;color:var(--text,#172033)!important;
+ box-shadow:0 28px 90px rgba(0,0,0,.28)!important;text-align:center!important;
+}
+.personal-event-delete-icon{
+ width:48px;height:48px;margin:0 auto 14px;display:grid;place-items:center;
+ border-radius:50%;background:#fff1f1;color:#d33b45;font-size:25px;font-weight:900;
+}
+.personal-event-delete-card h3{margin:0 0 9px;font-size:20px;font-weight:900}
+.personal-event-delete-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
+.personal-event-delete-card p strong{color:var(--text);overflow-wrap:anywhere}
+.personal-event-delete-actions{display:flex;justify-content:center;gap:10px;margin-top:24px}
+.personal-event-delete-actions .btn{min-height:44px;padding:0 20px;font-size:13px}
+.personal-event-delete-actions .btn-primary{background:#dc454f!important;border-color:#dc454f!important;color:#fff!important}
+body.personal-event-delete-open{overflow:hidden!important}
+/* The Personal Events hero stays Savely green, not the pale holiday variant. */
+#page-holidays.personal-events-mode .holiday-hero{
+ background:
+  radial-gradient(circle at 91% 4%,#ffffff26 0 105px,transparent 106px),
+  linear-gradient(112deg,#07845f 0%,#0b9a70 55%,#22b487 100%)!important;
+ border:1px solid #07845f!important;
+ box-shadow:0 12px 28px #087a5526!important;
+}
+#page-holidays.personal-events-mode .holiday-eyebrow{
+ background:#ffffff25!important;color:#eafff5!important;
+}
+#page-holidays.personal-events-mode .holiday-next-name{color:#fff!important}
+#page-holidays.personal-events-mode .holiday-next-meta{color:#e0fff1!important}
+#page-holidays.personal-events-mode .holiday-countdown-wrap{
+ padding:0!important;border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;backdrop-filter:none!important;
+}
+#page-holidays.personal-events-mode .holiday-countdown-title{color:#e6fff4!important}
+#page-holidays.personal-events-mode .holiday-countdown>div{
+ background:#ffffffeb!important;border:1px solid #ffffffa8!important;
+ box-shadow:0 3px 10px #005b3b14!important;
+}
+#page-holidays.personal-events-mode .holiday-countdown strong{color:#07845f!important}
+#page-holidays.personal-events-mode .holiday-countdown span{color:#527566!important}
+@media(max-width:560px){
+ #page-holidays .personal-event-modal-card{padding:22px!important}
+ .personal-event-delete-card{padding:24px!important}
+}
+</style>
+<script id="savely-personal-event-delete-escape-v1">
+document.addEventListener('keydown',function(event){
+ if(event.key==='Escape'){
+  const modal=document.getElementById('personalEventDeleteModal');
+  if(modal&&!modal.hidden)closePersonalEventDelete();
+ }
+});
+</script>
 
 </body>
 </html>
