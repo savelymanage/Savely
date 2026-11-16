@@ -5338,22 +5338,60 @@ function salaryHistoryRecords(year=salaryCalendarCursor.getFullYear()){
  if(!settings||!(Number(settings.monthlySalary)>0)||!settings.salaryUpdatedAt)return [];
  return [{year:Number(selectedYear),settings}];
 }
+function salaryCutoffHistoryEntries(year,settings){
+ const entries=[];const monthly=Math.max(0,Number(settings?.monthlySalary)||0);
+ const schedule=String(settings?.salaryPayDay||'custom');
+ if(!monthly||!settings?.salaryUpdatedAt||schedule==='custom')return entries;
+ for(let month=0;month<12;month++){
+  for(const entry of getSalaryPaydayEntries(schedule,Number(year),month)){
+   const saved=(data.salaryCutoffRecords||{})[entry.date]||null;
+   const gross=saved&&Number.isFinite(Number(saved.grossAmount))?Math.max(0,Number(saved.grossAmount)):monthly/2;
+   const deductions=Array.isArray(saved?.deductions)?saved.deductions:[];
+   const deductionTotal=deductions.reduce((sum,item)=>sum+Math.max(0,Number(item.amount)||0),0);
+   entries.push({
+    ...entry,gross,deductionTotal,net:Math.max(0,gross-deductionTotal),
+    saved:!!saved,cutoffLabel:entry.index===0?'1st cutoff':'2nd cutoff'
+   });
+  }
+ }
+ return entries.sort((a,b)=>a.date.localeCompare(b.date)||a.index-b.index);
+}
 function renderSalaryHistory(){
  const root=document.getElementById('salaryHistoryList');if(!root)return;
  const selectedYear=salaryCalendarCursor.getFullYear();
  const records=salaryHistoryRecords(selectedYear);
  if(!records.length){
-  root.innerHTML=`<div class="empty">No monthly salary record saved for ${selectedYear} yet. Add a salary for ${selectedYear} to create its history.</div>`;
+  const cutoffOnly=Object.keys(data.salaryCutoffRecords||{}).filter(iso=>Number(String(iso).slice(0,4))===selectedYear);
+  root.innerHTML=`<div class="empty">No monthly salary record saved for ${selectedYear} yet. Add a salary for ${selectedYear} to create its history.${cutoffOnly.length?` ${cutoffOnly.length} saved cutoff record(s) exist for this year, but no salary schedule is available to build the full monthly history.`:''}</div>`;
   return;
  }
  root.innerHTML=records.map(({year,settings})=>{
   const schedule=String(settings.salaryPayDay||'custom');
   const payday=({'15-30':'15th & end of month','5-20':'5th & 20th','10-25':'10th & 25th','custom':'Varies / not fixed'})[schedule]||schedule;
   const updated=new Date(settings.salaryUpdatedAt).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
-  return `<article class="salary-history-row"><div class="salary-history-year"><strong>${year}</strong><span>${esc(payday)} · Updated ${esc(updated)}</span></div><strong class="salary-history-amount">${peso(settings.monthlySalary)}<small>/ month</small></strong><details class="salary-history-menu"><summary aria-label="Actions for ${year}">⋮</summary><div><button type="button" onclick="editSalaryHistoryYear(${year})">Edit</button><button type="button" class="danger" onclick="deleteSalaryHistoryYear(${year})">Delete</button></div></details></article>`;
+  const monthly=Math.max(0,Number(settings.monthlySalary)||0);
+  const salaryRow=`<article class="salary-history-row salary-history-year-summary"><div class="salary-history-year"><strong>${year} salary</strong><span>${esc(payday)} · Updated ${esc(updated)}</span></div><strong class="salary-history-amount">${peso(monthly)}<small>/ month</small></strong><details class="salary-history-menu"><summary aria-label="Actions for ${year}">⋮</summary><div><button type="button" onclick="editSalaryHistoryYear(${year})">Edit</button><button type="button" class="danger" onclick="deleteSalaryHistoryYear(${year})">Delete</button></div></details></article>`;
+  const cutoffs=salaryCutoffHistoryEntries(year,settings);
+  const months=Array.from({length:12},(_,monthIndex)=>{
+   const monthEntries=cutoffs.filter(item=>{
+    const scheduled=String(item.scheduledDate||item.date||'');
+    return Number(scheduled.slice(0,4))===year&&Number(scheduled.slice(5,7))===monthIndex+1;
+   });
+   const monthName=new Date(year,monthIndex,1).toLocaleDateString('en-PH',{month:'long',year:'numeric'});
+   const monthGross=monthEntries.reduce((sum,item)=>sum+Number(item.gross||0),0);
+   const monthDeductions=monthEntries.reduce((sum,item)=>sum+Number(item.deductionTotal||0),0);
+   const monthNet=monthEntries.reduce((sum,item)=>sum+Number(item.net||0),0);
+   const cutoffMarkup=monthEntries.length?monthEntries.map(item=>{
+    const date=new Date(...item.date.split('-').map((v,i)=>i===1?Number(v)-1:Number(v)));
+    const dateLabel=date.toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
+    const moved=item.scheduledDate!==item.date?`<small class="salary-cutoff-moved">Moved from ${new Date(...item.scheduledDate.split('-').map((v,i)=>i===1?Number(v)-1:Number(v))).toLocaleDateString('en-PH',{month:'short',day:'numeric'})}</small>`:'';
+    return `<article class="salary-history-row salary-cutoff-history-row"><div class="salary-history-year"><strong>${esc(item.cutoffLabel)} · ${esc(dateLabel)}</strong><span>${item.saved?'Saved cutoff details':'Scheduled cutoff'}${moved?' · Adjusted payday':''}</span>${moved}</div><div class="salary-cutoff-history-values"><span>Gross <strong>${peso(item.gross)}</strong></span><span>Deductions <strong>${peso(item.deductionTotal)}</strong></span><span>Net <strong>${peso(item.net)}</strong></span></div><button type="button" class="btn btn-light salary-cutoff-history-edit" onclick="openSalaryCutoffEditor('${item.date}')">Edit</button></article>`;
+   }).join(''):`<div class="salary-month-no-cutoffs">${schedule==='custom'?'No fixed cutoff dates for this month.':'No cutoff entries generated for this month.'}</div>`;
+   return `<section class="salary-history-month"><header><div><strong>${monthName}</strong><span>${monthEntries.length} cutoff${monthEntries.length===1?'':'s'} · ${peso(monthly)} monthly salary</span></div><div class="salary-history-month-totals"><span>Gross <b>${peso(monthGross)}</b></span><span>Deductions <b>${peso(monthDeductions)}</b></span><span>Net <b>${peso(monthNet)}</b></span></div></header><div class="salary-history-month-cutoffs">${cutoffMarkup}</div></section>`;
+  }).join('');
+  return salaryRow+`<div class="salary-history-months" aria-label="${year} monthly salary records">${months}</div>`;
  }).join('');
 }
-
 function toggleSalaryHistoryView(){
  salaryCalendarDisplayMode=salaryCalendarDisplayMode==='history'?'calendar':'history';
  const isHistory=salaryCalendarDisplayMode==='history';
@@ -16974,6 +17012,82 @@ html body #page-salary .salary-next-payday-parts{margin:0!important}
   }
   html body #page-salary .salary-next-payday-heading{justify-content:flex-start!important;text-align:left!important}
 }
+</style>
+
+
+<style id="savely-salary-remaining-label-hard-fix-v1">
+/* Hard reset the Remaining salary badge: fixed usable width and centered text. */
+html body #page-salary .salary-annual-remaining-stat > .stat-top{
+  display:flex!important;
+  flex:0 0 auto!important;
+  align-self:flex-start!important;
+  align-items:center!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+  position:relative!important;
+  inset: auto!important;
+  left:0!important;
+  right:auto!important;
+  transform:translate(0,0)!important;
+  width:194px!important;
+  min-width:194px!important;
+  max-width:calc(100% - 2px)!important;
+  height:32px!important;
+  min-height:32px!important;
+  margin:0 0 12px 0!important;
+  padding:0 14px!important;
+  border-radius:999px!important;
+  overflow:hidden!important;
+  text-align:center!important;
+  text-indent:0!important;
+  white-space:nowrap!important;
+  text-overflow:clip!important;
+  direction:ltr!important;
+  line-height:1!important;
+  letter-spacing:.2px!important;
+}
+html body #page-salary .salary-annual-remaining-stat > .stat-top::before,
+html body #page-salary .salary-annual-remaining-stat > .stat-top::after{
+  content:none!important;
+  display:none!important;
+}
+@media(max-width:520px){
+  html body #page-salary .salary-annual-remaining-stat > .stat-top{
+    width:min(194px,100%)!important;
+    min-width:0!important;
+    max-width:100%!important;
+    padding-inline:12px!important;
+  }
+}
+</style>
+
+
+<style id="savely-salary-history-cutoff-entries-v1">
+#page-salary .salary-cutoff-history-list{display:grid;gap:8px;margin:10px 0 18px 18px;padding-left:14px;border-left:2px solid var(--line)}
+#page-salary .salary-cutoff-history-row{display:grid;grid-template-columns:minmax(150px,1fr) minmax(260px,auto) auto;align-items:center;gap:14px;padding:12px 14px;background:var(--surface,#f8fafc);border:1px solid var(--line);border-radius:12px}
+#page-salary .salary-cutoff-history-values{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:flex-end;font-size:11px;color:var(--muted)}
+#page-salary .salary-cutoff-history-values span{white-space:nowrap}#page-salary .salary-cutoff-history-values strong{display:block;color:var(--text);font-size:12px;margin-top:2px}
+#page-salary .salary-cutoff-history-edit{min-height:32px;padding:0 12px;font-size:11px}
+#page-salary .salary-cutoff-moved{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+#page-salary .salary-cutoff-history-empty{margin:10px 0 18px 18px}
+@media(max-width:760px){#page-salary .salary-cutoff-history-list{margin-left:4px;padding-left:8px}#page-salary .salary-cutoff-history-row{grid-template-columns:minmax(0,1fr) auto;gap:8px}#page-salary .salary-cutoff-history-values{grid-column:1/-1;justify-content:flex-start}#page-salary .salary-cutoff-history-edit{grid-column:2;grid-row:1}}
+</style>
+
+<style id="savely-salary-history-monthly-records-v2">
+#page-salary .salary-history-year-summary{margin-bottom:14px}
+#page-salary .salary-history-months{display:grid;gap:12px}
+#page-salary .salary-history-month{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--panel, #fff)}
+#page-salary .salary-history-month>header{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+#page-salary .salary-history-month>header>div:first-child{display:grid;gap:4px}
+#page-salary .salary-history-month>header>div:first-child strong{font-size:14px}
+#page-salary .salary-history-month>header>div:first-child span{font-size:11px;color:var(--muted)}
+#page-salary .salary-history-month-totals{display:flex;gap:14px;flex-wrap:wrap}
+#page-salary .salary-history-month-totals span{font-size:10px;color:var(--muted)}
+#page-salary .salary-history-month-totals b{display:block;color:var(--text);font-size:12px;margin-top:2px}
+#page-salary .salary-history-month-cutoffs{display:grid;gap:7px;margin-top:10px}
+#page-salary .salary-history-month-cutoffs .salary-cutoff-history-row{margin:0}
+#page-salary .salary-month-no-cutoffs{padding:10px 12px;border:1px dashed var(--line);border-radius:10px;color:var(--muted);font-size:11px}
+@media(max-width:760px){#page-salary .salary-history-month{padding:11px}#page-salary .salary-history-month-totals{gap:9px}}
 </style>
 
 </body>
