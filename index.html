@@ -3743,6 +3743,38 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
 @media(max-width:600px){#page-holidays .personal-event-card{padding:13px}#page-holidays .personal-event-card-top{flex-direction:column}#page-holidays .personal-event-actions{align-self:flex-end}}
 </style>
 
+
+<style id="savely-days-calendar-calculator-css">
+#savelyFloatingCalculator .savely-calc-modes{display:flex;gap:7px;margin:0 0 12px}
+#savelyFloatingCalculator .savely-calc-modes button{
+ flex:1;min-height:36px;border:1px solid #e2eae6;border-radius:9px;
+ background:#f7faf8;color:#718078;font-size:12px;font-weight:800;cursor:pointer;
+}
+#savelyFloatingCalculator .savely-calc-modes button.active{
+ background:#168765;color:#fff;border-color:#168765;box-shadow:0 3px 10px rgba(22,135,101,.16);
+}
+#savelyFloatingCalculator .savely-days-tool{display:block;padding:3px 1px 1px}
+#savelyFloatingCalculator .savely-days-tool[hidden]{display:none!important}
+#savelyFloatingCalculator .savely-days-intro{font-size:11px;line-height:1.5;color:#748279;margin:0 0 14px}
+#savelyFloatingCalculator .savely-days-tool label{display:block;font-size:11px;font-weight:800;color:#52645a;margin-bottom:7px}
+#savelyFloatingCalculator .savely-days-tool input{
+ width:100%;min-height:45px;padding:9px 11px;border:1px solid #dfe9e3;border-radius:10px;
+ background:#fff;color:#20342a;font:inherit;font-size:13px;box-sizing:border-box;
+}
+#savelyFloatingCalculator .savely-days-result{
+ margin-top:13px;padding:16px 13px;border-radius:12px;
+ background:linear-gradient(135deg,#087f5b,#20ad80);color:#fff;text-align:center;
+ display:flex;flex-direction:column;gap:5px;min-height:88px;justify-content:center;
+}
+#savelyFloatingCalculator .savely-days-result strong{font-size:30px;line-height:1.1;font-weight:850;font-variant-numeric:tabular-nums}
+#savelyFloatingCalculator .savely-days-result span{font-size:11px;font-weight:700;opacity:.94}
+#savelyFloatingCalculator .savely-days-today{margin-top:10px;color:#89958e;font-size:10px;text-align:center}
+#savelyFloatingCalculator.is-days-mode .savely-calc-screen,
+#savelyFloatingCalculator.is-days-mode .savely-calc-keys,
+#savelyFloatingCalculator.is-days-mode .savely-calc-foot{display:none!important}
+#savelyFloatingCalculator.is-days-mode .savely-days-tool{display:block}
+</style>
+
 </head>
 <body>
 
@@ -3819,6 +3851,7 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
     <button data-page="debt" aria-label="Debt" title="Debt"><span class="ico">▦</span><span class="nav-text">Debt</span></button>
     <button data-page="budget" aria-label="Expenses" title="Expenses"><span class="ico">↘</span><span class="nav-text">Expenses</span></button>
     <button data-page="holidays" aria-label="Calendars" title="Calendars"><span class="ico">▦</span><span class="nav-text">Calendars</span></button>
+    <button data-page="billing" aria-label="Billing" title="Billing"><span class="ico">▧</span><span class="nav-text">Billing</span></button>
 
     <button data-page="goals" aria-label="Savings goals" title="Savings goals"><span class="ico">◎</span><span class="nav-text">Savings goals</span></button>
     <button data-page="interest" aria-label="Interest Calculator" title="Interest Calculator"><span class="ico">％</span><span class="nav-text">Interest Calculator</span></button>
@@ -4261,6 +4294,140 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
     </section>
 
     <div class="holiday-pending-note">Eid’l Fitr and Eid’l Adha dates are announced separately after official dates are determined. Local or regional special days may also be declared separately.</div>
+  </section>
+
+
+  <section class="page" id="page-billing" aria-label="Billing">
+    <div class="billing-page-heading">
+      <div>
+        <div class="billing-kicker">HOUSEHOLD UTILITIES</div>
+        <h2>Billing</h2>
+        <p>Estimate your household utility bills before the actual statement arrives.</p>
+      </div>
+      <span class="billing-phase-pill">Water first · Electricity coming later</span>
+    </div>
+
+    <div class="billing-service-tabs" role="tablist" aria-label="Billing services">
+      <button type="button" class="billing-service-tab active" aria-selected="true">
+        <span class="billing-tab-icon">💧</span><span><strong>Water</strong><small>Estimate bill</small></span>
+      </button>
+      <button type="button" class="billing-service-tab" disabled aria-disabled="true" title="Electricity billing will be added later">
+        <span class="billing-tab-icon">⚡</span><span><strong>Electricity</strong><small>Coming later</small></span>
+      </button>
+    </div>
+
+    <div class="billing-water-layout">
+      <section class="panel billing-input-panel">
+        <div class="panel-head">
+          <div>
+            <h2>Water bill estimator</h2>
+            <div class="panel-sub">Enter your meter readings to estimate your Manila Water residential bill.</div>
+          </div>
+          <span class="billing-provider-tag">MANILA WATER</span>
+        </div>
+
+        <form id="waterEstimateForm">
+          <div class="billing-form-grid">
+            <div class="field">
+              <label for="waterProvider">Water provider</label>
+              <select id="waterProvider" disabled>
+                <option selected>Manila Water</option>
+              </select>
+              <small class="billing-help">Provider selection will expand when other providers are added.</small>
+            </div>
+            <div class="field">
+              <label for="waterMeterSize">Water meter size</label>
+              <select id="waterMeterSize">
+                <option value="1.5" selected>1/2&quot; · 15 mm</option>
+                <option value="2">3/4&quot; · 20 mm</option>
+                <option value="3">1&quot; · 25 mm</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="waterPreviousReading">Previous meter reading (m³)</label>
+              <input id="waterPreviousReading" type="number" min="0" step="0.001" inputmode="decimal" placeholder="e.g. 125.000" required>
+            </div>
+            <div class="field">
+              <label for="waterCurrentReading">Current meter reading (m³)</label>
+              <input id="waterCurrentReading" type="number" min="0" step="0.001" inputmode="decimal" placeholder="e.g. 139.000" required>
+            </div>
+            <div class="field">
+              <label for="waterPeriodStart">Billing period start</label>
+              <input id="waterPeriodStart" type="date">
+            </div>
+            <div class="field">
+              <label for="waterPeriodEnd">Billing period end</label>
+              <input id="waterPeriodEnd" type="date">
+            </div>
+          </div>
+
+          <div class="billing-consumption-preview">
+            <div><span>Estimated consumption</span><small>Current reading minus previous reading</small></div>
+            <strong id="waterConsumptionPreview">— m³</strong>
+          </div>
+
+          <details class="billing-rate-settings">
+            <summary>Rate settings <span>Adjust when Manila Water updates its rates</span></summary>
+            <div class="billing-rate-grid">
+              <div class="field">
+                <label for="waterFcdaRate">FCDA (₱ per m³)</label>
+                <input id="waterFcdaRate" type="number" min="0" step="0.001" value="0.46">
+              </div>
+              <div class="field">
+                <label for="waterEnvironmentalRate">Environmental charge (%)</label>
+                <input id="waterEnvironmentalRate" type="number" min="0" max="100" step="0.1" value="30">
+              </div>
+              <div class="field">
+                <label for="waterSewerageRate">Sewerage charge (%)</label>
+                <input id="waterSewerageRate" type="number" min="0" max="100" step="0.1" value="0">
+              </div>
+              <div class="field">
+                <label for="waterTaxRate">Government tax estimate (%)</label>
+                <input id="waterTaxRate" type="number" min="0" max="100" step="0.1" value="2">
+              </div>
+            </div>
+            <p class="billing-rate-note">Defaults use the Manila Water residential standard tariff for 2026 and the reported Q4 2026 FCDA. Rates can change; verify your current statement and official notices.</p>
+          </details>
+
+          <div class="billing-form-actions">
+            <button class="btn btn-secondary" type="reset" id="waterEstimateReset">Clear</button>
+            <button class="btn btn-primary" type="submit">Calculate estimate</button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="billing-result-column">
+        <section class="billing-estimate-hero" id="waterEstimateResult" aria-live="polite">
+          <div class="billing-result-eyebrow">ESTIMATED WATER BILL</div>
+          <div class="billing-result-amount" id="waterEstimatedTotal">₱0.00</div>
+          <div class="billing-result-caption" id="waterEstimateCaption">Enter your meter readings to calculate your estimated bill.</div>
+          <div class="billing-result-consumption"><span>Consumption</span><strong id="waterResultConsumption">— m³</strong></div>
+        </section>
+
+        <section class="panel billing-breakdown-panel">
+          <div class="panel-head"><div><h2>Bill breakdown</h2><div class="panel-sub">Estimated charges based on your inputs.</div></div></div>
+          <div class="billing-breakdown-list">
+            <div><span>Basic water charge</span><strong id="waterBreakdownBasic">₱0.00</strong></div>
+            <div><span>Foreign currency adjustment (FCDA)</span><strong id="waterBreakdownFcda">₱0.00</strong></div>
+            <div><span>Environmental charge</span><strong id="waterBreakdownEnvironmental">₱0.00</strong></div>
+            <div><span>Sewerage charge</span><strong id="waterBreakdownSewerage">₱0.00</strong></div>
+            <div><span>Maintenance service charge</span><strong id="waterBreakdownMaintenance">₱0.00</strong></div>
+            <div><span>Government tax estimate</span><strong id="waterBreakdownTax">₱0.00</strong></div>
+            <div class="billing-breakdown-total"><span>Estimated total</span><strong id="waterBreakdownTotal">₱0.00</strong></div>
+          </div>
+          <p class="billing-disclaimer">Estimate only. The actual bill may include local franchise tax, adjustments, arrears, penalties, or other charges not included here.</p>
+        </section>
+      </aside>
+    </div>
+
+    <section class="billing-source-note">
+      <strong>Rate basis and references</strong>
+      <p>Residential basic water rates and environmental/sewerage charges follow Manila Water's 2026 standard tariff. FCDA is set to ₱0.46/m³ as reported for Q4 2026. The government tax field is an editable estimate.</p>
+      <div>
+        <a href="https://mediafiles.manilawater.com/public/pages/671b900c531a3dbe8f0608a2/bill-info/2026-Standard-Rates-Tariff-Table-Original-Signed.pdf" target="_blank" rel="noopener noreferrer">Manila Water 2026 official tariff table ↗</a>
+        <a href="https://www.gmanetwork.com/news/money/economy/1002012/manila-water-maynilad-customers-face-higher-tariffs-in-q4-2026/story/" target="_blank" rel="noopener noreferrer">Q4 2026 FCDA report ↗</a>
+      </div>
+    </section>
   </section>
 
 </main>
@@ -8760,7 +8927,7 @@ function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavin
   savelyLiveLocationMap.invalidateSize();
  }
   if(window.__savelyLiveLocationWatchId===null||window.__savelyLiveLocationWatchId===undefined)startSavelyLiveLocation();
-},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LIVE MONITOR','Live Monitor'],'metro-snapshot':['PUBLIC CAMERA IMAGES','Metro Manila Snapshot'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['','']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','metro-snapshot':'View the latest available public camera snapshots across Metro Manila.','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:''};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
+},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LIVE MONITOR','Live Monitor'],'metro-snapshot':['PUBLIC CAMERA IMAGES','Metro Manila Snapshot'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['',''],billing:['HOUSEHOLD UTILITIES','Billing']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','metro-snapshot':'View the latest available public camera snapshots across Metro Manila.','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:'',billing:'Estimate your household water bill using your meter readings and current rate assumptions.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
 document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
 function openModal(kind,goalToEdit=null){const form=document.getElementById('modalForm'),title=document.getElementById('modalTitle'),desc=document.getElementById('modalDesc');let accountOptions=data.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');let field=(label,name,type='text',value='',extra='')=>`<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let select=(label,name,opts)=>`<div class="field"><label>${label}</label><select name="${name}">${opts}</select></div>`;let fullfield=(label,name,type='text',value='',extra='')=>`<div class="field full"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let body='';
 if(kind==='transaction'){title.textContent='Add transaction';desc.textContent='Record a deposit, withdrawal, interest credit, or expense.';body=`<div class="form-grid">${fullfield('Description','description','text','','required maxlength="100"')}${select('Transaction type','type','<option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option><option value="expense">Expense</option><option value="interest">Interest credit</option>')}${select('Account','accountId',accountOptions)}${field('Amount (₱)','amount','number','','required min=".01" step=".01"')}${field('Date','date','date',todayISO(),'required')}${field('Category','category','text','General','maxlength="60"')}</div>`}
@@ -16084,6 +16251,51 @@ body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number:
   font-size:10px!important;letter-spacing:.1px;
 }
 </style>
+
+
+<script id="savely-water-billing-estimator-v1">
+(function(){
+  const $ = id => document.getElementById(id);
+  const form = $('waterEstimateForm');
+  if(!form) return;
+  const previous = $('waterPreviousReading');
+  const current = $('waterCurrentReading');
+  const preview = $('waterConsumptionPreview');
+  const peso = value => '₱' + (Number.isFinite(value) ? value : 0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});
+  function consumption(){
+    const a=Number(previous.value), b=Number(current.value);
+    if(previous.value.trim()===''||current.value.trim()===''||!Number.isFinite(a)||!Number.isFinite(b))return null;
+    return Math.round((b-a)*1000)/1000;
+  }
+  function updatePreview(){
+    const m3=consumption();
+    preview.textContent=m3===null?'— m³':m3<0?'Check readings':m3.toLocaleString('en-PH',{maximumFractionDigits:3})+' m³';
+  }
+  previous.addEventListener('input',updatePreview);
+  current.addEventListener('input',updatePreview);
+  function residentialWaterCharge(m3){
+    if(m3<=10)return 210.43;
+    let remaining=m3-10,total=210.43;
+    const tiers=[{limit:10,rate:25.64},{limit:20,rate:48.62},{limit:20,rate:64.09},{limit:20,rate:74.83},{limit:20,rate:78.46},{limit:50,rate:81.95},{limit:50,rate:85.49},{limit:Infinity,rate:88.99}];
+    for(const tier of tiers){if(remaining<=0)break;const used=Math.min(remaining,tier.limit);total+=used*tier.rate;remaining-=used;}
+    return total;
+  }
+  function setMoney(id,value){$(id).textContent=peso(value);}
+  function calculate(e){
+    if(e)e.preventDefault();
+    const m3=consumption();
+    if(m3===null){alert('Please enter both previous and current meter readings.');return;}
+    if(m3<0){alert('Current meter reading cannot be lower than the previous reading. Please check your entries.');return;}
+    const fcdaRate=Number($('waterFcdaRate').value),ecRate=Number($('waterEnvironmentalRate').value),sewerRate=Number($('waterSewerageRate').value),taxRate=Number($('waterTaxRate').value),maintenance=Number($('waterMeterSize').value);
+    if([fcdaRate,ecRate,sewerRate,taxRate,maintenance].some(v=>!Number.isFinite(v)||v<0)||ecRate>100||sewerRate>100||taxRate>100){alert('Please check the rate settings. Enter valid non-negative rates.');return;}
+    const basic=residentialWaterCharge(m3),fcda=m3*fcdaRate,environmental=basic*(ecRate/100),sewerage=basic*(sewerRate/100),subtotal=basic+fcda+environmental+sewerage+maintenance,tax=subtotal*(taxRate/100),total=subtotal+tax;
+    setMoney('waterBreakdownBasic',basic);setMoney('waterBreakdownFcda',fcda);setMoney('waterBreakdownEnvironmental',environmental);setMoney('waterBreakdownSewerage',sewerage);setMoney('waterBreakdownMaintenance',maintenance);setMoney('waterBreakdownTax',tax);setMoney('waterBreakdownTotal',total);
+    $('waterEstimatedTotal').textContent=peso(total);$('waterResultConsumption').textContent=m3.toLocaleString('en-PH',{maximumFractionDigits:3})+' m³';$('waterEstimateCaption').textContent='Based on '+m3.toLocaleString('en-PH',{maximumFractionDigits:3})+' m³ residential consumption.';$('waterEstimateResult').dataset.calculated='true';
+  }
+  form.addEventListener('submit',calculate);
+  form.addEventListener('reset',()=>setTimeout(()=>{updatePreview();['waterBreakdownBasic','waterBreakdownFcda','waterBreakdownEnvironmental','waterBreakdownSewerage','waterBreakdownMaintenance','waterBreakdownTax','waterBreakdownTotal'].forEach(id=>setMoney(id,0));$('waterEstimatedTotal').textContent='₱0.00';$('waterResultConsumption').textContent='— m³';$('waterEstimateCaption').textContent='Enter your meter readings to calculate your estimated bill.';delete $('waterEstimateResult').dataset.calculated;},0));
+})();
+</script>
 
 </body>
 </html>
