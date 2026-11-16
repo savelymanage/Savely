@@ -4012,7 +4012,6 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
   <section class="page" id="page-salary">
     <div class="cards salary-summary-cards" style="grid-template-columns:minmax(0,1fr);margin-bottom:18px">
       <div class="stat salary-annual-remaining-stat salary-remaining-blue">
-        <div class="stat-top">Remaining salary this year</div>
         <div class="stat-value" id="salaryAnnualRemainingDisplay">₱0.00 <span class="annual-projection-inline">/ <span id="salaryAnnualDisplay">₱0.00</span></span></div>
         <div class="stat-foot" id="salaryAnnualRemainingFoot">Estimated future cutoffs through December</div>
         <div class="salary-next-payday" id="salaryNextPaydayCountdown" aria-live="off">
@@ -5359,7 +5358,9 @@ function salaryCutoffHistoryEntries(year,settings){
 }
 function renderSalaryHistory(){
  const root=document.getElementById('salaryHistoryList');if(!root)return;
- const selectedYear=salaryCalendarCursor.getFullYear();
+ const currentYear=new Date().getFullYear();
+ const selectedYear=Math.max(currentYear,salaryCalendarCursor.getFullYear());
+ if(selectedYear!==salaryCalendarCursor.getFullYear())salaryCalendarCursor=new Date(currentYear,new Date().getMonth(),1);
  const records=salaryHistoryRecords(selectedYear);
  if(!records.length){
   const cutoffOnly=Object.keys(data.salaryCutoffRecords||{}).filter(iso=>Number(String(iso).slice(0,4))===selectedYear);
@@ -5381,9 +5382,10 @@ function renderSalaryHistory(){
   const remainingMonthCount=Math.max(0,12-firstRemainingMonth);
   const months=Array.from({length:remainingMonthCount},(_,offset)=>{
    const monthIndex=firstRemainingMonth+offset;
+   const deletedCutoffs=Array.isArray(data.salaryCutoffHistoryDeleted)?data.salaryCutoffHistoryDeleted:[];
    const monthEntries=cutoffs.filter(item=>{
     const scheduled=String(item.scheduledDate||item.date||'');
-    return Number(scheduled.slice(0,4))===year&&Number(scheduled.slice(5,7))===monthIndex+1;
+    return Number(scheduled.slice(0,4))===year&&Number(scheduled.slice(5,7))===monthIndex+1&&!deletedCutoffs.includes(item.date);
    });
    const monthName=new Date(year,monthIndex,1).toLocaleDateString('en-PH',{month:'long',year:'numeric'});
    const monthGross=monthEntries.reduce((sum,item)=>sum+Number(item.gross||0),0);
@@ -5393,13 +5395,25 @@ function renderSalaryHistory(){
     const date=new Date(...item.date.split('-').map((v,i)=>i===1?Number(v)-1:Number(v)));
     const dateLabel=date.toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
     const moved=item.scheduledDate!==item.date?`<small class="salary-cutoff-moved">Moved from ${new Date(...item.scheduledDate.split('-').map((v,i)=>i===1?Number(v)-1:Number(v))).toLocaleDateString('en-PH',{month:'short',day:'numeric'})}</small>`:'';
-    return `<article class="salary-history-row salary-cutoff-history-row"><div class="salary-history-year"><strong>${esc(item.cutoffLabel)} · ${esc(dateLabel)}</strong><span>${item.saved?'Saved cutoff details':'Scheduled cutoff'}${moved?' · Adjusted payday':''}</span>${moved}</div><div class="salary-cutoff-history-values"><span>Gross <strong>${peso(item.gross)}</strong></span><span>Deductions <strong>${peso(item.deductionTotal)}</strong></span><span>Net <strong>${peso(item.net)}</strong></span></div><button type="button" class="btn btn-light salary-cutoff-history-edit" onclick="openSalaryCutoffEditor('${item.date}')">Edit</button></article>`;
+    return `<article class="salary-history-row salary-cutoff-history-row"><div class="salary-history-year"><strong>${esc(item.cutoffLabel)} · ${esc(dateLabel)}</strong><span>${item.saved?'Saved cutoff details':'Scheduled cutoff'}${moved?' · Adjusted payday':''}</span>${moved}</div><div class="salary-cutoff-history-values"><span>Gross <strong>${peso(item.gross)}</strong></span><span>Deductions <strong>${peso(item.deductionTotal)}</strong></span><span>Net <strong>${peso(item.net)}</strong></span></div><details class="salary-cutoff-actions"><summary aria-label="Cutoff actions">⋮</summary><div class="salary-cutoff-actions-menu"><button type="button" onclick="openSalaryCutoffEditor('${item.date}');this.closest('details').open=false">Edit</button><button type="button" class="danger" onclick="deleteSalaryCutoffHistory('${item.date}')">Delete</button></div></details></article>`;
    }).join(''):`<div class="salary-month-no-cutoffs">${schedule==='custom'?'No fixed cutoff dates for this month.':'No cutoff entries generated for this month.'}</div>`;
-   return `<section class="salary-history-month"><header><div><strong>${monthName}</strong><span>${monthEntries.length} cutoff${monthEntries.length===1?'':'s'} · ${peso(monthly)} monthly salary</span></div><div class="salary-history-month-totals"><span>Gross <b>${peso(monthGross)}</b></span><span>Deductions <b>${peso(monthDeductions)}</b></span><span>Net <b>${peso(monthNet)}</b></span></div></header><div class="salary-history-month-cutoffs">${cutoffMarkup}</div></section>`;
+   const isCurrentMonth=year===today.getFullYear()&&monthIndex===today.getMonth();
+   return `<section class="salary-history-month${isCurrentMonth?' current-month':''}"><header><div><strong>${monthName}</strong><span>${monthEntries.length} cutoff${monthEntries.length===1?'':'s'} · ${peso(monthly)} monthly salary</span></div><div class="salary-history-month-totals"><span>Gross <b>${peso(monthGross)}</b></span><span>Deductions <b>${peso(monthDeductions)}</b></span><span>Net <b>${peso(monthNet)}</b></span></div></header><div class="salary-history-month-cutoffs">${cutoffMarkup}</div></section>`;
   }).join('');
   const monthContent=months || `<div class="empty">No remaining months in ${year}. Completed months are hidden from this history view.</div>`;
   return `<div class="salary-history-months" aria-label="${year} remaining monthly salary records">${monthContent}</div>`;
  }).join('');
+}
+function deleteSalaryCutoffHistory(iso){
+ const [y,m,d]=String(iso||'').split('-').map(Number);
+ if(!y||!m||!d)return;
+ if(!confirm('Delete this cutoff from Monthly History? The scheduled payday will remain on the Salary Calendar.'))return;
+ if(!Array.isArray(data.salaryCutoffHistoryDeleted))data.salaryCutoffHistoryDeleted=[];
+ if(!data.salaryCutoffHistoryDeleted.includes(iso))data.salaryCutoffHistoryDeleted.push(iso);
+ if(data.salaryCutoffRecords&&Object.prototype.hasOwnProperty.call(data.salaryCutoffRecords,iso))delete data.salaryCutoffRecords[iso];
+ save();
+ if(typeof renderSalaryHistory==='function')renderSalaryHistory();
+ toast('Cutoff removed from Monthly History.');
 }
 function toggleSalaryHistoryView(){
  salaryCalendarDisplayMode=salaryCalendarDisplayMode==='history'?'calendar':'history';
@@ -18015,24 +18029,41 @@ html body #topbarAddDebtButton {
  function localISO(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
  function findNextPayday(){
   if(typeof salarySettingsForYear!=='function'||typeof getSalaryPaydayEntries!=='function')return null;
-  const now=new Date(),today=localISO(now),year=now.getFullYear();
-  const settings=salarySettingsForYear(year),amount=Math.max(0,Number(settings.monthlySalary)||0);
-  const schedule=normalize(settings.salaryPayDay);
-  if(!amount||!settings.salaryUpdatedAt||schedule==='custom')return {custom:true};
-  for(let offset=0;offset<15;offset++){
-   const monthDate=new Date(year,now.getMonth()+offset,1);
-   const y=monthDate.getFullYear(),m=monthDate.getMonth();
-   const entries=getSalaryPaydayEntries(schedule,y,m).sort((a,b)=>a.date.localeCompare(b.date));
-   for(const entry of entries){
-    if(entry.date<today)continue;
-    return {date:entry.date,entry,amount};
+  const now=new Date(),today=localISO(now),currentYear=now.getFullYear();
+  // Resolve the schedule from the year the cutoff belongs to. This automatically
+  // switches to the newly saved year's salary schedule on January 1.
+  for(let year=currentYear;year<=currentYear+10;year++){
+   const settings=salarySettingsForYear(year);
+   const amount=Math.max(0,Number(settings.monthlySalary)||0);
+   if(!amount||!settings.salaryUpdatedAt)continue;
+   const schedule=normalize(settings.salaryPayDay);
+   if(schedule==='custom')continue;
+   const firstMonth=year===currentYear?now.getMonth():0;
+   for(let month=firstMonth;month<12;month++){
+    const entries=getSalaryPaydayEntries(schedule,year,month).sort((a,b)=>a.date.localeCompare(b.date));
+    for(const entry of entries){
+     if(entry.date<today)continue;
+     return {date:entry.date,entry,amount,year,settings};
+    }
    }
   }
   return null;
  }
+ let lastLocalDate=localISO(new Date());
  function update(){
   const dateEl=$('salaryNextPaydayDate'),timerEl=$('salaryNextPaydayTimer');
   if(!dateEl||!timerEl)return;
+  const currentLocalDate=localISO(new Date());
+  // At month/year rollover, refresh the Salary calendar and History so completed
+  // months/years disappear automatically without requiring a manual page reload.
+  if(currentLocalDate!==lastLocalDate){
+   const previousDate=lastLocalDate;
+   lastLocalDate=currentLocalDate;
+   if(previousDate.slice(0,7)!==currentLocalDate.slice(0,7)){
+    if(typeof renderSalaryPage==='function')renderSalaryPage();
+    if(typeof salaryCalendarDisplayMode!=='undefined'&&salaryCalendarDisplayMode==='history'&&typeof renderSalaryHistory==='function')renderSalaryHistory();
+   }
+  }
   const setParts=(days,hours,minutes,seconds)=>{
    const values={salaryPaydayDays:days,salaryPaydayHours:hours,salaryPaydayMinutes:minutes,salaryPaydaySeconds:seconds};
    Object.entries(values).forEach(([id,value])=>{const el=$(id);if(el)el.textContent=String(value).padStart(2,'0');});
@@ -18436,4 +18467,26 @@ html body #page-salary .salary-next-payday-parts{margin:0!important}
 <style id="savely-salary-history-summary-row-removed-v1">
 /* Keep history focused on monthly cutoff entries; omit the redundant yearly summary/delete card. */
 #page-salary .salary-history-year-summary{display:none!important}
+</style>
+
+
+<style id="savely-salary-cutoff-actions-current-month-v1">
+#page-salary .salary-cutoff-history-row{grid-template-columns:minmax(150px,1fr) minmax(220px,auto) 36px}
+#page-salary .salary-cutoff-actions{position:relative;justify-self:end;align-self:center}
+#page-salary .salary-cutoff-actions>summary{list-style:none;display:grid;place-items:center;width:34px;height:34px;border:1px solid var(--line);border-radius:9px;background:var(--panel,#fff);color:var(--muted);font-size:21px;line-height:1;cursor:pointer;user-select:none}
+#page-salary .salary-cutoff-actions>summary::-webkit-details-marker{display:none}
+#page-salary .salary-cutoff-actions[open]>summary{background:#eff6ff;border-color:#93c5fd;color:#2563eb}
+#page-salary .salary-cutoff-actions-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:30;display:grid;min-width:116px;padding:5px;border:1px solid var(--line);border-radius:10px;background:var(--panel,#fff);box-shadow:0 10px 28px rgba(15,23,42,.16)}
+#page-salary .salary-cutoff-actions-menu button{border:0;background:transparent;text-align:left;padding:9px 10px;border-radius:7px;font-size:12px;font-weight:650;color:var(--text);cursor:pointer}
+#page-salary .salary-cutoff-actions-menu button:hover{background:#eff6ff;color:#1d4ed8}
+#page-salary .salary-cutoff-actions-menu button.danger{color:#dc2626}
+#page-salary .salary-cutoff-actions-menu button.danger:hover{background:#fef2f2;color:#b91c1c}
+#page-salary .salary-history-month.current-month{border:1.5px solid #60a5fa;background:linear-gradient(145deg,#eff6ff 0%,#f8fbff 55%,#fff 100%);box-shadow:0 0 0 2px rgba(59,130,246,.08)}
+#page-salary .salary-history-month.current-month>header>div:first-child strong{color:#2563eb}
+#page-salary .salary-history-month.current-month>header>div:first-child span{color:#3b82f6}
+@media(max-width:760px){
+ #page-salary .salary-cutoff-history-row{grid-template-columns:minmax(0,1fr) 36px;gap:8px}
+ #page-salary .salary-cutoff-actions{grid-column:2;grid-row:1}
+ #page-salary .salary-cutoff-history-values{grid-column:1/-1;grid-row:2;justify-content:flex-start}
+}
 </style>
