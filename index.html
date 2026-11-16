@@ -16635,6 +16635,136 @@ html body #page-salary #salaryNextPaydayCountdown{z-index:1!important}
 }
 </style>
 
+
+
+<style id="savely-salary-hero-pill-calendar-toolbar-fix-v2">
+/* Keep the Remaining salary label compact and fully inside the blue hero. */
+html body #page-salary .salary-annual-remaining-stat > .stat-top{
+  display:inline-flex!important;
+  flex:0 1 auto!important;
+  width:fit-content!important;
+  max-width:calc(100% - 2px)!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  padding:6px 11px!important;
+  margin-left:0!important;
+  margin-right:auto!important;
+}
+html body #page-salary .salary-annual-remaining-stat > .stat-value,
+html body #page-salary .salary-annual-remaining-stat > .stat-foot{
+  max-width:100%!important;
+  overflow-wrap:anywhere!important;
+}
+
+/* Align year + History + month navigation in one toolbar row. */
+html body #page-salary .salary-calendar-panel{position:relative!important}
+html body #page-salary .salary-calendar-year-tabs-row{
+  min-height:44px!important;
+  padding-right:160px!important;
+  box-sizing:border-box!important;
+  align-items:center!important;
+}
+html body #page-salary #salaryCalendarYearTabs{
+  margin-left:auto!important;
+  margin-right:0!important;
+}
+html body #page-salary .salary-calendar-head{
+  position:absolute!important;
+  top:18px!important;
+  right:20px!important;
+  width:auto!important;
+  margin:0!important;
+  padding:0!important;
+  z-index:24!important;
+  display:block!important;
+}
+html body #page-salary .salary-calendar-controls{
+  width:auto!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+}
+html body #page-salary .salary-calendar-nav{
+  display:flex!important;
+  flex:0 0 auto!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:6px!important;
+  width:auto!important;
+  margin:0!important;
+}
+html body #page-salary .salary-calendar-nav .btn{
+  min-width:38px!important;
+  min-height:38px!important;
+  height:38px!important;
+  padding:0 10px!important;
+}
+
+/* Use a true centered chevron, matching the compact Year control reference. */
+html body #page-salary .salary-year-picker-trigger{
+  display:inline-flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  width:78px!important;
+  min-width:78px!important;
+  height:42px!important;
+  min-height:42px!important;
+  padding:0 10px!important;
+  line-height:1!important;
+}
+html body #page-salary .salary-year-picker-trigger > span:first-child{
+  display:inline-block!important;
+  width:auto!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  line-height:1!important;
+  transform:none!important;
+}
+html body #page-salary .salary-year-picker-trigger .salary-year-picker-caret{
+  display:inline-block!important;
+  flex:0 0 8px!important;
+  width:8px!important;
+  min-width:8px!important;
+  height:8px!important;
+  margin:-3px 0 0!important;
+  padding:0!important;
+  overflow:visible!important;
+  border:0!important;
+  border-right:1.8px solid currentColor!important;
+  border-bottom:1.8px solid currentColor!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--muted,#64748b)!important;
+  font-size:0!important;
+  line-height:0!important;
+  transform:rotate(45deg)!important;
+}
+@media(max-width:760px){
+  html body #page-salary .salary-calendar-year-tabs-row{
+    min-height:0!important;
+    padding-right:0!important;
+    flex-wrap:wrap!important;
+  }
+  html body #page-salary .salary-calendar-head{
+    position:static!important;
+    width:100%!important;
+    margin:0 0 12px!important;
+    display:flex!important;
+    justify-content:flex-end!important;
+  }
+  html body #page-salary .salary-calendar-controls{width:auto!important}
+  html body #page-salary .salary-calendar-nav{width:auto!important;justify-content:flex-end!important}
+  html body #page-salary .salary-annual-remaining-stat > .stat-top{max-width:100%!important;white-space:normal!important}
+}
+</style>
+
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
