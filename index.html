@@ -4206,6 +4206,7 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
           <option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option>
         </select>
       </label>
+      <button type="button" class="btn btn-primary savely-personal-events-launch" onclick="openPersonalEventsModal()">♧ Personal Events</button>
     </div>
     <section class="panel holiday-list-panel">
       <div class="panel-head holiday-list-head">
@@ -4224,22 +4225,6 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
       </div>
     </section>
 
-    <section class="panel savely-personal-events-panel" aria-labelledby="personalEventsTitle">
-      <div class="panel-head" style="align-items:center;gap:12px;flex-wrap:wrap">
-        <div><h2 id="personalEventsTitle">Personal Events</h2><div class="panel-sub">Add birthdays, trips, appointments, deadlines, or any date you want to count down to.</div></div>
-        <button type="button" class="btn btn-primary" id="personalEventAddButton" onclick="openPersonalEventForm()">＋ Add event</button>
-      </div>
-      <form id="personalEventForm" class="personal-event-form" onsubmit="savePersonalEvent(event)" hidden>
-        <input type="hidden" id="personalEventId">
-        <div class="form-grid">
-          <div class="field"><label for="personalEventName">Event name</label><input id="personalEventName" maxlength="90" placeholder="e.g. Birthday, Concert, Vacation" required></div>
-          <div class="field"><label for="personalEventDate">Event date</label><input id="personalEventDate" type="date" required></div>
-          <div class="field full"><label for="personalEventDescription">Description (optional)</label><textarea id="personalEventDescription" rows="2" maxlength="300" placeholder="Add a short note about this event"></textarea></div>
-        </div>
-        <div class="form-actions" style="justify-content:flex-end"><button type="button" class="btn btn-light" onclick="closePersonalEventForm()">Cancel</button><button type="submit" class="btn btn-primary" id="personalEventSaveButton">Save event</button></div>
-      </form>
-      <div id="personalEventsList" class="personal-events-list" aria-live="polite"></div>
-    </section>
     <div class="holiday-pending-note">Eid’l Fitr and Eid’l Adha dates are announced separately after official dates are determined. Local or regional special days may also be declared separately.</div>
   </section>
 
@@ -14137,6 +14122,10 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
       <span class="savely-mobile-fab-label">Date & calendar</span>
       <span class="savely-mobile-fab-icon savely-mobile-fab-utility" aria-hidden="true">▦</span>
     </button>
+    <button type="button" class="savely-mobile-fab-item" id="savelyMobilePersonalEventsAction">
+      <span class="savely-mobile-fab-label">Personal Events</span>
+      <span class="savely-mobile-fab-icon savely-mobile-fab-utility" aria-hidden="true">♡</span>
+    </button>
     <button type="button" class="savely-mobile-fab-item" id="savelyMobileCalculatorAction">
       <span class="savely-mobile-fab-label">Calculator</span>
       <span class="savely-mobile-fab-icon savely-mobile-fab-secondary" aria-hidden="true">▤</span>
@@ -14247,6 +14236,7 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   const hideFiguresIcon=document.getElementById('savelyMobileHideFiguresIcon');
   const weatherButton=document.getElementById('savelyMobileWeatherAction');
   const dateButton=document.getElementById('savelyMobileDateAction');
+  const personalEventsButton=document.getElementById('savelyMobilePersonalEventsAction');
   const calcButton=document.getElementById('savelyMobileCalculatorAction');
 
   function activePage(){
@@ -14308,6 +14298,10 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   dateButton.addEventListener('click',()=>{
     close();
     document.getElementById('today')?.click();
+  });
+  personalEventsButton.addEventListener('click',()=>{
+    close();
+    if(typeof window.openPersonalEventsModal==='function')window.openPersonalEventsModal();
   });
   calcButton.addEventListener('click',()=>{
     close();
@@ -14490,6 +14484,69 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   };
  }
 })();
+</script>
+
+
+<div id="personalEventsModalBackdrop" class="personal-events-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="personalEventsTitle" onclick="if(event.target===this)closePersonalEventsModal()">
+ <section class="panel personal-events-modal" role="document">
+  <div class="panel-head" style="align-items:center;gap:12px;flex-wrap:wrap">
+   <div><h2 id="personalEventsTitle">Personal Events</h2><div class="panel-sub">Birthdays, trips, appointments, deadlines, and your own countdowns.</div></div>
+   <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <button type="button" class="btn btn-primary" id="personalEventAddButton" onclick="openPersonalEventForm()">＋ Add event</button>
+    <button type="button" class="btn btn-light" onclick="closePersonalEventsModal()" aria-label="Close personal events">✕</button>
+   </div>
+  </div>
+  <form id="personalEventForm" class="personal-event-form" onsubmit="savePersonalEvent(event)" hidden>
+   <input type="hidden" id="personalEventId">
+   <div class="form-grid">
+    <div class="field"><label for="personalEventName">Event name</label><input id="personalEventName" maxlength="90" placeholder="e.g. Birthday, Concert, Vacation" required></div>
+    <div class="field"><label for="personalEventDate">Event date</label><input id="personalEventDate" type="date" required></div>
+    <div class="field full"><label for="personalEventDescription">Description (optional)</label><textarea id="personalEventDescription" rows="2" maxlength="300" placeholder="Add a short note about this event"></textarea></div>
+   </div>
+   <div class="form-actions" style="justify-content:flex-end"><button type="button" class="btn btn-light" onclick="closePersonalEventForm()">Cancel</button><button type="submit" class="btn btn-primary" id="personalEventSaveButton">Save event</button></div>
+  </form>
+  <div id="personalEventsList" class="personal-events-list" aria-live="polite"></div>
+ </section>
+</div>
+
+
+<style id="savely-personal-events-modal-v2">
+#page-holidays .savely-personal-events-launch{white-space:nowrap;flex:0 0 auto}
+.personal-events-modal-backdrop{position:fixed;inset:0;z-index:26000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(15,23,42,.56);backdrop-filter:blur(4px)}
+.personal-events-modal-backdrop.is-open{display:flex}
+.personal-events-modal{width:min(760px,100%);max-height:min(88vh,900px);overflow:auto;padding:clamp(16px,2vw,24px);border-radius:18px;box-shadow:0 24px 80px rgba(15,23,42,.28)}
+.personal-events-modal .personal-event-form{margin:16px 0;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--soft,#f8fafc)}
+.personal-events-modal .personal-event-form[hidden]{display:none!important}
+.personal-events-modal .personal-event-form .field{display:flex;flex-direction:column;gap:7px;min-width:0}
+.personal-events-modal .personal-event-form label{font-size:12px;font-weight:750;color:var(--muted)}
+.personal-events-modal .personal-event-form input,.personal-events-modal .personal-event-form textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;padding:11px 12px;background:var(--surface,#fff);color:var(--text);font:inherit}
+.personal-events-modal .personal-events-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px;margin-top:15px}
+.personal-events-modal .personal-event-card{position:relative;min-width:0;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--card,#fff);box-shadow:0 5px 18px rgba(20,40,60,.04)}
+.personal-events-modal .personal-event-card.is-past{opacity:.72}
+.personal-events-modal .personal-event-card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.personal-events-modal .personal-event-card h3{font-size:15px;margin:0;overflow-wrap:anywhere}
+.personal-events-modal .personal-event-date{font-size:11px;color:var(--muted);margin-top:5px}
+.personal-events-modal .personal-event-description{font-size:12px;color:var(--muted);line-height:1.5;margin-top:9px;overflow-wrap:anywhere}
+.personal-events-modal .personal-event-countdown{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
+.personal-events-modal .personal-event-countdown span{padding:8px 10px;border-radius:9px;background:#e9f8f0;color:#087a55;font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
+.personal-events-modal .personal-event-actions{display:flex;gap:6px;flex-shrink:0}
+.personal-events-modal .personal-event-actions button{padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:var(--surface,#fff);color:var(--text);font-size:11px;font-weight:700}
+.personal-events-modal .personal-event-actions .delete{color:#c2414b}
+.personal-events-modal .personal-events-empty{grid-column:1/-1;padding:22px 14px;text-align:center;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:13px}
+.personal-events-modal .personal-event-section-label{grid-column:1/-1;font-size:11px;text-transform:uppercase;letter-spacing:.7px;font-weight:850;color:var(--muted);margin:5px 0 -3px}
+@media(max-width:600px){.personal-events-modal-backdrop{padding:10px}.personal-events-modal{max-height:92vh;padding:14px}.personal-events-modal .personal-event-card{padding:13px}.personal-events-modal .personal-event-card-top{flex-direction:column}.personal-events-modal .personal-event-actions{align-self:flex-end}}
+</style>
+<script id="savely-personal-events-modal-controller-v2">
+function openPersonalEventsModal(){
+ const modal=document.getElementById('personalEventsModalBackdrop');if(!modal)return;
+ modal.classList.add('is-open');modal.setAttribute('aria-hidden','false');
+ if(typeof renderPersonalEvents==='function')renderPersonalEvents();
+}
+function closePersonalEventsModal(){
+ const modal=document.getElementById('personalEventsModalBackdrop');if(!modal)return;
+ modal.classList.remove('is-open');modal.setAttribute('aria-hidden','true');
+}
+document.addEventListener('keydown',event=>{if(event.key==='Escape')closePersonalEventsModal();});
 </script>
 
 </body>
