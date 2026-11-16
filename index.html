@@ -4212,11 +4212,14 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
       <div class="panel-head" style="align-items:center;gap:12px;flex-wrap:wrap">
         <div><h2 id="personalEventsTitle">Personal Events</h2><div class="panel-sub">Birthdays, trips, appointments, deadlines, and your own countdowns.</div></div>
       </div>
+      <div class="personal-event-view-tabs" role="tablist" aria-label="Personal event views">
+        <button type="button" class="active" id="personalUpcomingTab" role="tab" aria-selected="true" onclick="setPersonalEventView('upcoming')">Upcoming</button>
+        <button type="button" id="personalHistoryTab" role="tab" aria-selected="false" onclick="setPersonalEventView('history')">History</button>
+      </div>
       <form id="personalEventForm" class="personal-event-form personal-event-modal-overlay" onsubmit="savePersonalEvent(event)" hidden>
         <div class="personal-event-modal-card" role="dialog" aria-modal="true" aria-labelledby="personalEventModalTitle">
           <div class="personal-event-modal-head">
             <div><h3 id="personalEventModalTitle">Add personal event</h3><p>Set an event and Savely will track its countdown.</p></div>
-            <button type="button" class="personal-event-modal-close" aria-label="Close" onclick="closePersonalEventForm()">×</button>
           </div>
           <input type="hidden" id="personalEventId">
           <div class="form-grid">
@@ -8494,12 +8497,29 @@ function confirmDeletePersonalEvent(){
  data.personalEvents=data.personalEvents.filter(x=>x.id!==id);
  save();closePersonalEventDelete();renderPersonalEvents();toast('Personal event deleted.');
 }
+let savelyPersonalEventView='upcoming';
+function setPersonalEventView(view){
+ savelyPersonalEventView=view==='history'?'history':'upcoming';
+ const upcomingTab=document.getElementById('personalUpcomingTab');
+ const historyTab=document.getElementById('personalHistoryTab');
+ if(upcomingTab){upcomingTab.classList.toggle('active',savelyPersonalEventView==='upcoming');upcomingTab.setAttribute('aria-selected',String(savelyPersonalEventView==='upcoming'));}
+ if(historyTab){historyTab.classList.toggle('active',savelyPersonalEventView==='history');historyTab.setAttribute('aria-selected',String(savelyPersonalEventView==='history'));}
+ renderPersonalEvents();
+}
 function renderPersonalEvents(){
  const root=document.getElementById('personalEventsList');if(!root)return;
  const today=personalEventTodayISO(),events=Array.isArray(data.personalEvents)?data.personalEvents.slice():[];
  events.sort((a,b)=>a.date.localeCompare(b.date)||a.name.localeCompare(b.name));
- if(!events.length){root.innerHTML='<div class="personal-events-empty">No personal events yet. Add your first event to start a countdown.</div>';return;}
- const upcoming=events.filter(x=>x.date>=today),past=events.filter(x=>x.date<today);
+ const upcoming=events.filter(x=>x.date>=today);
+ const past=events.filter(x=>x.date<today).sort((a,b)=>b.date.localeCompare(a.date)||a.name.localeCompare(b.name));
+ const visible=savelyPersonalEventView==='history'?past:upcoming;
+ if(!visible.length){
+  root.innerHTML=savelyPersonalEventView==='history'
+   ?'<div class="personal-events-empty">No completed personal events yet. Past events will appear here.</div>'
+   :'<div class="personal-events-empty">No upcoming personal events. Add an event to start a countdown.</div>';
+  if(typeof savelyCalendarContentTab!=='undefined'&&savelyCalendarContentTab==='personal')updatePersonalEventHero();
+  return;
+ }
  const firstUpcomingId=upcoming.length?upcoming[0].id:null;
  const row=item=>{
   const isPast=item.date<today,isToday=item.date===today;
@@ -8508,8 +8528,8 @@ function renderPersonalEvents(){
   const weekday=date.toLocaleDateString('en-PH',{timeZone:'Asia/Manila',weekday:'long'});
   const monthDay=date.toLocaleDateString('en-PH',{timeZone:'Asia/Manila',month:'long',day:'numeric'});
   const dateLabel=date.toLocaleDateString('en-PH',{timeZone:'Asia/Manila',weekday:'long',month:'long',day:'numeric',year:'numeric'});
-  const countdown=isPast?'Event date passed':isToday?'Event day!':'Loading countdown…';
-  return `<article class="holiday-row personal-event-row${isPast?' is-past':''}${isNextUpcoming?' next':''}" data-personal-event="${esc(item.id)}">
+  const countdown=isPast?'Calculating time since event…':isToday?'Event day!':'Loading countdown…';
+  return `<article class="holiday-row personal-event-row${isPast?' is-past history-event':''}${isNextUpcoming?' next':''}" data-personal-event="${esc(item.id)}">
    <div class="holiday-date">${esc(weekday)}, ${esc(monthDay)}<small>${esc(dateLabel)}</small></div>
    <div class="holiday-name-cell">
     <div class="holiday-name">${esc(item.name)}</div>
@@ -8533,13 +8553,13 @@ function renderPersonalEvents(){
    if(!groups.has(key))groups.set(key,[]);
    groups.get(key).push(item);
   });
-  return [...groups.entries()].map(([key,items])=>{
+  return [...groups.entries()].map(([key,groupItems])=>{
    const date=personalEventDate(key+'-01');
    const title=date.toLocaleDateString('en-PH',{timeZone:'Asia/Manila',month:'long',year:'numeric'});
-   return `<section class="holiday-month-group personal-event-month-group"><h3>${esc(title)}<span>${items.length} ${items.length===1?'event':'events'}</span></h3><div class="holiday-list">${items.map(row).join('')}</div></section>`;
+   return `<section class="holiday-month-group personal-event-month-group"><h3>${esc(title)}<span>${groupItems.length} ${groupItems.length===1?'event':'events'}</span></h3><div class="holiday-list">${groupItems.map(row).join('')}</div></section>`;
   }).join('');
  };
- root.innerHTML=(upcoming.length?'<div class="personal-event-section-label">Upcoming events</div>'+monthGroups(upcoming):'')+(past.length?'<div class="personal-event-section-label">Past events</div>'+monthGroups(past):'');
+ root.innerHTML=`<div class="personal-event-section-label">${savelyPersonalEventView==='history'?'Completed events':'Upcoming events'}</div>`+monthGroups(visible);
  updatePersonalEventCountdowns();
  if(typeof savelyCalendarContentTab!=='undefined'&&savelyCalendarContentTab==='personal')updatePersonalEventHero();
 }
@@ -8547,14 +8567,18 @@ function updatePersonalEventCountdowns(){
  const today=personalEventTodayISO();
  document.querySelectorAll('[data-personal-event-countdown]').forEach(root=>{
   const id=root.dataset.personalEventCountdown,item=(data.personalEvents||[]).find(x=>x.id===id);if(!item)return;
-  if(item.date<today){root.innerHTML='<span>Event date passed</span>';return;}
+  if(item.date<today){
+   const elapsed=Math.max(0,Date.now()-personalEventDate(item.date).getTime()),seconds=Math.floor(elapsed/1000);
+   const days=Math.floor(seconds/86400),hours=Math.floor(seconds%86400/3600),minutes=Math.floor(seconds%3600/60),secs=seconds%60;
+   root.innerHTML=`<span>${days} ${days===1?'day':'days'} ago</span><span>${String(hours).padStart(2,'0')} hrs</span><span>${String(minutes).padStart(2,'0')} min</span><span>${String(secs).padStart(2,'0')} sec</span>`;
+   return;
+  }
   if(item.date===today){root.innerHTML='<span>🎉 Event day!</span>';return;}
   const ms=Math.max(0,personalEventRemaining(item.date)),seconds=Math.floor(ms/1000);
   const days=Math.floor(seconds/86400),hours=Math.floor(seconds%86400/3600),minutes=Math.floor(seconds%3600/60),secs=seconds%60;
   root.innerHTML=`<span>${days} days</span><span>${String(hours).padStart(2,'0')} hrs</span><span>${String(minutes).padStart(2,'0')} min</span><span>${String(secs).padStart(2,'0')} sec</span>`;
  });
 }
-
 let savelyCalendarContentTab='holidays';
 function setCalendarContentTab(tab){
  savelyCalendarContentTab=tab==='personal'?'personal':'holidays';
@@ -11108,6 +11132,10 @@ body.dark-theme .app > .sidebar .nav button.active {
     <button type="button" class="savely-calc-close" id="savelyCalculatorClose" aria-label="Close calculator" title="Close">×</button>
   </header>
   <div class="savely-calc-body">
+    <div class="savely-calc-modes" role="tablist" aria-label="Calculator tools">
+      <button type="button" class="active" data-calc-mode="basic" role="tab" aria-selected="true">Basic</button>
+      <button type="button" data-calc-mode="days" role="tab" aria-selected="false">Days Calendar</button>
+    </div>
     <div class="savely-calc-screen" aria-live="polite">
       <div class="savely-calc-expression" id="savelyCalcExpression"></div>
       <div class="savely-calc-result" id="savelyCalcDisplay">0</div>
@@ -11138,10 +11166,50 @@ body.dark-theme .app > .sidebar .nav button.active {
       <button type="button" class="savely-calc-key" data-calc="decimal">.</button>
       <button type="button" class="savely-calc-key is-equals" data-calc="equals">=</button>
     </div>
-    <div class="savely-calc-foot">Basic calculator · Drag the green header to move</div>
+    <div class="savely-calc-foot">Basic calculator · Drag the header to move</div>
+    <div class="savely-days-tool" id="savelyDaysTool" hidden>
+      <div class="savely-days-intro">Calculate how many days have passed or how many days are left until a date.</div>
+      <label for="savelyDaysTarget">Choose a date</label>
+      <input type="date" id="savelyDaysTarget">
+      <div class="savely-days-result" id="savelyDaysResult" aria-live="polite">
+        <strong>—</strong><span>Select a date to calculate</span>
+      </div>
+      <div class="savely-days-today" id="savelyDaysToday"></div>
+    </div>
   </div>
 </section>
 
+
+<style id="savely-days-calendar-calculator-css">
+#savelyFloatingCalculator .savely-calc-modes{display:flex;gap:7px;margin:0 0 12px}
+#savelyFloatingCalculator .savely-calc-modes button{
+ flex:1;min-height:36px;border:1px solid #e2eae6;border-radius:9px;
+ background:#f7faf8;color:#718078;font-size:12px;font-weight:800;cursor:pointer;
+}
+#savelyFloatingCalculator .savely-calc-modes button.active{
+ background:#168765;color:#fff;border-color:#168765;box-shadow:0 3px 10px rgba(22,135,101,.16);
+}
+#savelyFloatingCalculator .savely-days-tool{display:block;padding:3px 1px 1px}
+#savelyFloatingCalculator .savely-days-tool[hidden]{display:none!important}
+#savelyFloatingCalculator .savely-days-intro{font-size:11px;line-height:1.5;color:#748279;margin:0 0 14px}
+#savelyFloatingCalculator .savely-days-tool label{display:block;font-size:11px;font-weight:800;color:#52645a;margin-bottom:7px}
+#savelyFloatingCalculator .savely-days-tool input{
+ width:100%;min-height:45px;padding:9px 11px;border:1px solid #dfe9e3;border-radius:10px;
+ background:#fff;color:#20342a;font:inherit;font-size:13px;box-sizing:border-box;
+}
+#savelyFloatingCalculator .savely-days-result{
+ margin-top:13px;padding:16px 13px;border-radius:12px;
+ background:linear-gradient(135deg,#087f5b,#20ad80);color:#fff;text-align:center;
+ display:flex;flex-direction:column;gap:5px;min-height:88px;justify-content:center;
+}
+#savelyFloatingCalculator .savely-days-result strong{font-size:30px;line-height:1.1;font-weight:850;font-variant-numeric:tabular-nums}
+#savelyFloatingCalculator .savely-days-result span{font-size:11px;font-weight:700;opacity:.94}
+#savelyFloatingCalculator .savely-days-today{margin-top:10px;color:#89958e;font-size:10px;text-align:center}
+#savelyFloatingCalculator.is-days-mode .savely-calc-screen,
+#savelyFloatingCalculator.is-days-mode .savely-calc-keys,
+#savelyFloatingCalculator.is-days-mode .savely-calc-foot{display:none!important}
+#savelyFloatingCalculator.is-days-mode .savely-days-tool{display:block}
+</style>
 <script id="savely-floating-calculator-js">
 (function(){
   'use strict';
@@ -11151,14 +11219,58 @@ body.dark-theme .app > .sidebar .nav button.active {
   const closeButton = document.getElementById('savelyCalculatorClose');
   const display = document.getElementById('savelyCalcDisplay');
   const expressionDisplay = document.getElementById('savelyCalcExpression');
+  const daysInput = document.getElementById('savelyDaysTarget');
+  const daysTool = document.getElementById('savelyDaysTool');
+  const daysResult = document.getElementById('savelyDaysResult');
+  const daysTodayLabel = document.getElementById('savelyDaysToday');
   if(!fab || !panel || !dragHandle || !display || !expressionDisplay) return;
 
-  const eligiblePages = new Set(['page-financial-list','page-salary','page-debt']);
+  const eligiblePages = new Set(['page-financial-list','page-salary','page-debt','page-holidays']);
   const positionKey = 'savely_floating_calculator_position_v3';
   let expression = '';
   let justEvaluated = false;
   let currentEntry = '0';
   let dragState = null;
+
+  function manilaTodayISO(){
+    return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Manila',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  }
+  function formatCalendarDate(iso){
+    if(!iso)return '';
+    const parts=iso.split('-').map(Number);
+    if(parts.length!==3||parts.some(n=>!Number.isFinite(n)))return '';
+    return new Date(Date.UTC(parts[0],parts[1]-1,parts[2],12)).toLocaleDateString('en-PH',{timeZone:'UTC',year:'numeric',month:'long',day:'numeric'});
+  }
+  function updateDaysCalendar(){
+    if(!daysInput||!daysResult)return;
+    const today=manilaTodayISO();
+    if(daysTodayLabel)daysTodayLabel.textContent='Today · '+formatCalendarDate(today)+' (Philippine time)';
+    const target=daysInput.value;
+    if(!target){daysResult.innerHTML='<strong>—</strong><span>Select a date to calculate</span>';return;}
+    const parse=iso=>{const [y,m,d]=iso.split('-').map(Number);return Date.UTC(y,m-1,d);};
+    const difference=Math.round((parse(target)-parse(today))/86400000);
+    const amount=Math.abs(difference);
+    const unit=amount===1?'day':'days';
+    if(difference>0)daysResult.innerHTML=`<strong>${amount.toLocaleString('en-PH')} ${unit}</strong><span>remaining until ${formatCalendarDate(target)}</span>`;
+    else if(difference<0)daysResult.innerHTML=`<strong>${amount.toLocaleString('en-PH')} ${unit}</strong><span>have passed since ${formatCalendarDate(target)}</span>`;
+    else daysResult.innerHTML=`<strong>Today</strong><span>${formatCalendarDate(target)} · 0 days difference</span>`;
+  }
+  function setCalculatorMode(mode){
+    const days=mode==='days';
+    panel.classList.toggle('is-days-mode',days);
+    if(daysTool)daysTool.hidden=!days;
+    panel.querySelectorAll('[data-calc-mode]').forEach(button=>{
+      const active=button.dataset.calcMode===(days?'days':'basic');
+      button.classList.toggle('active',active);
+      button.setAttribute('aria-selected',String(active));
+    });
+    if(days){
+      if(daysInput&&!daysInput.value)daysInput.value=manilaTodayISO();
+      updateDaysCalendar();
+    }
+  }
+  panel.querySelectorAll('[data-calc-mode]').forEach(button=>button.addEventListener('click',()=>setCalculatorMode(button.dataset.calcMode)));
+  if(daysInput)daysInput.addEventListener('input',updateDaysCalendar);
 
   function activePageId(){
     const page = document.querySelector('.page.active');
@@ -11210,6 +11322,7 @@ body.dark-theme .app > .sidebar .nav button.active {
   function openPanel(){
     if(!eligiblePages.has(activePageId())) return;
     panel.classList.add('is-open');
+    if(panel.classList.contains('is-days-mode'))updateDaysCalendar();
     panel.setAttribute('aria-hidden','false');
     if(!panel.dataset.positionInitialized){
       restorePosition();
@@ -16851,3 +16964,50 @@ html body #topbarAddDebtButton {
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)update();});
 })();
 </script>
+
+
+<style id="savely-personal-event-menu-layer-fix-v1">
+/* Keep the active event row above its siblings so the three-dot menu is never hidden. */
+#page-holidays.personal-events-mode .personal-event-month-group,
+#page-holidays.personal-events-mode .holiday-list{
+  position:relative!important;
+  overflow:visible!important;
+}
+#page-holidays.personal-events-mode .personal-event-row{
+  position:relative!important;
+  z-index:0!important;
+  overflow:visible!important;
+}
+#page-holidays.personal-events-mode .personal-event-row:has(.personal-event-menu[open]){
+  z-index:1000!important;
+}
+#page-holidays.personal-events-mode .personal-event-menu{
+  position:relative!important;
+  z-index:1001!important;
+}
+#page-holidays.personal-events-mode .personal-event-menu[open]{
+  z-index:1002!important;
+}
+#page-holidays.personal-events-mode .personal-event-menu-popover{
+  z-index:1003!important;
+  isolation:isolate;
+}
+
+/* Personal Events: Upcoming / History views */
+#page-holidays .personal-event-view-tabs{display:flex;gap:8px;align-items:center;margin:12px 0 16px}
+#page-holidays .personal-event-view-tabs button{
+ min-height:36px;padding:0 16px;border:1px solid var(--line);border-radius:10px;
+ background:var(--card,#fff);color:var(--muted);font-size:12px;font-weight:800;cursor:pointer;
+ transition:background .15s ease,color .15s ease,border-color .15s ease,box-shadow .15s ease;
+}
+#page-holidays .personal-event-view-tabs button.active{
+ background:#128765;color:#fff;border-color:#128765;box-shadow:0 4px 12px #12876520;
+}
+#page-holidays .personal-event-row.history-event{background:#f3f4f6;border-color:#dfe3e8;opacity:.82}
+#page-holidays .personal-event-row.history-event .holiday-name,
+#page-holidays .personal-event-row.history-event .holiday-date{color:#687385}
+#page-holidays .personal-event-row.history-event .holiday-description{color:#8992a0}
+#page-holidays .personal-event-row.history-event .personal-event-type{background:#e5e7eb!important;color:#687385!important}
+#page-holidays .personal-event-row.history-event .holiday-countdown-cell span{background:#e5e7eb;color:#687385}
+#page-holidays .personal-event-row.history-event .personal-event-menu summary{color:#687385}
+</style>
