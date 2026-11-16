@@ -8224,9 +8224,23 @@ function updatePersonalEventHero(){
  const meta=document.getElementById('holidayNextMeta');
  const title=document.getElementById('holidayHeroCountdownTitle');
  const hero=document.getElementById('holidayHeroCountdown');
+ const stats=document.getElementById('holidayStats');
+ const today=personalEventTodayISO();
+ const allEvents=Array.isArray(data.personalEvents)?data.personalEvents.filter(item=>item&&item.date):[];
+ const upcomingEvents=allEvents.filter(item=>item.date>=today).sort((a,b)=>a.date.localeCompare(b.date));
+ const pastEvents=allEvents.filter(item=>item.date<today);
+ const nowDate=personalEventDate(today);
+ const thisMonth=allEvents.filter(item=>item.date.slice(0,7)===today.slice(0,7)).length;
+ const nextEvent=upcomingEvents[0]||null;
+ const daysToNext=nextEvent?Math.max(0,Math.ceil(personalEventRemaining(nextEvent.date)/86400000)):null;
+ if(stats)stats.innerHTML=
+  `<div class="holiday-stat"><span class="holiday-stat-icon">♡</span><div><strong>${upcomingEvents.length}</strong><small>Upcoming events</small></div></div>`+
+  `<div class="holiday-stat"><span class="holiday-stat-icon">▦</span><div><strong>${allEvents.length}</strong><small>Total personal events</small></div></div>`+
+  `<div class="holiday-stat"><span class="holiday-stat-icon">◷</span><div><strong>${thisMonth}</strong><small>This month</small></div></div>`+
+  `<div class="holiday-stat"><span class="holiday-stat-icon">⌛</span><div><strong>${daysToNext===null?'—':daysToNext+' days'}</strong><small>Until next event</small></div></div>`+
+  `<div class="holiday-stat"><span class="holiday-stat-icon">✓</span><div><strong>${pastEvents.length}</strong><small>Past events</small></div></div>`;
  if(eyebrow)eyebrow.textContent='NEXT PERSONAL EVENT';
  if(title)title.textContent='Time until your next personal event';
- const today=personalEventTodayISO();
  const next=(Array.isArray(data.personalEvents)?data.personalEvents:[])
   .filter(item=>item&&item.date>=today)
   .sort((a,b)=>a.date.localeCompare(b.date)||String(a.name||'').localeCompare(String(b.name||'')))[0]||null;
@@ -14954,6 +14968,75 @@ body:has(#page-holidays.active) .topbar{min-height:0!important;margin-bottom:12p
  #page-holidays .personal-event-row .holiday-countdown-cell{grid-column:2}
  #page-holidays .personal-event-row .holiday-countdown-cell{gap:5px}
  #page-holidays .personal-event-row .holiday-countdown-cell span{padding:7px 8px;font-size:10px}
+}
+</style>
+
+
+<style id="savely-personal-events-green-hero-five-stats-v1">
+/* Five compact summary containers, matching the Calendar holiday statistic cards. */
+#page-holidays.personal-events-mode .holiday-stat-grid{
+ display:grid!important;
+ grid-template-columns:repeat(5,minmax(0,1fr))!important;
+ gap:12px!important;
+ margin-bottom:17px!important;
+}
+#page-holidays.personal-events-mode .holiday-stat{
+ min-width:0!important;
+ background:var(--card,#fff)!important;
+ border:1px solid var(--line)!important;
+ border-radius:15px!important;
+ box-shadow:0 6px 18px #1c2b4207!important;
+}
+#page-holidays.personal-events-mode .holiday-stat-icon{
+ background:#e8f8f1!important;color:#0b8a61!important;
+}
+/* Match the rich green Savely balance-card treatment. */
+#page-holidays.personal-events-mode .holiday-hero{
+ background:
+  radial-gradient(circle at 91% 4%,#ffffff26 0 105px,transparent 106px),
+  linear-gradient(112deg,#07845f 0%,#0b9a70 55%,#22b487 100%)!important;
+ border:1px solid #07845f!important;
+ box-shadow:0 12px 28px #087a5526!important;
+}
+#page-holidays.personal-events-mode .holiday-eyebrow{
+ background:#ffffff25!important;color:#eafff5!important;
+}
+#page-holidays.personal-events-mode .holiday-next-name{
+ color:#fff!important;
+}
+#page-holidays.personal-events-mode .holiday-next-meta{
+ color:#e0fff1!important;
+}
+/* Remove the extra translucent white countdown container entirely. */
+#page-holidays.personal-events-mode .holiday-countdown-wrap{
+ padding:0!important;
+ border:0!important;
+ border-radius:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ backdrop-filter:none!important;
+}
+#page-holidays.personal-events-mode .holiday-countdown-title{
+ color:#e6fff4!important;
+ margin-bottom:10px!important;
+}
+#page-holidays.personal-events-mode .holiday-countdown>div{
+ background:#ffffffeb!important;
+ border:1px solid #ffffffa8!important;
+ box-shadow:0 3px 10px #005b3b14!important;
+}
+#page-holidays.personal-events-mode .holiday-countdown strong{
+ color:#07845f!important;
+}
+#page-holidays.personal-events-mode .holiday-countdown span{
+ color:#527566!important;
+}
+@media(max-width:1050px){
+ #page-holidays.personal-events-mode .holiday-stat-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:620px){
+ #page-holidays.personal-events-mode .holiday-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #page-holidays.personal-events-mode .holiday-hero{padding:18px!important}
 }
 </style>
 
