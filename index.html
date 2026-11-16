@@ -15578,6 +15578,168 @@ html body #page-holidays .holiday-countdown>div{
 }
 </style>
 
+
+<style id="savely-calendar-year-picker-3x3-v1">
+#page-holidays .holiday-year-label{position:relative!important}
+#page-holidays #holidayYearSelect{display:none!important}
+#page-holidays .savely-year-picker{position:relative;display:inline-flex;align-items:center}
+#page-holidays .savely-year-picker-trigger{
+  min-width:82px;min-height:40px;padding:0 12px;border:1px solid #dfe7ef;
+  border-radius:11px;background:#fff;color:#142b40;font:inherit;
+  font-size:12px;font-weight:800;display:inline-flex;align-items:center;
+  justify-content:space-between;gap:12px;cursor:pointer;
+  box-shadow:0 2px 6px rgba(20,40,70,.025)
+}
+#page-holidays .savely-year-picker-trigger:focus-visible,
+#page-holidays .savely-year-picker-grid button:focus-visible{
+  outline:3px solid rgba(12,151,111,.25);outline-offset:2px
+}
+#page-holidays .savely-year-picker-popover{
+  position:absolute;right:0;top:calc(100% + 8px);z-index:1000;
+  width:246px;padding:12px;border:1px solid #dfe8ef;border-radius:14px;
+  background:#fff;box-shadow:0 16px 38px rgba(20,40,60,.18)
+}
+#page-holidays .savely-year-picker-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px
+}
+#page-holidays .savely-year-picker-grid button{
+  min-height:38px;border:1px solid #e5edf2;border-radius:9px;
+  background:#f8fbfa;color:#234235;font:inherit;font-size:12px;
+  font-weight:750;cursor:pointer
+}
+#page-holidays .savely-year-picker-grid button:hover{
+  border-color:#0b9870;background:#e9f8f1;color:#087a55
+}
+#page-holidays .savely-year-picker-grid button[aria-current="true"]{
+  background:#078b64;border-color:#078b64;color:#fff
+}
+#page-holidays .savely-year-picker-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;margin-top:10px;padding-top:9px;border-top:1px solid #edf1f4
+}
+#page-holidays .savely-year-picker-footer button{
+  min-height:31px;padding:0 10px;border:1px solid #e1e9ef;
+  border-radius:8px;background:#fff;color:#167b5c;font:inherit;
+  font-size:11px;font-weight:750;cursor:pointer
+}
+#page-holidays .savely-year-picker-footer button:disabled{
+  opacity:.35;cursor:not-allowed
+}
+#page-holidays .savely-year-picker-page{
+  color:#718096;font-size:10px;font-weight:700
+}
+@media(max-width:560px){
+  #page-holidays .savely-year-picker-popover{width:222px}
+  #page-holidays .savely-year-picker-grid button{min-height:36px}
+}
+</style>
+<style id="savely-calendar-countdown-transparent-personal-v6">
+/* Personal-event timer digits sit directly on the green hero, not white tiles. */
+html body #page-holidays.personal-events-mode #holidayHeroCountdown,
+html body #page-holidays.personal-events-mode .holiday-countdown{
+  background:transparent!important;border:0!important;box-shadow:none!important;
+  padding:0!important;border-radius:0!important;
+}
+html body #page-holidays.personal-events-mode #holidayHeroCountdown > div,
+html body #page-holidays.personal-events-mode .holiday-countdown > div{
+  background:transparent!important;background-color:transparent!important;
+  border:0!important;outline:0!important;box-shadow:none!important;
+  border-radius:0!important;padding:0!important;min-height:0!important;
+}
+html body #page-holidays.personal-events-mode #holidayHeroCountdown strong,
+html body #page-holidays.personal-events-mode .holiday-countdown strong{
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+html body #page-holidays.personal-events-mode #holidayHeroCountdown span,
+html body #page-holidays.personal-events-mode .holiday-countdown span{
+  color:#e5fff4!important;-webkit-text-fill-color:#e5fff4!important;
+}
+</style>
+<style id="savely-overview-privacy-no-overlap-v1">
+/* Show exactly one layer: either the real amount or the masking asterisks. */
+body[data-savely-figures="hidden"] #page-dashboard .savely-private-number{
+  color:transparent!important;-webkit-text-fill-color:transparent!important;
+  text-shadow:none!important;position:relative!important;display:inline-block!important;
+}
+body[data-savely-figures="hidden"] #page-dashboard .savely-private-number::after{
+  content:"******"!important;display:block!important;position:absolute!important;
+  inset:0!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+  text-shadow:none!important;white-space:nowrap!important;pointer-events:none!important;
+}
+body[data-savely-figures="visible"] #page-dashboard .savely-private-number,
+body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number{
+  color:inherit!important;-webkit-text-fill-color:currentColor!important;
+  text-shadow:none!important;
+}
+body[data-savely-figures="visible"] #page-dashboard .savely-private-number::after,
+body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number::after{
+  content:none!important;display:none!important;
+}
+</style>
+<script id="savely-calendar-year-picker-3x3-script-v1">
+(function(){
+  function initSavelyYearPicker(){
+    const select=document.getElementById('holidayYearSelect');
+    if(!select || select.dataset.customPickerReady==='1') return;
+    select.dataset.customPickerReady='1';
+    const years=Array.from(select.options).map(o=>Number(o.value)).filter(Number.isFinite);
+    if(!years.length) return;
+    const label=select.closest('.holiday-year-label');
+    if(!label) return;
+    const root=document.createElement('span');
+    root.className='savely-year-picker';
+    const trigger=document.createElement('button');
+    trigger.type='button';trigger.className='savely-year-picker-trigger';
+    trigger.setAttribute('aria-haspopup','dialog');trigger.setAttribute('aria-expanded','false');
+    const triggerText=document.createElement('span');
+    const caret=document.createElement('span');caret.textContent='⌄';caret.setAttribute('aria-hidden','true');
+    trigger.append(triggerText,caret);
+    const pop=document.createElement('div');pop.className='savely-year-picker-popover';
+    pop.hidden=true;pop.setAttribute('role','dialog');pop.setAttribute('aria-label','Choose calendar year');
+    const grid=document.createElement('div');grid.className='savely-year-picker-grid';
+    const footer=document.createElement('div');footer.className='savely-year-picker-footer';
+    const prev=document.createElement('button');prev.type='button';prev.textContent='← Previous';
+    const page=document.createElement('span');page.className='savely-year-picker-page';
+    const next=document.createElement('button');next.type='button';next.textContent='Next →';
+    footer.append(prev,page,next);pop.append(grid,footer);root.append(trigger,pop);
+    select.insertAdjacentElement('afterend',root);
+    select.style.display='none';
+    let pageStart=Math.max(0,Math.floor(years.indexOf(Number(select.value))/9)*9);
+    function render(){
+      triggerText.textContent=select.value;
+      grid.replaceChildren();
+      const visible=years.slice(pageStart,pageStart+9);
+      visible.forEach(year=>{
+        const btn=document.createElement('button');btn.type='button';btn.textContent=String(year);
+        if(String(year)===String(select.value))btn.setAttribute('aria-current','true');
+        btn.addEventListener('click',()=>{
+          select.value=String(year);
+          if(typeof window.setHolidayYear==='function')window.setHolidayYear(String(year));
+          select.dispatchEvent(new Event('change',{bubbles:true}));
+          triggerText.textContent=String(year);
+          close();
+        });
+        grid.append(btn);
+      });
+      page.textContent=(pageStart+1)+'–'+Math.min(pageStart+9,years.length)+' / '+years.length;
+      prev.disabled=pageStart===0;next.disabled=pageStart+9>=years.length;
+    }
+    function open(){pageStart=Math.max(0,Math.floor(years.indexOf(Number(select.value))/9)*9);render();pop.hidden=false;trigger.setAttribute('aria-expanded','true');}
+    function close(){pop.hidden=true;trigger.setAttribute('aria-expanded','false');}
+    trigger.addEventListener('click',()=>pop.hidden?open():close());
+    prev.addEventListener('click',()=>{pageStart=Math.max(0,pageStart-9);render();});
+    next.addEventListener('click',()=>{pageStart=Math.min(years.length-1,pageStart+9);pageStart=Math.floor(pageStart/9)*9;render();});
+    document.addEventListener('click',e=>{if(!root.contains(e.target))close();});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+    render();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSavelyYearPicker,{once:true});
+  else initSavelyYearPicker();
+  const observer=new MutationObserver(()=>initSavelyYearPicker());
+  observer.observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
