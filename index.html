@@ -8358,7 +8358,7 @@ function setCalendarContentTab(tab){
  const holidayPanel=document.querySelector('#page-holidays .holiday-list-panel');
  if(panel)panel.hidden=!personal;
  if(holidayPanel)holidayPanel.hidden=personal;
- document.querySelectorAll('#page-holidays [data-holiday-filter]').forEach(btn=>btn.hidden=personal);
+ document.querySelectorAll('#page-holidays [data-holiday-filter]').forEach(btn=>btn.hidden=false);
  const tabButton=document.getElementById('personalEventsTabButton');
  if(tabButton){tabButton.classList.toggle('active',personal);tabButton.setAttribute('aria-pressed',String(personal));}
  if(personal){renderPersonalEvents();updatePersonalEventHero();}
@@ -8369,7 +8369,38 @@ function openPersonalEventsPage(){
  showPage('holidays');
  setCalendarContentTab('personal');
 }
-function setHolidayYear(v){savelyHolidayYear=Number(v)||Number(new Intl.DateTimeFormat('en',{year:'numeric',timeZone:'Asia/Manila'}).format(new Date()));renderHolidayPage();}
+function setHolidayFilter(v){
+ savelyHolidayFilter=v;
+ // Switching to any holiday category always returns from Personal Events
+ // to the holiday list before applying the selected category.
+ savelyCalendarContentTab='holidays';
+ const page=document.getElementById('page-holidays');
+ if(page)page.classList.remove('personal-events-mode');
+ const personalPanel=document.getElementById('personalEventsInlinePanel');
+ const holidayPanel=document.querySelector('#page-holidays .holiday-list-panel');
+ if(personalPanel)personalPanel.hidden=true;
+ if(holidayPanel)holidayPanel.hidden=false;
+ document.querySelectorAll('#page-holidays [data-holiday-filter]').forEach(btn=>btn.hidden=false);
+ const tabButton=document.getElementById('personalEventsTabButton');
+ if(tabButton){tabButton.classList.remove('active');tabButton.setAttribute('aria-pressed','false');}
+ renderHolidayPage();
+ document.getElementById('savelyMobileFabToggle')?.dispatchEvent(new Event('savely:refresh'));
+}
+function setHolidayYear(v){
+ savelyHolidayYear=Number(v)||Number(new Intl.DateTimeFormat('en',{year:'numeric',timeZone:'Asia/Manila'}).format(new Date()));
+ if(typeof savelyCalendarContentTab!=='undefined'&&savelyCalendarContentTab==='personal'){
+  savelyCalendarContentTab='holidays';
+  document.getElementById('page-holidays')?.classList.remove('personal-events-mode');
+  const personalPanel=document.getElementById('personalEventsInlinePanel');
+  const holidayPanel=document.querySelector('#page-holidays .holiday-list-panel');
+  if(personalPanel)personalPanel.hidden=true;
+  if(holidayPanel)holidayPanel.hidden=false;
+  document.querySelectorAll('#page-holidays [data-holiday-filter]').forEach(btn=>btn.hidden=false);
+  const tabButton=document.getElementById('personalEventsTabButton');
+  if(tabButton){tabButton.classList.remove('active');tabButton.setAttribute('aria-pressed','false');}
+ }
+ renderHolidayPage();
+}
 function jumpToHolidayMonth(month){const el=document.getElementById(`holiday-month-${savelyHolidayYear}-${String(month).padStart(2,'0')}`);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});else toast('No holidays listed for that month in the selected year.');}
 function openHolidaysPage(){showPage('holidays');renderHolidayPage();if(!window.__savelyHolidaySyncStarted)refreshPhilippineHolidays(false);}
 function holidaySyncStatus(v){const e=document.getElementById('holidaySyncStatus');if(e)e.textContent=v;}
@@ -14740,6 +14771,12 @@ document.addEventListener('keydown',function(event){
  }
 });
 </script>
+
+
+<style id="savely-calendar-filter-switch-fix-v1">
+#page-holidays .holiday-filters button{position:relative;z-index:3;pointer-events:auto}
+#page-holidays .holiday-filters button[hidden]{display:none!important}
+</style>
 
 </body>
 </html>
