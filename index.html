@@ -14463,12 +14463,15 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
     if(hideFiguresButton)hideFiguresButton.setAttribute('aria-label',pressed?'Show figures':'Hide figures');
   }
   function refresh(){
+    const page=activePage();
     const action=actionForPage();
     addButton.hidden=!action;
     if(action){
       addLabel.textContent=action.label;
       addIcon.textContent=action.icon;
     }
+    // Financial-figure privacy controls belong exclusively to Overview.
+    if(hideFiguresButton)hideFiguresButton.hidden=page!=='page-dashboard';
     syncHideFigures();
   }
   function close(){
@@ -15136,6 +15139,59 @@ body:has(#page-holidays.active) .topbar{min-height:0!important;margin-bottom:12p
   right:0;
   left:auto;
  }
+}
+</style>
+
+
+<style id="savely-calendar-personal-hero-match-holiday-v1">
+/* Personal-event hero uses the same soft green countdown treatment as holiday views. */
+#page-holidays.personal-events-mode .holiday-hero{
+ background:
+  radial-gradient(circle at 88% 5%,#ffffff55 0 95px,transparent 96px),
+  linear-gradient(115deg,#e7f8ef 0%,#d5f4e5 52%,#bcebd7 100%)!important;
+ border:1px solid #bce8d4!important;
+ box-shadow:0 12px 28px #0f8a5e12!important;
+}
+#page-holidays.personal-events-mode .holiday-eyebrow{
+ background:#d0f3e1!important;color:#087a55!important;
+}
+#page-holidays.personal-events-mode .holiday-next-name{
+ color:#102c23!important;
+}
+#page-holidays.personal-events-mode .holiday-next-meta{
+ color:#46695c!important;
+}
+#page-holidays.personal-events-mode .holiday-countdown-wrap{
+ padding:16px!important;
+ border:1px solid #ffffffa6!important;
+ border-radius:16px!important;
+ background:#ffffff80!important;
+ box-shadow:none!important;
+ backdrop-filter:blur(8px)!important;
+}
+#page-holidays.personal-events-mode .holiday-countdown-title{
+ color:#274b3d!important;
+}
+#page-holidays.personal-events-mode .holiday-countdown>div{
+ background:#ffffffd9!important;
+ border:0!important;
+ box-shadow:none!important;
+}
+#page-holidays.personal-events-mode .holiday-countdown strong{
+ color:#087a55!important;
+}
+#page-holidays.personal-events-mode .holiday-countdown span{
+ color:#527566!important;
+}
+/* The privacy shortcut is an Overview-only action. */
+#savelyMobileHideFiguresAction[hidden],
+.savely-mobile-fab-item[hidden]{
+ display:none!important;
+}
+/* Keep masked-value asterisks white and legible on Overview cards. */
+#page-dashboard.savely-overview-private .savely-private-number::after{
+ color:#fff!important;
+ -webkit-text-fill-color:#fff!important;
 }
 </style>
 
