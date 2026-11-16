@@ -15493,6 +15493,91 @@ html body #page-holidays .holiday-countdown span{
 }
 </style>
 
+
+<style id="savely-calendar-hero-stats-consistency-v5">
+/* Give every Calendar countdown hero a little more vertical breathing room. */
+html body #page-holidays .holiday-hero{
+  min-height:184px!important;
+  padding:32px 30px!important;
+  box-sizing:border-box!important;
+}
+@media(max-width:900px){
+  html body #page-holidays .holiday-hero{
+    min-height:0!important;
+    padding:26px 24px!important;
+  }
+}
+@media(max-width:600px){
+  html body #page-holidays .holiday-hero{
+    padding:22px 18px!important;
+  }
+}
+/* Use a darker translucent green pill so the white eyebrow text stays readable. */
+html body #page-holidays .holiday-eyebrow{
+  background:rgba(0,76,53,.42)!important;
+  color:#fff!important;
+  border:1px solid rgba(255,255,255,.2)!important;
+  box-shadow:none!important;
+}
+/* One shared five-card layout for All Holidays and Personal Events. */
+html body #page-holidays #holidayStats.holiday-stat-grid{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:12px!important;
+  width:100%!important;
+}
+html body #page-holidays.personal-events-mode #holidayStats{
+  display:grid!important;
+  visibility:visible!important;
+}
+html body #page-holidays #holidayStats .holiday-stat{
+  min-width:0!important;
+  min-height:78px!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+  padding:15px!important;
+  border:1px solid #e4ebf2!important;
+  border-radius:15px!important;
+  background:rgba(255,255,255,.96)!important;
+  box-shadow:0 5px 16px rgba(22,43,71,.035)!important;
+}
+@media(max-width:1050px){
+  html body #page-holidays #holidayStats.holiday-stat-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:620px){
+  html body #page-holidays #holidayStats.holiday-stat-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+  }
+  html body #page-holidays #holidayStats .holiday-stat{
+    min-height:70px!important;
+    padding:11px!important;
+    gap:8px!important;
+  }
+}
+/* Keep the countdown numbers directly on the green hero, with no white tiles. */
+html body #page-holidays .holiday-countdown-wrap{
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+html body #page-holidays .holiday-countdown>div{
+  min-height:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+</style>
+
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
