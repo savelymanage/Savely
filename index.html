@@ -4200,14 +4200,30 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
         <button type="button" data-holiday-filter="special" onclick="setHolidayFilter('special')">Special non-working</button>
         <button type="button" data-holiday-filter="working" onclick="setHolidayFilter('working')">Special working</button>
         <button type="button" data-holiday-filter="regional" onclick="setHolidayFilter('regional')">Regional / local</button>
+        <button type="button" id="personalEventsTabButton" class="personal-events-tab-button" onclick="setCalendarContentTab('personal')">Personal Events</button>
       </div>
       <label class="holiday-year-label">Year
         <select id="holidayYearSelect" onchange="setHolidayYear(this.value)">
           <option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option>
         </select>
       </label>
-      <button type="button" class="btn btn-primary savely-personal-events-launch" onclick="openPersonalEventsModal()">♧ Personal Events</button>
     </div>
+    <section id="personalEventsInlinePanel" class="panel personal-events-inline-panel" aria-labelledby="personalEventsTitle" hidden>
+      <div class="panel-head" style="align-items:center;gap:12px;flex-wrap:wrap">
+        <div><h2 id="personalEventsTitle">Personal Events</h2><div class="panel-sub">Birthdays, trips, appointments, deadlines, and your own countdowns.</div></div>
+        <button type="button" class="btn btn-primary" id="personalEventAddButton" onclick="openPersonalEventForm()">＋ Add event</button>
+      </div>
+      <form id="personalEventForm" class="personal-event-form" onsubmit="savePersonalEvent(event)" hidden>
+        <input type="hidden" id="personalEventId">
+        <div class="form-grid">
+          <div class="field"><label for="personalEventName">Event name</label><input id="personalEventName" maxlength="90" placeholder="e.g. Birthday, Concert, Vacation" required></div>
+          <div class="field"><label for="personalEventDate">Event date</label><input id="personalEventDate" type="date" required></div>
+          <div class="field full"><label for="personalEventDescription">Description (optional)</label><textarea id="personalEventDescription" rows="2" maxlength="300" placeholder="Add a short note about this event"></textarea></div>
+        </div>
+        <div class="form-actions" style="justify-content:flex-end"><button type="button" class="btn btn-light" onclick="closePersonalEventForm()">Cancel</button><button type="submit" class="btn btn-primary" id="personalEventSaveButton">Save event</button></div>
+      </form>
+      <div id="personalEventsList" class="personal-events-list" aria-live="polite"></div>
+    </section>
     <section class="panel holiday-list-panel">
       <div class="panel-head holiday-list-head">
         <div><h2 id="holidayListTitle">2027 holiday calendar</h2><div class="panel-sub" id="holidayListSubtitle">Nationwide holidays and special days</div></div>
@@ -8197,13 +8213,13 @@ function savePersonalEvent(event){
  const record={id:id||uid(),name,date,description,updatedAt:new Date().toISOString()};
  const index=data.personalEvents.findIndex(x=>x.id===record.id);
  if(index>=0)data.personalEvents[index]=record;else data.personalEvents.push(record);
- save();closePersonalEventForm();renderHolidayPage();toast(index>=0?'Personal event updated.':'Personal event added.');
+ save();closePersonalEventForm();renderPersonalEvents();toast(index>=0?'Personal event updated.':'Personal event added.');
 }
 function editPersonalEvent(id){openPersonalEventForm(id);}
 function deletePersonalEvent(id){
  const item=(data.personalEvents||[]).find(x=>x.id===id);if(!item)return;
  if(!confirm('Delete "'+item.name.replace(/["\\]/g,'')+'" from Personal Events?'))return;
- data.personalEvents=data.personalEvents.filter(x=>x.id!==id);save();renderHolidayPage();toast('Personal event deleted.');
+ data.personalEvents=data.personalEvents.filter(x=>x.id!==id);save();renderPersonalEvents();toast('Personal event deleted.');
 }
 function renderPersonalEvents(){
  const root=document.getElementById('personalEventsList');if(!root)return;
@@ -8238,7 +8254,27 @@ function updatePersonalEventCountdowns(){
  });
 }
 
-function setHolidayFilter(v){savelyHolidayFilter=v;renderHolidayPage();}
+let savelyCalendarContentTab='holidays';
+function setCalendarContentTab(tab){
+ savelyCalendarContentTab=tab==='personal'?'personal':'holidays';
+ const page=document.getElementById('page-holidays');
+ const personal=savelyCalendarContentTab==='personal';
+ if(page)page.classList.toggle('personal-events-mode',personal);
+ const panel=document.getElementById('personalEventsInlinePanel');
+ const holidayPanel=document.querySelector('#page-holidays .holiday-list-panel');
+ if(panel)panel.hidden=!personal;
+ if(holidayPanel)holidayPanel.hidden=personal;
+ document.querySelectorAll('#page-holidays [data-holiday-filter]').forEach(btn=>btn.hidden=personal);
+ const tabButton=document.getElementById('personalEventsTabButton');
+ if(tabButton){tabButton.classList.toggle('active',personal);tabButton.setAttribute('aria-pressed',String(personal));}
+ if(personal)renderPersonalEvents();
+ else renderHolidayPage();
+ document.getElementById('savelyMobileFabToggle')?.dispatchEvent(new Event('savely:refresh'));
+}
+function openPersonalEventsPage(){
+ showPage('holidays');
+ setCalendarContentTab('personal');
+}
 function setHolidayYear(v){savelyHolidayYear=Number(v)||Number(new Intl.DateTimeFormat('en',{year:'numeric',timeZone:'Asia/Manila'}).format(new Date()));renderHolidayPage();}
 function jumpToHolidayMonth(month){const el=document.getElementById(`holiday-month-${savelyHolidayYear}-${String(month).padStart(2,'0')}`);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});else toast('No holidays listed for that month in the selected year.');}
 function openHolidaysPage(){showPage('holidays');renderHolidayPage();if(!window.__savelyHolidaySyncStarted)refreshPhilippineHolidays(false);}
@@ -14249,6 +14285,7 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
     if(page==='page-debt')return {label:'Add Debt',icon:'＋',run:()=>document.getElementById('topbarAddDebtButton')?.click()};
     if(page==='page-budget')return {label:'Add Expense',icon:'＋',run:()=>window.openExpenseEntry?.()};
     if(page==='page-goals')return {label:'Create Savings Goal',icon:'＋',run:()=>window.openModal?.('goal')};
+    if(page==='page-holidays'&&document.getElementById('page-holidays')?.classList.contains('personal-events-mode'))return {label:'Add Event',icon:'＋',run:()=>window.openPersonalEventForm?.()};
     return null;
   }
   function syncHideFigures(){
@@ -14301,7 +14338,7 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   });
   personalEventsButton.addEventListener('click',()=>{
     close();
-    if(typeof window.openPersonalEventsModal==='function')window.openPersonalEventsModal();
+    if(typeof window.openPersonalEventsPage==='function')window.openPersonalEventsPage();
   });
   calcButton.addEventListener('click',()=>{
     close();
@@ -14487,67 +14524,36 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
 </script>
 
 
-<div id="personalEventsModalBackdrop" class="personal-events-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="personalEventsTitle" onclick="if(event.target===this)closePersonalEventsModal()">
- <section class="panel personal-events-modal" role="document">
-  <div class="panel-head" style="align-items:center;gap:12px;flex-wrap:wrap">
-   <div><h2 id="personalEventsTitle">Personal Events</h2><div class="panel-sub">Birthdays, trips, appointments, deadlines, and your own countdowns.</div></div>
-   <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-    <button type="button" class="btn btn-primary" id="personalEventAddButton" onclick="openPersonalEventForm()">＋ Add event</button>
-    <button type="button" class="btn btn-light" onclick="closePersonalEventsModal()" aria-label="Close personal events">✕</button>
-   </div>
-  </div>
-  <form id="personalEventForm" class="personal-event-form" onsubmit="savePersonalEvent(event)" hidden>
-   <input type="hidden" id="personalEventId">
-   <div class="form-grid">
-    <div class="field"><label for="personalEventName">Event name</label><input id="personalEventName" maxlength="90" placeholder="e.g. Birthday, Concert, Vacation" required></div>
-    <div class="field"><label for="personalEventDate">Event date</label><input id="personalEventDate" type="date" required></div>
-    <div class="field full"><label for="personalEventDescription">Description (optional)</label><textarea id="personalEventDescription" rows="2" maxlength="300" placeholder="Add a short note about this event"></textarea></div>
-   </div>
-   <div class="form-actions" style="justify-content:flex-end"><button type="button" class="btn btn-light" onclick="closePersonalEventForm()">Cancel</button><button type="submit" class="btn btn-primary" id="personalEventSaveButton">Save event</button></div>
-  </form>
-  <div id="personalEventsList" class="personal-events-list" aria-live="polite"></div>
- </section>
-</div>
 
 
-<style id="savely-personal-events-modal-v2">
-#page-holidays .savely-personal-events-launch{white-space:nowrap;flex:0 0 auto}
-.personal-events-modal-backdrop{position:fixed;inset:0;z-index:26000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(15,23,42,.56);backdrop-filter:blur(4px)}
-.personal-events-modal-backdrop.is-open{display:flex}
-.personal-events-modal{width:min(760px,100%);max-height:min(88vh,900px);overflow:auto;padding:clamp(16px,2vw,24px);border-radius:18px;box-shadow:0 24px 80px rgba(15,23,42,.28)}
-.personal-events-modal .personal-event-form{margin:16px 0;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--soft,#f8fafc)}
-.personal-events-modal .personal-event-form[hidden]{display:none!important}
-.personal-events-modal .personal-event-form .field{display:flex;flex-direction:column;gap:7px;min-width:0}
-.personal-events-modal .personal-event-form label{font-size:12px;font-weight:750;color:var(--muted)}
-.personal-events-modal .personal-event-form input,.personal-events-modal .personal-event-form textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;padding:11px 12px;background:var(--surface,#fff);color:var(--text);font:inherit}
-.personal-events-modal .personal-events-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px;margin-top:15px}
-.personal-events-modal .personal-event-card{position:relative;min-width:0;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--card,#fff);box-shadow:0 5px 18px rgba(20,40,60,.04)}
-.personal-events-modal .personal-event-card.is-past{opacity:.72}
-.personal-events-modal .personal-event-card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
-.personal-events-modal .personal-event-card h3{font-size:15px;margin:0;overflow-wrap:anywhere}
-.personal-events-modal .personal-event-date{font-size:11px;color:var(--muted);margin-top:5px}
-.personal-events-modal .personal-event-description{font-size:12px;color:var(--muted);line-height:1.5;margin-top:9px;overflow-wrap:anywhere}
-.personal-events-modal .personal-event-countdown{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
-.personal-events-modal .personal-event-countdown span{padding:8px 10px;border-radius:9px;background:#e9f8f0;color:#087a55;font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
-.personal-events-modal .personal-event-actions{display:flex;gap:6px;flex-shrink:0}
-.personal-events-modal .personal-event-actions button{padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:var(--surface,#fff);color:var(--text);font-size:11px;font-weight:700}
-.personal-events-modal .personal-event-actions .delete{color:#c2414b}
-.personal-events-modal .personal-events-empty{grid-column:1/-1;padding:22px 14px;text-align:center;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:13px}
-.personal-events-modal .personal-event-section-label{grid-column:1/-1;font-size:11px;text-transform:uppercase;letter-spacing:.7px;font-weight:850;color:var(--muted);margin:5px 0 -3px}
-@media(max-width:600px){.personal-events-modal-backdrop{padding:10px}.personal-events-modal{max-height:92vh;padding:14px}.personal-events-modal .personal-event-card{padding:13px}.personal-events-modal .personal-event-card-top{flex-direction:column}.personal-events-modal .personal-event-actions{align-self:flex-end}}
+
+<style id="savely-personal-events-inline-tab-v3">
+#page-holidays .personal-events-tab-button{min-height:38px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:var(--card,#fff);color:var(--muted);font-size:12px;font-weight:750;cursor:pointer}
+#page-holidays .personal-events-tab-button.active{background:#128765;color:#fff;border-color:#128765;box-shadow:0 4px 12px #12876520}
+#page-holidays .personal-events-inline-panel{margin:4px 0 18px;padding:clamp(16px,2vw,24px);border-radius:18px}
+#page-holidays .personal-events-inline-panel[hidden]{display:none!important}
+#page-holidays .personal-events-inline-panel .personal-event-form{margin:16px 0;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--soft,#f8fafc)}
+#page-holidays .personal-events-inline-panel .personal-event-form[hidden]{display:none!important}
+#page-holidays .personal-events-inline-panel .personal-event-form .field{display:flex;flex-direction:column;gap:7px;min-width:0}
+#page-holidays .personal-events-inline-panel .personal-event-form label{font-size:12px;font-weight:750;color:var(--muted)}
+#page-holidays .personal-events-inline-panel .personal-event-form input,#page-holidays .personal-events-inline-panel .personal-event-form textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;padding:11px 12px;background:var(--surface,#fff);color:var(--text);font:inherit}
+#page-holidays .personal-events-inline-panel .personal-events-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px;margin-top:15px}
+#page-holidays .personal-events-inline-panel .personal-event-card{position:relative;min-width:0;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--card,#fff);box-shadow:0 5px 18px rgba(20,40,60,.04)}
+#page-holidays .personal-events-inline-panel .personal-event-card.is-past{opacity:.72}
+#page-holidays .personal-events-inline-panel .personal-event-card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+#page-holidays .personal-events-inline-panel .personal-event-card h3{font-size:15px;margin:0;overflow-wrap:anywhere}
+#page-holidays .personal-events-inline-panel .personal-event-date{font-size:11px;color:var(--muted);margin-top:5px}
+#page-holidays .personal-events-inline-panel .personal-event-description{font-size:12px;color:var(--muted);line-height:1.5;margin-top:9px;overflow-wrap:anywhere}
+#page-holidays .personal-events-inline-panel .personal-event-countdown{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
+#page-holidays .personal-events-inline-panel .personal-event-countdown span{padding:8px 10px;border-radius:9px;background:#e9f8f0;color:#087a55;font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
+#page-holidays .personal-events-inline-panel .personal-event-actions{display:flex;gap:6px;flex-shrink:0}
+#page-holidays .personal-events-inline-panel .personal-event-actions button{padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:var(--surface,#fff);color:var(--text);font-size:11px;font-weight:700}
+#page-holidays .personal-events-inline-panel .personal-event-actions .delete{color:#c2414b}
+#page-holidays .personal-events-inline-panel .personal-events-empty{grid-column:1/-1;padding:22px 14px;text-align:center;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:13px}
+#page-holidays .personal-events-inline-panel .personal-event-section-label{grid-column:1/-1;font-size:11px;text-transform:uppercase;letter-spacing:.7px;font-weight:850;color:var(--muted);margin:5px 0 -3px}
+#page-holidays.personal-events-mode .holiday-hero,#page-holidays.personal-events-mode #holidayStats{display:none}
+@media(max-width:600px){#page-holidays .personal-events-inline-panel .personal-event-card{padding:13px}#page-holidays .personal-events-inline-panel .personal-event-card-top{flex-direction:column}#page-holidays .personal-events-inline-panel .personal-event-actions{align-self:flex-end}}
 </style>
-<script id="savely-personal-events-modal-controller-v2">
-function openPersonalEventsModal(){
- const modal=document.getElementById('personalEventsModalBackdrop');if(!modal)return;
- modal.classList.add('is-open');modal.setAttribute('aria-hidden','false');
- if(typeof renderPersonalEvents==='function')renderPersonalEvents();
-}
-function closePersonalEventsModal(){
- const modal=document.getElementById('personalEventsModalBackdrop');if(!modal)return;
- modal.classList.remove('is-open');modal.setAttribute('aria-hidden','true');
-}
-document.addEventListener('keydown',event=>{if(event.key==='Escape')closePersonalEventsModal();});
-</script>
 
 </body>
 </html>
