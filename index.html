@@ -10960,7 +10960,7 @@ body.dark-theme .app > .sidebar .nav button.active {
   left: auto;
   top: auto;
   bottom: 86px;
-  z-index: 20001;
+  z-index: 26010;
   display: none;
   width: 292px;
   max-width: calc(100vw - 24px);
@@ -11351,6 +11351,10 @@ body.dark-theme .app > .sidebar .nav button.active {
     fab.setAttribute('aria-label','Open calculator');
     fab.title='Open calculator';
   }
+  // Expose the real panel actions so the responsive FAB can open the panel
+  // directly even when the desktop launcher is hidden by responsive CSS.
+  window.openSavelyCalculator = openPanel;
+  window.closeSavelyCalculator = closePanel;
   fab.addEventListener('click',()=>{
     if(panel.classList.contains('is-open')) closePanel();
     else openPanel();
@@ -14809,7 +14813,11 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   });
   calcButton.addEventListener('click',()=>{
     close();
-    document.getElementById('savelyCalculatorFab')?.click();
+    if(typeof window.openSavelyCalculator==='function'){
+      window.openSavelyCalculator();
+    }else{
+      document.getElementById('savelyCalculatorFab')?.click();
+    }
   });
   document.addEventListener('click',e=>{
     if(!root.contains(e.target))close();
