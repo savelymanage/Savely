@@ -3818,6 +3818,7 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
     <button data-page="salary" aria-label="Salary" title="Salary"><span class="ico">₱</span><span class="nav-text">Salary</span></button>
     <button data-page="debt" aria-label="Debt" title="Debt"><span class="ico">▦</span><span class="nav-text">Debt</span></button>
     <button data-page="budget" aria-label="Expenses" title="Expenses"><span class="ico">↘</span><span class="nav-text">Expenses</span></button>
+    <button data-page="holidays" aria-label="Calendars" title="Calendars"><span class="ico">▦</span><span class="nav-text">Calendars</span></button>
 
     <button data-page="goals" aria-label="Savings goals" title="Savings goals"><span class="ico">◎</span><span class="nav-text">Savings goals</span></button>
     <button data-page="interest" aria-label="Interest Calculator" title="Interest Calculator"><span class="ico">％</span><span class="nav-text">Interest Calculator</span></button>
@@ -8191,7 +8192,8 @@ function renderHolidayPage(){
  if(name)name.textContent=next?next.name:'No upcoming holidays listed';
  if(meta)meta.textContent=next?`${phHolidayType(next.type)} · ${phHolidayLabel(next.date)}`:'Check back for the next official proclamation';
  const stat=document.getElementById('holidayStats');
- if(stat)stat.innerHTML=`<div class="holiday-stat"><span class="holiday-stat-icon">▦</span><div><strong>${upcomingYearItems.length}</strong><small>Upcoming holidays · ${savelyHolidayYear}</small></div></div><div class="holiday-stat"><span class="holiday-stat-icon">✓</span><div><strong>${upcomingYearItems.filter(h=>h.type==='regular').length}</strong><small>Regular holidays</small></div></div><div class="holiday-stat"><span class="holiday-stat-icon">☆</span><div><strong>${upcomingYearItems.filter(h=>h.type==='special').length}</strong><small>Special non-working</small></div></div><div class="holiday-stat"><span class="holiday-stat-icon">◷</span><div><strong>${next?Math.max(0,Math.ceil(phHolidayRemaining(next.date)/86400000))+' days':'—'}</strong><small>Until next holiday</small></div></div>`;
+ const personalEventsUpcomingCount=(Array.isArray(data.personalEvents)?data.personalEvents:[]).filter(item=>item&&item.date>=personalEventTodayISO()).length;
+ if(stat)stat.innerHTML=`<div class="holiday-stat"><span class="holiday-stat-icon">▦</span><div><strong>${upcomingYearItems.length}</strong><small>Upcoming holidays · ${savelyHolidayYear}</small></div></div><div class="holiday-stat"><span class="holiday-stat-icon">✓</span><div><strong>${upcomingYearItems.filter(h=>h.type==='regular').length}</strong><small>Regular holidays</small></div></div><div class="holiday-stat"><span class="holiday-stat-icon">☆</span><div><strong>${upcomingYearItems.filter(h=>h.type==='special').length}</strong><small>Special non-working</small></div></div><div class="holiday-stat"><span class="holiday-stat-icon">◷</span><div><strong>${next?Math.max(0,Math.ceil(phHolidayRemaining(next.date)/86400000))+' days':'—'}</strong><small>Until next holiday</small></div></div><div class="holiday-stat holiday-personal-events-stat"><span class="holiday-stat-icon">♡</span><div><strong>${personalEventsUpcomingCount}</strong><small>Personal events</small></div></div>`;
  const title=document.getElementById('holidayListTitle');if(title)title.textContent=`${savelyHolidayYear} holiday calendar`;
  const nowPH=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Manila'}));
  const currentMonthStart=`${nowPH.getFullYear()}-${String(nowPH.getMonth()+1).padStart(2,'0')}-01`;
@@ -8532,7 +8534,7 @@ function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavin
   savelyLiveLocationMap.invalidateSize();
  }
   if(window.__savelyLiveLocationWatchId===null||window.__savelyLiveLocationWatchId===undefined)startSavelyLiveLocation();
-},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LIVE MONITOR','Live Monitor'],'metro-snapshot':['PUBLIC CAMERA IMAGES','Metro Manila Snapshot'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['CALENDAR · PHILIPPINES','Calendar']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','metro-snapshot':'View the latest available public camera snapshots across Metro Manila.','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:'View Philippine regular holidays, special non-working days, and live countdowns.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
+},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LIVE MONITOR','Live Monitor'],'metro-snapshot':['PUBLIC CAMERA IMAGES','Metro Manila Snapshot'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['','']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','metro-snapshot':'View the latest available public camera snapshots across Metro Manila.','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:''};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
 document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
 function openModal(kind,goalToEdit=null){const form=document.getElementById('modalForm'),title=document.getElementById('modalTitle'),desc=document.getElementById('modalDesc');let accountOptions=data.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');let field=(label,name,type='text',value='',extra='')=>`<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let select=(label,name,opts)=>`<div class="field"><label>${label}</label><select name="${name}">${opts}</select></div>`;let fullfield=(label,name,type='text',value='',extra='')=>`<div class="field full"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let body='';
 if(kind==='transaction'){title.textContent='Add transaction';desc.textContent='Record a deposit, withdrawal, interest credit, or expense.';body=`<div class="form-grid">${fullfield('Description','description','text','','required maxlength="100"')}${select('Transaction type','type','<option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option><option value="expense">Expense</option><option value="interest">Interest credit</option>')}${select('Account','accountId',accountOptions)}${field('Amount (₱)','amount','number','','required min=".01" step=".01"')}${field('Date','date','date',todayISO(),'required')}${field('Category','category','text','General','maxlength="60"')}</div>`}
@@ -14285,10 +14287,6 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
       <span class="savely-mobile-fab-label">Weather</span>
       <span class="savely-mobile-fab-icon savely-mobile-fab-utility" aria-hidden="true">☀</span>
     </button>
-    <button type="button" class="savely-mobile-fab-item" id="savelyMobileDateAction">
-      <span class="savely-mobile-fab-label">Date & calendar</span>
-      <span class="savely-mobile-fab-icon savely-mobile-fab-utility" aria-hidden="true">▦</span>
-    </button>
     <button type="button" class="savely-mobile-fab-item" id="savelyMobileCalculatorAction">
       <span class="savely-mobile-fab-label">Calculator</span>
       <span class="savely-mobile-fab-icon savely-mobile-fab-secondary" aria-hidden="true">▤</span>
@@ -14398,7 +14396,6 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   const hideFiguresLabel=document.getElementById('savelyMobileHideFiguresLabel');
   const hideFiguresIcon=document.getElementById('savelyMobileHideFiguresIcon');
   const weatherButton=document.getElementById('savelyMobileWeatherAction');
-  const dateButton=document.getElementById('savelyMobileDateAction');
   const calcButton=document.getElementById('savelyMobileCalculatorAction');
 
   function activePage(){
@@ -14457,10 +14454,6 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   weatherButton.addEventListener('click',()=>{
     close();
     document.getElementById('savelyWeather')?.click();
-  });
-  dateButton.addEventListener('click',()=>{
-    close();
-    document.getElementById('today')?.click();
   });
   personalEventsButton.addEventListener('click',()=>{
     close();
@@ -14855,6 +14848,37 @@ html body #page-salary .salary-next-payday{
  #page-holidays .holiday-countdown-cell{gap:5px!important}
  #page-holidays .holiday-countdown-cell span{padding:7px 8px!important;font-size:10px!important}
 }
+</style>
+
+
+<style id="savely-calendar-countdown-sidebar-cleanup-v1">
+/* Calendar page: the green hero stays clean; only the four timer tiles remain. */
+#page-holidays .holiday-countdown-wrap{
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+#page-holidays .holiday-countdown-title{color:#274b3d!important}
+#page-holidays .holiday-countdown>div{background:#ffffffd9!important}
+#page-holidays .holiday-stat-grid{
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+}
+#page-holidays .holiday-personal-events-stat .holiday-stat-icon{
+  background:#e9f8f1!important;
+  color:#087a55!important;
+}
+@media(max-width:1050px){
+  #page-holidays .holiday-stat-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:620px){
+  #page-holidays .holiday-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+/* Remove only the Calendar page heading; keep the global header actions intact. */
+body:has(#page-holidays.active) .topbar>div:first-child{display:none!important}
+body:has(#page-holidays.active) .topbar{min-height:0!important;margin-bottom:12px!important}
 </style>
 
 </body>
