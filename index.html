@@ -11126,7 +11126,7 @@ body.dark-theme .app > .sidebar .nav button.active {
         <rect x="5" y="2.8" width="14" height="18.4" rx="2.2"></rect>
         <path d="M8.3 6.2h7.4v3.2H8.3zM8.5 13h1M12 13h.1M15.5 13h.1M8.5 16.5h1M12 16.5h.1M15.5 16.5h.1"></path>
       </svg>
-      Calculator
+      <span id="savelyCalculatorTitle">Calculator</span>
       <span class="savely-calc-drag-hint">Drag to move</span>
     </div>
     <button type="button" class="savely-calc-close" id="savelyCalculatorClose" aria-label="Close calculator" title="Close">×</button>
@@ -11166,7 +11166,7 @@ body.dark-theme .app > .sidebar .nav button.active {
       <button type="button" class="savely-calc-key" data-calc="decimal">.</button>
       <button type="button" class="savely-calc-key is-equals" data-calc="equals">=</button>
     </div>
-    <div class="savely-calc-foot">Basic calculator · Drag the header to move</div>
+    <div class="savely-calc-foot">Calculator · Drag the header to move</div>
     <div class="savely-days-tool" id="savelyDaysTool" hidden>
       <div class="savely-days-intro">Calculate how many days have passed or how many days are left until a date.</div>
       <label for="savelyDaysTarget">Choose a date</label>
@@ -11223,6 +11223,7 @@ body.dark-theme .app > .sidebar .nav button.active {
   const daysTool = document.getElementById('savelyDaysTool');
   const daysResult = document.getElementById('savelyDaysResult');
   const daysTodayLabel = document.getElementById('savelyDaysToday');
+  const calculatorTitle = document.getElementById('savelyCalculatorTitle');
   if(!fab || !panel || !dragHandle || !display || !expressionDisplay) return;
 
   const eligiblePages = new Set(['page-financial-list','page-salary','page-debt','page-holidays']);
@@ -11233,7 +11234,9 @@ body.dark-theme .app > .sidebar .nav button.active {
   let dragState = null;
 
   function manilaTodayISO(){
-    return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Manila',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+    const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Manila',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+    const part=type=>parts.find(item=>item.type===type)?.value||'';
+    return `${part('year')}-${part('month')}-${part('day')}`;
   }
   function formatCalendarDate(iso){
     if(!iso)return '';
@@ -11317,12 +11320,18 @@ body.dark-theme .app > .sidebar .nav button.active {
   function syncVisibility(){
     const visible = eligiblePages.has(activePageId());
     fab.style.display = visible ? 'inline-flex' : 'none';
+    const calendarPage=activePageId()==='page-holidays';
+    fab.setAttribute('aria-label',calendarPage?'Open Days Calculator':'Open calculator');
+    fab.title=calendarPage?'Open Days Calculator':'Open calculator';
     if(!visible) closePanel();
   }
   function openPanel(){
     if(!eligiblePages.has(activePageId())) return;
+    const onCalendar=activePageId()==='page-holidays';
+    setCalculatorMode(onCalendar?'days':'basic');
+    if(calculatorTitle)calculatorTitle.textContent=onCalendar?'Days Calculator':'Calculator';
     panel.classList.add('is-open');
-    if(panel.classList.contains('is-days-mode'))updateDaysCalendar();
+    if(onCalendar)updateDaysCalendar();
     panel.setAttribute('aria-hidden','false');
     if(!panel.dataset.positionInitialized){
       restorePosition();
@@ -14741,6 +14750,12 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   function refresh(){
     const page=activePage();
     const action=actionForPage();
+    if(calcButton){
+      const onCalendar=page==='page-holidays';
+      const label=calcButton.querySelector('.savely-mobile-fab-label');
+      if(label)label.textContent=onCalendar?'Days Calculator':'Calculator';
+      calcButton.setAttribute('aria-label',onCalendar?'Open Days Calculator':'Open calculator');
+    }
     addButton.hidden=!action;
     if(action){
       addLabel.textContent=action.label;
