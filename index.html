@@ -8116,20 +8116,47 @@ function phHolidayLabel(iso,opts){return new Intl.DateTimeFormat('en-PH',Object.
 function phHolidayRemaining(iso){return phHolidayDate(iso).getTime()-Date.now();}
 function phTodayISO(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Manila',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
 function phHolidayIsStillUpcoming(h){return String(h.date||'')>phTodayISO();}
-// Keep one holiday entry per date. Prefer classified proclamation/calendar records
-// over duplicate English/Filipino-name entries returned by the public feed.
+// One calendar row per date. Keep the app's English canonical holiday name
+// when feeds return a second Filipino/English translation for the same date.
+const SAVELY_CANONICAL_HOLIDAY_NAMES={
+ '01-01':"New Year's Day",
+ '02-25':'EDSA People Power Revolution Anniversary',
+ '04-02':'Maundy Thursday','04-03':'Good Friday','04-04':'Black Saturday',
+ '04-09':'Araw ng Kagitingan','05-01':'Labor Day','06-12':'Independence Day',
+ '08-21':'Ninoy Aquino Day','08-30':'National Heroes Day','08-31':'National Heroes Day',
+ '11-01':"All Saints' Day",'11-02':"All Souls' Day",'11-30':'Bonifacio Day',
+ '12-08':'Feast of the Immaculate Conception of Mary','12-24':'Christmas Eve',
+ '12-25':'Christmas Day','12-30':'Rizal Day','12-31':'Last Day of the Year'
+};
+function phHolidayEntryScore(h){
+ const name=String(h.name||'').trim(),lower=name.toLowerCase();
+ let score=0;
+ if(h.type&&h.type!=='unverified')score+=100;
+ if(h.source&&/proclamation/i.test(h.source))score+=20;
+ if(!name||/^(public holiday|official holiday announcement|regular holiday|special non-working day|regional special non-working day|special working day)$/i.test(name))score-=100;
+ if(/\b(araw ng paggawa|araw ng kalayaan|araw ng mga bayani|araw ni gat|huling araw ng taon)\b/i.test(lower))score-=15;
+ const mmdd=String(h.date||'').slice(5);
+ if(SAVELY_CANONICAL_HOLIDAY_NAMES[mmdd]){
+  if(name.toLowerCase()===SAVELY_CANONICAL_HOLIDAY_NAMES[mmdd].toLowerCase())score+=200;
+  else score-=10;
+ }
+ return score;
+}
 function phDeduplicateHolidayEntries(items){
  const byDate=new Map();
  (items||[]).forEach(h=>{
   if(!h||!h.date)return;
   const old=byDate.get(h.date);
-  const isClassified=h.type&&h.type!=='unverified';
-  const oldClassified=old&&old.type&&old.type!=='unverified';
-  if(!old||(isClassified&&!oldClassified))byDate.set(h.date,h);
+  if(!old||phHolidayEntryScore(h)>phHolidayEntryScore(old))byDate.set(h.date,h);
  });
- return Array.from(byDate.values());
+ return Array.from(byDate.values()).sort((a,b)=>a.date.localeCompare(b.date));
 }
-function phNextHoliday(){return phDeduplicateHolidayEntries(Object.keys(SAVELY_PH_HOLIDAYS).flatMap(y=>SAVELY_PH_HOLIDAYS[y]||[])).filter(h=>['regular','special','regional'].includes(h.type)&&phHolidayIsStillUpcoming(h)).sort((a,b)=>a.date.localeCompare(b.date))[0]||null;}
+function phNormalizeHolidayYear(year){
+ const normalized=phDeduplicateHolidayEntries(SAVELY_PH_HOLIDAYS[year]||[]);
+ SAVELY_PH_HOLIDAYS[year]=normalized;
+ return normalized;
+}
+function phNextHoliday(){return phDeduplicateHolidayEntries(Object.keys(SAVELY_PH_HOLIDAYS).flatMap(y=>phNormalizeHolidayYear(y))).filter(h=>['regular','special','regional'].includes(h.type)&&phHolidayIsStillUpcoming(h)).sort((a,b)=>a.date.localeCompare(b.date))[0]||null;}
 function phCountdownParts(ms){let sec=Math.max(0,Math.floor(ms/1000)),days=Math.floor(sec/86400);sec%=86400;let hours=Math.floor(sec/3600);sec%=3600;let mins=Math.floor(sec/60);sec%=60;return [days,String(hours).padStart(2,'0'),String(mins).padStart(2,'0'),String(sec).padStart(2,'0')];}
 function phHolidayType(type){return type==='regular'?'Regular holiday':type==='special'?'Special non-working':type==='working'?'Special working day':type==='regional'?'Regional / local':'Public holiday · verify';}
 
@@ -8153,7 +8180,8 @@ function ensure2026NovDecHolidays(){
 }
 function renderHolidayPage(){
  ensure2026NovDecHolidays();
- const yearItems=phDeduplicateHolidayEntries(SAVELY_PH_HOLIDAYS[savelyHolidayYear]||[]),upcomingYearItems=yearItems.filter(phHolidayIsStillUpcoming),next=phNextHoliday();
+ Object.keys(SAVELY_PH_HOLIDAYS).forEach(phNormalizeHolidayYear);
+ const yearItems=phNormalizeHolidayYear(savelyHolidayYear),upcomingYearItems=yearItems.filter(phHolidayIsStillUpcoming),next=phNextHoliday();
  const name=document.getElementById('holidayNextName'),meta=document.getElementById('holidayNextMeta');
  if(name)name.textContent=next?next.name:'No upcoming holidays listed';
  if(meta)meta.textContent=next?`${phHolidayType(next.type)} · ${phHolidayLabel(next.date)}`:'Check back for the next official proclamation';
@@ -8375,7 +8403,7 @@ async function syncOfficialHolidayAnnouncements(){
     const title=typeof row.title==='string'?row.title:(row.title&&row.title.rendered)||'';
     parseOfficialHolidayTitle(title,row.url||endpoints[i]).forEach(item=>{
      const year=Number(item.date.slice(0,4)),arr=SAVELY_PH_HOLIDAYS[year]||(SAVELY_PH_HOLIDAYS[year]=[]);
-     if(!arr.some(h=>h.date===item.date&&h.name===item.name)){arr.push(item);added++;}
+     if(!arr.some(h=>h.date===item.date)){arr.push(item);added++;}
     });
    });
   }catch(e){}
@@ -14611,6 +14639,17 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
 #page-holidays.personal-events-mode #holidayStats{display:none}
 @media(max-width:600px){#page-holidays .personal-events-inline-panel .personal-event-card{padding:13px}#page-holidays .personal-events-inline-panel .personal-event-card-top{flex-direction:column}#page-holidays .personal-events-inline-panel .personal-event-actions{align-self:flex-end}}
 </style>
+
+<script id="savely-holiday-one-language-migration-v2">
+(function(){
+ try{
+  if(typeof SAVELY_PH_HOLIDAYS!=='undefined'&&typeof phNormalizeHolidayYear==='function'){
+   Object.keys(SAVELY_PH_HOLIDAYS).forEach(year=>phNormalizeHolidayYear(year));
+   localStorage.setItem('savelyPhHolidayCache',JSON.stringify({data:SAVELY_PH_HOLIDAYS,checkedAt:Date.now()}));
+  }
+ }catch(e){}
+})();
+</script>
 
 </body>
 </html>
