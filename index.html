@@ -5061,11 +5061,12 @@ function renderSalaryCalendar(){
   const paydayEntry=paydayEntries.find(entry=>entry.date===iso);
   const paydayIndex=paydayEntry?paydayEntry.index:-1;
   const isPayday=!!paydayEntry;
+  const isPastCutoff=isPayday&&iso<todayISOString;
   const holiday=getPhilippineHolidayMap(year)[iso];
   const isHoliday=!!holiday&&holiday.type!=='special_working';
   const selected=salaryCalendarSelectedDate===iso;
   const accessibleDate=new Date(year,month,day).toLocaleDateString('en-PH',{dateStyle:'full'});
-  cells.push(`<button type="button" role="gridcell" aria-label="${accessibleDate}${isPayday?', payday':''}${holiday?', '+holiday.name:''}" title="${holiday?esc(holiday.name)+' · '+(holiday.type==='regular'?'REGULAR HOLIDAY':holiday.type==='special_working'?'SPECIAL WORKING DAY':holiday.type==='special_non_working'?'SPECIAL NON-WORKING HOLIDAY':'LOCAL HOLIDAY'):''}" class="salary-calendar-day${isToday?' is-today':''}${isPayday?' is-payday':''}${isHoliday?' is-holiday':''}${holiday&&holiday.type==='special_non_working'?' is-special-non-working':''}${selected?' is-selected':''}" onclick="selectSalaryCalendarDate('${iso}')"><span class="salary-calendar-day-number">${day}</span>${isPayday?`<span class="salary-calendar-event">${paydayIndex===0?'1st cutoff':'2nd cutoff'}${paydayEntry.reason?' · moved':''}</span><span class="salary-calendar-event-amount">${peso(amount/2)}</span>`:''}${holiday?`<span class="salary-calendar-holiday${holiday.type==='special_non_working'?' is-special-non-working':''}"><b>${holiday.type==='regular'?'REGULAR':holiday.type==='special_non_working'?'SPECIAL NON-WORKING':holiday.type==='special_working'?'SPECIAL WORKING':'LOCAL'}</b> · ${esc(holiday.name)}</span>`:''}</button>`);
+  cells.push(`<button type="button" role="gridcell" aria-label="${accessibleDate}${isPayday?', payday':''}${holiday?', '+holiday.name:''}" title="${holiday?esc(holiday.name)+' · '+(holiday.type==='regular'?'REGULAR HOLIDAY':holiday.type==='special_working'?'SPECIAL WORKING DAY':holiday.type==='special_non_working'?'SPECIAL NON-WORKING HOLIDAY':'LOCAL HOLIDAY'):''}" class="salary-calendar-day${isToday?' is-today':''}${isPayday?' is-payday':''}${isPastCutoff?' is-paid-out':''}${isHoliday?' is-holiday':''}${holiday&&holiday.type==='special_non_working'?' is-special-non-working':''}${selected?' is-selected':''}" onclick="selectSalaryCalendarDate('${iso}')"><span class="salary-calendar-day-number">${day}</span>${isPayday?`<span class="salary-calendar-event">${paydayIndex===0?'1st cutoff':'2nd cutoff'}${paydayEntry.reason?' · moved':''}</span><span class="salary-calendar-event-amount">${peso(amount/2)}</span>`:''}${holiday?`<span class="salary-calendar-holiday${holiday.type==='special_non_working'?' is-special-non-working':''}"><b>${holiday.type==='regular'?'REGULAR':holiday.type==='special_non_working'?'SPECIAL NON-WORKING':holiday.type==='special_working'?'SPECIAL WORKING':'LOCAL'}</b> · ${esc(holiday.name)}</span>`:''}</button>`);
  }
  grid.innerHTML=cells.join('');
  const selectedParts=String(salaryCalendarSelectedDate||'').split('-').map(Number);
@@ -14469,30 +14470,22 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   window.updateSalaryAnnualRemainingCard=function(year){
    originalUpdate(year);
    const target=Number(year)||new Date().getFullYear(),settings=salarySettingsForYear(target);
-   const today=new Date(),month=today.getMonth(),thisYear=today.getFullYear();
-   if(target===thisYear){
-    let monthDeductions=0;
-    Object.keys(data.salaryCutoffRecords||{}).forEach(iso=>{const p=isoDate(iso);if(p[0]===thisYear&&p[1]===month+1){const r=record(iso);monthDeductions+=(r?.deductions||[]).reduce((a,x)=>a+Math.max(0,Number(x.amount)||0),0);}});
-    const monthly=document.getElementById('salaryMonthlyDisplay');
-    if(monthly)monthly.textContent=money(Math.max(0,(Number(settings.monthlySalary)||0)-monthDeductions));
-    const foot=document.getElementById('salaryPayDayDisplay');
-    if(foot&&monthDeductions>0)foot.textContent+=' · '+money(monthDeductions)+' deducted this month';
-   }
+   const thisYear=new Date().getFullYear();
+   // Monthly take-home salary remains the configured monthly salary.
+   // Cutoff deductions reduce the remaining annual salary projection instead.
    let deductionTotal=0;
    Object.keys(data.salaryCutoffRecords||{}).forEach(iso=>{
     const [y,m,d]=isoDate(iso);if(y!==target)return;
-    const dt=new Date(y,m-1,d),nowDay=new Date();nowDay.setHours(0,0,0,0);
-    if(dt<nowDay)return;
     const r=record(iso),gross=Math.max(0,Number(r?.grossAmount)||0);
     const deductions=(r?.deductions||[]).reduce((a,x)=>a+Math.max(0,Number(x.amount)||0),0);
     deductionTotal+=Math.min(gross,deductions);
    });
    const projection=document.getElementById('salaryAnnualRemainingDisplay');
-   if(projection&&deductionTotal>0&&target===thisYear){
+   if(projection&&target===thisYear){
     const base=getSalaryRemainingProjection(target);
     projection.childNodes[0].textContent=money(Math.max(0,base.amount-deductionTotal))+' ';
     const foot=document.getElementById('salaryAnnualRemainingFoot');
-    if(foot)foot.textContent+=' · includes '+money(deductionTotal)+' cutoff deductions';
+    if(foot)foot.textContent=base.description+(deductionTotal>0?' · '+money(deductionTotal)+' total deductions subtracted':'');
    }
   };
  }
@@ -15322,4 +15315,28 @@ html body #topbarAddDebtButton {
     bottom: 80px !important;
   }
 }
+</style>
+
+
+<style id="savely-salary-past-cutoff-grey-v1">
+/* Completed salary cutoff dates become visibly inactive/grey after the cutoff date passes. */
+.salary-calendar-day.is-paid-out{
+ background:#eef1f4!important;
+ border-color:#d7dde4!important;
+ color:#8993a1!important;
+ opacity:.78;
+ box-shadow:none!important;
+}
+.salary-calendar-day.is-paid-out:hover{
+ background:#e8ecf0!important;
+ border-color:#cbd3dc!important;
+}
+.salary-calendar-day.is-paid-out .salary-calendar-day-number{color:#87919e}
+.salary-calendar-day.is-paid-out .salary-calendar-event{
+ background:#e1e5ea!important;color:#687484!important;
+}
+.salary-calendar-day.is-paid-out .salary-calendar-event-amount{
+ color:#788391!important;text-decoration:line-through;text-decoration-thickness:1px;
+}
+.salary-calendar-day.is-paid-out.is-selected{outline-color:#aab3bf}
 </style>
