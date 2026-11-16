@@ -3978,16 +3978,16 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
   </section>
 
   <section class="page" id="page-salary">
-    <div class="cards salary-summary-cards" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:18px">
-      <div class="stat salary-monthly-takehome-stat">
-        <div class="stat-top">Monthly take-home salary</div>
-        <div class="stat-value" id="salaryMonthlyDisplay" style="color:var(--green)">₱0.00</div>
-        <div class="stat-foot" id="salaryPayDayDisplay">Set your monthly salary below</div>
-      </div>
+    <div class="cards salary-summary-cards" style="grid-template-columns:minmax(0,1fr);margin-bottom:18px">
       <div class="stat salary-annual-remaining-stat salary-remaining-blue">
         <div class="stat-top">Remaining salary this year</div>
         <div class="stat-value" id="salaryAnnualRemainingDisplay">₱0.00 <span class="annual-projection-inline">/ <span id="salaryAnnualDisplay">₱0.00</span></span></div>
         <div class="stat-foot" id="salaryAnnualRemainingFoot">Estimated future cutoffs through December</div>
+        <div class="salary-next-payday" id="salaryNextPaydayCountdown" aria-live="off">
+          <span class="salary-next-payday-label">Next payday</span>
+          <strong id="salaryNextPaydayDate">Calculating…</strong>
+          <span class="salary-next-payday-timer" id="salaryNextPaydayTimer">—</span>
+        </div>
       </div>
     </div>
     <section class="panel salary-calendar-panel" aria-labelledby="salaryCalendarTitle" style="margin-bottom:18px">
@@ -15403,3 +15403,53 @@ html body #topbarAddDebtButton {
 }
 .salary-calendar-day.is-paid-out.is-selected{outline-color:#aab3bf}
 </style>
+
+
+<style id="savely-salary-next-payday-countdown-v1">
+#page-salary .salary-summary-cards{width:100%;grid-template-columns:minmax(0,1fr)!important}
+#page-salary .salary-annual-remaining-stat{width:100%;box-sizing:border-box}
+#page-salary .salary-next-payday{display:flex;align-items:center;gap:10px 16px;flex-wrap:wrap;margin-top:13px;padding-top:12px;border-top:1px solid rgba(255,255,255,.22)}
+#page-salary .salary-next-payday-label{font-size:11px;font-weight:750;opacity:.88}
+#page-salary .salary-next-payday strong{font-size:12px;font-weight:850}
+#page-salary .salary-next-payday-timer{font-size:12px;font-weight:850;font-variant-numeric:tabular-nums;letter-spacing:.2px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 10px}
+</style>
+<script id="savely-salary-next-payday-countdown-script-v1">
+(function(){
+ const $=id=>document.getElementById(id);
+ const normalize=raw=>({'1':'5-20','5':'5-20','10':'10-25','15':'15-30','20':'5-20','25':'10-25','30':'15-30'})[String(raw)]||String(raw||'custom');
+ function localISO(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+ function findNextPayday(){
+  if(typeof salarySettingsForYear!=='function'||typeof getSalaryPaydayEntries!=='function')return null;
+  const now=new Date(),today=localISO(now),year=now.getFullYear();
+  const settings=salarySettingsForYear(year),amount=Math.max(0,Number(settings.monthlySalary)||0);
+  const schedule=normalize(settings.salaryPayDay);
+  if(!amount||!settings.salaryUpdatedAt||schedule==='custom')return {custom:true};
+  for(let offset=0;offset<15;offset++){
+   const monthDate=new Date(year,now.getMonth()+offset,1);
+   const y=monthDate.getFullYear(),m=monthDate.getMonth();
+   const entries=getSalaryPaydayEntries(schedule,y,m).sort((a,b)=>a.date.localeCompare(b.date));
+   for(const entry of entries){
+    if(entry.date<today)continue;
+    return {date:entry.date,entry,amount};
+   }
+  }
+  return null;
+ }
+ function update(){
+  const dateEl=$('salaryNextPaydayDate'),timerEl=$('salaryNextPaydayTimer');
+  if(!dateEl||!timerEl)return;
+  const next=findNextPayday();
+  if(!next){dateEl.textContent='No upcoming payday';timerEl.textContent='Set your salary and payday schedule';return;}
+  if(next.custom){dateEl.textContent='Payday varies';timerEl.textContent='Set a fixed payday schedule to enable countdown';return;}
+  const [y,m,d]=next.date.split('-').map(Number);
+  const target=new Date(y,m-1,d,0,0,0,0),now=new Date(),diff=target.getTime()-now.getTime();
+  dateEl.textContent=target.toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  if(diff<=0){timerEl.textContent='Payday today';return;}
+  const seconds=Math.floor(diff/1000),days=Math.floor(seconds/86400),hours=Math.floor(seconds%86400/3600),minutes=Math.floor(seconds%3600/60),secs=seconds%60;
+  timerEl.textContent=`${days}d ${String(hours).padStart(2,'0')}h ${String(minutes).padStart(2,'0')}m ${String(secs).padStart(2,'0')}s remaining`;
+ }
+ update();
+ if(!window.__savelyNextPaydayCountdownTimer)window.__savelyNextPaydayCountdownTimer=setInterval(update,1000);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)update();});
+})();
+</script>
