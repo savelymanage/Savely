@@ -3718,6 +3718,31 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
 .savely-public-cctv-view{grid-template-columns:minmax(0,1fr)!important}
 @media(max-width:720px){.savely-location-subnav{margin-left:8px;padding-left:8px}.savely-location-place{white-space:nowrap}.savely-cctv-main-full{padding:13px}}
 </style>
+
+<style id="savely-personal-events-v1">
+#page-holidays .savely-personal-events-panel{margin-top:18px;padding:clamp(16px,2vw,24px);border-radius:18px}
+#page-holidays .personal-event-form{margin:16px 0;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--soft,#f8fafc)}
+#page-holidays .personal-event-form[hidden]{display:none!important}
+#page-holidays .personal-event-form .field{display:flex;flex-direction:column;gap:7px;min-width:0}
+#page-holidays .personal-event-form label{font-size:12px;font-weight:750;color:var(--muted)}
+#page-holidays .personal-event-form input,#page-holidays .personal-event-form textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;padding:11px 12px;background:var(--surface,#fff);color:var(--text);font:inherit}
+#page-holidays .personal-events-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px;margin-top:15px}
+#page-holidays .personal-event-card{position:relative;min-width:0;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--card,#fff);box-shadow:0 5px 18px rgba(20,40,60,.04)}
+#page-holidays .personal-event-card.is-past{opacity:.72}
+#page-holidays .personal-event-card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+#page-holidays .personal-event-card h3{font-size:15px;margin:0;overflow-wrap:anywhere}
+#page-holidays .personal-event-date{font-size:11px;color:var(--muted);margin-top:5px}
+#page-holidays .personal-event-description{font-size:12px;color:var(--muted);line-height:1.5;margin-top:9px;overflow-wrap:anywhere}
+#page-holidays .personal-event-countdown{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
+#page-holidays .personal-event-countdown span{padding:8px 10px;border-radius:9px;background:#e9f8f0;color:#087a55;font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
+#page-holidays .personal-event-actions{display:flex;gap:6px;flex-shrink:0}
+#page-holidays .personal-event-actions button{padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:var(--surface,#fff);color:var(--text);font-size:11px;font-weight:700}
+#page-holidays .personal-event-actions .delete{color:#c2414b}
+#page-holidays .personal-events-empty{padding:22px 14px;text-align:center;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:13px}
+#page-holidays .personal-event-section-label{grid-column:1/-1;font-size:11px;text-transform:uppercase;letter-spacing:.7px;font-weight:850;color:var(--muted);margin:5px 0 -3px}
+@media(max-width:600px){#page-holidays .personal-event-card{padding:13px}#page-holidays .personal-event-card-top{flex-direction:column}#page-holidays .personal-event-actions{align-self:flex-end}}
+</style>
+
 </head>
 <body>
 
@@ -4198,6 +4223,23 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
         </div>
       </div>
     </section>
+
+    <section class="panel savely-personal-events-panel" aria-labelledby="personalEventsTitle">
+      <div class="panel-head" style="align-items:center;gap:12px;flex-wrap:wrap">
+        <div><h2 id="personalEventsTitle">Personal Events</h2><div class="panel-sub">Add birthdays, trips, appointments, deadlines, or any date you want to count down to.</div></div>
+        <button type="button" class="btn btn-primary" id="personalEventAddButton" onclick="openPersonalEventForm()">＋ Add event</button>
+      </div>
+      <form id="personalEventForm" class="personal-event-form" onsubmit="savePersonalEvent(event)" hidden>
+        <input type="hidden" id="personalEventId">
+        <div class="form-grid">
+          <div class="field"><label for="personalEventName">Event name</label><input id="personalEventName" maxlength="90" placeholder="e.g. Birthday, Concert, Vacation" required></div>
+          <div class="field"><label for="personalEventDate">Event date</label><input id="personalEventDate" type="date" required></div>
+          <div class="field full"><label for="personalEventDescription">Description (optional)</label><textarea id="personalEventDescription" rows="2" maxlength="300" placeholder="Add a short note about this event"></textarea></div>
+        </div>
+        <div class="form-actions" style="justify-content:flex-end"><button type="button" class="btn btn-light" onclick="closePersonalEventForm()">Cancel</button><button type="submit" class="btn btn-primary" id="personalEventSaveButton">Save event</button></div>
+      </form>
+      <div id="personalEventsList" class="personal-events-list" aria-live="polite"></div>
+    </section>
     <div class="holiday-pending-note">Eid’l Fitr and Eid’l Adha dates are announced separately after official dates are determined. Local or regional special days may also be declared separately.</div>
   </section>
 
@@ -4215,9 +4257,9 @@ const STORE='savely_html_v1';
 const peso=n=>new Intl.NumberFormat('en-PH',{style:'currency',currency:'PHP',maximumFractionDigits:2}).format(Number(n)||0);
 const todayISO=()=>new Date().toISOString().slice(0,10);
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36);
-const seed=()=>({debtRecords:[],accounts:[{id:'main',name:'Main Savings',type:'Savings',opening:50000,color:'green'},{id:'emergency',name:'Emergency Fund',type:'Savings',opening:0,color:'orange'}],goals:[],transactions:[],budgets:[{id:uid(),category:'Food & groceries',limit:5000},{id:uid(),category:'Transportation',limit:2000},{id:uid(),category:'Shopping',limit:2500},{id:uid(),category:'Bills & utilities',limit:3000}],recurring:[],savingsList:[],monthlySalary:0,salaryPayDay:'custom',salaryNotes:'',salaryUpdatedAt:null,salaryYearSettings:{}});
+const seed=()=>({debtRecords:[],accounts:[{id:'main',name:'Main Savings',type:'Savings',opening:50000,color:'green'},{id:'emergency',name:'Emergency Fund',type:'Savings',opening:0,color:'orange'}],goals:[],transactions:[],budgets:[{id:uid(),category:'Food & groceries',limit:5000},{id:uid(),category:'Transportation',limit:2000},{id:uid(),category:'Shopping',limit:2500},{id:uid(),category:'Bills & utilities',limit:3000}],recurring:[],savingsList:[],monthlySalary:0,salaryPayDay:'custom',salaryNotes:'',salaryUpdatedAt:null,salaryYearSettings:{},salaryCutoffRecords:{},personalEvents:[]});
 let data;
-try{data=JSON.parse(localStorage.getItem(STORE))||seed();if(!Array.isArray(data.savingsList))data.savingsList=[];if(!Array.isArray(data.debtRecords))data.debtRecords=[]}catch(e){data=seed()}
+try{data=JSON.parse(localStorage.getItem(STORE))||seed();if(!Array.isArray(data.savingsList))data.savingsList=[];if(!Array.isArray(data.debtRecords))data.debtRecords=[];if(!Array.isArray(data.personalEvents))data.personalEvents=[];if(!data.salaryCutoffRecords||typeof data.salaryCutoffRecords!=='object')data.salaryCutoffRecords={}}catch(e){data=seed()}
 function save(){try{localStorage.setItem(STORE,JSON.stringify(data))}catch(e){toast('Browser storage is unavailable. Export a backup to keep your data safe.')}render()}
 
 function getTrackedDailyInterestRate(item){
@@ -8070,7 +8112,8 @@ let savelyHolidayFilter='all',savelyHolidayYear=Number(new Intl.DateTimeFormat('
 function phHolidayDate(iso){return new Date(iso+'T00:00:00+08:00');}
 function phHolidayLabel(iso,opts){return new Intl.DateTimeFormat('en-PH',Object.assign({weekday:'long',month:'long',day:'numeric',year:'numeric',timeZone:'Asia/Manila'},opts||{})).format(phHolidayDate(iso));}
 function phHolidayRemaining(iso){return phHolidayDate(iso).getTime()-Date.now();}
-function phHolidayIsStillUpcoming(h){return phHolidayDate(h.date).getTime()+86400000>Date.now();}
+function phTodayISO(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Manila',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
+function phHolidayIsStillUpcoming(h){return String(h.date||'')>phTodayISO();}
 function phNextHoliday(){const now=Date.now();return Object.keys(SAVELY_PH_HOLIDAYS).flatMap(y=>SAVELY_PH_HOLIDAYS[y]||[]).filter(h=>['regular','special','regional'].includes(h.type)&&phHolidayIsStillUpcoming(h)).sort((a,b)=>a.date.localeCompare(b.date))[0]||null;}
 function phCountdownParts(ms){let sec=Math.max(0,Math.floor(ms/1000)),days=Math.floor(sec/86400);sec%=86400;let hours=Math.floor(sec/3600);sec%=3600;let mins=Math.floor(sec/60);sec%=60;return [days,String(hours).padStart(2,'0'),String(mins).padStart(2,'0'),String(sec).padStart(2,'0')];}
 function phHolidayType(type){return type==='regular'?'Regular holiday':type==='special'?'Special non-working':type==='working'?'Special working day':type==='regional'?'Regional / local':'Public holiday · verify';}
@@ -8122,13 +8165,93 @@ function renderHolidayPage(){
  }
  document.querySelectorAll('[data-holiday-filter]').forEach(b=>b.classList.toggle('active',b.dataset.holidayFilter===savelyHolidayFilter));
  const ys=document.getElementById('holidayYearSelect');if(ys)ys.value=String(savelyHolidayYear);
+ renderPersonalEvents();
  updateHolidayCountdowns();
 }
 function updateHolidayCountdowns(){
  const next=phNextHoliday(),hero=document.getElementById('holidayHeroCountdown');
+ const nextKey=next?next.date+'|'+next.name:'none';
+ if(window.__savelyNextHolidayKey!==undefined&&window.__savelyNextHolidayKey!==nextKey){
+  const name=document.getElementById('holidayNextName'),meta=document.getElementById('holidayNextMeta');
+  if(name)name.textContent=next?next.name:'No upcoming holidays listed';
+  if(meta)meta.textContent=next?`${phHolidayType(next.type)} · ${phHolidayLabel(next.date)}`:'Check back for the next official proclamation';
+  if(typeof renderHolidayPage==='function'&&!window.__savelyHolidayRolloverRendering){window.__savelyHolidayRolloverRendering=true;renderHolidayPage();window.__savelyHolidayRolloverRendering=false;}
+ }
+ window.__savelyNextHolidayKey=nextKey;
  if(hero){if(next){const p=phCountdownParts(phHolidayRemaining(next.date));hero.innerHTML=p.map((v,i)=>`<div><strong>${v}</strong><span>${['Days','Hours','Minutes','Seconds'][i]}</span></div>`).join('');}else hero.innerHTML='<div><strong>—</strong><span>Days</span></div><div><strong>—</strong><span>Hours</span></div><div><strong>—</strong><span>Minutes</span></div><div><strong>—</strong><span>Seconds</span></div>';}
  document.querySelectorAll('[data-holiday-countdown]').forEach(el=>{const ms=phHolidayRemaining(el.dataset.holidayCountdown);el.textContent=ms<=0?'Holiday date reached':`${Math.floor(ms/86400000)} days · ${Math.floor(ms%86400000/3600000)}h ${Math.floor(ms%3600000/60000)}m remaining`;el.classList.toggle('passed',ms<=0);});
+ updatePersonalEventCountdowns();
 }
+
+function personalEventTodayISO(){return phTodayISO();}
+function personalEventDate(iso){return new Date(String(iso)+'T00:00:00+08:00');}
+function personalEventRemaining(iso){return personalEventDate(iso).getTime()-Date.now();}
+function openPersonalEventForm(id){
+ const form=document.getElementById('personalEventForm');if(!form)return;
+ const item=(data.personalEvents||[]).find(x=>x.id===id);
+ document.getElementById('personalEventId').value=item?item.id:'';
+ document.getElementById('personalEventName').value=item?item.name:'';
+ document.getElementById('personalEventDate').value=item?item.date:'';
+ document.getElementById('personalEventDescription').value=item?item.description||'':'';
+ document.getElementById('personalEventSaveButton').textContent=item?'Update event':'Save event';
+ form.hidden=false;form.scrollIntoView({behavior:'smooth',block:'nearest'});
+ document.getElementById('personalEventName').focus();
+}
+function closePersonalEventForm(){
+ const form=document.getElementById('personalEventForm');if(form)form.hidden=true;
+}
+function savePersonalEvent(event){
+ if(event)event.preventDefault();
+ const id=document.getElementById('personalEventId').value;
+ const name=document.getElementById('personalEventName').value.trim();
+ const date=document.getElementById('personalEventDate').value;
+ const description=document.getElementById('personalEventDescription').value.trim();
+ if(!name||!date){toast('Enter an event name and date.');return;}
+ if(!Array.isArray(data.personalEvents))data.personalEvents=[];
+ const record={id:id||uid(),name,date,description,updatedAt:new Date().toISOString()};
+ const index=data.personalEvents.findIndex(x=>x.id===record.id);
+ if(index>=0)data.personalEvents[index]=record;else data.personalEvents.push(record);
+ save();closePersonalEventForm();renderHolidayPage();toast(index>=0?'Personal event updated.':'Personal event added.');
+}
+function editPersonalEvent(id){openPersonalEventForm(id);}
+function deletePersonalEvent(id){
+ const item=(data.personalEvents||[]).find(x=>x.id===id);if(!item)return;
+ if(!confirm('Delete "'+item.name.replace(/["\\]/g,'')+'" from Personal Events?'))return;
+ data.personalEvents=data.personalEvents.filter(x=>x.id!==id);save();renderHolidayPage();toast('Personal event deleted.');
+}
+function renderPersonalEvents(){
+ const root=document.getElementById('personalEventsList');if(!root)return;
+ const today=personalEventTodayISO(),events=Array.isArray(data.personalEvents)?data.personalEvents.slice():[];
+ events.sort((a,b)=>a.date.localeCompare(b.date)||a.name.localeCompare(b.name));
+ if(!events.length){root.innerHTML='<div class="personal-events-empty">No personal events yet. Add your first event to start a countdown.</div>';return;}
+ const upcoming=events.filter(x=>x.date>=today),past=events.filter(x=>x.date<today);
+ const card=item=>{
+  const isPast=item.date<today,isToday=item.date===today;
+  const dateLabel=personalEventDate(item.date).toLocaleDateString('en-PH',{timeZone:'Asia/Manila',weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  const countdown=isPast?'Event date passed':isToday?'🎉 Event day!':'Loading countdown…';
+  return `<article class="personal-event-card${isPast?' is-past':''}" data-personal-event="${esc(item.id)}">
+   <div class="personal-event-card-top"><div><h3>${esc(item.name)}</h3><div class="personal-event-date">${esc(dateLabel)}</div></div>
+    <div class="personal-event-actions"><button type="button" onclick="editPersonalEvent('${esc(item.id)}')">✎ Edit</button><button type="button" class="delete" onclick="deletePersonalEvent('${esc(item.id)}')">Delete</button></div>
+   </div>
+   ${item.description?`<div class="personal-event-description">${esc(item.description)}</div>`:''}
+   <div class="personal-event-countdown" data-personal-event-countdown="${esc(item.id)}"><span>${countdown}</span></div>
+  </article>`;
+ };
+ root.innerHTML=(upcoming.length?'<div class="personal-event-section-label">Upcoming events</div>'+upcoming.map(card).join(''):'')+(past.length?'<div class="personal-event-section-label">Past events</div>'+past.map(card).join(''):'');
+ updatePersonalEventCountdowns();
+}
+function updatePersonalEventCountdowns(){
+ const today=personalEventTodayISO();
+ document.querySelectorAll('[data-personal-event-countdown]').forEach(root=>{
+  const id=root.dataset.personalEventCountdown,item=(data.personalEvents||[]).find(x=>x.id===id);if(!item)return;
+  if(item.date<today){root.innerHTML='<span>Event date passed</span>';return;}
+  if(item.date===today){root.innerHTML='<span>🎉 Event day!</span>';return;}
+  const ms=Math.max(0,personalEventRemaining(item.date)),seconds=Math.floor(ms/1000);
+  const days=Math.floor(seconds/86400),hours=Math.floor(seconds%86400/3600),minutes=Math.floor(seconds%3600/60),secs=seconds%60;
+  root.innerHTML=`<span>${days} days</span><span>${String(hours).padStart(2,'0')} hrs</span><span>${String(minutes).padStart(2,'0')} min</span><span>${String(secs).padStart(2,'0')} sec</span>`;
+ });
+}
+
 function setHolidayFilter(v){savelyHolidayFilter=v;renderHolidayPage();}
 function setHolidayYear(v){savelyHolidayYear=Number(v)||Number(new Intl.DateTimeFormat('en',{year:'numeric',timeZone:'Asia/Manila'}).format(new Date()));renderHolidayPage();}
 function jumpToHolidayMonth(month){const el=document.getElementById(`holiday-month-${savelyHolidayYear}-${String(month).padStart(2,'0')}`);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});else toast('No holidays listed for that month in the selected year.');}
