@@ -3853,7 +3853,6 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
     <button data-page="holidays" aria-label="Calendars" title="Calendars"><span class="ico">▦</span><span class="nav-text">Calendars</span></button>
 
     <button data-page="goals" aria-label="Savings goals" title="Savings goals"><span class="ico">◎</span><span class="nav-text">Savings goals</span></button>
-    <button data-page="interest" aria-label="Interest Calculator" title="Interest Calculator"><span class="ico">％</span><span class="nav-text">Interest Calculator</span></button>
     <button data-page="cards" aria-label="Cards" title="Cards"><span class="ico">▤</span><span class="nav-text">Cards</span></button>
 
     
@@ -14789,6 +14788,10 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
       <span class="savely-mobile-fab-label">Calculator</span>
       <span class="savely-mobile-fab-icon savely-mobile-fab-secondary" aria-hidden="true">▤</span>
     </button>
+    <button type="button" class="savely-mobile-fab-item" id="savelyMobileInterestAction" hidden>
+      <span class="savely-mobile-fab-label">Interest Calculator</span>
+      <span class="savely-mobile-fab-icon savely-mobile-fab-utility" aria-hidden="true">％</span>
+    </button>
   </div>
   <button type="button" id="savelyMobileFabToggle" aria-label="Open quick actions" aria-expanded="false">
     <span class="savely-mobile-fab-plus" aria-hidden="true">＋</span>
@@ -14896,6 +14899,7 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   const weatherButton=document.getElementById('savelyMobileWeatherAction');
   const holidayRefreshButton=document.getElementById('savelyMobileHolidayRefreshAction');
   const calcButton=document.getElementById('savelyMobileCalculatorAction');
+  const interestButton=document.getElementById('savelyMobileInterestAction');
 
   function activePage(){
     return document.querySelector('.page.active')?.id || 'page-dashboard';
@@ -14927,6 +14931,8 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
       calcButton.setAttribute('aria-label',onCalendar?'Open Days Calculator':'Open calculator');
     }
     addButton.hidden=!action;
+    // Interest Calculator is a Savings-only quick action, not a permanent sidebar item.
+    if(interestButton)interestButton.hidden=page!=='page-financial-list';
     if(action){
       addLabel.textContent=action.label;
       addIcon.textContent=action.icon;
@@ -14980,6 +14986,11 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
     }else{
       document.getElementById('savelyCalculatorFab')?.click();
     }
+  });
+  if(interestButton)interestButton.addEventListener('click',()=>{
+    close();
+    if(typeof window.showPage==='function')window.showPage('interest');
+    else document.querySelector('#nav button[data-page="financial-list"]')?.click();
   });
   document.addEventListener('click',e=>{
     if(!root.contains(e.target))close();
