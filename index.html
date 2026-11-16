@@ -8328,19 +8328,38 @@ function renderPersonalEvents(){
  events.sort((a,b)=>a.date.localeCompare(b.date)||a.name.localeCompare(b.name));
  if(!events.length){root.innerHTML='<div class="personal-events-empty">No personal events yet. Add your first event to start a countdown.</div>';return;}
  const upcoming=events.filter(x=>x.date>=today),past=events.filter(x=>x.date<today);
- const card=item=>{
+ const row=item=>{
   const isPast=item.date<today,isToday=item.date===today;
-  const dateLabel=personalEventDate(item.date).toLocaleDateString('en-PH',{timeZone:'Asia/Manila',weekday:'long',month:'long',day:'numeric',year:'numeric'});
-  const countdown=isPast?'Event date passed':isToday?'🎉 Event day!':'Loading countdown…';
-  return `<article class="personal-event-card${isPast?' is-past':''}" data-personal-event="${esc(item.id)}">
-   <div class="personal-event-card-top"><div><h3>${esc(item.name)}</h3><div class="personal-event-date">${esc(dateLabel)}</div></div>
+  const date=personalEventDate(item.date);
+  const weekday=date.toLocaleDateString('en-PH',{timeZone:'Asia/Manila',weekday:'long'});
+  const monthDay=date.toLocaleDateString('en-PH',{timeZone:'Asia/Manila',month:'long',day:'numeric'});
+  const dateLabel=date.toLocaleDateString('en-PH',{timeZone:'Asia/Manila',weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  const countdown=isPast?'Event date passed':isToday?'Event day!':'Loading countdown…';
+  return `<article class="holiday-row personal-event-row${isPast?' is-past':''}" data-personal-event="${esc(item.id)}">
+   <div class="holiday-date">${esc(weekday)}, ${esc(monthDay)}<small>${esc(dateLabel)}</small></div>
+   <div class="holiday-name-cell">
+    <div class="holiday-name">${esc(item.name)}</div>
+    <div class="holiday-description">${item.description?esc(item.description):'Personal event'}</div>
     <div class="personal-event-actions"><button type="button" onclick="editPersonalEvent('${esc(item.id)}')">✎ Edit</button><button type="button" class="delete" onclick="deletePersonalEvent('${esc(item.id)}')">Delete</button></div>
    </div>
-   ${item.description?`<div class="personal-event-description">${esc(item.description)}</div>`:''}
-   <div class="personal-event-countdown" data-personal-event-countdown="${esc(item.id)}"><span>${countdown}</span></div>
+   <div class="holiday-type-cell"><span class="holiday-type personal-event-type">Personal event</span></div>
+   <div class="holiday-countdown-cell" data-personal-event-countdown="${esc(item.id)}"><span>${countdown}</span></div>
   </article>`;
  };
- root.innerHTML=(upcoming.length?'<div class="personal-event-section-label">Upcoming events</div>'+upcoming.map(card).join(''):'')+(past.length?'<div class="personal-event-section-label">Past events</div>'+past.map(card).join(''):'');
+ const monthGroups=(items)=>{
+  const groups=new Map();
+  items.forEach(item=>{
+   const key=item.date.slice(0,7);
+   if(!groups.has(key))groups.set(key,[]);
+   groups.get(key).push(item);
+  });
+  return [...groups.entries()].map(([key,items])=>{
+   const date=personalEventDate(key+'-01');
+   const title=date.toLocaleDateString('en-PH',{timeZone:'Asia/Manila',month:'long',year:'numeric'});
+   return `<section class="holiday-month-group personal-event-month-group"><h3>${esc(title)}<span>${items.length} ${items.length===1?'event':'events'}</span></h3><div class="holiday-list">${items.map(row).join('')}</div></section>`;
+  }).join('');
+ };
+ root.innerHTML=(upcoming.length?'<div class="personal-event-section-label">Upcoming events</div>'+monthGroups(upcoming):'')+(past.length?'<div class="personal-event-section-label">Past events</div>'+monthGroups(past):'');
  updatePersonalEventCountdowns();
  if(typeof savelyCalendarContentTab!=='undefined'&&savelyCalendarContentTab==='personal')updatePersonalEventHero();
 }
@@ -14879,6 +14898,63 @@ html body #page-salary .salary-next-payday{
 /* Remove only the Calendar page heading; keep the global header actions intact. */
 body:has(#page-holidays.active) .topbar>div:first-child{display:none!important}
 body:has(#page-holidays.active) .topbar{min-height:0!important;margin-bottom:12px!important}
+</style>
+
+
+<style id="savely-personal-events-holiday-list-layout-v1">
+#page-holidays .personal-events-inline-panel{padding:20px!important}
+#page-holidays .personal-events-inline-panel .personal-events-list{
+ display:block!important;margin-top:15px!important;
+}
+#page-holidays .personal-event-month-group{margin-top:12px!important}
+#page-holidays .personal-event-month-group h3{
+ display:flex;align-items:center;justify-content:space-between;gap:12px;
+ margin:0 0 10px;padding-bottom:9px;border-bottom:1px solid var(--line);
+ font-size:14px;font-weight:850;color:var(--text);
+}
+#page-holidays .personal-event-month-group h3 span{
+ padding:5px 9px;border-radius:999px;background:#f1f6f4;
+ color:var(--muted);font-size:10px;font-weight:750;
+}
+#page-holidays .personal-event-row{
+ grid-template-columns: minmax(120px, .72fr) minmax(180px,1.4fr) minmax(130px,.72fr) minmax(220px,1.2fr)!important;
+}
+#page-holidays .personal-event-row.is-past{opacity:.68;background:#f5f6f8}
+#page-holidays .personal-event-row .holiday-name-cell{min-width:0}
+#page-holidays .personal-event-row .holiday-name{overflow-wrap:anywhere}
+#page-holidays .personal-event-row .holiday-description{overflow-wrap:anywhere}
+#page-holidays .personal-event-type{background:#e9f8f0!important;color:#087a55!important}
+#page-holidays .personal-event-row .holiday-countdown-cell{
+ display:flex!important;align-items:center;gap:6px;flex-wrap:wrap;min-width:0;
+}
+#page-holidays .personal-event-row .holiday-countdown-cell span{
+ display:inline-flex;align-items:center;justify-content:center;
+ min-height:29px;padding:7px 10px;border-radius:9px;
+ background:#e9f8f0;color:#087a55;font-size:11px;line-height:1;
+ font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+#page-holidays .personal-event-row.is-past .holiday-countdown-cell span{
+ background:#eef0f3;color:#7b8492;
+}
+#page-holidays .personal-event-row .personal-event-actions{
+ display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;
+}
+#page-holidays .personal-event-row .personal-event-actions button{
+ padding:4px 8px;border:1px solid var(--line);border-radius:7px;
+ background:var(--card,#fff);color:var(--text);font-size:10px;font-weight:750;
+}
+#page-holidays .personal-event-row .personal-event-actions button.delete{color:#c2414b}
+@media(max-width:900px){
+ #page-holidays .personal-event-row{grid-template-columns:100px minmax(0,1fr) minmax(125px,.7fr)!important}
+ #page-holidays .personal-event-row .holiday-countdown-cell{grid-column:2/4}
+}
+@media(max-width:600px){
+ #page-holidays .personal-event-row{grid-template-columns:78px minmax(0,1fr)!important}
+ #page-holidays .personal-event-row .holiday-type-cell,
+ #page-holidays .personal-event-row .holiday-countdown-cell{grid-column:2}
+ #page-holidays .personal-event-row .holiday-countdown-cell{gap:5px}
+ #page-holidays .personal-event-row .holiday-countdown-cell span{padding:7px 8px;font-size:10px}
+}
 </style>
 
 </body>
