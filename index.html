@@ -4016,9 +4016,17 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
         <div class="stat-value" id="salaryAnnualRemainingDisplay">₱0.00 <span class="annual-projection-inline">/ <span id="salaryAnnualDisplay">₱0.00</span></span></div>
         <div class="stat-foot" id="salaryAnnualRemainingFoot">Estimated future cutoffs through December</div>
         <div class="salary-next-payday" id="salaryNextPaydayCountdown" aria-live="off">
-          <span class="salary-next-payday-label">Next payday</span>
-          <strong id="salaryNextPaydayDate">Calculating…</strong>
-          <span class="salary-next-payday-timer" id="salaryNextPaydayTimer">—</span>
+          <div class="salary-next-payday-heading">
+            <span class="salary-next-payday-label">Next payday</span>
+            <strong id="salaryNextPaydayDate">Calculating…</strong>
+          </div>
+          <div class="salary-next-payday-parts" id="salaryNextPaydayParts">
+            <div><strong id="salaryPaydayDays">—</strong><span>Days</span></div>
+            <div><strong id="salaryPaydayHours">—</strong><span>Hours</span></div>
+            <div><strong id="salaryPaydayMinutes">—</strong><span>Minutes</span></div>
+            <div><strong id="salaryPaydaySeconds">—</strong><span>Seconds</span></div>
+          </div>
+          <span class="salary-next-payday-timer" id="salaryNextPaydayTimer" hidden>—</span>
         </div>
       </div>
     </div>
@@ -15046,7 +15054,7 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
 </style>
 <div id="salaryCutoffBackdrop" role="dialog" aria-modal="true" aria-labelledby="salaryCutoffTitle">
  <div id="salaryCutoffModal">
-  <div class="sc-head"><div><h2 id="salaryCutoffTitle">Edit salary cutoff</h2><div class="sc-muted" id="salaryCutoffDateLabel">Cutoff details</div></div><button type="button" class="btn btn-light" onclick="closeSalaryCutoffEditor()">✕ Close</button></div>
+  <div class="sc-head"><div><h2 id="salaryCutoffTitle">Edit salary cutoff</h2><div class="sc-muted" id="salaryCutoffDateLabel">Cutoff details</div></div></div>
   <div class="sc-field"><label for="salaryCutoffGross">Cutoff salary before deductions (₱)</label><input id="salaryCutoffGross" type="number" min="0" step="0.01" inputmode="decimal"></div>
   <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin:18px 0 9px"><strong style="font-size:13px">Salary deductions</strong><span class="sc-muted">Add each deduction separately</span></div>
   <div id="salaryCutoffDeductionRows"></div>
@@ -16389,6 +16397,49 @@ html body #page-salary .salary-next-payday-timer{font-size:12px!important;paddin
 }
 </style>
 
+
+<style id="savely-salary-page-cleanup-v3">
+/* Remove the generic page title and description only while Salary is active. */
+body:has(#page-salary.active) .topbar > div:first-child{display:none!important}
+body:has(#page-salary.active) .topbar{margin-bottom:8px!important;min-height:0!important}
+body:has(#page-salary.active) .main{padding-top:12px!important}
+/* Bring the calendar and its year selector closer to the top of the page. */
+#page-salary .salary-summary-cards{margin-bottom:12px!important}
+#page-salary .salary-calendar-panel{margin-top:0!important}
+#page-salary .salary-calendar-year-tabs-row{margin-top:0!important;padding-top:0!important}
+/* Add breathing room between the annual total and its explanatory line. */
+#page-salary .salary-annual-remaining-stat #salaryAnnualRemainingFoot{
+ display:block!important;margin-top:12px!important;padding-top:2px!important;line-height:1.55!important
+}
+/* Larger cutoff editor; remove the header Close control (Cancel remains available). */
+#salaryCutoffModal{width:min(920px,calc(100vw - 40px))!important;max-width:920px!important;max-height:92vh!important;padding:32px!important;border-radius:21px!important}
+#salaryCutoffModal .sc-head{margin-bottom:24px!important}
+#salaryCutoffModal .sc-head h2{font-size:23px!important}
+#salaryCutoffModal .sc-muted{font-size:13px!important}
+#salaryCutoffModal .sc-field{gap:9px!important;margin-bottom:18px!important}
+#salaryCutoffModal label{font-size:13px!important}
+#salaryCutoffModal input{min-height:52px!important;padding:13px 15px!important;font-size:15px!important;border-radius:11px!important}
+#salaryCutoffModal .sc-deduction-row{grid-template-columns:minmax(0,1fr) minmax(150px,210px) 42px!important;gap:10px!important;margin-bottom:10px!important}
+#salaryCutoffModal .sc-remove{height:48px!important}
+#salaryCutoffModal .sc-add{padding:12px 16px!important;font-size:13px!important}
+#salaryCutoffModal .sc-totals{gap:12px!important;margin-top:22px!important}
+#salaryCutoffModal .sc-total{padding:16px!important;min-height:78px!important}
+#salaryCutoffModal .sc-total small{font-size:11px!important;margin-bottom:8px!important}
+#salaryCutoffModal .sc-total strong{font-size:clamp(15px,2vw,19px)!important}
+#salaryCutoffModal .sc-inline-note{font-size:12px!important;margin-top:12px!important;line-height:1.55!important}
+#salaryCutoffModal .sc-actions{margin-top:24px!important}
+#salaryCutoffModal .sc-actions .btn{min-height:46px!important;padding:12px 20px!important}
+@media(max-width:650px){
+ body:has(#page-salary.active) .main{padding-top:10px!important}
+ #salaryCutoffBackdrop{padding:10px!important}
+ #salaryCutoffModal{width:100%!important;max-height:calc(100vh - 20px)!important;padding:20px!important}
+ #salaryCutoffModal .sc-deduction-row{grid-template-columns:minmax(0,1fr) 105px 36px!important;gap:6px!important}
+ #salaryCutoffModal .sc-totals{grid-template-columns:1fr!important}
+ #salaryCutoffModal .sc-total{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:10px!important;min-height:0!important}
+ #salaryCutoffModal .sc-total small{margin:0!important}
+}
+</style>
+
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
@@ -17272,14 +17323,19 @@ html body #topbarAddDebtButton {
  function update(){
   const dateEl=$('salaryNextPaydayDate'),timerEl=$('salaryNextPaydayTimer');
   if(!dateEl||!timerEl)return;
+  const setParts=(days,hours,minutes,seconds)=>{
+   const values={salaryPaydayDays:days,salaryPaydayHours:hours,salaryPaydayMinutes:minutes,salaryPaydaySeconds:seconds};
+   Object.entries(values).forEach(([id,value])=>{const el=$(id);if(el)el.textContent=String(value).padStart(2,'0');});
+  };
   const next=findNextPayday();
-  if(!next){dateEl.textContent='No upcoming payday';timerEl.textContent='Set your salary and payday schedule';return;}
-  if(next.custom){dateEl.textContent='Payday varies';timerEl.textContent='Set a fixed payday schedule to enable countdown';return;}
+  if(!next){dateEl.textContent='No upcoming payday';timerEl.textContent='Set your salary and payday schedule';setParts('—','—','—','—');return;}
+  if(next.custom){dateEl.textContent='Payday varies';timerEl.textContent='Set a fixed payday schedule to enable countdown';setParts('—','—','—','—');return;}
   const [y,m,d]=next.date.split('-').map(Number);
   const target=new Date(y,m-1,d,0,0,0,0),now=new Date(),diff=target.getTime()-now.getTime();
   dateEl.textContent=target.toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
-  if(diff<=0){timerEl.textContent='Payday today';return;}
+  if(diff<=0){timerEl.textContent='Payday today';setParts(0,0,0,0);return;}
   const seconds=Math.floor(diff/1000),days=Math.floor(seconds/86400),hours=Math.floor(seconds%86400/3600),minutes=Math.floor(seconds%3600/60),secs=seconds%60;
+  setParts(days,hours,minutes,secs);
   timerEl.textContent=`${days}d ${String(hours).padStart(2,'0')}h ${String(minutes).padStart(2,'0')}m ${String(secs).padStart(2,'0')}s remaining`;
  }
  update();
@@ -17349,5 +17405,33 @@ html body #page-salary #salaryNextPaydayCountdown{
   padding:0!important;
   border-radius:0!important;
   min-height:0!important;
+}
+</style>
+
+<style id="savely-salary-countdown-holiday-style-v1">
+/* Match the four-part holiday countdown layout while retaining Salary's blue hero. */
+html body #page-salary .salary-annual-remaining-stat{min-height:188px!important;padding-right:clamp(440px,48%,620px)!important}
+html body #page-salary #salaryNextPaydayCountdown{
+ position:absolute!important;top:22px!important;right:28px!important;left:auto!important;
+ width:min(48%,620px)!important;max-width:620px!important;min-height:0!important;
+ margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;outline:0!important;
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:12px!important;
+}
+html body #page-salary .salary-next-payday-heading{display:flex;align-items:center;justify-content:space-between;gap:10px 16px;flex-wrap:wrap}
+html body #page-salary .salary-next-payday-label{font-size:11px!important;font-weight:800!important;color:#fff!important;opacity:.95!important}
+html body #page-salary .salary-next-payday-heading>strong{font-size:12px!important;font-weight:850!important;color:#fff!important;line-height:1.4!important}
+html body #page-salary .salary-next-payday-parts{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;width:100%!important}
+html body #page-salary .salary-next-payday-parts>div{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;min-width:0!important;padding:0!important;background:transparent!important;border:0!important;border-radius:0!important}
+html body #page-salary .salary-next-payday-parts strong{font-size:clamp(24px,2.1vw,32px)!important;line-height:1.05!important;font-weight:850!important;letter-spacing:-.6px!important;font-variant-numeric:tabular-nums!important;color:#fff!important}
+html body #page-salary .salary-next-payday-parts span{font-size:10px!important;font-weight:750!important;color:#fff!important;opacity:.95!important}
+html body #page-salary #salaryNextPaydayTimer{display:none!important}
+@media(max-width:760px){
+ html body #page-salary .salary-annual-remaining-stat{min-height:0!important;padding:22px!important}
+ html body #page-salary #salaryNextPaydayCountdown{position:static!important;width:100%!important;max-width:none!important;margin-top:18px!important;gap:10px!important}
+ html body #page-salary .salary-next-payday-heading{justify-content:flex-start!important}
+ html body #page-salary .salary-next-payday-parts{gap:4px!important}
+ html body #page-salary .salary-next-payday-parts strong{font-size:24px!important}
+ html body #page-salary .salary-next-payday-parts span{font-size:9px!important}
 }
 </style>
