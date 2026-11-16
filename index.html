@@ -4181,12 +4181,12 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
   <section class="page" id="page-holidays" aria-label="Calendar">
     <div class="holiday-hero">
       <div class="holiday-hero-copy">
-        <span class="holiday-eyebrow">NEXT UPCOMING HOLIDAY</span>
+        <span class="holiday-eyebrow" id="holidayHeroEyebrow">NEXT UPCOMING HOLIDAY</span>
         <div class="holiday-next-name" id="holidayNextName">Loading holidays…</div>
         <div class="holiday-next-meta" id="holidayNextMeta">Checking the latest calendar</div>
       </div>
       <div class="holiday-countdown-wrap">
-        <div class="holiday-countdown-title">Time until the next holiday</div>
+        <div class="holiday-countdown-title" id="holidayHeroCountdownTitle">Time until the next holiday</div>
         <div class="holiday-countdown" id="holidayHeroCountdown" aria-live="off">
           <div><strong>—</strong><span>Days</span></div><div><strong>—</strong><span>Hours</span></div><div><strong>—</strong><span>Minutes</span></div><div><strong>—</strong><span>Seconds</span></div>
         </div>
@@ -8116,7 +8116,20 @@ function phHolidayLabel(iso,opts){return new Intl.DateTimeFormat('en-PH',Object.
 function phHolidayRemaining(iso){return phHolidayDate(iso).getTime()-Date.now();}
 function phTodayISO(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Manila',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
 function phHolidayIsStillUpcoming(h){return String(h.date||'')>phTodayISO();}
-function phNextHoliday(){const now=Date.now();return Object.keys(SAVELY_PH_HOLIDAYS).flatMap(y=>SAVELY_PH_HOLIDAYS[y]||[]).filter(h=>['regular','special','regional'].includes(h.type)&&phHolidayIsStillUpcoming(h)).sort((a,b)=>a.date.localeCompare(b.date))[0]||null;}
+// Keep one holiday entry per date. Prefer classified proclamation/calendar records
+// over duplicate English/Filipino-name entries returned by the public feed.
+function phDeduplicateHolidayEntries(items){
+ const byDate=new Map();
+ (items||[]).forEach(h=>{
+  if(!h||!h.date)return;
+  const old=byDate.get(h.date);
+  const isClassified=h.type&&h.type!=='unverified';
+  const oldClassified=old&&old.type&&old.type!=='unverified';
+  if(!old||(isClassified&&!oldClassified))byDate.set(h.date,h);
+ });
+ return Array.from(byDate.values());
+}
+function phNextHoliday(){return phDeduplicateHolidayEntries(Object.keys(SAVELY_PH_HOLIDAYS).flatMap(y=>SAVELY_PH_HOLIDAYS[y]||[])).filter(h=>['regular','special','regional'].includes(h.type)&&phHolidayIsStillUpcoming(h)).sort((a,b)=>a.date.localeCompare(b.date))[0]||null;}
 function phCountdownParts(ms){let sec=Math.max(0,Math.floor(ms/1000)),days=Math.floor(sec/86400);sec%=86400;let hours=Math.floor(sec/3600);sec%=3600;let mins=Math.floor(sec/60);sec%=60;return [days,String(hours).padStart(2,'0'),String(mins).padStart(2,'0'),String(sec).padStart(2,'0')];}
 function phHolidayType(type){return type==='regular'?'Regular holiday':type==='special'?'Special non-working':type==='working'?'Special working day':type==='regional'?'Regional / local':'Public holiday · verify';}
 
@@ -8140,7 +8153,7 @@ function ensure2026NovDecHolidays(){
 }
 function renderHolidayPage(){
  ensure2026NovDecHolidays();
- const yearItems=SAVELY_PH_HOLIDAYS[savelyHolidayYear]||[],upcomingYearItems=yearItems.filter(phHolidayIsStillUpcoming),next=phNextHoliday();
+ const yearItems=phDeduplicateHolidayEntries(SAVELY_PH_HOLIDAYS[savelyHolidayYear]||[]),upcomingYearItems=yearItems.filter(phHolidayIsStillUpcoming),next=phNextHoliday();
  const name=document.getElementById('holidayNextName'),meta=document.getElementById('holidayNextMeta');
  if(name)name.textContent=next?next.name:'No upcoming holidays listed';
  if(meta)meta.textContent=next?`${phHolidayType(next.type)} · ${phHolidayLabel(next.date)}`:'Check back for the next official proclamation';
@@ -8170,7 +8183,50 @@ function renderHolidayPage(){
  renderPersonalEvents();
  updateHolidayCountdowns();
 }
+function updatePersonalEventHero(){
+ const eyebrow=document.getElementById('holidayHeroEyebrow');
+ const name=document.getElementById('holidayNextName');
+ const meta=document.getElementById('holidayNextMeta');
+ const title=document.getElementById('holidayHeroCountdownTitle');
+ const hero=document.getElementById('holidayHeroCountdown');
+ if(eyebrow)eyebrow.textContent='NEXT PERSONAL EVENT';
+ if(title)title.textContent='Time until your next personal event';
+ const today=personalEventTodayISO();
+ const next=(Array.isArray(data.personalEvents)?data.personalEvents:[])
+  .filter(item=>item&&item.date>=today)
+  .sort((a,b)=>a.date.localeCompare(b.date)||String(a.name||'').localeCompare(String(b.name||'')))[0]||null;
+ if(!next){
+  if(name)name.textContent='No upcoming personal events';
+  if(meta)meta.textContent='Add a personal event to start your countdown';
+  if(hero)hero.innerHTML='<div><strong>—</strong><span>Days</span></div><div><strong>—</strong><span>Hours</span></div><div><strong>—</strong><span>Minutes</span></div><div><strong>—</strong><span>Seconds</span></div>';
+  return;
+ }
+ const date=personalEventDate(next.date);
+ if(name)name.textContent=next.name;
+ if(meta)meta.textContent='Personal event · '+date.toLocaleDateString('en-PH',{timeZone:'Asia/Manila',weekday:'long',month:'long',day:'numeric',year:'numeric'});
+ if(hero){
+  if(next.date===today){
+   hero.innerHTML='<div><strong>0</strong><span>Days</span></div><div><strong>00</strong><span>Hours</span></div><div><strong>00</strong><span>Minutes</span></div><div><strong>00</strong><span>Seconds</span></div>';
+  }else{
+   const seconds=Math.max(0,Math.floor(personalEventRemaining(next.date)/1000));
+   const parts=[Math.floor(seconds/86400),String(Math.floor(seconds%86400/3600)).padStart(2,'0'),String(Math.floor(seconds%3600/60)).padStart(2,'0'),String(seconds%60).padStart(2,'0')];
+   hero.innerHTML=parts.map((v,i)=>`<div><strong>${v}</strong><span>${['Days','Hours','Minutes','Seconds'][i]}</span></div>`).join('');
+  }
+ }
+}
+function updateHolidayHeroLabels(){
+ const eyebrow=document.getElementById('holidayHeroEyebrow');
+ const title=document.getElementById('holidayHeroCountdownTitle');
+ if(eyebrow)eyebrow.textContent='NEXT UPCOMING HOLIDAY';
+ if(title)title.textContent='Time until the next holiday';
+}
 function updateHolidayCountdowns(){
+ if(typeof savelyCalendarContentTab!=='undefined'&&savelyCalendarContentTab==='personal'){
+  updatePersonalEventHero();
+  updatePersonalEventCountdowns();
+  return;
+ }
+ updateHolidayHeroLabels();
  const next=phNextHoliday(),hero=document.getElementById('holidayHeroCountdown');
  const nextKey=next?next.date+'|'+next.name:'none';
  if(window.__savelyNextHolidayKey!==undefined&&window.__savelyNextHolidayKey!==nextKey){
@@ -8241,6 +8297,7 @@ function renderPersonalEvents(){
  };
  root.innerHTML=(upcoming.length?'<div class="personal-event-section-label">Upcoming events</div>'+upcoming.map(card).join(''):'')+(past.length?'<div class="personal-event-section-label">Past events</div>'+past.map(card).join(''):'');
  updatePersonalEventCountdowns();
+ if(typeof savelyCalendarContentTab!=='undefined'&&savelyCalendarContentTab==='personal')updatePersonalEventHero();
 }
 function updatePersonalEventCountdowns(){
  const today=personalEventTodayISO();
@@ -8267,7 +8324,7 @@ function setCalendarContentTab(tab){
  document.querySelectorAll('#page-holidays [data-holiday-filter]').forEach(btn=>btn.hidden=personal);
  const tabButton=document.getElementById('personalEventsTabButton');
  if(tabButton){tabButton.classList.toggle('active',personal);tabButton.setAttribute('aria-pressed',String(personal));}
- if(personal)renderPersonalEvents();
+ if(personal){renderPersonalEvents();updatePersonalEventHero();}
  else renderHolidayPage();
  document.getElementById('savelyMobileFabToggle')?.dispatchEvent(new Event('savely:refresh'));
 }
@@ -8331,7 +8388,7 @@ async function refreshPhilippineHolidays(manual){
  holidaySyncStatus('Checking public holiday feed…');let added=0,success=false;
  for(const year of [2026,2027,2028]){
   try{const r=await fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/PH`,{cache:'no-store'});if(!r.ok)throw new Error('Feed unavailable');const items=await r.json();const arr=SAVELY_PH_HOLIDAYS[year]||(SAVELY_PH_HOLIDAYS[year]=[]);
-   items.forEach(x=>{const date=String(x.date||'').slice(0,10),name=String(x.localName||x.name||'').trim();if(!date||!name||arr.some(h=>h.date===date&&h.name.toLowerCase()===name.toLowerCase()))return;arr.push({date,name,type:'unverified',desc:'Listed in the public holiday feed; confirm its Philippine legal classification.',source:'Nager.Date public holiday feed'});added++;});success=true;
+   items.forEach(x=>{const date=String(x.date||'').slice(0,10),name=String(x.localName||x.name||'').trim();if(!date||!name||arr.some(h=>h.date===date))return;arr.push({date,name,type:'unverified',desc:'Listed in the public holiday feed; confirm its Philippine legal classification.',source:'Nager.Date public holiday feed'});added++;});success=true;
   }catch(e){}
  }
  const official=await syncOfficialHolidayAnnouncements();added+=official.added;success=success||official.success;
@@ -8343,7 +8400,7 @@ async function refreshPhilippineHolidays(manual){
  if(manual)toast(success?(added?`Calendar checked. ${added} new feed item(s) added for verification.`:'Calendar checked. No new feed entries found.'):'Could not reach the public feed. Showing the saved proclamation calendar.');
 }
 (function initSavelyHolidayCalendar(){
- try{const cache=JSON.parse(localStorage.getItem('savelyPhHolidayCache')||'null');if(cache&&cache.data)Object.keys(cache.data).forEach(y=>(cache.data[y]||[]).forEach(h=>{const a=SAVELY_PH_HOLIDAYS[y]||(SAVELY_PH_HOLIDAYS[y]=[]);if(!a.some(x=>x.date===h.date&&x.name===h.name))a.push(h);}));}catch(e){}
+ try{const cache=JSON.parse(localStorage.getItem('savelyPhHolidayCache')||'null');if(cache&&cache.data)Object.keys(cache.data).forEach(y=>(cache.data[y]||[]).forEach(h=>{const a=SAVELY_PH_HOLIDAYS[y]||(SAVELY_PH_HOLIDAYS[y]=[]);if(!a.some(x=>x.date===h.date&&x.type!=='unverified'))a.push(h);}));Object.keys(SAVELY_PH_HOLIDAYS).forEach(y=>{SAVELY_PH_HOLIDAYS[y]=phDeduplicateHolidayEntries(SAVELY_PH_HOLIDAYS[y]);});localStorage.setItem('savelyPhHolidayCache',JSON.stringify({data:SAVELY_PH_HOLIDAYS,checkedAt:cache?.checkedAt||Date.now()}));}catch(e){}
  if(!window.__savelyHolidayTick)window.__savelyHolidayTick=setInterval(updateHolidayCountdowns,1000);
  setTimeout(()=>{if(!window.__savelyHolidaySyncStarted)refreshPhilippineHolidays(false);},2500);
  setInterval(()=>refreshPhilippineHolidays(false),24*60*60*1000);
@@ -14551,7 +14608,7 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
 #page-holidays .personal-events-inline-panel .personal-event-actions .delete{color:#c2414b}
 #page-holidays .personal-events-inline-panel .personal-events-empty{grid-column:1/-1;padding:22px 14px;text-align:center;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:13px}
 #page-holidays .personal-events-inline-panel .personal-event-section-label{grid-column:1/-1;font-size:11px;text-transform:uppercase;letter-spacing:.7px;font-weight:850;color:var(--muted);margin:5px 0 -3px}
-#page-holidays.personal-events-mode .holiday-hero,#page-holidays.personal-events-mode #holidayStats{display:none}
+#page-holidays.personal-events-mode #holidayStats{display:none}
 @media(max-width:600px){#page-holidays .personal-events-inline-panel .personal-event-card{padding:13px}#page-holidays .personal-events-inline-panel .personal-event-card-top{flex-direction:column}#page-holidays .personal-events-inline-panel .personal-event-actions{align-self:flex-end}}
 </style>
 
