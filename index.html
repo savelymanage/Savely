@@ -4211,16 +4211,21 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
     <section id="personalEventsInlinePanel" class="panel personal-events-inline-panel" aria-labelledby="personalEventsTitle" hidden>
       <div class="panel-head" style="align-items:center;gap:12px;flex-wrap:wrap">
         <div><h2 id="personalEventsTitle">Personal Events</h2><div class="panel-sub">Birthdays, trips, appointments, deadlines, and your own countdowns.</div></div>
-        <button type="button" class="btn btn-primary" id="personalEventAddButton" onclick="openPersonalEventForm()">＋ Add event</button>
       </div>
-      <form id="personalEventForm" class="personal-event-form" onsubmit="savePersonalEvent(event)" hidden>
-        <input type="hidden" id="personalEventId">
-        <div class="form-grid">
-          <div class="field"><label for="personalEventName">Event name</label><input id="personalEventName" maxlength="90" placeholder="e.g. Birthday, Concert, Vacation" required></div>
-          <div class="field"><label for="personalEventDate">Event date</label><input id="personalEventDate" type="date" required></div>
-          <div class="field full"><label for="personalEventDescription">Description (optional)</label><textarea id="personalEventDescription" rows="2" maxlength="300" placeholder="Add a short note about this event"></textarea></div>
+      <form id="personalEventForm" class="personal-event-form personal-event-modal-overlay" onsubmit="savePersonalEvent(event)" hidden>
+        <div class="personal-event-modal-card" role="dialog" aria-modal="true" aria-labelledby="personalEventModalTitle">
+          <div class="personal-event-modal-head">
+            <div><h3 id="personalEventModalTitle">Add personal event</h3><p>Set an event and Savely will track its countdown.</p></div>
+            <button type="button" class="personal-event-modal-close" aria-label="Close" onclick="closePersonalEventForm()">×</button>
+          </div>
+          <input type="hidden" id="personalEventId">
+          <div class="form-grid">
+            <div class="field"><label for="personalEventName">Event name</label><input id="personalEventName" maxlength="90" placeholder="e.g. Birthday, Concert, Vacation" required></div>
+            <div class="field"><label for="personalEventDate">Event date</label><input id="personalEventDate" type="date" required></div>
+            <div class="field full"><label for="personalEventDescription">Description (optional)</label><textarea id="personalEventDescription" rows="3" maxlength="300" placeholder="Add a short note about this event"></textarea></div>
+          </div>
+          <div class="form-actions" style="justify-content:flex-end"><button type="button" class="btn btn-light" onclick="closePersonalEventForm()">Cancel</button><button type="submit" class="btn btn-primary" id="personalEventSaveButton">Save event</button></div>
         </div>
-        <div class="form-actions" style="justify-content:flex-end"><button type="button" class="btn btn-light" onclick="closePersonalEventForm()">Cancel</button><button type="submit" class="btn btn-primary" id="personalEventSaveButton">Save event</button></div>
       </form>
       <div id="personalEventsList" class="personal-events-list" aria-live="polite"></div>
     </section>
@@ -8280,11 +8285,15 @@ function openPersonalEventForm(id){
  document.getElementById('personalEventDate').value=item?item.date:'';
  document.getElementById('personalEventDescription').value=item?item.description||'':'';
  document.getElementById('personalEventSaveButton').textContent=item?'Update event':'Save event';
- form.hidden=false;form.scrollIntoView({behavior:'smooth',block:'nearest'});
- document.getElementById('personalEventName').focus();
+ const title=document.getElementById('personalEventModalTitle');
+ if(title)title.textContent=item?'Edit personal event':'Add personal event';
+ form.hidden=false;
+ document.body.classList.add('personal-event-modal-open');
+ requestAnimationFrame(()=>document.getElementById('personalEventName')?.focus());
 }
 function closePersonalEventForm(){
  const form=document.getElementById('personalEventForm');if(form)form.hidden=true;
+ document.body.classList.remove('personal-event-modal-open');
 }
 function savePersonalEvent(event){
  if(event)event.preventDefault();
@@ -14243,10 +14252,6 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
       <span class="savely-mobile-fab-label">Date & calendar</span>
       <span class="savely-mobile-fab-icon savely-mobile-fab-utility" aria-hidden="true">▦</span>
     </button>
-    <button type="button" class="savely-mobile-fab-item" id="savelyMobilePersonalEventsAction">
-      <span class="savely-mobile-fab-label">Personal Events</span>
-      <span class="savely-mobile-fab-icon savely-mobile-fab-utility" aria-hidden="true">♡</span>
-    </button>
     <button type="button" class="savely-mobile-fab-item" id="savelyMobileCalculatorAction">
       <span class="savely-mobile-fab-label">Calculator</span>
       <span class="savely-mobile-fab-icon savely-mobile-fab-secondary" aria-hidden="true">▤</span>
@@ -14357,7 +14362,6 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   const hideFiguresIcon=document.getElementById('savelyMobileHideFiguresIcon');
   const weatherButton=document.getElementById('savelyMobileWeatherAction');
   const dateButton=document.getElementById('savelyMobileDateAction');
-  const personalEventsButton=document.getElementById('savelyMobilePersonalEventsAction');
   const calcButton=document.getElementById('savelyMobileCalculatorAction');
 
   function activePage(){
@@ -14649,6 +14653,92 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   }
  }catch(e){}
 })();
+</script>
+
+
+<style id="savely-salary-fullwidth-topright-countdown-v2">
+/* Let the remaining-salary summary use the full content width. */
+#page-salary .salary-summary-cards{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  width:100%!important;
+  max-width:none!important;
+}
+#page-salary .salary-annual-remaining-stat{
+  position:relative!important;
+  width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  min-height:154px;
+  padding-right:clamp(300px,34%,440px)!important;
+}
+#page-salary .salary-next-payday{
+  position:absolute!important;
+  top:22px!important;
+  right:24px!important;
+  width:min(36%,420px)!important;
+  max-width:420px!important;
+  margin:0!important;
+  padding:12px 14px!important;
+  border:1px solid rgba(255,255,255,.24)!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.12)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  gap:7px!important;
+}
+#page-salary .salary-next-payday-label{font-size:11px!important;font-weight:800!important}
+#page-salary .salary-next-payday strong{font-size:13px!important;line-height:1.35}
+#page-salary .salary-next-payday-timer{font-size:12px!important;white-space:nowrap}
+@media(max-width:760px){
+ #page-salary .salary-annual-remaining-stat{padding-right:18px!important;min-height:0}
+ #page-salary .salary-next-payday{position:static!important;width:auto!important;max-width:none!important;margin-top:14px!important}
+}
+</style>
+
+
+<style id="savely-personal-event-modal-v4">
+#page-holidays .personal-events-inline-panel .personal-event-modal-overlay[hidden]{display:none!important}
+#page-holidays .personal-events-inline-panel .personal-event-modal-overlay:not([hidden]){
+ position:fixed!important;inset:0!important;z-index:100500!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ width:100vw!important;height:100dvh!important;max-width:none!important;
+ margin:0!important;padding:20px!important;box-sizing:border-box!important;
+ background:rgba(12,25,38,.58)!important;backdrop-filter:blur(5px);
+ overflow-y:auto!important;border:0!important;border-radius:0!important;
+}
+#page-holidays .personal-event-modal-card{
+ width:min(100%,560px)!important;max-height:min(88dvh,720px)!important;overflow-y:auto!important;
+ padding:24px!important;border:1px solid var(--line)!important;border-radius:18px!important;
+ background:var(--card,#fff)!important;color:var(--text)!important;
+ box-shadow:0 24px 80px rgba(0,0,0,.24)!important;
+}
+#page-holidays .personal-event-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px}
+#page-holidays .personal-event-modal-head h3{margin:0;font-size:19px;font-weight:850;color:var(--text)}
+#page-holidays .personal-event-modal-head p{margin:6px 0 0;font-size:12px;color:var(--muted)}
+#page-holidays .personal-event-modal-close{width:34px;height:34px;flex:0 0 34px;border:1px solid var(--line);border-radius:10px;background:var(--surface,#fff);color:var(--text);font-size:23px;line-height:1;cursor:pointer}
+#page-holidays .personal-event-modal-card .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+#page-holidays .personal-event-modal-card .field{display:flex;flex-direction:column;gap:7px;min-width:0}
+#page-holidays .personal-event-modal-card .field.full{grid-column:1/-1}
+#page-holidays .personal-event-modal-card .field label{font-size:12px;font-weight:750;color:var(--muted)}
+#page-holidays .personal-event-modal-card .field input,#page-holidays .personal-event-modal-card .field textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--surface,#fff);color:var(--text);font:inherit}
+#page-holidays .personal-event-modal-card .form-actions{display:flex;gap:9px;margin-top:20px}
+body.personal-event-modal-open{overflow:hidden!important}
+@media(max-width:560px){
+ #page-holidays .personal-events-inline-panel .personal-event-modal-overlay:not([hidden]){padding:12px!important}
+ #page-holidays .personal-event-modal-card{padding:18px!important;border-radius:15px!important}
+ #page-holidays .personal-event-modal-card .form-grid{grid-template-columns:1fr}
+ #page-holidays .personal-event-modal-card .field.full{grid-column:auto}
+}
+</style>
+<script id="savely-personal-event-modal-keyboard-v4">
+document.addEventListener('keydown',function(event){
+ if(event.key==='Escape'){
+  const form=document.getElementById('personalEventForm');
+  if(form&&!form.hidden)closePersonalEventForm();
+ }
+});
 </script>
 
 </body>
