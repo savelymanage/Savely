@@ -2918,14 +2918,15 @@ button.link-btn{
 
 /* Expense calendar date actions and history panel */
 .expense-day-action-backdrop{position:fixed;inset:0;z-index:10080;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(18,28,39,.24)}
-.expense-day-action-menu{width:min(360px,calc(100vw - 32px));max-height:min(70vh,560px);overflow:auto;background:var(--panel,#fff);color:var(--text);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 18px 55px rgba(15,30,45,.22)}
+.expense-day-action-menu{width:min(520px,calc(100vw - 32px));min-height:220px;max-height:min(78vh,640px);overflow:auto;background:var(--panel,#fff);color:var(--text);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 22px 65px rgba(15,30,45,.25)}
 .expense-day-action-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
-.expense-day-action-head strong{font-size:14px}
-.expense-day-action-head small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.expense-day-action-head strong{font-size:17px}
+.expense-day-action-head small{display:block;color:var(--muted);font-size:13px;margin-top:6px}
 .expense-day-action-close{border:0;background:var(--soft,#f5f7fa);border-radius:8px;width:30px;height:30px;font-size:18px;cursor:pointer;color:var(--text)}
-.expense-day-action-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.expense-day-action-buttons button{min-height:42px;border:1px solid var(--line);border-radius:10px;background:var(--panel,#fff);color:var(--text);font-weight:750;font-size:12px;cursor:pointer}
+.expense-day-action-buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+.expense-day-action-buttons button{min-height:56px;border:1px solid var(--line);border-radius:12px;background:var(--panel,#fff);color:var(--text);font-weight:750;font-size:14px;cursor:pointer}
 .expense-day-action-buttons button.primary{background:var(--green);border-color:var(--green);color:#fff}
+@media(max-width:520px){.expense-day-action-menu{padding:20px;min-height:200px}.expense-day-action-buttons{grid-template-columns:1fr}.expense-day-action-buttons button{min-height:50px}}
 .expense-day-history-list{display:grid;gap:8px;margin-top:12px}
 .expense-day-history-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--soft,#f8fafc);font-size:12px}
 .expense-day-history-row span{min-width:0;overflow-wrap:anywhere}
@@ -3792,8 +3793,8 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
 
 
 <style id="savely-expanded-expense-composer">
-#modalBackdrop:has(#expenseComposer){align-items:flex-start!important;justify-content:center!important;padding:12px 18px!important;overflow-y:auto;overflow-x:hidden!important}
-#modalBackdrop:has(#expenseComposer)>.modal{box-sizing:border-box;width:min(1040px,calc(100vw - 36px));max-width:1040px;max-height:calc(100vh - 24px);min-width:0;margin:0 auto;padding:24px 32px 22px;border-radius:22px;overflow-y:auto;overflow-x:hidden!important}
+#modalBackdrop:has(#expenseComposer){align-items:center!important;justify-content:center!important;padding:24px!important;overflow-y:auto;overflow-x:hidden!important}
+#modalBackdrop:has(#expenseComposer)>.modal{box-sizing:border-box;width:min(1320px,calc(100vw - 48px));max-width:1320px;min-height:min(740px,calc(100vh - 64px));max-height:calc(100vh - 48px);min-width:0;margin:auto;padding:34px 42px 30px;border-radius:24px;overflow-y:auto;overflow-x:hidden!important}
 #modalBackdrop:has(#expenseComposer) #modalForm{width:100%;max-width:100%;min-width:0;overflow-x:hidden!important;box-sizing:border-box}
 #expenseComposer,#expenseComposer *{box-sizing:border-box}
 #expenseComposer{width:100%;min-width:0;max-width:100%;overflow:hidden}
@@ -3804,9 +3805,12 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
 #expenseComposer .field{min-width:0}
 #expenseComposer .field input,#expenseComposer .field select{width:100%;min-width:0;max-width:100%}
 #expenseComposer .expense-item-row{grid-template-columns:minmax(0,1fr) minmax(90px,145px) 34px;min-width:0}
+@media(min-width:651px) and (max-width:1100px){
+ #modalBackdrop:has(#expenseComposer)>.modal{width:calc(100vw - 40px);min-height:min(680px,calc(100vh - 48px));padding:26px 28px}
+}
 @media(max-width:650px){
- #modalBackdrop:has(#expenseComposer){padding:8px!important}
- #modalBackdrop:has(#expenseComposer)>.modal{width:calc(100vw - 16px);max-height:calc(100vh - 16px);padding:18px 14px}
+ #modalBackdrop:has(#expenseComposer){padding:8px!important;align-items:center!important}
+ #modalBackdrop:has(#expenseComposer)>.modal{width:calc(100vw - 16px);min-height:0;max-height:calc(100vh - 16px);padding:20px 16px;border-radius:18px}
  #expenseComposer .form-grid{grid-template-columns:minmax(0,1fr)}
  #expenseComposer .expense-composer-section{padding:14px}
  #expenseComposer .expense-category-card{flex-basis:158px;min-width:158px}
@@ -7461,20 +7465,13 @@ function openExpenseDayActions(dateValue){
   <div class="expense-day-action-buttons">
    <button type="button" class="primary" data-day-action="add">＋ Add</button>
    <button type="button" data-day-action="edit" ${rows.length?'':'disabled'}>✎ Edit</button>
-   <button type="button" data-day-action="history" ${rows.length?'':'disabled'}>◷ History</button>
   </div>
-  <div class="expense-day-history-list" hidden></div>
  </div>`;
  backdrop.addEventListener('click',event=>{if(event.target===backdrop)closeExpenseDayActions();});
  backdrop.querySelector('.expense-day-action-close').addEventListener('click',closeExpenseDayActions);
  backdrop.querySelector('[data-day-action="add"]').addEventListener('click',()=>{closeExpenseDayActions();openExpenseEntry(date);});
  backdrop.querySelector('[data-day-action="edit"]').addEventListener('click',()=>{closeExpenseDayActions();openExpenseEntry(date,true);});
- backdrop.querySelector('[data-day-action="history"]').addEventListener('click',()=>{
-  const list=backdrop.querySelector('.expense-day-history-list');
-  list.hidden=false;
-  list.innerHTML=rows.map(t=>`<div class="expense-day-history-row"><span><b>${esc(t.description||'Expense')}</b><br><small>${esc(t.category||'Others')} · ${esc(data.accounts.find(a=>String(a.id)===String(t.accountId))?.name||'Account')}</small></span><strong>${peso(t.amount)}</strong></div>`).join('');
-  backdrop.querySelector('[data-day-action="history"]').textContent='History shown';
- });
+
  document.body.appendChild(backdrop);
 }
 
