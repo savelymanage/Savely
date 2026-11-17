@@ -3777,8 +3777,8 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
 
 
 <style id="savely-expanded-expense-composer">
-#modalBackdrop:has(#expenseComposer){padding:18px}
-#modalBackdrop:has(#expenseComposer)>.modal{width:min(1040px,calc(100vw - 36px));max-width:1040px;max-height:94vh;padding:30px 32px 24px;border-radius:22px;overflow-y:auto}
+#modalBackdrop:has(#expenseComposer){align-items:flex-start!important;justify-content:center!important;padding:12px 18px!important;overflow-y:auto}
+#modalBackdrop:has(#expenseComposer)>.modal{width:min(1040px,calc(100vw - 36px));max-width:1040px;max-height:calc(100vh - 24px);margin:0 auto;padding:24px 32px 22px;border-radius:22px;overflow-y:auto}
 #modalBackdrop:has(#expenseComposer) #modalTitle{font-size:25px;letter-spacing:-.7px}
 #modalBackdrop:has(#expenseComposer) #modalDesc{font-size:13px;margin-bottom:22px}
 #expenseComposer{display:grid;gap:20px}
@@ -3787,14 +3787,17 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
 .expense-section-heading h3{font-size:15px;margin:0 0 4px;letter-spacing:-.2px}
 .expense-section-heading p{font-size:12px;color:var(--muted);margin:0}
 .expense-section-step{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:var(--green2);color:var(--green);font-size:11px;font-weight:850;flex:0 0 32px}
-.expense-category-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.expense-category-card{position:relative;display:flex;align-items:center;gap:10px;min-height:58px;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:var(--panel,#fff);color:var(--text);font-size:12px;font-weight:750;text-align:left;transition:.15s}
+.expense-category-grid{display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;padding:2px 1px 10px;scrollbar-width:thin;scrollbar-color:var(--green) transparent;cursor:grab;user-select:none;touch-action:pan-x;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.expense-category-grid.is-dragging{cursor:grabbing;scroll-snap-type:none}
+.expense-category-card{position:relative;display:flex;align-items:center;gap:10px;flex:0 0 190px;min-width:190px;min-height:58px;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:var(--panel,#fff);color:var(--text);font-size:12px;font-weight:750;text-align:left;transition:border-color .15s,background .15s;scroll-snap-align:start;cursor:pointer}
+.expense-category-card.active{border-color:var(--green);background:var(--green2);color:var(--green);box-shadow:0 0 0 1px var(--green) inset}
+.expense-category-card.selected:not(.active){border-color:color-mix(in srgb,var(--green) 40%,var(--line));background:color-mix(in srgb,var(--green2) 45%,var(--panel,#fff))}
+.expense-category-card.drag-suppress{pointer-events:none}
 .expense-category-card:hover{border-color:#9acdb8;background:var(--green2)}
-.expense-category-card.selected{border-color:var(--green);background:var(--green2);color:var(--green);box-shadow:0 0 0 1px var(--green) inset}
 .expense-category-icon{font-size:20px;line-height:1}
 .expense-category-check{margin-left:auto;display:none;width:19px;height:19px;border-radius:50%;background:var(--green);color:#fff;align-items:center;justify-content:center;font-size:11px}
 .expense-category-card.selected .expense-category-check{display:flex}
-.expense-category-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+.expense-category-panels{display:block;margin-top:14px}
 .expense-category-panel{min-width:0;padding:15px;border:1px solid var(--line);border-radius:13px;background:var(--soft,#f8fafc)}
 .expense-category-panel[hidden]{display:none!important}
 .expense-category-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
@@ -3819,12 +3822,11 @@ body.dark-theme .expense-category-panel{background:#101827}
 body.dark-theme .expense-item-row input{background:#101827;color:var(--text);border-color:var(--line)}
 body.dark-theme .expense-item-remove{background:var(--panel);border-color:var(--line)}
 @media(max-width:760px){
- #modalBackdrop:has(#expenseComposer){padding:9px}
- #modalBackdrop:has(#expenseComposer)>.modal{width:calc(100vw - 18px);max-height:96vh;padding:21px 17px 18px;border-radius:17px}
+ #modalBackdrop:has(#expenseComposer){padding:8px 9px!important}
+ #modalBackdrop:has(#expenseComposer)>.modal{width:calc(100vw - 18px);max-height:calc(100vh - 16px);padding:18px 17px 18px;border-radius:17px}
  .expense-composer-section{padding:15px}
- .expense-category-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
- .expense-category-card{min-height:52px;padding:9px;font-size:11px}
- .expense-category-panels{grid-template-columns:1fr}
+ .expense-category-grid{gap:8px}
+ .expense-category-card{flex-basis:158px;min-width:158px;min-height:52px;padding:9px;font-size:11px}
  .expense-item-row{grid-template-columns:minmax(0,1fr) minmax(95px,120px) 32px;gap:5px}
  .expense-item-row input{font-size:11px;padding:8px}
  .expense-composer-summary{padding:14px}
@@ -7263,12 +7265,20 @@ function addExpenseItemRow(groupId){
  row.querySelector('input').focus();
 }
 function toggleExpenseGroup(groupId){
- const card=document.querySelector(`[data-expense-group="${groupId}"]`);
- const panel=document.querySelector(`[data-expense-panel="${groupId}"]`);
+ const card=document.querySelector(`#expenseComposer [data-expense-group="${groupId}"]`);
+ const panel=document.querySelector(`#expenseComposer [data-expense-panel="${groupId}"]`);
  if(!card||!panel)return;
- const active=card.classList.toggle('selected');
- panel.hidden=!active;
- if(active&&!panel.querySelector('.expense-item-row'))addExpenseItemRow(groupId);
+ // Each category is a single focused page. Previously opened categories remain selected
+ // and their entries stay in the form while the user switches between them.
+ document.querySelectorAll('#expenseComposer .expense-category-card').forEach(button=>{
+  button.classList.toggle('active',button.dataset.expenseGroup===groupId);
+  if(button.dataset.expenseGroup===groupId)button.classList.add('selected');
+  button.setAttribute('aria-pressed',button.dataset.expenseGroup===groupId?'true':'false');
+ });
+ document.querySelectorAll('#expenseComposer .expense-category-panel').forEach(section=>{
+  section.hidden=section.dataset.expensePanel!==groupId;
+ });
+ if(!panel.querySelector('.expense-item-row'))addExpenseItemRow(groupId);
  updateExpenseComposerTotal();
 }
 function updateExpenseComposerTotal(){
@@ -7301,7 +7311,7 @@ function openExpenseEntry(dateValue){
  <div id="expenseComposer" class="expense-composer">
   <section class="expense-composer-section">
    <div class="expense-section-heading"><div><h3>Choose expense categories</h3><p>Select one or more categories. You can add multiple items under each one.</p></div><span class="expense-section-step">01</span></div>
-   <div class="expense-category-grid">${EXPENSE_GROUPS.map(g=>`<button type="button" class="expense-category-card${g.id==='food'?' selected':''}" data-expense-group="${g.id}" aria-pressed="${g.id==='food'?'true':'false'}"><span class="expense-category-icon">${g.icon}</span><span>${g.name}</span><span class="expense-category-check">✓</span></button>`).join('')}</div>
+   <div class="expense-category-grid" aria-label="Expense categories; scroll horizontally to see more">${EXPENSE_GROUPS.map(g=>`<button type="button" class="expense-category-card${g.id==='food'?' selected active':''}" data-expense-group="${g.id}" aria-pressed="${g.id==='food'?'true':'false'}"><span class="expense-category-icon">${g.icon}</span><span>${g.name}</span><span class="expense-category-check">✓</span></button>`).join('')}</div>
    <div class="expense-category-panels">${EXPENSE_GROUPS.map(g=>`<section class="expense-category-panel" data-expense-panel="${g.id}" ${g.id==='food'?'':'hidden'}><div class="expense-category-panel-head"><div><strong>${g.icon} ${g.name}</strong><small>Add each purchase or bill as a separate line.</small><em class="expense-category-subtotal" data-expense-subtotal="${g.id}">₱0.00</em></div><button type="button" class="btn btn-light expense-add-item" data-add-expense-item="${g.id}">＋ Add item</button></div><div class="expense-items-list" data-expense-items="${g.id}">${g.id==='food'?'<div class="expense-item-row"><input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description"><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button></div>':''}</div></section>`).join('')}</div>
   </section>
   <section class="expense-composer-section expense-common-details">
@@ -7315,6 +7325,24 @@ function openExpenseEntry(dateValue){
  </div>
  <div class="form-actions expense-composer-actions"><button type="button" class="btn btn-light" onclick="closeModal()">Cancel</button><button type="submit" class="btn btn-primary">Save expenses</button></div>`;
  form.querySelectorAll('[data-expense-group]').forEach(button=>button.addEventListener('click',()=>toggleExpenseGroup(button.dataset.expenseGroup)));
+ // Drag-to-scroll category rail: mouse users can grab and swipe; touch keeps native swipe.
+ const categoryRail=form.querySelector('.expense-category-grid');
+ if(categoryRail){
+  let dragStartX=0,dragStartScroll=0,dragging=false,moved=false;
+  categoryRail.addEventListener('pointerdown',event=>{
+   if(event.pointerType==='touch')return;
+   dragging=true;moved=false;dragStartX=event.clientX;dragStartScroll=categoryRail.scrollLeft;
+   categoryRail.classList.add('is-dragging');
+  });
+  window.addEventListener('pointermove',event=>{
+   if(!dragging)return;
+   const delta=event.clientX-dragStartX;
+   if(Math.abs(delta)>5)moved=true;
+   if(moved)categoryRail.scrollLeft=dragStartScroll-delta;
+  });
+  const stopDrag=()=>{if(!dragging)return;dragging=false;categoryRail.classList.remove('is-dragging');if(moved){categoryRail.querySelectorAll('.expense-category-card').forEach(card=>card.classList.add('drag-suppress'));setTimeout(()=>categoryRail.querySelectorAll('.expense-category-card').forEach(card=>card.classList.remove('drag-suppress')),80);}};
+  window.addEventListener('pointerup',stopDrag);window.addEventListener('pointercancel',stopDrag);
+ }
  form.querySelectorAll('[data-add-expense-item]').forEach(button=>button.addEventListener('click',()=>addExpenseItemRow(button.dataset.addExpenseItem)));
  form.querySelectorAll('.expense-item-remove').forEach(button=>button.addEventListener('click',()=>{button.closest('.expense-item-row').remove();updateExpenseComposerTotal();}));
  form.querySelectorAll('.expense-item-amount').forEach(input=>input.addEventListener('input',updateExpenseComposerTotal));
@@ -7324,7 +7352,7 @@ function openExpenseEntry(dateValue){
   const expenseDate=document.getElementById('expenseComposerDate').value;
   if(!expenseDate){toast('Choose an expense date.');return;}
   const entries=[];
-  document.querySelectorAll('#expenseComposer .expense-category-panel:not([hidden])').forEach(panel=>{
+  document.querySelectorAll('#expenseComposer .expense-category-panel').forEach(panel=>{
    const group=EXPENSE_GROUPS.find(g=>g.id===panel.dataset.expensePanel);
    panel.querySelectorAll('.expense-item-row').forEach(row=>{
     const description=row.querySelector('.expense-item-description').value.trim();
