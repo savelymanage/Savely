@@ -6,7 +6,7 @@
 <title>Savely — Savings Manager | v2.8.7</title>
 <style>
 :root{--bg:#f5f7fb;--panel:#fff;--text:#172033;--muted:#758097;--line:#e8edf4;--green:#168765;--green2:#e6f7ef;--blue:#4569e8;--blue2:#edf1ff;--orange:#df8a2f;--red:#d94d5c;--shadow:0 10px 35px #2636550a}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text)}button,input,select,textarea{font:inherit}button{cursor:pointer}.app{display:grid;grid-template-columns:245px minmax(0,1fr);min-height:100vh}.sidebar{background:#fff;border-right:1px solid var(--line);padding:25px 16px;display:flex;flex-direction:column;gap:28px}.brand{display:flex;align-items:center;gap:11px;padding:0 10px;font-size:20px;font-weight:800;letter-spacing:-.6px}.brand-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:13px;background:var(--green);color:#fff;font-size:21px}.nav-label{color:#a0a8b8;font-size:10px;font-weight:800;letter-spacing:1.5px;padding:0 12px;margin-bottom:8px}.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#667188;text-align:left;padding:12px;border-radius:11px;display:flex;align-items:center;gap:12px;font-weight:600}.nav button .ico{width:20px;text-align:center;font-size:17px}.nav button.active{background:var(--green2);color:var(--green)}.side-bottom{margin-top:auto;background:#f7f9fc;border:1px solid var(--line);padding:15px;border-radius:14px}.side-bottom strong{display:block;margin-bottom:5px}.side-bottom p{font-size:12px;color:var(--muted);margin:0 0 12px}.side-bottom button{border:0;background:#fff;border:1px solid var(--line);padding:8px 10px;border-radius:8px;font-weight:650;width:100%}.main{min-width:0;padding:28px clamp(18px,3vw,42px) 48px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px}.eyebrow{font-size:12px;color:var(--muted);margin-bottom:4px}.page-title{font-size:27px;letter-spacing:-.8px;margin:0;font-weight:800}.top-actions{display:flex;gap:10px;align-items:center}.date-pill,.avatar{background:#fff;border:1px solid var(--line);border-radius:11px;padding:10px 13px;color:#5e687c}.avatar{background:#dff4e9;color:#197453;font-weight:800;border:0;border-radius:50%;width:40px;height:40px;padding:0;display:grid;place-items:center}.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn-primary{background:var(--green);color:#fff}.btn-light{background:#fff;border:1px solid var(--line);color:#4e5a70}.btn-danger{background:#fff0f1;color:var(--red)}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:20px}.stat,.panel{background:var(--panel);border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow)}.stat{padding:20px;min-width:0}.stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;font-weight:650}.stat-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:11px;background:var(--green2);color:var(--green);font-size:17px}.stat-value{font-size:25px;letter-spacing:-.7px;font-weight:800;margin:12px 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stat-foot{font-size:11px;color:var(--muted)}.positive{color:var(--green)}.layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.85fr);gap:18px;margin-bottom:18px}.panel{padding:21px;min-width:0}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.panel h2{font-size:16px;margin:0;letter-spacing:-.3px}.panel-sub{font-size:12px;color:var(--muted);margin-top:4px}.link-btn{border:0;background:transparent;color:var(--green);font-size:12px;font-weight:750}.goal-amount{font-size:25px;font-weight:800;letter-spacing:-.5px;margin:14px 0 2px}.progress{height:8px;background:#edf0f5;border-radius:99px;overflow:hidden;margin:15px 0 10px}.progress>span{display:block;height:100%;background:var(--green);border-radius:99px;transition:width .2s}.between{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted)}.goal-meta{display:flex;gap:10px;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}.goal-meta .mini{width:36px;height:36px;border-radius:11px;background:var(--blue2);display:grid;place-items:center;color:var(--blue)}.goal-meta strong{display:block;font-size:12px}.goal-meta small{color:var(--muted)}.chart{height:190px;display:flex;align-items:end;gap:clamp(6px,2vw,18px);padding:10px 4px 0;border-bottom:1px solid var(--line);position:relative}.bar-wrap{flex:1;height:100%;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:8px;min-width:0}.bar{width:min(32px,75%);min-height:4px;background:#c9d6d2;border-radius:7px 7px 2px 2px;transition:height .25s}.bar.current{background:var(--green)}.bar-label{font-size:10px;color:var(--muted);padding-bottom:7px}.legend{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:11px}.dot{width:7px;height:7px;border-radius:50%;background:var(--green)}.accounts{display:grid;gap:10px}.account{display:flex;align-items:center;gap:12px;border:1px solid var(--line);padding:13px;border-radius:13px}.account-icon{width:39px;height:39px;display:grid;place-items:center;background:#edf1ff;color:#536be0;border-radius:12px;font-size:18px}.account:nth-child(2) .account-icon{background:#fff3e5;color:var(--orange)}.account-info{flex:1;min-width:0}.account-info strong{display:block;font-size:13px}.account-info small{color:var(--muted);font-size:11px}.account-balance{font-weight:800;font-size:13px;text-align:right;white-space:nowrap}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th{text-align:left;color:#96a0b2;font-size:10px;text-transform:uppercase;letter-spacing:.8px;font-weight:750;padding:10px 8px;border-bottom:1px solid var(--line)}td{padding:13px 8px;border-bottom:1px solid #f0f2f6;font-size:12px}tbody tr:last-child td{border-bottom:0}.tx-title{font-weight:750;font-size:12px}.tx-sub{color:var(--muted);font-size:10px;margin-top:3px}.pill{display:inline-flex;align-items:center;border-radius:99px;padding:4px 8px;font-size:10px;font-weight:750;background:#e7f7ef;color:var(--green)}.pill.expense{background:#fff0f1;color:var(--red)}.amount-in{color:var(--green);font-weight:800}.amount-out{color:var(--red);font-weight:800}.page{display:none}.page.active{display:block}.section-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.empty{text-align:center;padding:30px;color:var(--muted)}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:12px;color:#647087;font-weight:700}.field input,.field select,.field textarea{width:100%;padding:11px 12px;border:1px solid #dfe5ed;border-radius:10px;background:#fff;outline:none;color:var(--text)}.field input:focus,.field select:focus{border-color:#75bba2;box-shadow:0 0 0 3px #16876512}.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.notice{background:#fff8e9;border:1px solid #f3e1b8;color:#82642c;border-radius:12px;padding:12px 14px;font-size:12px;margin-bottom:18px}.budget-row{padding:14px 0;border-bottom:1px solid var(--line)}.budget-row:last-child{border-bottom:0}.budget-top{display:flex;justify-content:space-between;gap:12px;margin-bottom:9px;font-size:12px}.budget-top strong{font-size:13px}.small-progress{height:6px;background:#edf0f5;border-radius:99px;overflow:hidden}.small-progress span{display:block;height:100%;background:var(--blue);border-radius:99px}.muted{color:var(--muted)}.financial-tabs{display:flex;gap:8px;border-bottom:1px solid var(--line);margin:0 0 20px;padding-bottom:12px;overflow-x:auto}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text)}button,input,select,textarea{font:inherit}button{cursor:pointer}.app{display:grid;grid-template-columns:245px minmax(0,1fr);min-height:100vh}.sidebar{background:#fff;border-right:1px solid var(--line);padding:25px 16px;display:flex;flex-direction:column;gap:28px}.brand{display:flex;align-items:center;gap:11px;padding:0 10px;font-size:20px;font-weight:800;letter-spacing:-.6px}.brand-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:13px;background:var(--green);color:#fff;font-size:21px}.nav-label{color:#a0a8b8;font-size:10px;font-weight:800;letter-spacing:1.5px;padding:0 12px;margin-bottom:8px}.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#667188;text-align:left;padding:12px;border-radius:11px;display:flex;align-items:center;gap:12px;font-weight:600}.nav button .ico{width:20px;text-align:center;font-size:17px}.nav button.active{background:var(--green2);color:var(--green)}.side-bottom{margin-top:auto;background:#f7f9fc;border:1px solid var(--line);padding:15px;border-radius:14px}.side-bottom strong{display:block;margin-bottom:5px}.side-bottom p{font-size:12px;color:var(--muted);margin:0 0 12px}.side-bottom button{border:0;background:#fff;border:1px solid var(--line);padding:8px 10px;border-radius:8px;font-weight:650;width:100%}.main{min-width:0;padding:28px clamp(18px,3vw,42px) 48px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px}.topbar.savings-header-hidden>div:first-child{display:none}.eyebrow{font-size:12px;color:var(--muted);margin-bottom:4px}.page-title{font-size:27px;letter-spacing:-.8px;margin:0;font-weight:800}.top-actions{display:flex;gap:10px;align-items:center}.date-pill,.avatar{background:#fff;border:1px solid var(--line);border-radius:11px;padding:10px 13px;color:#5e687c}.avatar{background:#dff4e9;color:#197453;font-weight:800;border:0;border-radius:50%;width:40px;height:40px;padding:0;display:grid;place-items:center}.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn-primary{background:var(--green);color:#fff}.btn-light{background:#fff;border:1px solid var(--line);color:#4e5a70}.btn-danger{background:#fff0f1;color:var(--red)}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:20px}.stat,.panel{background:var(--panel);border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow)}.stat{padding:20px;min-width:0}.stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;font-weight:650}.stat-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:11px;background:var(--green2);color:var(--green);font-size:17px}.stat-value{font-size:25px;letter-spacing:-.7px;font-weight:800;margin:12px 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stat-foot{font-size:11px;color:var(--muted)}.positive{color:var(--green)}.layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.85fr);gap:18px;margin-bottom:18px}.panel{padding:21px;min-width:0}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.panel h2{font-size:16px;margin:0;letter-spacing:-.3px}.panel-sub{font-size:12px;color:var(--muted);margin-top:4px}.link-btn{border:0;background:transparent;color:var(--green);font-size:12px;font-weight:750}.goal-amount{font-size:25px;font-weight:800;letter-spacing:-.5px;margin:14px 0 2px}.progress{height:8px;background:#edf0f5;border-radius:99px;overflow:hidden;margin:15px 0 10px}.progress>span{display:block;height:100%;background:var(--green);border-radius:99px;transition:width .2s}.between{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted)}.goal-meta{display:flex;gap:10px;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}.goal-meta .mini{width:36px;height:36px;border-radius:11px;background:var(--blue2);display:grid;place-items:center;color:var(--blue)}.goal-meta strong{display:block;font-size:12px}.goal-meta small{color:var(--muted)}.chart{height:190px;display:flex;align-items:end;gap:clamp(6px,2vw,18px);padding:10px 4px 0;border-bottom:1px solid var(--line);position:relative}.bar-wrap{flex:1;height:100%;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:8px;min-width:0}.bar{width:min(32px,75%);min-height:4px;background:#c9d6d2;border-radius:7px 7px 2px 2px;transition:height .25s}.bar.current{background:var(--green)}.bar-label{font-size:10px;color:var(--muted);padding-bottom:7px}.legend{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:11px}.dot{width:7px;height:7px;border-radius:50%;background:var(--green)}.accounts{display:grid;gap:10px}.account{display:flex;align-items:center;gap:12px;border:1px solid var(--line);padding:13px;border-radius:13px}.account-icon{width:39px;height:39px;display:grid;place-items:center;background:#edf1ff;color:#536be0;border-radius:12px;font-size:18px}.account:nth-child(2) .account-icon{background:#fff3e5;color:var(--orange)}.account-info{flex:1;min-width:0}.account-info strong{display:block;font-size:13px}.account-info small{color:var(--muted);font-size:11px}.account-balance{font-weight:800;font-size:13px;text-align:right;white-space:nowrap}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th{text-align:left;color:#96a0b2;font-size:10px;text-transform:uppercase;letter-spacing:.8px;font-weight:750;padding:10px 8px;border-bottom:1px solid var(--line)}td{padding:13px 8px;border-bottom:1px solid #f0f2f6;font-size:12px}tbody tr:last-child td{border-bottom:0}.tx-title{font-weight:750;font-size:12px}.tx-sub{color:var(--muted);font-size:10px;margin-top:3px}.pill{display:inline-flex;align-items:center;border-radius:99px;padding:4px 8px;font-size:10px;font-weight:750;background:#e7f7ef;color:var(--green)}.pill.expense{background:#fff0f1;color:var(--red)}.amount-in{color:var(--green);font-weight:800}.amount-out{color:var(--red);font-weight:800}.page{display:none}.page.active{display:block}.section-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.empty{text-align:center;padding:30px;color:var(--muted)}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:12px;color:#647087;font-weight:700}.field input,.field select,.field textarea{width:100%;padding:11px 12px;border:1px solid #dfe5ed;border-radius:10px;background:#fff;outline:none;color:var(--text)}.field input:focus,.field select:focus{border-color:#75bba2;box-shadow:0 0 0 3px #16876512}.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.notice{background:#fff8e9;border:1px solid #f3e1b8;color:#82642c;border-radius:12px;padding:12px 14px;font-size:12px;margin-bottom:18px}.budget-row{padding:14px 0;border-bottom:1px solid var(--line)}.budget-row:last-child{border-bottom:0}.budget-top{display:flex;justify-content:space-between;gap:12px;margin-bottom:9px;font-size:12px}.budget-top strong{font-size:13px}.small-progress{height:6px;background:#edf0f5;border-radius:99px;overflow:hidden}.small-progress span{display:block;height:100%;background:var(--blue);border-radius:99px}.muted{color:var(--muted)}.financial-tabs{display:flex;gap:8px;border-bottom:1px solid var(--line);margin:0 0 20px;padding-bottom:12px;overflow-x:auto}
 .financial-tab{border:1px solid var(--line);background:#fff;color:#667188;border-radius:10px;padding:10px 22px;font-weight:750;white-space:nowrap;min-width:110px}
 .financial-tab.active{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 4px 12px #16876520}
 .financial-category-panel{background:#f9fbfd;border:1px solid var(--line);border-radius:14px;padding:18px}.bank-picker-tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;margin:4px 0 6px}.bank-picker-tab{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:800;white-space:nowrap}.bank-picker-tab.active{background:var(--green);border-color:var(--green);color:#fff}.bank-picker{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:4px 0 9px;max-height:245px;overflow:auto;padding:2px}.bank-option-wrap{position:relative;min-width:0}.bank-option-wrap .bank-option{width:100%;padding-right:31px}.bank-favorite{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#9aa4b5;font-size:19px;line-height:1;padding:3px;cursor:pointer}.bank-favorite.is-favorite{color:#e5a100}.bank-option{display:flex;align-items:center;gap:9px;min-width:0;text-align:left;border:1px solid var(--line);background:#fff;border-radius:11px;padding:9px 10px;color:var(--text);font-size:12px;font-weight:700}.bank-option:hover,.bank-option.selected{border-color:var(--green);background:var(--green2)}.bank-option-used,.bank-option-used:hover{opacity:.38;filter:grayscale(1);cursor:not-allowed;border-color:var(--line);background:var(--surface)}.bank-logo{width:31px;height:31px;flex:0 0 31px;border-radius:9px;display:grid;place-items:center;color:#fff;font-size:10px;font-weight:900;letter-spacing:-.5px}.bank-option-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.interest-chip{display:inline-block;background:#e7f7ef;color:#168765;border-radius:7px;padding:4px 7px;font-weight:800;font-size:11px}.interest-sub{font-size:10px;color:#7b8496;margin-top:3px}@media(max-width:600px){.bank-picker{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -3775,6 +3775,63 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
 #savelyFloatingCalculator.is-days-mode .savely-days-tool{display:block}
 </style>
 
+
+<style id="savely-expanded-expense-composer">
+#modalBackdrop:has(#expenseComposer){padding:18px}
+#modalBackdrop:has(#expenseComposer)>.modal{width:min(1040px,calc(100vw - 36px));max-width:1040px;max-height:94vh;padding:30px 32px 24px;border-radius:22px;overflow-y:auto}
+#modalBackdrop:has(#expenseComposer) #modalTitle{font-size:25px;letter-spacing:-.7px}
+#modalBackdrop:has(#expenseComposer) #modalDesc{font-size:13px;margin-bottom:22px}
+#expenseComposer{display:grid;gap:20px}
+.expense-composer-section{border:1px solid var(--line);border-radius:17px;padding:20px;background:var(--panel,#fff)}
+.expense-section-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:16px}
+.expense-section-heading h3{font-size:15px;margin:0 0 4px;letter-spacing:-.2px}
+.expense-section-heading p{font-size:12px;color:var(--muted);margin:0}
+.expense-section-step{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:var(--green2);color:var(--green);font-size:11px;font-weight:850;flex:0 0 32px}
+.expense-category-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.expense-category-card{position:relative;display:flex;align-items:center;gap:10px;min-height:58px;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:var(--panel,#fff);color:var(--text);font-size:12px;font-weight:750;text-align:left;transition:.15s}
+.expense-category-card:hover{border-color:#9acdb8;background:var(--green2)}
+.expense-category-card.selected{border-color:var(--green);background:var(--green2);color:var(--green);box-shadow:0 0 0 1px var(--green) inset}
+.expense-category-icon{font-size:20px;line-height:1}
+.expense-category-check{margin-left:auto;display:none;width:19px;height:19px;border-radius:50%;background:var(--green);color:#fff;align-items:center;justify-content:center;font-size:11px}
+.expense-category-card.selected .expense-category-check{display:flex}
+.expense-category-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+.expense-category-panel{min-width:0;padding:15px;border:1px solid var(--line);border-radius:13px;background:var(--soft,#f8fafc)}
+.expense-category-panel[hidden]{display:none!important}
+.expense-category-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.expense-category-panel-head strong{font-size:13px}
+.expense-category-panel-head small{display:block;color:var(--muted);font-size:10px;margin-top:3px}.expense-category-subtotal{display:block;margin-top:5px;color:var(--green);font-size:11px;font-style:normal;font-weight:800}
+.expense-add-item{padding:8px 10px;font-size:11px;white-space:nowrap}
+.expense-items-list{display:grid;gap:8px}
+.expense-item-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(110px,145px) 34px;gap:7px;align-items:center}
+.expense-item-row input{width:100%;min-width:0;height:42px;padding:9px 10px;border:1px solid #dfe5ed;border-radius:9px;background:#fff;color:#172033;outline:none;font-size:12px}
+.expense-item-row input:focus{border-color:#75bba2;box-shadow:0 0 0 3px #16876512}
+.expense-item-remove{height:36px;width:34px;border:1px solid #f0d8db;border-radius:9px;background:#fff;color:var(--red);font-size:19px;line-height:1}
+.expense-common-details .form-grid{gap:14px}
+.expense-common-details .field input,.expense-common-details .field select{min-height:46px}
+.expense-composer-summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:17px 20px;border-radius:15px;background:var(--green2);border:1px solid color-mix(in srgb,var(--green) 22%,transparent)}
+.expense-composer-summary>div{display:grid;gap:2px}
+.expense-summary-label{font-size:11px;color:var(--muted);font-weight:750}
+.expense-composer-summary strong{font-size:25px;line-height:1.25;color:var(--green);font-variant-numeric:tabular-nums}
+.expense-composer-summary small{font-size:11px;color:var(--muted)}
+.expense-summary-note{font-size:11px;color:var(--green);font-weight:700;text-align:right}
+.expense-composer-actions{margin-top:18px}
+body.dark-theme .expense-category-panel{background:#101827}
+body.dark-theme .expense-item-row input{background:#101827;color:var(--text);border-color:var(--line)}
+body.dark-theme .expense-item-remove{background:var(--panel);border-color:var(--line)}
+@media(max-width:760px){
+ #modalBackdrop:has(#expenseComposer){padding:9px}
+ #modalBackdrop:has(#expenseComposer)>.modal{width:calc(100vw - 18px);max-height:96vh;padding:21px 17px 18px;border-radius:17px}
+ .expense-composer-section{padding:15px}
+ .expense-category-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .expense-category-card{min-height:52px;padding:9px;font-size:11px}
+ .expense-category-panels{grid-template-columns:1fr}
+ .expense-item-row{grid-template-columns:minmax(0,1fr) minmax(95px,120px) 32px;gap:5px}
+ .expense-item-row input{font-size:11px;padding:8px}
+ .expense-composer-summary{padding:14px}
+}
+@media(max-width:420px){.expense-category-card{gap:7px}.expense-category-icon{font-size:17px}.expense-category-panel-head{align-items:flex-start}.expense-add-item{padding:7px 8px;font-size:10px}.expense-summary-note{max-width:110px}}
+</style>
+
 </head>
 <body>
 
@@ -7183,27 +7240,114 @@ function goToExpenseCalendarToday(){
  expenseCalendarCursor=new Date(now.getFullYear(),now.getMonth(),1);
  renderBudget();
 }
+const EXPENSE_GROUPS=[
+ {id:'food',name:'Food',icon:'🍔'},
+ {id:'transport',name:'Transportation',icon:'🚗'},
+ {id:'bills',name:'Bills & utilities',icon:'🧾'},
+ {id:'shopping',name:'Shopping',icon:'🛍️'},
+ {id:'groceries',name:'Groceries',icon:'🛒'},
+ {id:'health',name:'Health',icon:'💊'},
+ {id:'personal',name:'Personal',icon:'🧴'},
+ {id:'other',name:'Others',icon:'＋'}
+];
+function expenseMoney(value){return peso(Number(value)||0)}
+function addExpenseItemRow(groupId){
+ const list=document.querySelector(`[data-expense-items="${groupId}"]`);
+ if(!list)return;
+ const row=document.createElement('div');
+ row.className='expense-item-row';
+ row.innerHTML=`<input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description"><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button>`;
+ row.querySelector('.expense-item-remove').addEventListener('click',()=>{row.remove();updateExpenseComposerTotal();});
+ row.querySelectorAll('input').forEach(input=>input.addEventListener('input',updateExpenseComposerTotal));
+ list.appendChild(row);
+ row.querySelector('input').focus();
+}
+function toggleExpenseGroup(groupId){
+ const card=document.querySelector(`[data-expense-group="${groupId}"]`);
+ const panel=document.querySelector(`[data-expense-panel="${groupId}"]`);
+ if(!card||!panel)return;
+ const active=card.classList.toggle('selected');
+ panel.hidden=!active;
+ if(active&&!panel.querySelector('.expense-item-row'))addExpenseItemRow(groupId);
+ updateExpenseComposerTotal();
+}
+function updateExpenseComposerTotal(){
+ let total=0,count=0;
+ document.querySelectorAll('#expenseComposer .expense-item-row').forEach(row=>{
+  const amount=row.querySelector('.expense-item-amount');
+  if(amount&&amount.value.trim()!==''){const n=Number(amount.value);if(Number.isFinite(n)&&n>0){total+=n;count++;}}
+ });
+ document.querySelectorAll('#expenseComposer .expense-category-panel').forEach(panel=>{
+  const subtotal=Array.from(panel.querySelectorAll('.expense-item-amount')).reduce((sum,input)=>sum+Math.max(0,Number(input.value)||0),0);
+  const label=document.querySelector(`[data-expense-subtotal="${panel.dataset.expensePanel}"]`);
+  if(label)label.textContent=expenseMoney(subtotal);
+ });
+ const totalEl=document.getElementById('expenseComposerTotal');
+ const countEl=document.getElementById('expenseComposerCount');
+ if(totalEl)totalEl.textContent=expenseMoney(total);
+ if(countEl)countEl.textContent=count+' item'+(count===1?'':'s');
+}
 function openExpenseEntry(dateValue){
  const date=dateValue||expenseLocalISO(new Date());
  openModal('transaction');
  const form=document.getElementById('modalForm');
  if(!form)return;
- const type=form.querySelector('[name="type"]');
- const dateInput=form.querySelector('[name="date"]');
  const title=document.getElementById('modalTitle');
  const desc=document.getElementById('modalDesc');
- if(type){
-  type.value='expense';
-  const wrapper=type.closest('.field');
-  if(wrapper)wrapper.style.display='none';
- }
- if(dateInput)dateInput.value=date;
- if(title)title.textContent='Add expense';
- if(desc)desc.textContent='Record an expense on '+new Date(date+'T12:00:00').toLocaleDateString('en-PH',{month:'long',day:'numeric',year:'numeric'})+'.';
- const description=form.querySelector('[name="description"]');
- if(description)description.placeholder='e.g. Lunch, groceries, transportation';
- const category=form.querySelector('[name="category"]');
- if(category)category.value='';
+ if(title)title.textContent='Add expenses';
+ if(desc)desc.textContent='Organize your spending by category and add as many items as you need.';
+ const accountOptions=data.accounts.map(a=>`<option value="${esc(a.id)}">${esc(a.name)}</option>`).join('');
+ form.innerHTML=`
+ <div id="expenseComposer" class="expense-composer">
+  <section class="expense-composer-section">
+   <div class="expense-section-heading"><div><h3>Choose expense categories</h3><p>Select one or more categories. You can add multiple items under each one.</p></div><span class="expense-section-step">01</span></div>
+   <div class="expense-category-grid">${EXPENSE_GROUPS.map(g=>`<button type="button" class="expense-category-card${g.id==='food'?' selected':''}" data-expense-group="${g.id}" aria-pressed="${g.id==='food'?'true':'false'}"><span class="expense-category-icon">${g.icon}</span><span>${g.name}</span><span class="expense-category-check">✓</span></button>`).join('')}</div>
+   <div class="expense-category-panels">${EXPENSE_GROUPS.map(g=>`<section class="expense-category-panel" data-expense-panel="${g.id}" ${g.id==='food'?'':'hidden'}><div class="expense-category-panel-head"><div><strong>${g.icon} ${g.name}</strong><small>Add each purchase or bill as a separate line.</small><em class="expense-category-subtotal" data-expense-subtotal="${g.id}">₱0.00</em></div><button type="button" class="btn btn-light expense-add-item" data-add-expense-item="${g.id}">＋ Add item</button></div><div class="expense-items-list" data-expense-items="${g.id}">${g.id==='food'?'<div class="expense-item-row"><input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description"><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button></div>':''}</div></section>`).join('')}</div>
+  </section>
+  <section class="expense-composer-section expense-common-details">
+   <div class="expense-section-heading"><div><h3>Expense details</h3><p>These details will apply to every item you add above.</p></div><span class="expense-section-step">02</span></div>
+   <div class="form-grid">
+    <div class="field"><label for="expenseComposerAccount">Account</label><select id="expenseComposerAccount" required>${accountOptions}</select></div>
+    <div class="field"><label for="expenseComposerDate">Date</label><input id="expenseComposerDate" type="date" value="${esc(date)}" required></div>
+   </div>
+  </section>
+  <div class="expense-composer-summary"><div><span class="expense-summary-label">Expense total</span><strong id="expenseComposerTotal">₱0.00</strong><small id="expenseComposerCount">0 items</small></div><span class="expense-summary-note">All items will be saved separately</span></div>
+ </div>
+ <div class="form-actions expense-composer-actions"><button type="button" class="btn btn-light" onclick="closeModal()">Cancel</button><button type="submit" class="btn btn-primary">Save expenses</button></div>`;
+ form.querySelectorAll('[data-expense-group]').forEach(button=>button.addEventListener('click',()=>toggleExpenseGroup(button.dataset.expenseGroup)));
+ form.querySelectorAll('[data-add-expense-item]').forEach(button=>button.addEventListener('click',()=>addExpenseItemRow(button.dataset.addExpenseItem)));
+ form.querySelectorAll('.expense-item-remove').forEach(button=>button.addEventListener('click',()=>{button.closest('.expense-item-row').remove();updateExpenseComposerTotal();}));
+ form.querySelectorAll('.expense-item-amount').forEach(input=>input.addEventListener('input',updateExpenseComposerTotal));
+ form.onsubmit=e=>{
+  e.preventDefault();
+  const accountId=document.getElementById('expenseComposerAccount').value;
+  const expenseDate=document.getElementById('expenseComposerDate').value;
+  if(!expenseDate){toast('Choose an expense date.');return;}
+  const entries=[];
+  document.querySelectorAll('#expenseComposer .expense-category-panel:not([hidden])').forEach(panel=>{
+   const group=EXPENSE_GROUPS.find(g=>g.id===panel.dataset.expensePanel);
+   panel.querySelectorAll('.expense-item-row').forEach(row=>{
+    const description=row.querySelector('.expense-item-description').value.trim();
+    const amountValue=row.querySelector('.expense-item-amount').value;
+    const amount=Number(amountValue);
+    if(!description&&!amountValue.trim())return;
+    if(!description||!Number.isFinite(amount)||amount<=0){row.querySelector(!description?'.expense-item-description':'.expense-item-amount').focus();toast('Complete every expense item with a description and an amount greater than zero.');form.dataset.expenseValidationError='1';return;}
+    entries.push({description,amount,category:group?.name||'Others'});
+   });
+  });
+  if(form.dataset.expenseValidationError){form.dataset.expenseValidationError='';return;}
+  if(!entries.length){toast('Choose a category and add at least one expense item.');return;}
+  const total=entries.reduce((sum,item)=>sum+item.amount,0);
+  if(total>balance(accountId)+0.000001){toast('Not enough funds in this account for the total expense.');return;}
+  const createdAt=Date.now();
+  entries.forEach((item,index)=>data.transactions.push({id:uid(),type:'expense',accountId,description:item.description,amount:item.amount,date:expenseDate,category:item.category,createdAt:createdAt+index}));
+  closeModal();save();toast(entries.length+' expense item'+(entries.length===1?'':'s')+' saved successfully.');
+ };
+ form.addEventListener('submit',e=>{
+  // Validation errors from an individual row are surfaced without closing the composer.
+  if(form.dataset.expenseValidationError){e.preventDefault();form.dataset.expenseValidationError='';}
+ });
+ updateExpenseComposerTotal();
 }
 function renderBudget(){
  const grid=document.getElementById('expensesCalendarGrid');
@@ -9097,7 +9241,7 @@ function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavin
   savelyLiveLocationMap.invalidateSize();
  }
   if(window.__savelyLiveLocationWatchId===null||window.__savelyLiveLocationWatchId===undefined)startSavelyLiveLocation();
-},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LIVE MONITOR','Live Monitor'],'metro-snapshot':['PUBLIC CAMERA IMAGES','Metro Manila Snapshot'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['',''],billing:['HOUSEHOLD UTILITIES','Billing']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','metro-snapshot':'View the latest available public camera snapshots across Metro Manila.','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:'',billing:'Estimate your household water bill using your meter readings and current rate assumptions.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
+},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LIVE MONITOR','Live Monitor'],'metro-snapshot':['PUBLIC CAMERA IMAGES','Metro Manila Snapshot'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['',''],billing:['HOUSEHOLD UTILITIES','Billing']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','metro-snapshot':'View the latest available public camera snapshots across Metro Manila.','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:'',billing:'Estimate your household water bill using your meter readings and current rate assumptions.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const topbar=document.querySelector('.topbar');if(topbar)topbar.classList.toggle('savings-header-hidden',p==='financial-list');const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
 document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
 function openModal(kind,goalToEdit=null){const form=document.getElementById('modalForm'),title=document.getElementById('modalTitle'),desc=document.getElementById('modalDesc');let accountOptions=data.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');let field=(label,name,type='text',value='',extra='')=>`<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let select=(label,name,opts)=>`<div class="field"><label>${label}</label><select name="${name}">${opts}</select></div>`;let fullfield=(label,name,type='text',value='',extra='')=>`<div class="field full"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let body='';
 if(kind==='transaction'){title.textContent='Add transaction';desc.textContent='Record a deposit, withdrawal, interest credit, or expense.';body=`<div class="form-grid">${fullfield('Description','description','text','','required maxlength="100"')}${select('Transaction type','type','<option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option><option value="expense">Expense</option><option value="interest">Interest credit</option>')}${select('Account','accountId',accountOptions)}${field('Amount (₱)','amount','number','','required min=".01" step=".01"')}${field('Date','date','date',todayISO(),'required')}${field('Category','category','text','General','maxlength="60"')}</div>`}
