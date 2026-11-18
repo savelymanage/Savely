@@ -2928,6 +2928,24 @@ button.link-btn{
 .expense-day-action-buttons button.primary{background:var(--green);border-color:var(--green);color:#fff}
 @media(max-width:520px){.expense-day-action-menu{padding:18px 16px 16px;min-height:0}.expense-day-action-buttons{grid-template-columns:1fr}.expense-day-action-buttons button{min-height:50px}}
 .expense-day-history-list{display:grid;gap:8px;margin-top:12px}
+
+.expense-day-action-menu.has-history{width:min(520px,calc(100vw - 32px));padding:22px}
+.expense-day-action-menu.is-empty{width:min(420px,calc(100vw - 32px));padding:22px}
+.expense-date-history{display:grid;gap:8px;margin:14px 0 16px}
+.expense-date-history-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:2px}
+.expense-date-history-heading strong{font-size:13px}
+.expense-date-history-heading span{font-size:11px;color:var(--muted)}
+.expense-date-history-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--soft,#f8fafc)}
+.expense-date-history-main{display:grid;gap:3px;min-width:0}
+.expense-date-history-main strong{font-size:12px;overflow-wrap:anywhere}
+.expense-date-history-main small{font-size:10px;color:var(--muted)}
+.expense-date-history-amount{font-size:12px;color:var(--green);white-space:nowrap}
+.expense-date-history-total{display:flex;align-items:center;justify-content:space-between;padding:10px 2px 0;border-top:1px solid var(--line);font-size:12px}
+.expense-date-history-total span{color:var(--muted)}
+.expense-date-history-total strong{color:var(--green);font-size:14px}
+.expense-day-action-buttons.single-action{grid-template-columns:1fr}
+.expense-day-action-buttons.single-action button{min-height:46px}
+
 .expense-day-history-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--soft,#f8fafc);font-size:12px}
 .expense-day-history-row span{min-width:0;overflow-wrap:anywhere}
 .expense-day-history-row strong{white-space:nowrap;color:var(--green)}
@@ -3804,7 +3822,17 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
 #expenseComposer .form-grid{grid-template-columns:repeat(2,minmax(0,1fr));min-width:0;width:100%}
 #expenseComposer .field{min-width:0}
 #expenseComposer .field input,#expenseComposer .field select{width:100%;min-width:0;max-width:100%}
-#expenseComposer .expense-item-row{grid-template-columns:minmax(0,1fr) minmax(90px,145px) 34px;min-width:0}
+#expenseComposer .expense-hidden-metadata{display:none!important}
+#expenseComposer .expense-item-row{grid-template-columns:minmax(0,1fr) minmax(120px,150px) minmax(90px,145px) 34px;min-width:0}
+.expenses-day-item .expenses-day-time{display:block;margin-top:2px;font-size:9px;line-height:1.2;font-weight:650;opacity:.72}
+#expenseComposer .expense-item-time{width:100%;min-width:0;height:40px;border:1px solid var(--line);border-radius:10px;background:var(--panel,#fff);color:var(--text);padding:0 9px;font:inherit;font-size:12px}
+@media(max-width:760px){
+ #expenseComposer .expense-item-row{grid-template-columns:minmax(0,1fr) minmax(110px,1fr);gap:8px}
+ #expenseComposer .expense-item-description{grid-column:1/-1}
+ #expenseComposer .expense-item-time{grid-column:1}
+ #expenseComposer .expense-item-amount{grid-column:2}
+ #expenseComposer .expense-item-remove{grid-column:2;justify-self:end}
+}
 @media(min-width:651px) and (max-width:1100px){
  #modalBackdrop:has(#expenseComposer)>.modal{width:calc(100vw - 40px);min-height:min(680px,calc(100vh - 48px));padding:26px 28px}
 }
@@ -7304,9 +7332,9 @@ function addExpenseItemRow(groupId){
  if(!list)return;
  const row=document.createElement('div');
  row.className='expense-item-row';
- row.innerHTML=`<input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description"><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button>`;
+ row.innerHTML=`<input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description"><select class="expense-item-time" aria-label="Time of day" required><option value="">Time of day</option><option value="Morning">Morning</option><option value="Afternoon">Afternoon</option><option value="Evening">Evening</option></select><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button>`;
  row.querySelector('.expense-item-remove').addEventListener('click',()=>{row.remove();updateExpenseComposerTotal();});
- row.querySelectorAll('input').forEach(input=>input.addEventListener('input',updateExpenseComposerTotal));
+ row.querySelectorAll('input,select').forEach(input=>input.addEventListener('input',updateExpenseComposerTotal));
  list.appendChild(row);
  row.querySelector('input').focus();
 }
@@ -7359,18 +7387,15 @@ function openExpenseEntry(dateValue,editExisting=false){
   <section class="expense-composer-section">
    <div class="expense-section-heading"><div><h3>Choose expense categories</h3><p>Select one or more categories. You can add multiple items under each one.</p></div><span class="expense-section-step">01</span></div>
    <div class="expense-category-grid" aria-label="Expense categories; scroll horizontally to see more">${EXPENSE_GROUPS.map(g=>`<button type="button" class="expense-category-card${g.id==='food'?' selected active':''}" data-expense-group="${g.id}" aria-pressed="${g.id==='food'?'true':'false'}"><span class="expense-category-icon">${g.icon}</span><span>${g.name}</span><span class="expense-category-check">✓</span></button>`).join('')}</div>
-   <div class="expense-category-panels">${EXPENSE_GROUPS.map(g=>`<section class="expense-category-panel" data-expense-panel="${g.id}" ${g.id==='food'?'':'hidden'}><div class="expense-category-panel-head"><div><strong>${g.icon} ${g.name}</strong><small>Add each purchase or bill as a separate line.</small><em class="expense-category-subtotal" data-expense-subtotal="${g.id}">₱0.00</em></div><button type="button" class="btn btn-light expense-add-item" data-add-expense-item="${g.id}">＋ Add item</button></div><div class="expense-items-list" data-expense-items="${g.id}">${g.id==='food'?'<div class="expense-item-row"><input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description"><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button></div>':''}</div></section>`).join('')}</div>
+   <div class="expense-category-panels">${EXPENSE_GROUPS.map(g=>`<section class="expense-category-panel" data-expense-panel="${g.id}" ${g.id==='food'?'':'hidden'}><div class="expense-category-panel-head"><div><strong>${g.icon} ${g.name}</strong><small>Add each purchase or bill as a separate line.</small><em class="expense-category-subtotal" data-expense-subtotal="${g.id}">₱0.00</em></div><button type="button" class="btn btn-light expense-add-item" data-add-expense-item="${g.id}">＋ Add item</button></div><div class="expense-items-list" data-expense-items="${g.id}">${g.id==='food'?'<div class="expense-item-row"><input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description"><select class="expense-item-time" aria-label="Time of day" required><option value="">Time of day</option><option value="Morning">Morning</option><option value="Afternoon">Afternoon</option><option value="Evening">Evening</option></select><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button></div>':''}</div></section>`).join('')}</div>
   </section>
-  <section class="expense-composer-section expense-common-details">
-   <div class="expense-section-heading"><div><h3>Expense details</h3><p>These details will apply to every item you add above.</p></div><span class="expense-section-step">02</span></div>
-   <div class="form-grid">
-    <div class="field"><label for="expenseComposerAccount">Account</label><select id="expenseComposerAccount" required>${accountOptions}</select></div>
-    <div class="field"><label for="expenseComposerDate">Date</label><input id="expenseComposerDate" type="date" value="${esc(date)}" required></div>
-   </div>
-  </section>
+  <div class="expense-hidden-metadata" hidden>
+   <select id="expenseComposerAccount">${accountOptions}</select>
+   <input id="expenseComposerDate" type="date" value="${esc(date)}">
+  </div>
   <div class="expense-composer-summary"><div><span class="expense-summary-label">Expense total</span><strong id="expenseComposerTotal">₱0.00</strong><small id="expenseComposerCount">0 items</small></div><span class="expense-summary-note">All items will be saved separately</span></div>
  </div>
- <div class="form-actions expense-composer-actions"><button type="button" class="btn btn-light" onclick="closeModal()">Cancel</button><button type="submit" class="btn btn-primary">Save expenses</button></div>`;
+ <div class="form-actions expense-composer-actions"><button type="button" class="btn btn-light" onclick="closeModal()">Cancel</button><button type="submit" class="btn btn-primary">${editExisting?'Apply changes':'Save expenses'}</button></div>`;
  if(editExisting&&existingForDate.length){
   if(title)title.textContent='Edit expenses';
   if(desc)desc.textContent='Update the expenses recorded on this date. Save to apply your changes.';
@@ -7383,9 +7408,10 @@ function openExpenseEntry(dateValue,editExisting=false){
    const list=document.querySelector(`#expenseComposer [data-expense-items="${group.id}"]`);
    if(!list)return;
    const row=document.createElement('div');row.className='expense-item-row';
-   row.innerHTML=`<input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description" value="${esc(item.description||'')}"><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount" value="${Math.max(0,Number(item.amount)||0)}"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button>`;
+   row.innerHTML=`<input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description" value="${esc(item.description||'')}"><select class="expense-item-time" aria-label="Time of day" required><option value="">Time of day</option><option value="Morning">Morning</option><option value="Afternoon">Afternoon</option><option value="Evening">Evening</option></select><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount" value="${Math.max(0,Number(item.amount)||0)}"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button>`;
+   const timeSelect=row.querySelector('.expense-item-time');if(['Morning','Afternoon','Evening'].includes(item.timeOfDay))timeSelect.value=item.timeOfDay;
    row.querySelector('.expense-item-remove').addEventListener('click',()=>{row.remove();updateExpenseComposerTotal();});
-   row.querySelectorAll('input').forEach(input=>input.addEventListener('input',updateExpenseComposerTotal));
+   row.querySelectorAll('input,select').forEach(input=>input.addEventListener('input',updateExpenseComposerTotal));
    list.appendChild(row);
   });
   const firstGroup=EXPENSE_GROUPS.find(g=>existingForDate.some(item=>String(item.category||'Others').toLowerCase()===g.name.toLowerCase()))||EXPENSE_GROUPS[0];
@@ -7425,9 +7451,10 @@ function openExpenseEntry(dateValue,editExisting=false){
     const description=row.querySelector('.expense-item-description').value.trim();
     const amountValue=row.querySelector('.expense-item-amount').value;
     const amount=Number(amountValue);
-    if(!description&&!amountValue.trim())return;
-    if(!description||!Number.isFinite(amount)||amount<=0){row.querySelector(!description?'.expense-item-description':'.expense-item-amount').focus();toast('Complete every expense item with a description and an amount greater than zero.');form.dataset.expenseValidationError='1';return;}
-    entries.push({description,amount,category:group?.name||'Others'});
+    const timeOfDay=row.querySelector('.expense-item-time').value;
+    if(!description&&!amountValue.trim()&&!timeOfDay)return;
+    if(!description||!Number.isFinite(amount)||amount<=0||(!timeOfDay&&!editExisting)){const target=!description?'.expense-item-description':(!timeOfDay&&!editExisting?'.expense-item-time':'.expense-item-amount');row.querySelector(target).focus();toast(editExisting?'Complete each expense item with a description and a valid amount.':'Complete each expense item with a description, time of day, and valid amount.');form.dataset.expenseValidationError='1';return;}
+    entries.push({description,amount,timeOfDay:timeOfDay||'',category:group?.name||'Others'});
    });
   });
   if(form.dataset.expenseValidationError){form.dataset.expenseValidationError='';return;}
@@ -7439,8 +7466,11 @@ function openExpenseEntry(dateValue,editExisting=false){
    data.transactions=(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>!(t.type==='expense'&&String(t.date||'')===expenseDate));
   }
   const createdAt=Date.now();
-  entries.forEach((item,index)=>data.transactions.push({id:uid(),type:'expense',accountId,description:item.description,amount:item.amount,date:expenseDate,category:item.category,createdAt:createdAt+index}));
-  closeModal();save();toast(entries.length+' expense item'+(entries.length===1?'':'s')+' saved successfully.');
+  entries.forEach((item,index)=>data.transactions.push({id:uid(),type:'expense',accountId,description:item.description,amount:item.amount,date:expenseDate,category:item.category,timeOfDay:item.timeOfDay,createdAt:createdAt+index}));
+  save();
+  renderBudget();
+  closeModal();
+  toast(editExisting?'Expense changes applied and calendar updated.':entries.length+' expense item'+(entries.length===1?'':'s')+' saved successfully.');
  };
  form.addEventListener('submit',e=>{
   // Validation errors from an individual row are surfaced without closing the composer.
@@ -7460,17 +7490,28 @@ function openExpenseDayActions(dateValue){
  const pretty=new Date(date+'T12:00:00').toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
  const backdrop=document.createElement('div');
  backdrop.id='expenseDayActionBackdrop';backdrop.className='expense-day-action-backdrop';
- backdrop.innerHTML=`<div class="expense-day-action-menu" role="dialog" aria-modal="true" aria-label="Expense actions for ${esc(pretty)}">
-  <div class="expense-day-action-head"><div><strong>${esc(pretty)}</strong><small>${rows.length} recorded expense${rows.length===1?'':'s'} · ${peso(rows.reduce((sum,t)=>sum+Math.max(0,Number(t.amount)||0),0))}</small></div><button type="button" class="expense-day-action-close" aria-label="Close">×</button></div>
-  <div class="expense-day-action-buttons">
-   <button type="button" class="primary" data-day-action="add">＋ Add</button>
-   <button type="button" data-day-action="edit" ${rows.length?'':'disabled'}>✎ Edit</button>
+ const total=rows.reduce((sum,t)=>sum+Math.max(0,Number(t.amount)||0),0);
+ const historyMarkup=rows.length?`<div class="expense-date-history">
+  <div class="expense-date-history-heading"><strong>Expense history</strong><span>${rows.length} item${rows.length===1?'':'s'}</span></div>
+  ${rows.map(t=>`<div class="expense-date-history-row">
+   <div class="expense-date-history-main"><strong>${esc(t.description||'Expense')}</strong><small>${esc(t.category||'Others')}${t.timeOfDay?' · '+esc(t.timeOfDay):''}</small></div>
+   <strong class="expense-date-history-amount">${peso(t.amount)}</strong>
+  </div>`).join('')}
+  <div class="expense-date-history-total"><span>Total expenses</span><strong>${peso(total)}</strong></div>
+ </div>`:'';
+ backdrop.innerHTML=`<div class="expense-day-action-menu${rows.length?' has-history':' is-empty'}" role="dialog" aria-modal="true" aria-label="Expenses for ${esc(pretty)}">
+  <div class="expense-day-action-head"><div><strong>${esc(pretty)}</strong>${rows.length?`<small>${rows.length} recorded expense${rows.length===1?'':'s'} · ${peso(total)}</small>`:`<small>No expenses recorded for this date.</small>`}</div><button type="button" class="expense-day-action-close" aria-label="Close">×</button></div>
+  ${historyMarkup}
+  <div class="expense-day-action-buttons${rows.length?' single-action':''}">
+   ${rows.length?'<button type="button" class="primary" data-day-action="edit">✎ Edit expenses</button>':'<button type="button" class="primary" data-day-action="add">＋ Add expense</button>'}
   </div>
  </div>`;
  backdrop.addEventListener('click',event=>{if(event.target===backdrop)closeExpenseDayActions();});
  backdrop.querySelector('.expense-day-action-close').addEventListener('click',closeExpenseDayActions);
- backdrop.querySelector('[data-day-action="add"]').addEventListener('click',()=>{closeExpenseDayActions();openExpenseEntry(date);});
- backdrop.querySelector('[data-day-action="edit"]').addEventListener('click',()=>{closeExpenseDayActions();openExpenseEntry(date,true);});
+ const addButton=backdrop.querySelector('[data-day-action="add"]');
+ const editButton=backdrop.querySelector('[data-day-action="edit"]');
+ if(addButton)addButton.addEventListener('click',()=>{closeExpenseDayActions();openExpenseEntry(date);});
+ if(editButton)editButton.addEventListener('click',()=>{closeExpenseDayActions();openExpenseEntry(date,true);});
 
  document.body.appendChild(backdrop);
 }
@@ -7504,7 +7545,7 @@ function renderBudget(){
   const iso=expenseLocalISO(date);
   const items=expenseRows.filter(t=>String(t.date||'')===iso).sort((a,b)=>Number(a.createdAt||0)-Number(b.createdAt||0));
   const total=items.reduce((sum,t)=>sum+Math.max(0,Number(t.amount)||0),0);
-  const chips=items.slice(0,3).map(item=>`<span class="expenses-day-item" title="${esc(item.description||item.category||'Expense')}"><span>${esc(item.description||item.category||'Expense')}</span><strong>${peso(item.amount)}</strong></span>`).join('');
+  const chips=items.slice(0,3).map(item=>`<span class="expenses-day-item" title="${esc(item.description||item.category||'Expense')}${item.timeOfDay?' · '+esc(item.timeOfDay):''}"><span>${esc(item.description||item.category||'Expense')}${item.timeOfDay?`<small class="expenses-day-time">${esc(item.timeOfDay)}</small>`:''}</span><strong>${peso(item.amount)}</strong></span>`).join('');
   const more=items.length>3?`<span class="expenses-day-more">+${items.length-3} more</span>`:'';
   cells.push(`<button type="button" class="expenses-calendar-day${iso===today?' is-today':''}${items.length?' has-expenses':''}" onclick="openExpenseDayActions('${iso}')" aria-label="${weekdayNames[date.getDay()]}, ${date.toLocaleDateString('en-PH',{month:'long',day:'numeric',year:'numeric'})}. ${items.length} expenses totalling ${peso(total)}. Open date actions.">
    <span class="expenses-day-top"><span class="expenses-day-number">${day}</span>${items.length?`<span class="expenses-day-total">${peso(total)}</span>`:''}</span>
