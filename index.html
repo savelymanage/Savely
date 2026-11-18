@@ -4551,6 +4551,80 @@ body.expense-editor-active #pageDescription{
 }
 </style>
 
+<link rel="manifest" href="./manifest.webmanifest"><meta name="theme-color" content="#168765"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Savely"><link rel="icon" type="image/svg+xml" href="./icons/savely-icon.svg"><link rel="apple-touch-icon" href="./icons/savely-icon.svg">
+<script id="savely-offline-first-persistence">
+(()=>{'use strict';
+ const DB_NAME='savely-offline-db-v1',DB_VERSION=1,STORE_NAME='kv';
+ let dbPromise;
+ function openDB(){
+  if(dbPromise)return dbPromise;
+  dbPromise=new Promise((resolve,reject)=>{
+   if(!('indexedDB' in window)){reject(new Error('IndexedDB unavailable'));return;}
+   const req=indexedDB.open(DB_NAME,DB_VERSION);
+   req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(STORE_NAME))db.createObjectStore(STORE_NAME,{keyPath:'key'});};
+   req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);
+  });
+  return dbPromise;
+ }
+ function put(key,value){
+  return openDB().then(db=>new Promise((resolve,reject)=>{
+   const tx=db.transaction(STORE_NAME,'readwrite');tx.objectStore(STORE_NAME).put({key:String(key),value:String(value),savedAt:Date.now()});
+   tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error||new Error('IndexedDB transaction aborted'));
+  }));
+ }
+ function del(key){
+  return openDB().then(db=>new Promise((resolve,reject)=>{
+   const tx=db.transaction(STORE_NAME,'readwrite');tx.objectStore(STORE_NAME).delete(String(key));
+   tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);
+  }));
+ }
+ function all(){
+  return openDB().then(db=>new Promise((resolve,reject)=>{
+   const tx=db.transaction(STORE_NAME,'readonly'),req=tx.objectStore(STORE_NAME).getAll();
+   req.onsuccess=()=>resolve(req.result||[]);req.onerror=()=>reject(req.error);
+  }));
+ }
+ window.SavelyOfflineStore={put,del,all,ready:openDB};
+ try{
+  const originalSet=Storage.prototype.setItem,originalRemove=Storage.prototype.removeItem,originalClear=Storage.prototype.clear;
+  Storage.prototype.setItem=function(key,value){
+   originalSet.call(this,key,value);
+   if(this===window.localStorage)put(key,value).catch(err=>console.warn('[Savely] IndexedDB backup failed:',err));
+  };
+  Storage.prototype.removeItem=function(key){
+   originalRemove.call(this,key);
+   if(this===window.localStorage)del(key).catch(err=>console.warn('[Savely] IndexedDB delete failed:',err));
+  };
+  Storage.prototype.clear=function(){
+   originalClear.call(this);
+   if(this===window.localStorage)openDB().then(db=>new Promise((resolve,reject)=>{
+    const tx=db.transaction(STORE_NAME,'readwrite');tx.objectStore(STORE_NAME).clear();tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);
+   })).catch(err=>console.warn('[Savely] IndexedDB clear failed:',err));
+  };
+ }catch(e){console.warn('[Savely] Local storage bridge unavailable:',e);}
+ // Restore keys from IndexedDB if the browser's localStorage copy is missing.
+ // Existing localStorage values always win to avoid overwriting newer edits.
+ window.addEventListener('load',async()=>{
+  try{
+   const entries=await all();let restoredMainStore=false;
+   for(const entry of entries){
+    if(localStorage.getItem(entry.key)===null){
+     localStorage.setItem(entry.key,entry.value);
+     if(entry.key==='savely_html_v1')restoredMainStore=true;
+    }
+   }
+   if(restoredMainStore&&!sessionStorage.getItem('savely_idb_restore_reload')){
+    sessionStorage.setItem('savely_idb_restore_reload','1');location.reload();
+   }else sessionStorage.removeItem('savely_idb_restore_reload');
+  }catch(e){console.warn('[Savely] Local recovery check skipped:',e);}
+ });
+ // Persist pending edits when the app is backgrounded or the page is closed.
+ window.addEventListener('pagehide',()=>{
+  try{const value=localStorage.getItem('savely_html_v1');if(value!==null)put('savely_html_v1',value);}
+  catch(e){}
+ });
+})();
+</script>
 </head>
 <body>
 
@@ -7837,8 +7911,8 @@ function scheduleSummaryCarouselAuto(delay=SUMMARY_CAROUSEL_INTERVAL){
   summaryCarouselAutoTimer=null;
   const root=document.querySelector('#stats .summary-carousel');
   if(!root||!root.isConnected||document.hidden)return;
-  const count=root.querySelectorAll('.summary-carousel-slide').length;
-  if(count>1)setSummaryCarouselSlide((summaryCarouselIndex+1)%count,true);
+  const count=summaryCarouselRealSlides(root).length;
+  if(count>1)setSummaryCarouselSlide(summaryCarouselIndex+1,true);
   scheduleSummaryCarouselAuto(SUMMARY_CAROUSEL_INTERVAL);
  },delay);
 }
@@ -7849,30 +7923,76 @@ function pauseSummaryCarouselAuto(resumeDelay=3500){
   scheduleSummaryCarouselAuto(SUMMARY_CAROUSEL_INTERVAL);
  },resumeDelay);
 }
+function summaryCarouselRealSlides(root){
+ const track=root&&root.querySelector('.summary-carousel-track');
+ if(!track)return [];
+ return Array.from(track.children).filter(el=>el.classList.contains('summary-carousel-slide')&&!el.dataset.carouselClone);
+}
+function summaryCarouselPosition(root,position,animate=true){
+ const track=root&&root.querySelector('.summary-carousel-track');
+ if(!track)return;
+ track.classList.toggle('is-dragging',!animate);
+ track.style.transform=`translate3d(${-position*100}%,0,0)`;
+ if(!animate)requestAnimationFrame(()=>track.classList.remove('is-dragging'));
+}
 function setSummaryCarouselSlide(index,animate=true){
  const root=document.querySelector('#stats .summary-carousel');
  if(!root)return;
- const slides=root.querySelectorAll('.summary-carousel-slide');
- const max=slides.length-1;
- if(!slides.length)return;
- summaryCarouselIndex=Math.max(0,Math.min(max,index));
+ const realSlides=summaryCarouselRealSlides(root);
+ const count=realSlides.length;
+ if(!count)return;
+ const requested=Number(index);
+ const movingForward=requested>=count;
+ const movingBackward=requested<0;
+ summaryCarouselIndex=((requested%count)+count)%count;
  const track=root.querySelector('.summary-carousel-track');
  if(!track)return;
- track.classList.toggle('is-dragging',!animate);
- track.style.transform=`translate3d(${-summaryCarouselIndex*100}%,0,0)`;
+ // Use edge clones for the wrap so the visual movement is only one slide.
+ const targetPosition=movingForward?count+1:(movingBackward?0:summaryCarouselIndex+1);
+ summaryCarouselPosition(root,targetPosition,animate);
  root.querySelectorAll('.summary-carousel-dot').forEach((dot,i)=>{
   const active=i===summaryCarouselIndex;
   dot.classList.toggle('active',active);
   if(active)dot.setAttribute('aria-current','true');else dot.removeAttribute('aria-current');
  });
- slides.forEach((slide,i)=>slide.setAttribute('aria-hidden',i===summaryCarouselIndex?'false':'true'));
- if(!animate)requestAnimationFrame(()=>track.classList.remove('is-dragging'));
+ realSlides.forEach((slide,i)=>slide.setAttribute('aria-hidden',i===summaryCarouselIndex?'false':'true'));
+ Array.from(track.children).filter(el=>el.dataset.carouselClone).forEach(el=>el.setAttribute('aria-hidden','true'));
+}
+function syncSummaryCarouselDots(root){
+ root.querySelectorAll('.summary-carousel-dot').forEach((dot,i)=>{
+  const active=i===summaryCarouselIndex;
+  dot.classList.toggle('active',active);
+  if(active)dot.setAttribute('aria-current','true');else dot.removeAttribute('aria-current');
+ });
 }
 function initSummaryCarousel(){
  const root=document.querySelector('#stats .summary-carousel');
  if(!root)return;
- const count=root.querySelectorAll('.summary-carousel-slide').length;
- if(summaryCarouselIndex>=count)summaryCarouselIndex=0;
+ const track=root.querySelector('.summary-carousel-track');
+ if(!track)return;
+ if(track.dataset.circularReady!=='true'){
+  const originals=Array.from(track.children).filter(el=>el.classList.contains('summary-carousel-slide'));
+  if(originals.length>1){
+   const first=originals[0].cloneNode(true),last=originals[originals.length-1].cloneNode(true);
+   first.dataset.carouselClone='first';last.dataset.carouselClone='last';
+   first.setAttribute('aria-hidden','true');last.setAttribute('aria-hidden','true');
+   track.insertBefore(last,originals[0]);track.appendChild(first);
+  }
+  track.dataset.circularReady='true';
+  track.addEventListener('transitionend',event=>{
+   if(event.target!==track||event.propertyName!=='transform')return;
+   const real=summaryCarouselRealSlides(root),n=real.length;
+   if(!n)return;
+   const pos=summaryCarouselIndex+1;
+   // If a transition lands on an edge clone, silently relocate to its matching real slide.
+   const matrix=track.style.transform.match(/translate3d\((-?[\d.]+)%,/);
+   const currentPos=matrix?Math.round(-parseFloat(matrix[1])/100):pos;
+   if(currentPos===0){summaryCarouselIndex=n-1;summaryCarouselPosition(root,n,false);syncSummaryCarouselDots(root);}
+   else if(currentPos===n+1){summaryCarouselIndex=0;summaryCarouselPosition(root,1,false);syncSummaryCarouselDots(root);}
+  });
+ }
+ const count=summaryCarouselRealSlides(root).length;
+ if(count)summaryCarouselIndex=((summaryCarouselIndex%count)+count)%count;
  setSummaryCarouselSlide(summaryCarouselIndex,false);
  if(!summaryCarouselBound){
   summaryCarouselBound=true;
@@ -7883,7 +8003,7 @@ function initSummaryCarousel(){
    const viewport=event.target.closest('.summary-carousel-viewport');
    if(!viewport||event.button!==undefined&&event.button!==0)return;
    pauseSummaryCarouselAuto(-1);
-   pointerId=event.pointerId;pointerStartX=event.clientX;pointerStartY=event.clientY;isPointerDown=true;
+   pointerId=event.pointerId;pointerStartX=event.clientX;pointerStartY=event.clientY;isPointerDown=true;try{event.target.setPointerCapture(pointerId);}catch(e){}
    const track=viewport.querySelector('.summary-carousel-track');
    if(track){track.classList.add('is-dragging');viewport.classList.add('is-dragging');}
   });
@@ -18369,6 +18489,14 @@ html body #page-live-location .live-location-stat>div{
 }
 </style>
 
+
+<script id="savely-pwa-register">
+if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')){
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{scope:'./'})
+  .then(reg=>console.info('[Savely] Offline app ready',reg.scope))
+  .catch(err=>console.warn('[Savely] Service worker registration failed',err)));
+}
+</script>
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
@@ -19780,5 +19908,73 @@ body.dark-theme #stats.cards .summary-carousel-pagination .summary-carousel-dot.
 }
 @media(prefers-reduced-motion:reduce){
  #stats.cards .summary-carousel-track{transition:none!important}
+}
+</style>
+
+
+<style id="savely-expense-editor-wide-clean-header-v2">
+/* Remove the dedicated page heading/description area on Edit expenses only. */
+body.expense-editor-active .topbar{display:none!important}
+body.expense-editor-active .main{padding-top:clamp(14px,2vh,24px)!important}
+body.expense-editor-active #page-expense-editor{
+  width:100%!important;max-width:none!important;
+  padding-left:clamp(12px,1.5vw,28px)!important;
+  padding-right:clamp(12px,1.5vw,28px)!important;
+  padding-top:0!important;
+  box-sizing:border-box!important;
+}
+body.expense-editor-active .expense-editor-layout{
+  display:block!important;width:100%!important;max-width:none!important;
+  margin:0!important;padding:0!important;
+}
+body.expense-editor-active .expense-editor-card{
+  width:100%!important;max-width:none!important;min-width:0!important;
+  box-sizing:border-box!important;
+  padding:clamp(18px,2vw,32px)!important;
+  border-radius:22px!important;
+}
+body.expense-editor-active #expenseEditorMount,
+body.expense-editor-active #expenseEditorMount #modalForm,
+body.expense-editor-active #expenseEditorMount #expenseComposer{
+  width:100%!important;max-width:none!important;min-width:0!important;
+  box-sizing:border-box!important;
+}
+body.expense-editor-active .expense-composer-section{
+  width:100%!important;max-width:none!important;min-width:0!important;
+  box-sizing:border-box!important;padding:clamp(18px,1.6vw,26px)!important;
+}
+body.expense-editor-active .expense-category-grid,
+body.expense-editor-active .expense-composer-categories{
+  width:100%!important;max-width:none!important;
+}
+body.expense-editor-active .expense-composer-time-buttons,
+body.expense-editor-active .expense-time-options{
+  width:100%!important;
+}
+body.expense-editor-active .expense-composer-summary{
+  width:100%!important;max-width:none!important;box-sizing:border-box!important;
+  padding:clamp(18px,1.6vw,26px)!important;
+}
+body.expense-editor-active .expense-composer-actions{
+  width:100%!important;box-sizing:border-box!important;
+}
+body.expense-editor-active .expense-composer-section button,
+body.expense-editor-active .expense-composer-section input{
+  min-width:0;
+}
+@media(max-width:760px){
+ body.expense-editor-active .main{padding-top:8px!important}
+ body.expense-editor-active #page-expense-editor{
+  padding-left:10px!important;padding-right:10px!important;
+ }
+ body.expense-editor-active .expense-editor-card{
+  padding:12px!important;border-radius:16px!important;
+ }
+ body.expense-editor-active .expense-composer-section{
+  padding:13px!important;
+ }
+ body.expense-editor-active .expense-composer-summary{
+  padding:15px!important;
+ }
 }
 </style>
