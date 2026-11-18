@@ -2918,7 +2918,7 @@ button.link-btn{
 
 /* Expense calendar date actions and history panel */
 .expense-day-action-backdrop{position:fixed;inset:0;z-index:10080;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(18,28,39,.24)}
-.expense-day-action-menu{width:min(520px,calc(100vw - 32px));min-height:220px;max-height:min(78vh,640px);overflow:auto;background:var(--panel,#fff);color:var(--text);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 22px 65px rgba(15,30,45,.25)}
+.expense-day-action-menu{width:min(520px,calc(100vw - 32px));min-height:0;height:auto;max-height:min(78vh,640px);overflow:auto;background:var(--panel,#fff);color:var(--text);border:1px solid var(--line);border-radius:20px;padding:20px 24px 18px;box-shadow:0 22px 65px rgba(15,30,45,.25)}
 .expense-day-action-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
 .expense-day-action-head strong{font-size:17px}
 .expense-day-action-head small{display:block;color:var(--muted);font-size:13px;margin-top:6px}
@@ -2926,7 +2926,7 @@ button.link-btn{
 .expense-day-action-buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
 .expense-day-action-buttons button{min-height:56px;border:1px solid var(--line);border-radius:12px;background:var(--panel,#fff);color:var(--text);font-weight:750;font-size:14px;cursor:pointer}
 .expense-day-action-buttons button.primary{background:var(--green);border-color:var(--green);color:#fff}
-@media(max-width:520px){.expense-day-action-menu{padding:20px;min-height:200px}.expense-day-action-buttons{grid-template-columns:1fr}.expense-day-action-buttons button{min-height:50px}}
+@media(max-width:520px){.expense-day-action-menu{padding:18px 16px 16px;min-height:0}.expense-day-action-buttons{grid-template-columns:1fr}.expense-day-action-buttons button{min-height:50px}}
 .expense-day-history-list{display:grid;gap:8px;margin-top:12px}
 .expense-day-history-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--soft,#f8fafc);font-size:12px}
 .expense-day-history-row span{min-width:0;overflow-wrap:anywhere}
