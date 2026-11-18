@@ -8288,7 +8288,7 @@ function updateExpenseComposerTotal(){
 function openExpenseEntry(dateValue,editExisting=false){
  const date=dateValue||expenseLocalISO(new Date());
  const existingForDate=editExisting?(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>t.type==='expense'&&String(t.date||'')===date):[];
- if(!editExisting)openModal('transaction');
+ // Both adding and editing use the dedicated full-page expense editor, never a modal.
  const form=document.getElementById('modalForm');
  if(!form)return;
  form.noValidate=true;
@@ -8310,7 +8310,7 @@ function openExpenseEntry(dateValue,editExisting=false){
   </div>
   <div class="expense-composer-summary"><div><span class="expense-summary-label">Expense total</span><strong id="expenseComposerTotal">₱0.00</strong><small id="expenseComposerCount">0 items</small></div><span class="expense-summary-note">All items will be saved separately</span></div>
  </div>
- <div class="form-actions expense-composer-actions"><button type="button" class="btn btn-light" onclick="${editExisting?'closeExpenseEditor()':'closeModal()'}">Cancel</button><button type="submit" class="btn btn-primary">${editExisting?'Apply changes':'Save expenses'}</button></div>`;
+ <div class="form-actions expense-composer-actions"><button type="button" class="btn btn-light" onclick="closeExpenseEditor()">Cancel</button><button type="submit" class="btn btn-primary">${editExisting?'Apply changes':'Save expenses'}</button></div>`;
  if(editExisting&&existingForDate.length){
   if(title)title.textContent='Edit expenses';
   if(desc)desc.textContent='Update the expenses recorded on this date. Save to apply your changes.';
@@ -8399,7 +8399,7 @@ function openExpenseEntry(dateValue,editExisting=false){
   entries.forEach((item,index)=>data.transactions.push({id:uid(),type:'expense',accountId,description:item.description,amount:item.amount,date:expenseDate,category:item.category,timeOfDay:item.timeOfDay,createdAt:createdAt+index}));
   save();
   renderBudget();
-  if(editExisting)closeExpenseEditor();else closeModal();
+  closeExpenseEditor();
   toast(editExisting?'Expense changes applied and calendar updated.':entries.length+' expense item'+(entries.length===1?'':'s')+' saved successfully.');
  };
  form.addEventListener('submit',e=>{
@@ -8407,14 +8407,17 @@ function openExpenseEntry(dateValue,editExisting=false){
   if(form.dataset.expenseValidationError){e.preventDefault();form.dataset.expenseValidationError='';}
  });
  updateExpenseComposerTotal();
- if(editExisting){
   const mount=document.getElementById('expenseEditorMount');
   if(mount)mount.appendChild(form);
   const editorDate=document.getElementById('expenseEditorDate');
   if(editorDate)editorDate.textContent=new Date(date+'T12:00:00').toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  const datebarLabel=document.querySelector('.expense-editor-date-copy span');
+  if(datebarLabel)datebarLabel.textContent=editExisting?'EDITING EXPENSES FOR':'ADDING EXPENSES FOR';
+  const datebarStatus=document.querySelector('.expense-editor-date-status');
+  if(datebarStatus)datebarStatus.innerHTML='<i></i> Changes not yet applied';
   showPage('expense-editor');
   window.scrollTo({top:0,behavior:'smooth'});
- }
+
 }
 
 
