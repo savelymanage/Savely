@@ -4310,6 +4310,230 @@ body.dark-theme #expenseComposer .expense-item-row{background:var(--soft)!import
 }
 </style>
 
+
+<style id="savely-expenses-calendar-heading-and-today">
+body.expense-calendar-no-heading .topbar{display:none!important}
+body.expense-calendar-no-heading .main{padding-top:24px}
+.expenses-day-top-meta{display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:0}
+.expenses-today-label{flex:0 0 auto;padding:4px 7px;border-radius:999px;background:#168765;color:#fff;font-size:9px;line-height:1;font-weight:850;letter-spacing:.15px}
+.expenses-calendar-day.is-today,
+.expenses-calendar-day.is-today.has-expenses{
+ border:2px solid #168765!important;
+ background:linear-gradient(145deg,#e4f7ed 0%,#f3fbf6 100%)!important;
+ box-shadow:0 0 0 3px rgba(22,135,101,.12),0 5px 16px rgba(22,135,101,.09)!important;
+}
+.expenses-calendar-day.is-today .expenses-day-number{background:#168765!important;color:#fff!important;box-shadow:0 2px 5px rgba(22,135,101,.22)}
+</style>
+
+
+<style id="savely-expense-editor-modern-ui">
+/* Give the editor a single, clear heading and a wider working area. */
+body.expense-editor-active .topbar{
+  align-items:flex-start!important;
+  margin-bottom:24px!important;
+  padding:0 2px 18px!important;
+  border-bottom:1px solid #e5edf0!important;
+}
+body.expense-editor-active #eyebrow{
+  color:#168765!important;
+  font-size:10px!important;
+  font-weight:850!important;
+  letter-spacing:1.15px!important;
+  margin-bottom:7px!important;
+}
+body.expense-editor-active #pageTitle{
+  color:#142b25!important;
+  font-size:30px!important;
+  line-height:1.12!important;
+  letter-spacing:-.9px!important;
+  font-weight:850!important;
+}
+body.expense-editor-active #pageDescription{
+  color:#738278!important;
+  font-size:13px!important;
+  line-height:1.6!important;
+  margin-top:7px!important;
+  max-width:680px!important;
+}
+.expense-editor-page .expense-editor-layout{
+  width:100%!important;
+  max-width:1480px!important;
+  margin:0 auto!important;
+  display:block!important;
+}
+.expense-editor-page .expense-editor-card{
+  width:100%!important;
+  min-width:0!important;
+  padding:clamp(18px,2.1vw,30px)!important;
+  border:1px solid #e4ece8!important;
+  border-radius:22px!important;
+  background:linear-gradient(180deg,#fff 0%,#fcfefd 100%)!important;
+  box-shadow:0 12px 34px rgba(25,65,48,.065)!important;
+}
+.expense-editor-datebar{
+  display:flex!important;
+  align-items:center!important;
+  gap:13px!important;
+  min-height:66px!important;
+  margin-bottom:22px!important;
+  padding:13px 16px!important;
+  border:1px solid #e1eee7!important;
+  border-radius:15px!important;
+  background:linear-gradient(110deg,#f1faf5 0%,#f8fcfa 70%,#fff 100%)!important;
+}
+.expense-editor-date-icon{
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 40px!important;
+  width:40px!important;
+  height:40px!important;
+  border-radius:12px!important;
+  background:#dff4e9!important;
+  color:#138765!important;
+  font-size:20px!important;
+  font-weight:800!important;
+}
+.expense-editor-date-copy{display:grid!important;gap:4px!important;min-width:0!important}
+.expense-editor-date-copy span{
+  color:#729084!important;
+  font-size:9px!important;
+  font-weight:850!important;
+  letter-spacing:1px!important;
+}
+.expense-editor-date-copy strong{
+  color:#183b2e!important;
+  font-size:14px!important;
+  font-weight:850!important;
+}
+.expense-editor-date-status{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  margin-left:auto!important;
+  padding:8px 11px!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  border:1px solid #e5eee9!important;
+  color:#70857b!important;
+  font-size:10px!important;
+  font-weight:750!important;
+  white-space:nowrap!important;
+}
+.expense-editor-date-status i{
+  display:block!important;
+  width:7px!important;
+  height:7px!important;
+  border-radius:50%!important;
+  background:#e7a23b!important;
+}
+.expense-editor-page #modalForm{gap:18px!important}
+.expense-editor-page .expense-composer-section{
+  padding:24px!important;
+  border:1px solid #e5ede9!important;
+  border-radius:17px!important;
+  background:#fff!important;
+  box-shadow:0 3px 12px rgba(20,55,40,.025)!important;
+}
+.expense-editor-page .expense-section-heading h3{
+  color:#18352b!important;
+  font-size:16px!important;
+  font-weight:850!important;
+  letter-spacing:-.2px!important;
+}
+.expense-editor-page .expense-section-heading p{
+  color:#829188!important;
+  font-size:11px!important;
+  line-height:1.5!important;
+}
+.expense-editor-page .expense-category-grid{
+  gap:9px!important;
+  padding:3px 1px 10px!important;
+}
+.expense-editor-page .expense-category-card{
+  min-height:50px!important;
+  border-radius:12px!important;
+  font-weight:750!important;
+  transition:transform .16s ease,background .16s ease,border-color .16s ease,box-shadow .16s ease!important;
+}
+.expense-editor-page .expense-category-card:hover{transform:translateY(-1px)!important}
+.expense-editor-page .expense-category-card.active,
+.expense-editor-page .expense-category-card.selected{
+  background:#138765!important;
+  border-color:#138765!important;
+  color:#fff!important;
+  box-shadow:0 4px 10px rgba(19,135,101,.16)!important;
+}
+.expense-editor-page .expense-category-card .expense-category-check{display:none!important}
+.expense-editor-page .expense-category-panel{
+  padding:20px!important;
+  border:1px solid #e6eee9!important;
+  border-radius:15px!important;
+  background:#f9fbfa!important;
+}
+.expense-editor-page .expense-time-tabs{gap:9px!important;margin:14px 0 15px!important}
+.expense-editor-page .expense-time-tab{
+  min-height:46px!important;
+  border-radius:11px!important;
+  border:1px solid #e2eae6!important;
+  background:#fff!important;
+  color:#4e6258!important;
+  font-size:11px!important;
+  font-weight:800!important;
+}
+.expense-editor-page .expense-time-tab.active{
+  color:#fff!important;
+  background:#138765!important;
+  border-color:#138765!important;
+  box-shadow:0 4px 10px rgba(19,135,101,.16)!important;
+}
+.expense-editor-page .expense-item-row{
+  padding:12px!important;
+  gap:10px!important;
+  border:1px solid #e5ece8!important;
+  border-radius:13px!important;
+  background:#fff!important;
+}
+.expense-editor-page .expense-item-row input{
+  min-height:46px!important;
+  border-radius:10px!important;
+  border-color:#e0e9e4!important;
+  font-size:12px!important;
+}
+.expense-editor-page .expense-add-item{
+  min-height:42px!important;
+  border-radius:10px!important;
+  font-weight:800!important;
+}
+.expense-editor-page .expense-composer-summary{
+  padding:20px 22px!important;
+  border:1px solid #aee2cb!important;
+  border-radius:15px!important;
+  background:linear-gradient(110deg,#eaf8f1,#f2fbf6)!important;
+}
+.expense-editor-page .expense-composer-actions{
+  margin-top:2px!important;
+  padding-top:20px!important;
+  border-top:1px solid #e9efec!important;
+}
+.expense-editor-page .expense-composer-actions .btn{
+  min-width:138px!important;
+  min-height:47px!important;
+  border-radius:11px!important;
+  font-size:12px!important;
+  font-weight:850!important;
+}
+@media(max-width:760px){
+  body.expense-editor-active .topbar{margin-bottom:15px!important;padding-bottom:14px!important}
+  body.expense-editor-active #pageTitle{font-size:25px!important}
+  .expense-editor-page .expense-editor-card{padding:13px!important;border-radius:16px!important}
+  .expense-editor-datebar{align-items:flex-start!important;flex-wrap:wrap!important;margin-bottom:14px!important;padding:11px!important}
+  .expense-editor-date-status{margin-left:53px!important}
+  .expense-editor-page .expense-composer-section{padding:14px!important}
+  .expense-editor-page .expense-category-panel{padding:13px!important}
+  .expense-editor-page .expense-composer-actions{position:sticky;bottom:0;background:#fff;padding:14px 0 max(8px,env(safe-area-inset-bottom))!important;z-index:2}
+}
+</style>
+
 </head>
 <body>
 
@@ -4975,14 +5199,17 @@ body.dark-theme #expenseComposer .expense-item-row{background:var(--soft)!import
 
   <section class="page expense-editor-page" id="page-expense-editor" aria-label="Edit expenses">
     <div class="expense-editor-layout">
-      <div class="expense-editor-toolbar">
-        <button type="button" class="btn btn-light expense-editor-back" onclick="closeExpenseEditor()">← Back to expenses</button>
-        <div class="expense-editor-intro">
-          <strong>Edit expenses</strong>
-          <span>Update the recorded expenses for this date, then apply your changes.</span>
+      <div class="expense-editor-card">
+        <div class="expense-editor-datebar">
+          <div class="expense-editor-date-icon" aria-hidden="true">▦</div>
+          <div class="expense-editor-date-copy">
+            <span>EDITING EXPENSES FOR</span>
+            <strong id="expenseEditorDate">Selected date</strong>
+          </div>
+          <span class="expense-editor-date-status"><i></i> Changes not yet applied</span>
         </div>
+        <div id="expenseEditorMount"></div>
       </div>
-      <div class="expense-editor-card" id="expenseEditorMount"></div>
     </div>
   </section>
 </main>
@@ -7924,6 +8151,8 @@ function openExpenseEntry(dateValue,editExisting=false){
  if(editExisting){
   const mount=document.getElementById('expenseEditorMount');
   if(mount)mount.appendChild(form);
+  const editorDate=document.getElementById('expenseEditorDate');
+  if(editorDate)editorDate.textContent=new Date(date+'T12:00:00').toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
   showPage('expense-editor');
   window.scrollTo({top:0,behavior:'smooth'});
  }
@@ -8007,7 +8236,7 @@ function renderBudget(){
   const total=items.reduce((sum,t)=>sum+Math.max(0,Number(t.amount)||0),0);
   const chips=items.length?`<span class="expenses-day-count">${items.length} expense${items.length===1?'':'s'}</span>`:'';
   cells.push(`<button type="button" class="expenses-calendar-day${iso===today?' is-today':''}${items.length?' has-expenses':''}" onclick="openExpenseDayActions('${iso}')" aria-label="${weekdayNames[date.getDay()]}, ${date.toLocaleDateString('en-PH',{month:'long',day:'numeric',year:'numeric'})}. ${items.length} expenses totalling ${peso(total)}. Open date actions.">
-   <span class="expenses-day-top"><span class="expenses-day-number">${day}</span>${items.length?`<span class="expenses-day-total">${peso(total)}</span>`:''}</span>
+   <span class="expenses-day-top"><span class="expenses-day-number">${day}</span><span class="expenses-day-top-meta">${iso===today?'<span class="expenses-today-label">Today</span>':''}${items.length?`<span class="expenses-day-total">${peso(total)}</span>`:''}</span></span>
    <span class="expenses-day-items">${chips}</span>
    <span class="expenses-day-add">${items.length?'+ Add':'＋ Add expense'}</span>
   </button>`);
@@ -9852,7 +10081,7 @@ function toggleOverviewFigures(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',updateOverviewPrivacyState,{once:true});
 else updateOverviewPrivacyState();
-function showPage(p){if(p!=='expense-editor'){const composerForm=document.getElementById('modalForm');const modalHost=document.querySelector('#modalBackdrop .modal');if(composerForm&&modalHost&&composerForm.parentElement?.id==='expenseEditorMount')modalHost.appendChild(composerForm);}const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'inline-flex':'none';if(p==='dashboard'){renderDashboard();setTimeout(renderOverallTrend,50);}const targetPage=document.getElementById('page-'+p);if(!targetPage){console.warn('Savely page not found:',p);return;}targetPage.classList.remove('page-entering');void targetPage.offsetWidth;document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));targetPage.classList.add('active','page-entering');updateOverviewPrivacyState();if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Monitor.');if(p==='live-location')setTimeout(()=>{
+function showPage(p){document.body.classList.toggle('expense-calendar-no-heading',p==='budget');document.body.classList.toggle('expense-editor-active',p==='expense-editor');if(p!=='expense-editor'){const composerForm=document.getElementById('modalForm');const modalHost=document.querySelector('#modalBackdrop .modal');if(composerForm&&modalHost&&composerForm.parentElement?.id==='expenseEditorMount')modalHost.appendChild(composerForm);}const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'inline-flex':'none';if(p==='dashboard'){renderDashboard();setTimeout(renderOverallTrend,50);}const targetPage=document.getElementById('page-'+p);if(!targetPage){console.warn('Savely page not found:',p);return;}targetPage.classList.remove('page-entering');void targetPage.offsetWidth;document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));targetPage.classList.add('active','page-entering');updateOverviewPrivacyState();if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Monitor.');if(p==='live-location')setTimeout(()=>{
  setSavelyLiveMapMode('traffic');
  initSavelyLiveLocationMap();
  if(savelyLiveLocationMap){
@@ -9867,7 +10096,7 @@ function showPage(p){if(p!=='expense-editor'){const composerForm=document.getEle
   savelyLiveLocationMap.invalidateSize();
  }
   if(window.__savelyLiveLocationWatchId===null||window.__savelyLiveLocationWatchId===undefined)startSavelyLiveLocation();
-},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LIVE MONITOR','Live Monitor'],'metro-snapshot':['PUBLIC CAMERA IMAGES','Metro Manila Snapshot'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['',''],billing:['HOUSEHOLD UTILITIES','Billing'],'expense-editor':['SPENDING MANAGEMENT','Edit expenses']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','metro-snapshot':'View the latest available public camera snapshots across Metro Manila.','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:'',billing:'Estimate your household water bill using your meter readings and current rate assumptions.','expense-editor':'Review and update expenses recorded on a selected date.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const topbar=document.querySelector('.topbar');if(topbar)topbar.classList.toggle('savings-header-hidden',p==='financial-list');const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
+},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LIVE MONITOR','Live Monitor'],'metro-snapshot':['PUBLIC CAMERA IMAGES','Metro Manila Snapshot'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['',''],billing:['HOUSEHOLD UTILITIES','Billing'],'expense-editor':['EXPENSE MANAGEMENT','Edit expenses']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','metro-snapshot':'View the latest available public camera snapshots across Metro Manila.','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:'',billing:'Estimate your household water bill using your meter readings and current rate assumptions.','expense-editor':'Organize each purchase by category and time of day. Review your changes before applying them.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const topbar=document.querySelector('.topbar');if(topbar)topbar.classList.toggle('savings-header-hidden',p==='financial-list');const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
 document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
 function openModal(kind,goalToEdit=null){const form=document.getElementById('modalForm'),title=document.getElementById('modalTitle'),desc=document.getElementById('modalDesc');let accountOptions=data.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');let field=(label,name,type='text',value='',extra='')=>`<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let select=(label,name,opts)=>`<div class="field"><label>${label}</label><select name="${name}">${opts}</select></div>`;let fullfield=(label,name,type='text',value='',extra='')=>`<div class="field full"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let body='';
 if(kind==='transaction'){title.textContent='Add transaction';desc.textContent='Record a deposit, withdrawal, interest credit, or expense.';body=`<div class="form-grid">${fullfield('Description','description','text','','required maxlength="100"')}${select('Transaction type','type','<option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option><option value="expense">Expense</option><option value="interest">Interest credit</option>')}${select('Account','accountId',accountOptions)}${field('Amount (₱)','amount','number','','required min=".01" step=".01"')}${field('Date','date','date',todayISO(),'required')}${field('Category','category','text','General','maxlength="60"')}</div>`}
