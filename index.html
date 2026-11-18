@@ -5055,8 +5055,13 @@ body.expense-editor-active #pageDescription{
    <button type="button" class="btn btn-primary expenses-add-button" onclick="openExpenseEntry()">＋ Add expense</button>
   </div>
   <div class="expenses-calendar-summary">
-   <div><span class="expenses-summary-label">This month</span><strong id="expensesCalendarTotal">₱0.00</strong></div>
+   <div class="expenses-summary-main">
+    <span class="expenses-summary-label">Monthly expenses</span>
+    <strong id="expensesCalendarTotal">₱0.00</strong>
+    <small class="expenses-summary-month" id="expensesCalendarSummaryMonth">November 2026</small>
+   </div>
    <span class="expenses-summary-count" id="expensesCalendarCount">0 expenses</span>
+   <span class="expenses-summary-currency" aria-hidden="true">₱</span>
   </div>
   <div class="expenses-calendar-toolbar">
    <div class="expenses-month-label" id="expensesCalendarMonth">November 2026</div>
@@ -8508,11 +8513,12 @@ function closeExpenseDayActions(){
 }
 function openExpenseDayActions(dateValue){
  const date=String(dateValue||'');
- if(date>expenseTodayISO()){
-  toast('Future dates are unavailable for expense entries.');
+ const rows=(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>t.type==='expense'&&String(t.date||'')===date).sort((a,b)=>Number(a.createdAt||0)-Number(b.createdAt||0));
+ // Empty past dates are inert: no popup, no form, and no add action.
+ if(date<expenseTodayISO()&&!rows.length){
+  closeExpenseDayActions();
   return;
  }
- const rows=(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>t.type==='expense'&&String(t.date||'')===date).sort((a,b)=>Number(a.createdAt||0)-Number(b.createdAt||0));
  closeExpenseDayActions();
  const pretty=new Date(date+'T12:00:00').toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
  const backdrop=document.createElement('div');
@@ -8551,6 +8557,8 @@ function renderBudget(){
  if(!grid||!monthLabel)return;
  const year=expenseCalendarCursor.getFullYear(),month=expenseCalendarCursor.getMonth();
  monthLabel.textContent=expenseCalendarCursor.toLocaleDateString('en-PH',{month:'long',year:'numeric'});
+ const summaryMonth=document.getElementById('expensesCalendarSummaryMonth');
+ if(summaryMonth)summaryMonth.textContent=expenseCalendarCursor.toLocaleDateString('en-PH',{month:'long',year:'numeric'});
  const monthKey=year+'-'+String(month+1).padStart(2,'0');
  const expenseRows=(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>t.type==='expense'&&String(t.date||'').slice(0,7)===monthKey);
  const monthTotal=expenseRows.reduce((sum,t)=>sum+Math.max(0,Number(t.amount)||0),0);
@@ -8576,7 +8584,7 @@ function renderBudget(){
   const isPast=iso<today;
   const isFuture=iso>today;
   const dateClasses=`expenses-calendar-day${isPast?' is-past':''}${isFuture?' is-future':''}${iso===today?' is-today':''}${items.length?' has-expenses':''}`;
-  cells.push(`<button type="button" class="${dateClasses}" ${isFuture?'disabled aria-disabled="true"':'onclick="openExpenseDayActions(\''+iso+'\')"'} aria-label="${weekdayNames[date.getDay()]}, ${date.toLocaleDateString('en-PH',{month:'long',day:'numeric',year:'numeric'})}. ${items.length} expenses totalling ${peso(total)}. ${isPast?'View or edit historical expenses.':isFuture?'Future date. Expense entry unavailable.':'Open date actions.'}">
+  cells.push(`<button type="button" class="${dateClasses}" onclick="openExpenseDayActions('${iso}')" aria-label="${weekdayNames[date.getDay()]}, ${date.toLocaleDateString('en-PH',{month:'long',day:'numeric',year:'numeric'})}. ${items.length} expenses totalling ${peso(total)}. ${isPast?'View or edit historical expenses.':isFuture?'Future date. Adding expenses is unavailable until this date.':'Open date actions.'}">
    <span class="expenses-day-top"><span class="expenses-day-number">${day}</span><span class="expenses-day-top-meta">${iso===today?'<span class="expenses-today-label">Today</span>':''}${items.length?`<span class="expenses-day-total">${peso(total)}</span>`:''}</span></span>
    <span class="expenses-day-items">${chips}</span>
   </button>`);
@@ -18605,24 +18613,11 @@ if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostn
 #expensesCalendarGrid button.expenses-calendar-day.is-past:not(.is-today) .expenses-day-count{
  background:#dfe3e6!important;color:#7d878f!important;
 }
-/* Future dates: clearly grey and disabled; never receive the green hover treatment. */
-#expensesCalendarGrid button.expenses-calendar-day.is-future,
-#expensesCalendarGrid button.expenses-calendar-day.is-future:hover,
-#expensesCalendarGrid button.expenses-calendar-day.is-future:focus,
-#expensesCalendarGrid button.expenses-calendar-day.is-future:active,
-#expensesCalendarGrid button.expenses-calendar-day.is-future:disabled{
- background:#e9ecef!important;background-image:none!important;
- border:1px solid #d4d9de!important;color:#a0a8af!important;
- box-shadow:none!important;filter:none!important;opacity:1!important;
- cursor:not-allowed!important;pointer-events:none!important;outline:none!important;
-}
-#expensesCalendarGrid button.expenses-calendar-day.is-future .expenses-day-number{
- background:#dfe3e6!important;color:#a0a8af!important;
-}
-#expensesCalendarGrid button.expenses-calendar-day.is-future .expenses-day-items,
-#expensesCalendarGrid button.expenses-calendar-day.is-future .expenses-day-count,
-#expensesCalendarGrid button.expenses-calendar-day.is-future .expenses-day-total{
- background:#dfe3e6!important;color:#a0a8af!important;
+/* Future dates retain the normal calendar card appearance.
+   They can be selected for viewing, but the entry function blocks adding expenses. */
+#expensesCalendarGrid button.expenses-calendar-day.is-future{
+ cursor:pointer!important;
+ opacity:1!important;
 }
 /* Today alone keeps the green active treatment and allows expense entry. */
 #expensesCalendarGrid button.expenses-calendar-day.is-today{
@@ -18645,7 +18640,113 @@ if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostn
  display:none!important;
 }
 </style>
-\n</body>
+\n
+<style id="savely-future-dates-normal-appearance">
+#expensesCalendarGrid button.expenses-calendar-day.is-future,
+#expensesCalendarGrid button.expenses-calendar-day.is-future:hover,
+#expensesCalendarGrid button.expenses-calendar-day.is-future:focus{
+ background:var(--card,#fff)!important;
+ background-image:none!important;
+ border-color:var(--border,#dce5ed)!important;
+ color:var(--text,#243044)!important;
+ opacity:1!important;filter:none!important;
+}
+#expensesCalendarGrid button.expenses-calendar-day.is-future .expenses-day-number{
+ background:transparent!important;color:inherit!important;
+}
+#expensesCalendarGrid button.expenses-calendar-day.is-future .expenses-day-items{
+ background:#e8f6ee!important;color:var(--green,#168765)!important;
+}
+</style>
+
+<style id="savely-expense-editor-remove-outer-container">
+/* Remove the large centered wrapper around the expense editor.
+   Keep the date banner, category section, summary, and action buttons intact. */
+.expense-editor-page .expense-editor-layout{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  display:block!important;
+}
+.expense-editor-page .expense-editor-card{
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+@media(max-width:760px){
+  .expense-editor-page .expense-editor-card{
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+}
+</style>
+
+
+<style id="savely-expenses-monthly-gradient-summary-v1">
+#page-budget .expenses-calendar-summary{
+ position:relative!important;isolation:isolate!important;overflow:hidden!important;
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:18px!important;box-sizing:border-box!important;
+ min-height:142px!important;padding:23px 25px!important;margin:0 0 20px!important;
+ border:1px solid #168765!important;border-radius:18px!important;
+ background:linear-gradient(112deg,#087d5c 0%,#11996e 54%,#31b887 100%)!important;
+ color:#fff!important;box-shadow:0 10px 26px rgba(22,135,101,.15)!important;
+}
+#page-budget .expenses-calendar-summary::before{
+ content:""!important;position:absolute!important;z-index:0!important;
+ width:160px!important;height:160px!important;right:-54px!important;top:-100px!important;
+ border-radius:50%!important;background:rgba(255,255,255,.11)!important;pointer-events:none!important;
+}
+#page-budget .expenses-calendar-summary::after{
+ content:"₱"!important;position:absolute!important;z-index:1!important;
+ display:grid!important;place-items:center!important;top:20px!important;right:22px!important;
+ width:34px!important;height:34px!important;border:1px solid rgba(255,255,255,.25)!important;
+ border-radius:11px!important;background:rgba(255,255,255,.17)!important;
+ color:#fff!important;font-size:16px!important;font-weight:850!important;
+}
+#page-budget .expenses-calendar-summary .expenses-summary-main{
+ position:relative!important;z-index:2!important;display:flex!important;
+ flex-direction:column!important;align-items:flex-start!important;gap:5px!important;
+ min-width:0!important;
+}
+#page-budget .expenses-calendar-summary .expenses-summary-label{
+ color:rgba(255,255,255,.88)!important;font-size:11px!important;font-weight:800!important;
+}
+#page-budget .expenses-calendar-summary strong#expensesCalendarTotal{
+ color:#fff!important;font-size:clamp(25px,2.2vw,30px)!important;
+ line-height:1.15!important;font-weight:900!important;letter-spacing:-.6px!important;
+ font-variant-numeric:tabular-nums!important;
+}
+#page-budget .expenses-calendar-summary .expenses-summary-month{
+ color:rgba(255,255,255,.86)!important;font-size:11px!important;font-weight:650!important;
+}
+#page-budget .expenses-calendar-summary .expenses-summary-count{
+ position:relative!important;z-index:2!important;align-self:flex-start!important;
+ margin-right:45px!important;padding:8px 12px!important;border:1px solid rgba(255,255,255,.2)!important;
+ border-radius:999px!important;background:rgba(255,255,255,.16)!important;
+ color:#fff!important;font-size:10px!important;font-weight:850!important;white-space:nowrap!important;
+}
+#page-budget .expenses-calendar-panel-head{margin-bottom:15px!important}
+@media(max-width:650px){
+ #page-budget .expenses-calendar-summary{
+  min-height:126px!important;padding:19px 17px!important;border-radius:15px!important;
+ }
+ #page-budget .expenses-calendar-summary::after{top:15px!important;right:15px!important}
+ #page-budget .expenses-calendar-summary .expenses-summary-count{margin-right:37px!important}
+ #page-budget .expenses-calendar-summary strong#expensesCalendarTotal{font-size:24px!important}
+}
+</style>
+
+</body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
 #page-metro-snapshot .savely-snapshot-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:290px;padding:34px 22px;border:1px dashed #cfe3d8;border-radius:15px;background:linear-gradient(145deg,#f4faf6,#fbfdfc)}
