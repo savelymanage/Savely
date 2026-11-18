@@ -4269,6 +4269,47 @@ body.dark-theme #expenseComposer .expense-item-row{background:var(--soft)!import
 }
 </style>
 
+
+<style id="savely-page-open-transition">
+@keyframes savelyPageEnter{
+  from{opacity:0;transform:translate3d(0,12px,0) scale(.997);filter:blur(1.5px)}
+  to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+}
+.page.page-entering{
+  animation:savelyPageEnter 380ms cubic-bezier(.2,.75,.25,1) both;
+  transform-origin:top center;
+  will-change:opacity,transform;
+}
+@media(prefers-reduced-motion:reduce){
+  .page.page-entering{animation:none!important;filter:none!important;transform:none!important}
+}
+</style>
+
+
+<style id="savely-expense-edit-dedicated-page">
+.expense-editor-page .expense-editor-layout{width:min(1240px,100%);margin:0 auto;display:grid;gap:18px}
+.expense-editor-toolbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.expense-editor-back{min-height:42px;border-radius:11px;font-weight:750}
+.expense-editor-intro{display:grid;gap:4px}
+.expense-editor-intro strong{font-size:17px;font-weight:850;color:var(--text)}
+.expense-editor-intro span{font-size:12px;color:var(--muted)}
+.expense-editor-card{min-width:0;width:100%;background:var(--card,#fff);border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:0 8px 28px rgba(20,40,60,.055)}
+.expense-editor-page #modalForm{display:grid;gap:16px;width:100%}
+.expense-editor-page #expenseComposer{width:100%;gap:16px}
+.expense-editor-page .expense-composer-actions{margin-top:12px!important;padding-top:18px!important;border-top:1px solid var(--line);gap:12px!important}
+.expense-editor-page .expense-composer-actions .btn{min-width:130px;min-height:48px;border-radius:11px;font-weight:800}
+.expense-editor-page .expense-composer-section{padding:22px!important}
+.expense-editor-page .expense-composer-summary{padding:19px 22px!important}
+@media(max-width:760px){
+ .expense-editor-page .expense-editor-layout{gap:12px}
+ .expense-editor-card{padding:14px;border-radius:15px}
+ .expense-editor-toolbar{align-items:flex-start;flex-direction:column;gap:10px}
+ .expense-editor-page .expense-composer-section{padding:14px!important}
+ .expense-editor-page .expense-composer-actions{position:sticky;bottom:0;background:var(--card,#fff);padding:14px 0 max(8px,env(safe-area-inset-bottom))!important;z-index:2}
+ .expense-editor-page .expense-composer-actions .btn{flex:1;min-width:0}
+}
+</style>
+
 </head>
 <body>
 
@@ -4931,6 +4972,19 @@ body.dark-theme #expenseComposer .expense-item-row{background:var(--soft)!import
     </section>
   </section>
 
+
+  <section class="page expense-editor-page" id="page-expense-editor" aria-label="Edit expenses">
+    <div class="expense-editor-layout">
+      <div class="expense-editor-toolbar">
+        <button type="button" class="btn btn-light expense-editor-back" onclick="closeExpenseEditor()">← Back to expenses</button>
+        <div class="expense-editor-intro">
+          <strong>Edit expenses</strong>
+          <span>Update the recorded expenses for this date, then apply your changes.</span>
+        </div>
+      </div>
+      <div class="expense-editor-card" id="expenseEditorMount"></div>
+    </div>
+  </section>
 </main>
 </div>
 <div class="modal-backdrop" id="savelyUpdatesBackdrop" role="dialog" aria-modal="true" aria-labelledby="savelyUpdatesTitle" style="z-index:9999" onclick="if(event.target===this)closeSavelyUpdates()"><div class="modal" style="max-width:520px"><div class="panel-head"><div><div class="pill" style="display:inline-flex;margin-bottom:10px">SAVELY UPDATES</div><h2 id="savelyUpdatesTitle">What’s new in Savely</h2></div></div><p class="muted">Version 2.8.68 · Latest patch</p><div style="display:grid;gap:12px"><div><span class="pill" style="background:#e5f7ef;color:#087f5b">MINOR UPDATE · v2.8.68</span><ul style="line-height:1.8;padding-left:22px;margin-top:8px"><li>Refined email OTP authentication flow for sign-up and login.</li><li>Requests Supabase email OTP through the Auth OTP endpoint and verifies the entered code.</li><li>Verified accounts use Supabase Authentication sessions for account-scoped cloud sync.</li><li>Updated account and privacy messaging to explain authentication and cloud data setup.</li><li>Added an embedded satellite map that opens from the live weather badge, with Zoom Earth available for weather layers.</li><li>Fixed the selected-bank savings graph height so it stays compact and fits inside the Savings panel.</li><li>Satellite map uses Esri World Imagery and centers on the selected weather city when available; Zoom Earth opens separately for weather layers.</li></ul></div></div><div class="form-actions" style="justify-content:flex-end"><button type="button" class="btn btn-primary" onclick="closeSavelyUpdates()">Okay</button></div></div></div>
@@ -7748,7 +7802,7 @@ function updateExpenseComposerTotal(){
 function openExpenseEntry(dateValue,editExisting=false){
  const date=dateValue||expenseLocalISO(new Date());
  const existingForDate=editExisting?(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>t.type==='expense'&&String(t.date||'')===date):[];
- openModal('transaction');
+ if(!editExisting)openModal('transaction');
  const form=document.getElementById('modalForm');
  if(!form)return;
  form.noValidate=true;
@@ -7770,7 +7824,7 @@ function openExpenseEntry(dateValue,editExisting=false){
   </div>
   <div class="expense-composer-summary"><div><span class="expense-summary-label">Expense total</span><strong id="expenseComposerTotal">₱0.00</strong><small id="expenseComposerCount">0 items</small></div><span class="expense-summary-note">All items will be saved separately</span></div>
  </div>
- <div class="form-actions expense-composer-actions"><button type="button" class="btn btn-light" onclick="closeModal()">Cancel</button><button type="submit" class="btn btn-primary">${editExisting?'Apply changes':'Save expenses'}</button></div>`;
+ <div class="form-actions expense-composer-actions"><button type="button" class="btn btn-light" onclick="${editExisting?'closeExpenseEditor()':'closeModal()'}">Cancel</button><button type="submit" class="btn btn-primary">${editExisting?'Apply changes':'Save expenses'}</button></div>`;
  if(editExisting&&existingForDate.length){
   if(title)title.textContent='Edit expenses';
   if(desc)desc.textContent='Update the expenses recorded on this date. Save to apply your changes.';
@@ -7859,7 +7913,7 @@ function openExpenseEntry(dateValue,editExisting=false){
   entries.forEach((item,index)=>data.transactions.push({id:uid(),type:'expense',accountId,description:item.description,amount:item.amount,date:expenseDate,category:item.category,timeOfDay:item.timeOfDay,createdAt:createdAt+index}));
   save();
   renderBudget();
-  closeModal();
+  if(editExisting)closeExpenseEditor();else closeModal();
   toast(editExisting?'Expense changes applied and calendar updated.':entries.length+' expense item'+(entries.length===1?'':'s')+' saved successfully.');
  };
  form.addEventListener('submit',e=>{
@@ -7867,6 +7921,22 @@ function openExpenseEntry(dateValue,editExisting=false){
   if(form.dataset.expenseValidationError){e.preventDefault();form.dataset.expenseValidationError='';}
  });
  updateExpenseComposerTotal();
+ if(editExisting){
+  const mount=document.getElementById('expenseEditorMount');
+  if(mount)mount.appendChild(form);
+  showPage('expense-editor');
+  window.scrollTo({top:0,behavior:'smooth'});
+ }
+}
+
+
+function closeExpenseEditor(){
+ const form=document.getElementById('modalForm');
+ const modalHost=document.querySelector('#modalBackdrop .modal');
+ if(form&&modalHost&&form.parentElement?.id==='expenseEditorMount')modalHost.appendChild(form);
+ showPage('budget');
+ const backdrop=document.getElementById('modalBackdrop');
+ if(backdrop)backdrop.style.display='none';
 }
 
 function closeExpenseDayActions(){
@@ -9782,7 +9852,7 @@ function toggleOverviewFigures(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',updateOverviewPrivacyState,{once:true});
 else updateOverviewPrivacyState();
-function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'inline-flex':'none';if(p==='dashboard'){renderDashboard();setTimeout(renderOverallTrend,50);}const targetPage=document.getElementById('page-'+p);if(!targetPage){console.warn('Savely page not found:',p);return;}document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));targetPage.classList.add('active');updateOverviewPrivacyState();if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Monitor.');if(p==='live-location')setTimeout(()=>{
+function showPage(p){if(p!=='expense-editor'){const composerForm=document.getElementById('modalForm');const modalHost=document.querySelector('#modalBackdrop .modal');if(composerForm&&modalHost&&composerForm.parentElement?.id==='expenseEditorMount')modalHost.appendChild(composerForm);}const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'inline-flex':'none';if(p==='dashboard'){renderDashboard();setTimeout(renderOverallTrend,50);}const targetPage=document.getElementById('page-'+p);if(!targetPage){console.warn('Savely page not found:',p);return;}targetPage.classList.remove('page-entering');void targetPage.offsetWidth;document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));targetPage.classList.add('active','page-entering');updateOverviewPrivacyState();if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Monitor.');if(p==='live-location')setTimeout(()=>{
  setSavelyLiveMapMode('traffic');
  initSavelyLiveLocationMap();
  if(savelyLiveLocationMap){
@@ -9797,7 +9867,7 @@ function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavin
   savelyLiveLocationMap.invalidateSize();
  }
   if(window.__savelyLiveLocationWatchId===null||window.__savelyLiveLocationWatchId===undefined)startSavelyLiveLocation();
-},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LIVE MONITOR','Live Monitor'],'metro-snapshot':['PUBLIC CAMERA IMAGES','Metro Manila Snapshot'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['',''],billing:['HOUSEHOLD UTILITIES','Billing']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','metro-snapshot':'View the latest available public camera snapshots across Metro Manila.','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:'',billing:'Estimate your household water bill using your meter readings and current rate assumptions.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const topbar=document.querySelector('.topbar');if(topbar)topbar.classList.toggle('savings-header-hidden',p==='financial-list');const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
+},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LIVE MONITOR','Live Monitor'],'metro-snapshot':['PUBLIC CAMERA IMAGES','Metro Manila Snapshot'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['',''],billing:['HOUSEHOLD UTILITIES','Billing'],'expense-editor':['SPENDING MANAGEMENT','Edit expenses']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','metro-snapshot':'View the latest available public camera snapshots across Metro Manila.','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:'',billing:'Estimate your household water bill using your meter readings and current rate assumptions.','expense-editor':'Review and update expenses recorded on a selected date.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const topbar=document.querySelector('.topbar');if(topbar)topbar.classList.toggle('savings-header-hidden',p==='financial-list');const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
 document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
 function openModal(kind,goalToEdit=null){const form=document.getElementById('modalForm'),title=document.getElementById('modalTitle'),desc=document.getElementById('modalDesc');let accountOptions=data.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');let field=(label,name,type='text',value='',extra='')=>`<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let select=(label,name,opts)=>`<div class="field"><label>${label}</label><select name="${name}">${opts}</select></div>`;let fullfield=(label,name,type='text',value='',extra='')=>`<div class="field full"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let body='';
 if(kind==='transaction'){title.textContent='Add transaction';desc.textContent='Record a deposit, withdrawal, interest credit, or expense.';body=`<div class="form-grid">${fullfield('Description','description','text','','required maxlength="100"')}${select('Transaction type','type','<option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option><option value="expense">Expense</option><option value="interest">Interest credit</option>')}${select('Account','accountId',accountOptions)}${field('Amount (₱)','amount','number','','required min=".01" step=".01"')}${field('Date','date','date',todayISO(),'required')}${field('Category','category','text','General','maxlength="60"')}</div>`}
