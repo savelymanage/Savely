@@ -4625,6 +4625,54 @@ body.expense-editor-active #pageDescription{
  });
 })();
 </script>
+
+<style id="savely-expense-calendar-past-dates-v2">
+/* Historical dates stay clickable for reviewing and editing, but are visibly muted. */
+#expensesCalendarGrid .expenses-calendar-day.is-past:not(.is-today),
+#expensesCalendarGrid .expenses-calendar-day.is-past.has-expenses:not(.is-today){
+  background:#f0f2f4!important;
+  border-color:#dce1e5!important;
+  color:#89929b!important;
+  box-shadow:none!important;
+}
+#expensesCalendarGrid .expenses-calendar-day.is-past:not(.is-today) .expenses-day-number{
+  color:#89929b!important;background:#e4e8eb!important;
+}
+#expensesCalendarGrid .expenses-calendar-day.is-past:not(.is-today) .expenses-day-total{color:#87919a!important}
+#expensesCalendarGrid .expenses-calendar-day.is-past:not(.is-today) .expenses-day-items{
+  background:#e5e9ec!important;color:#7e8992!important;
+}
+#expensesCalendarGrid .expenses-calendar-day.is-past:not(.is-today) .expenses-day-count{color:#7e8992!important}
+#expensesCalendarGrid .expenses-calendar-day.is-past:not(.is-today):hover{
+  background:#e9edef!important;border-color:#cbd3d9!important;box-shadow:0 2px 7px rgba(40,55,70,.05)!important;
+}
+/* Per-day Add expense prompts are intentionally removed; click a date to open its actions. */
+#expensesCalendarGrid .expenses-day-add{display:none!important}
+</style>
+
+<style id="savely-expense-calendar-final-date-rules-v3">
+/* Historical dates are muted but intentionally remain interactive for editing. */
+#expensesCalendarGrid button.expenses-calendar-day.is-past:not(.is-today){
+ background:#eef1f3!important;border:1px solid #d9dfe4!important;color:#8a949d!important;
+ box-shadow:none!important;filter:saturate(.35)!important;
+}
+#expensesCalendarGrid button.expenses-calendar-day.is-past:not(.is-today) .expenses-day-number{color:#89939c!important;background:#e3e7ea!important}
+#expensesCalendarGrid button.expenses-calendar-day.is-past:not(.is-today) .expenses-day-items{background:#e2e7ea!important;color:#7f8992!important}
+#expensesCalendarGrid button.expenses-calendar-day.is-past:not(.is-today) .expenses-day-count,
+#expensesCalendarGrid button.expenses-calendar-day.is-past:not(.is-today) .expenses-day-total{color:#7f8992!important}
+#expensesCalendarGrid button.expenses-calendar-day.is-past:not(.is-today):hover{background:#e8ecef!important;border-color:#cbd3d9!important}
+/* Future dates cannot be opened or used to create an expense. */
+#expensesCalendarGrid button.expenses-calendar-day.is-future,
+#expensesCalendarGrid button.expenses-calendar-day.is-future:disabled{
+ background:#f7f8f9!important;border:1px dashed #e1e5e8!important;color:#b0b8bf!important;
+ box-shadow:none!important;cursor:not-allowed!important;opacity:.72!important;pointer-events:none!important;
+}
+#expensesCalendarGrid button.expenses-calendar-day.is-future .expenses-day-number{color:#aeb6bd!important}
+#expensesCalendarGrid button.expenses-calendar-day.is-future .expenses-day-items{background:#eef0f2!important}
+/* No per-date Add/Add expense prompt should appear in any state. */
+#expensesCalendarGrid .expenses-day-add{display:none!important;visibility:hidden!important}
+</style>
+
 </head>
 <body>
 
@@ -5022,7 +5070,7 @@ body.expense-editor-active #pageDescription{
    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
   </div>
   <div class="expenses-calendar-grid" id="expensesCalendarGrid" role="grid" aria-label="Expenses calendar"></div>
-  <div class="expenses-calendar-legend"><span><i></i> Expense recorded</span><span>Choose any day to add an expense</span></div>
+  <div class="expenses-calendar-legend"><span><i></i> Expense recorded</span><span>Select a date to view, add, or edit expenses</span></div>
  </div>
 </section>
   <section class="page" id="page-interest">
@@ -8208,6 +8256,11 @@ expenseCalendarCursor.setDate(1);
 function expenseLocalISO(date){
  return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');
 }
+function expenseTodayISO(){
+ const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Manila',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+ const get=type=>parts.find(part=>part.type===type)?.value||'';
+ return get('year')+'-'+get('month')+'-'+get('day');
+}
 function changeExpenseCalendarMonth(delta){
  expenseCalendarCursor=new Date(expenseCalendarCursor.getFullYear(),expenseCalendarCursor.getMonth()+Number(delta||0),1);
  renderBudget();
@@ -8286,7 +8339,11 @@ function updateExpenseComposerTotal(){
  if(countEl)countEl.textContent=count+' item'+(count===1?'':'s');
 }
 function openExpenseEntry(dateValue,editExisting=false){
- const date=dateValue||expenseLocalISO(new Date());
+ const date=dateValue||expenseTodayISO();
+ if(date>expenseTodayISO()){
+  toast('You cannot add expenses to a future date.');
+  return;
+ }
  const existingForDate=editExisting?(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>t.type==='expense'&&String(t.date||'')===date):[];
  // Both adding and editing use the dedicated full-page expense editor, never a modal.
  const form=document.getElementById('modalForm');
@@ -8436,6 +8493,10 @@ function closeExpenseDayActions(){
 }
 function openExpenseDayActions(dateValue){
  const date=String(dateValue||'');
+ if(date>expenseTodayISO()){
+  toast('Future dates are unavailable for expense entries.');
+  return;
+ }
  const rows=(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>t.type==='expense'&&String(t.date||'')===date).sort((a,b)=>Number(a.createdAt||0)-Number(b.createdAt||0));
  closeExpenseDayActions();
  const pretty=new Date(date+'T12:00:00').toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
@@ -8483,7 +8544,7 @@ function renderBudget(){
  const firstDay=new Date(year,month,1).getDay();
  const dayCount=new Date(year,month+1,0).getDate();
  const rowCount=Math.ceil((firstDay+dayCount)/7);
- const today=expenseLocalISO(new Date());
+ const today=expenseTodayISO();
  const weekdayNames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
  const cells=[];
  for(let index=0;index<rowCount*7;index++){
@@ -8497,10 +8558,12 @@ function renderBudget(){
   const items=expenseRows.filter(t=>String(t.date||'')===iso).sort((a,b)=>Number(a.createdAt||0)-Number(b.createdAt||0));
   const total=items.reduce((sum,t)=>sum+Math.max(0,Number(t.amount)||0),0);
   const chips=items.length?`<span class="expenses-day-count">${items.length} expense${items.length===1?'':'s'}</span>`:'';
-  cells.push(`<button type="button" class="expenses-calendar-day${iso===today?' is-today':''}${items.length?' has-expenses':''}" onclick="openExpenseDayActions('${iso}')" aria-label="${weekdayNames[date.getDay()]}, ${date.toLocaleDateString('en-PH',{month:'long',day:'numeric',year:'numeric'})}. ${items.length} expenses totalling ${peso(total)}. Open date actions.">
+  const isPast=iso<today;
+  const isFuture=iso>today;
+  const dateClasses=`expenses-calendar-day${isPast?' is-past':''}${isFuture?' is-future':''}${iso===today?' is-today':''}${items.length?' has-expenses':''}`;
+  cells.push(`<button type="button" class="${dateClasses}" ${isFuture?'disabled aria-disabled="true"':'onclick="openExpenseDayActions(\''+iso+'\')"'} aria-label="${weekdayNames[date.getDay()]}, ${date.toLocaleDateString('en-PH',{month:'long',day:'numeric',year:'numeric'})}. ${items.length} expenses totalling ${peso(total)}. ${isPast?'View or edit historical expenses.':isFuture?'Future date. Expense entry unavailable.':'Open date actions.'}">
    <span class="expenses-day-top"><span class="expenses-day-number">${day}</span><span class="expenses-day-top-meta">${iso===today?'<span class="expenses-today-label">Today</span>':''}${items.length?`<span class="expenses-day-total">${peso(total)}</span>`:''}</span></span>
    <span class="expenses-day-items">${chips}</span>
-   <span class="expenses-day-add">${items.length?'+ Add':'＋ Add expense'}</span>
   </button>`);
  }
  grid.innerHTML=cells.join('');
