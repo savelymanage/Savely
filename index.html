@@ -8340,11 +8340,26 @@ function updateExpenseComposerTotal(){
 }
 function openExpenseEntry(dateValue,editExisting=false){
  const date=dateValue||expenseTodayISO();
+ const today=expenseTodayISO();
+ if(date>today){
+  toast('You cannot add or edit expenses for a future date.');
+  return;
+ }
+ if(date<today&&!editExisting){
+  toast('Past dates are for reviewing and editing recorded expenses only. You cannot add a new expense to a past date.');
+  return;
+ }
  if(date>expenseTodayISO()){
   toast('You cannot add expenses to a future date.');
   return;
  }
  const existingForDate=editExisting?(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>t.type==='expense'&&String(t.date||'')===date):[];
+ if(date<today&&(!editExisting||existingForDate.length===0)){
+  toast(existingForDate.length===0
+   ? 'There are no recorded expenses on this past date to edit. New expenses can only be added today.'
+   : 'New expenses can only be added today.');
+  return;
+ }
  // Both adding and editing use the dedicated full-page expense editor, never a modal.
  const form=document.getElementById('modalForm');
  if(!form)return;
@@ -8501,7 +8516,7 @@ function openExpenseDayActions(dateValue){
  closeExpenseDayActions();
  const pretty=new Date(date+'T12:00:00').toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
  const backdrop=document.createElement('div');
- backdrop.id='expenseDayActionBackdrop';backdrop.className='expense-day-action-backdrop';
+ backdrop.id='expenseDayActionBackdrop';backdrop.className='expense-day-action-backdrop'+(date<expenseTodayISO()&&!rows.length?' past-empty-date':'');
  const total=rows.reduce((sum,t)=>sum+Math.max(0,Number(t.amount)||0),0);
  const historyMarkup=rows.length?`<div class="expense-date-history">
   <div class="expense-date-history-heading"><strong>Expense history</strong><span>${rows.length} item${rows.length===1?'':'s'}</span></div>
@@ -8514,9 +8529,9 @@ function openExpenseDayActions(dateValue){
  backdrop.innerHTML=`<div class="expense-day-action-menu${rows.length?' has-history':' is-empty'}" role="dialog" aria-modal="true" aria-label="Expenses for ${esc(pretty)}">
   <div class="expense-day-action-head"><div><strong>${esc(pretty)}</strong>${rows.length?`<small>${rows.length} recorded expense${rows.length===1?'':'s'} · ${peso(total)}</small>`:`<small>No expenses recorded for this date.</small>`}</div><button type="button" class="expense-day-action-close" aria-label="Close">×</button></div>
   ${historyMarkup}
-  <div class="expense-day-action-buttons${rows.length?' single-action':''}">
+  ${rows.length||date===expenseTodayISO()?`<div class="expense-day-action-buttons${rows.length?' single-action':''}">
    ${rows.length?'<button type="button" class="primary" data-day-action="edit">✎ Edit expenses</button>':'<button type="button" class="primary" data-day-action="add">＋ Add expense</button>'}
-  </div>
+  </div>`:''}
  </div>`;
  backdrop.addEventListener('click',event=>{if(event.target===backdrop)closeExpenseDayActions();});
  backdrop.querySelector('.expense-day-action-close').addEventListener('click',closeExpenseDayActions);
@@ -18572,7 +18587,65 @@ if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostn
   .catch(err=>console.warn('[Savely] Service worker registration failed',err)));
 }
 </script>
-</body>
+
+<style id="savely-expense-calendar-date-state-final-override">
+/* Past dates: muted grey, but remain clickable for existing history/editing. */
+#expensesCalendarGrid button.expenses-calendar-day.is-past:not(.is-today),
+#expensesCalendarGrid button.expenses-calendar-day.is-past:not(.is-today):hover,
+#expensesCalendarGrid button.expenses-calendar-day.is-past:not(.is-today):focus,
+#expensesCalendarGrid button.expenses-calendar-day.is-past:not(.is-today):active{
+ background:#e9ecef!important;background-image:none!important;
+ border:1px solid #d4d9de!important;color:#89929a!important;
+ box-shadow:none!important;filter:none!important;outline:none!important;
+}
+#expensesCalendarGrid button.expenses-calendar-day.is-past:not(.is-today) .expenses-day-number{
+ background:#dce1e5!important;color:#7e8991!important;
+}
+#expensesCalendarGrid button.expenses-calendar-day.is-past:not(.is-today) .expenses-day-items,
+#expensesCalendarGrid button.expenses-calendar-day.is-past:not(.is-today) .expenses-day-count{
+ background:#dfe3e6!important;color:#7d878f!important;
+}
+/* Future dates: clearly grey and disabled; never receive the green hover treatment. */
+#expensesCalendarGrid button.expenses-calendar-day.is-future,
+#expensesCalendarGrid button.expenses-calendar-day.is-future:hover,
+#expensesCalendarGrid button.expenses-calendar-day.is-future:focus,
+#expensesCalendarGrid button.expenses-calendar-day.is-future:active,
+#expensesCalendarGrid button.expenses-calendar-day.is-future:disabled{
+ background:#e9ecef!important;background-image:none!important;
+ border:1px solid #d4d9de!important;color:#a0a8af!important;
+ box-shadow:none!important;filter:none!important;opacity:1!important;
+ cursor:not-allowed!important;pointer-events:none!important;outline:none!important;
+}
+#expensesCalendarGrid button.expenses-calendar-day.is-future .expenses-day-number{
+ background:#dfe3e6!important;color:#a0a8af!important;
+}
+#expensesCalendarGrid button.expenses-calendar-day.is-future .expenses-day-items,
+#expensesCalendarGrid button.expenses-calendar-day.is-future .expenses-day-count,
+#expensesCalendarGrid button.expenses-calendar-day.is-future .expenses-day-total{
+ background:#dfe3e6!important;color:#a0a8af!important;
+}
+/* Today alone keeps the green active treatment and allows expense entry. */
+#expensesCalendarGrid button.expenses-calendar-day.is-today{
+ background:linear-gradient(145deg,#e4f7ed 0%,#f3fbf6 100%)!important;
+ border:2px solid #168765!important;color:var(--text)!important;
+ box-shadow:0 0 0 3px rgba(22,135,101,.12),0 5px 16px rgba(22,135,101,.09)!important;
+ opacity:1!important;filter:none!important;cursor:pointer!important;pointer-events:auto!important;
+}
+#expensesCalendarGrid button.expenses-calendar-day.is-today .expenses-day-number{
+ background:#168765!important;color:#fff!important;
+}
+#expensesCalendarGrid .expenses-day-add{display:none!important;visibility:hidden!important}
+</style>
+
+
+<style id="savely-past-empty-date-no-add-guard">
+#expenseDayActionBackdrop.past-empty-date [data-day-action="add"],
+#expenseDayActionBackdrop.past-empty-date [data-day-action="edit"],
+#expenseDayActionBackdrop.past-empty-date .expense-day-action-buttons{
+ display:none!important;
+}
+</style>
+\n</body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
 #page-metro-snapshot .savely-snapshot-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:290px;padding:34px 22px;border:1px dashed #cfe3d8;border-radius:15px;background:linear-gradient(145deg,#f4faf6,#fbfdfc)}
