@@ -4159,6 +4159,49 @@ body.dark-theme #expenseComposer .expense-item-row{background:var(--soft)!import
 }
 </style>
 
+
+<style id="savely-expense-actions-spacing-fix">
+#modalBackdrop:has(#expenseComposer) .expense-composer-actions{
+  margin-top:18px!important;
+  padding-top:10px!important;
+  gap:12px!important;
+}
+#modalBackdrop:has(#expenseComposer) .expense-composer-actions .btn{
+  min-height:48px!important;
+}
+@media(max-width:760px){
+  #modalBackdrop:has(#expenseComposer) .expense-composer-actions{
+    margin-top:14px!important;
+    padding-top:8px!important;
+  }
+}
+</style>
+
+
+<style id="savely-category-solid-green-no-check">
+/* Solid green active category; no checkmark indicator */
+#expenseComposer .expense-category-card.active,
+#expenseComposer .expense-category-card.active.selected{
+  background:var(--green,#138a68)!important;
+  background-color:var(--green,#138a68)!important;
+  border-color:var(--green,#138a68)!important;
+  color:#fff!important;
+  box-shadow:0 2px 8px rgba(19,138,104,.18)!important;
+}
+#expenseComposer .expense-category-card.active:hover,
+#expenseComposer .expense-category-card.active:focus-visible{
+  background:var(--green,#138a68)!important;
+  border-color:var(--green,#138a68)!important;
+  color:#fff!important;
+}
+#expenseComposer .expense-category-card .expense-category-check{
+  display:none!important;
+}
+#expenseComposer .expense-category-card{
+  gap:9px!important;
+}
+</style>
+
 </head>
 <body>
 
@@ -7593,12 +7636,13 @@ function toggleExpenseGroup(groupId){
  const card=document.querySelector(`#expenseComposer [data-expense-group="${groupId}"]`);
  const panel=document.querySelector(`#expenseComposer [data-expense-panel="${groupId}"]`);
  if(!card||!panel)return;
- // Each category is a single focused page. Previously opened categories remain selected
- // and their entries stay in the form while the user switches between them.
+ // Category navigation is single-select: only the currently open category is highlighted.
+ // Entries in other category panels remain intact when switching between categories.
  document.querySelectorAll('#expenseComposer .expense-category-card').forEach(button=>{
-  button.classList.toggle('active',button.dataset.expenseGroup===groupId);
-  if(button.dataset.expenseGroup===groupId)button.classList.add('selected');
-  button.setAttribute('aria-pressed',button.dataset.expenseGroup===groupId?'true':'false');
+  const isCurrent=button.dataset.expenseGroup===groupId;
+  button.classList.toggle('active',isCurrent);
+  button.classList.toggle('selected',isCurrent);
+  button.setAttribute('aria-pressed',isCurrent?'true':'false');
  });
  document.querySelectorAll('#expenseComposer .expense-category-panel').forEach(section=>{
   section.hidden=section.dataset.expensePanel!==groupId;
