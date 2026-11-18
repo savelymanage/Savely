@@ -7923,6 +7923,14 @@ function pauseSummaryCarouselAuto(resumeDelay=3500){
   scheduleSummaryCarouselAuto(SUMMARY_CAROUSEL_INTERVAL);
  },resumeDelay);
 }
+function summaryCarouselEnforceOrder(root){
+ const track=root&&root.querySelector('.summary-carousel-track');
+ if(!track)return;
+ const rank={savings:0,income:1,debt:2};
+ const slides=Array.from(track.children).filter(el=>el.classList.contains('summary-carousel-slide')&&!el.dataset.carouselClone);
+ slides.sort((a,b)=>(rank[a.dataset.summaryCard]??99)-(rank[b.dataset.summaryCard]??99));
+ slides.forEach(slide=>track.appendChild(slide));
+}
 function summaryCarouselRealSlides(root){
  const track=root&&root.querySelector('.summary-carousel-track');
  if(!track)return [];
@@ -7970,6 +7978,7 @@ function initSummaryCarousel(){
  if(!root)return;
  const track=root.querySelector('.summary-carousel-track');
  if(!track)return;
+ summaryCarouselEnforceOrder(root);
  if(track.dataset.circularReady!=='true'){
   const originals=Array.from(track.children).filter(el=>el.classList.contains('summary-carousel-slide'));
   if(originals.length>1){
@@ -8054,9 +8063,9 @@ const overviewSalaryRemaining=getSalaryRemainingProjection(new Date().getFullYea
 document.getElementById('stats').innerHTML=`<div class="summary-carousel" aria-label="Financial summary cards">
  <div class="summary-carousel-viewport">
   <div class="summary-carousel-track" id="summaryCarouselTrack" tabindex="0" aria-roledescription="carousel" aria-label="Financial summary">
-   <div class="summary-carousel-slide" role="group" aria-label="1 of 3"><div class="stat"><div class="stat-top">Savings total <span class="stat-icon" style="background:#e5f7ef;color:#169b70">₱</span></div><div class="stat-value savely-private-number" style="color:var(--green)">${peso(savingsTotal)}</div><div class="stat-foot">Savings savings</div><div class="stat-foot savings-total-asof" id="savingsTotalAsOf" style="margin-top:5px;font-size:10px">As of —</div>${deltaHtml(savingsDelta)}</div></div>
-   <div class="summary-carousel-slide" role="group" aria-label="2 of 3"><div class="stat"><div class="stat-top">Salary / income total <span class="stat-icon" style="background:#edf1ff;color:#536be0">↗</span></div><div class="stat-value savely-private-number" style="color:var(--blue)">${peso(overviewSalaryRemaining)}</div><div class="stat-foot">Remaining salary in ${new Date().getFullYear()}</div></div></div>
-   <div class="summary-carousel-slide" role="group" aria-label="3 of 3"><div class="stat"><div class="stat-top">Debt total <span class="stat-icon" style="background:#fff1e7;color:#e64b5b">−</span></div><div class="stat-value savely-private-number" style="color:var(--red)">${peso(debtTotal)}</div><div class="stat-foot">I owe · remaining balance</div></div></div>
+   <div class="summary-carousel-slide" data-summary-card="savings" role="group" aria-label="1 of 3"><div class="stat"><div class="stat-top">Savings total <span class="stat-icon" style="background:#e5f7ef;color:#169b70">₱</span></div><div class="stat-value savely-private-number" style="color:var(--green)">${peso(savingsTotal)}</div><div class="stat-foot">Savings savings</div><div class="stat-foot savings-total-asof" id="savingsTotalAsOf" style="margin-top:5px;font-size:10px">As of —</div>${deltaHtml(savingsDelta)}</div></div>
+   <div class="summary-carousel-slide" data-summary-card="income" role="group" aria-label="2 of 3"><div class="stat"><div class="stat-top">Salary / income total <span class="stat-icon" style="background:#edf1ff;color:#536be0">↗</span></div><div class="stat-value savely-private-number" style="color:var(--blue)">${peso(overviewSalaryRemaining)}</div><div class="stat-foot">Remaining salary in ${new Date().getFullYear()}</div></div></div>
+   <div class="summary-carousel-slide" data-summary-card="debt" role="group" aria-label="3 of 3"><div class="stat"><div class="stat-top">Debt total <span class="stat-icon" style="background:#fff1e7;color:#e64b5b">−</span></div><div class="stat-value savely-private-number" style="color:var(--red)">${peso(debtTotal)}</div><div class="stat-foot">I owe · remaining balance</div></div></div>
   </div>
  </div>
  <div class="summary-carousel-pagination" role="group" aria-label="Choose financial summary card">
@@ -19976,5 +19985,70 @@ body.expense-editor-active .expense-composer-section input{
  body.expense-editor-active .expense-composer-summary{
   padding:15px!important;
  }
+}
+</style>
+
+
+<style id="savely-carousel-stable-gradient-rendering-v3">
+/* Stable card identity: nth-child selectors are unsafe when circular edge clones are present. */
+#stats.cards .summary-carousel-viewport{
+  position:relative!important;isolation:isolate!important;overflow:hidden!important;
+  background:transparent!important;contain:paint!important;
+}
+#stats.cards .summary-carousel-track{
+  display:flex!important;flex-wrap:nowrap!important;align-items:stretch!important;
+  transform-style:preserve-3d!important;backface-visibility:hidden!important;
+  -webkit-backface-visibility:hidden!important;
+  will-change:transform!important;
+}
+#stats.cards .summary-carousel-slide{
+  flex:0 0 100%!important;width:100%!important;min-width:100%!important;
+  box-sizing:border-box!important;position:relative!important;
+  backface-visibility:hidden!important;-webkit-backface-visibility:hidden!important;
+  transform:translateZ(0)!important;
+}
+#stats.cards .summary-carousel-slide>.stat{
+  position:relative!important;isolation:isolate!important;overflow:hidden!important;
+  background-color:#087b59!important;
+  background-image:linear-gradient(130deg,#087b59 0%,#10966c 54%,#31b887 100%)!important;
+  background-repeat:no-repeat!important;background-size:100% 100%!important;
+  background-clip:padding-box!important;
+  backface-visibility:hidden!important;-webkit-backface-visibility:hidden!important;
+  transform:translateZ(0)!important;
+}
+#stats.cards .summary-carousel-slide[data-summary-card="savings"]>.stat{
+  background-color:#10966c!important;
+  background-image:linear-gradient(130deg,#087b59 0%,#10966c 54%,#31b887 100%)!important;
+  border-color:#168765!important;
+}
+#stats.cards .summary-carousel-slide[data-summary-card="income"]>.stat{
+  background-color:#436fe0!important;
+  background-image:linear-gradient(130deg,#3159bd 0%,#436fe0 54%,#7395f2 100%)!important;
+  border-color:#5276d7!important;
+}
+#stats.cards .summary-carousel-slide[data-summary-card="debt"]>.stat{
+  background-color:#e45161!important;
+  background-image:linear-gradient(130deg,#c93e50 0%,#e45161 54%,#f17b82 100%)!important;
+  border-color:#d84c5b!important;
+}
+#stats.cards .summary-carousel-slide>.stat:after{
+  z-index:0!important;pointer-events:none!important;
+}
+#stats.cards .summary-carousel-slide .stat-top,
+#stats.cards .summary-carousel-slide .stat-value,
+#stats.cards .summary-carousel-slide .stat-foot,
+#stats.cards .summary-carousel-slide .savings-total-asof,
+#stats.cards .summary-carousel-slide .stat-icon{
+  position:relative!important;z-index:1!important;
+}
+#stats.cards .summary-carousel-slide .stat-top,
+#stats.cards .summary-carousel-slide .stat-value,
+#stats.cards .summary-carousel-slide .stat-foot,
+#stats.cards .summary-carousel-slide .savings-total-asof{color:#fff!important}
+#stats.cards .summary-carousel-slide .stat-icon{
+  background:rgba(255,255,255,.18)!important;color:#fff!important;
+}
+@media(prefers-reduced-motion:reduce){
+ #stats.cards .summary-carousel-track{transition:none!important}
 }
 </style>
