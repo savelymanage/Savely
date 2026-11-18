@@ -3908,6 +3908,257 @@ body:has(#page-financial-list.active) .main>.topbar{display:none!important}
 }
 </style>
 
+
+<style id="savely-expense-date-popup-xl">
+/* Larger date popups: empty-date Add state and populated Expense History state */
+.expense-day-action-backdrop{padding:24px!important}
+.expense-day-action-menu{
+  width:min(640px,calc(100vw - 48px))!important;
+  max-height:min(84vh,780px)!important;
+  padding:30px 32px 28px!important;
+  border-radius:24px!important;
+  box-shadow:0 28px 80px rgba(15,30,45,.28)!important;
+}
+.expense-day-action-menu.has-history{
+  width:min(680px,calc(100vw - 48px))!important;
+  padding:30px 34px 28px!important;
+}
+.expense-day-action-menu.is-empty{
+  width:min(540px,calc(100vw - 48px))!important;
+  padding:30px 32px 28px!important;
+}
+.expense-day-action-head{gap:18px!important;margin-bottom:20px!important}
+.expense-day-action-head strong{font-size:20px!important;line-height:1.35!important}
+.expense-day-action-head small{font-size:15px!important;line-height:1.5!important;margin-top:8px!important}
+.expense-day-action-close{
+  width:44px!important;height:44px!important;flex:0 0 44px!important;
+  border-radius:12px!important;font-size:22px!important;
+}
+.expense-date-history{gap:12px!important;margin:20px 0 22px!important}
+.expense-date-history-heading{margin-bottom:4px!important}
+.expense-date-history-heading strong{font-size:17px!important}
+.expense-date-history-heading span{font-size:14px!important}
+.expense-date-history-row{padding:16px 18px!important;border-radius:13px!important;gap:18px!important}
+.expense-date-history-main{gap:6px!important}
+.expense-date-history-main strong{font-size:16px!important;line-height:1.35!important}
+.expense-date-history-main small{font-size:13px!important;line-height:1.4!important}
+.expense-date-history-amount{font-size:16px!important}
+.expense-date-history-total{padding:15px 2px 0!important;font-size:15px!important}
+.expense-date-history-total strong{font-size:18px!important}
+.expense-day-action-buttons{gap:12px!important;margin-top:18px!important}
+.expense-day-action-buttons button{
+  min-height:62px!important;border-radius:13px!important;
+  font-size:16px!important;padding:14px 20px!important;
+}
+.expense-day-action-buttons.single-action button{min-height:64px!important}
+@media(max-width:600px){
+  .expense-day-action-backdrop{padding:12px!important}
+  .expense-day-action-menu,
+  .expense-day-action-menu.has-history,
+  .expense-day-action-menu.is-empty{
+    width:calc(100vw - 24px)!important;max-height:88vh!important;
+    padding:22px 18px 20px!important;border-radius:19px!important;
+  }
+  .expense-day-action-head strong{font-size:17px!important}
+  .expense-day-action-head small{font-size:13px!important}
+  .expense-date-history-row{padding:13px!important}
+  .expense-date-history-main strong,.expense-date-history-amount{font-size:14px!important}
+  .expense-day-action-buttons button{min-height:56px!important;font-size:14px!important}
+}
+</style>
+
+
+<style id="savely-expense-composer-modern">
+/* Modern, compact and task-focused expense composer */
+#modalBackdrop:has(#expenseComposer){
+  align-items:center!important;justify-content:center!important;
+  padding:20px!important;overflow-y:auto!important;overflow-x:hidden!important;
+}
+#modalBackdrop:has(#expenseComposer)>.modal{
+  width:min(1120px,calc(100vw - 40px))!important;
+  max-width:1120px!important;min-height:0!important;height:auto!important;
+  max-height:calc(100vh - 40px)!important;
+  margin:auto!important;padding:30px 34px 26px!important;
+  border-radius:24px!important;overflow-y:auto!important;overflow-x:hidden!important;
+  box-shadow:0 28px 90px rgba(18,35,50,.22)!important;
+}
+#modalBackdrop:has(#expenseComposer) #modalTitle{
+  font-size:26px!important;line-height:1.2!important;letter-spacing:-.8px!important;
+  font-weight:850!important;margin-bottom:5px!important;
+}
+#modalBackdrop:has(#expenseComposer) #modalDesc{
+  font-size:13px!important;line-height:1.55!important;margin:0 0 22px!important;
+  color:var(--muted)!important;
+}
+#expenseComposer{display:grid!important;gap:16px!important}
+#expenseComposer .expense-composer-section{
+  border:1px solid var(--line)!important;border-radius:20px!important;
+  padding:22px!important;background:linear-gradient(180deg,var(--panel,#fff),var(--soft,#f8fafc))!important;
+  box-shadow:0 5px 18px rgba(20,40,60,.035)!important;
+}
+#expenseComposer .expense-section-heading{align-items:center!important;margin-bottom:18px!important}
+#expenseComposer .expense-section-heading h3{
+  font-size:16px!important;font-weight:800!important;letter-spacing:-.25px!important;margin-bottom:5px!important;
+}
+#expenseComposer .expense-section-heading p{font-size:12px!important;line-height:1.5!important}
+#expenseComposer .expense-section-step{
+  width:36px!important;height:36px!important;border-radius:12px!important;
+  font-size:12px!important;background:var(--green2)!important;
+}
+#expenseComposer .expense-category-grid{
+  display:flex!important;gap:10px!important;padding:2px 2px 12px!important;
+  scrollbar-width:thin!important;scrollbar-color:var(--green) transparent!important;
+}
+#expenseComposer .expense-category-card{
+  flex:0 0 166px!important;min-width:166px!important;min-height:54px!important;
+  padding:11px 14px!important;gap:9px!important;border-radius:13px!important;
+  border:1px solid var(--line)!important;background:var(--panel,#fff)!important;
+  font-size:12px!important;font-weight:750!important;transition:all .16s ease!important;
+  scroll-snap-align:start!important;
+}
+#expenseComposer .expense-category-card:hover{
+  border-color:var(--green)!important;transform:translateY(-1px)!important;
+  box-shadow:0 5px 14px rgba(18,135,99,.08)!important;
+}
+#expenseComposer .expense-category-card.selected,
+#expenseComposer .expense-category-card.active{
+  border:1.5px solid var(--green)!important;background:var(--green2)!important;
+  color:var(--green)!important;box-shadow:0 0 0 2px rgba(18,135,99,.07)!important;
+}
+#expenseComposer .expense-category-icon{font-size:19px!important}
+#expenseComposer .expense-category-check{width:20px!important;height:20px!important}
+#expenseComposer .expense-category-panels{margin-top:2px!important}
+#expenseComposer .expense-category-panel{
+  padding:20px!important;border:1px solid var(--line)!important;
+  border-radius:16px!important;background:var(--panel,#fff)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5)!important;
+}
+#expenseComposer .expense-category-panel-head{margin-bottom:16px!important}
+#expenseComposer .expense-category-panel-head strong{font-size:15px!important;font-weight:800!important}
+#expenseComposer .expense-category-panel-head small{font-size:11px!important;margin-top:5px!important}
+#expenseComposer .expense-category-subtotal{font-size:13px!important;margin-top:7px!important}
+#expenseComposer .expense-add-item{
+  padding:10px 14px!important;border-radius:11px!important;font-size:12px!important;
+  font-weight:750!important;min-height:42px!important;
+}
+#expenseComposer .expense-items-list{gap:11px!important}
+#expenseComposer .expense-item-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(145px,170px) minmax(120px,150px) 42px!important;
+  gap:10px!important;padding:11px!important;border:1px solid var(--line)!important;
+  border-radius:14px!important;background:var(--soft,#f8fafc)!important;
+}
+#expenseComposer .expense-item-row input,
+#expenseComposer .expense-item-time{
+  height:46px!important;min-width:0!important;width:100%!important;
+  border:1px solid var(--line)!important;border-radius:10px!important;
+  background:var(--panel,#fff)!important;color:var(--text)!important;
+  padding:0 12px!important;font-size:13px!important;outline:none!important;
+  transition:border-color .15s ease,box-shadow .15s ease!important;
+}
+#expenseComposer .expense-item-row input:focus,
+#expenseComposer .expense-item-time:focus{
+  border-color:var(--green)!important;box-shadow:0 0 0 3px rgba(18,135,99,.12)!important;
+}
+#expenseComposer .expense-item-row input::placeholder{color:var(--muted)!important;opacity:.85!important}
+#expenseComposer .expense-item-remove{
+  width:42px!important;height:46px!important;border-radius:10px!important;
+  font-size:18px!important;background:var(--panel,#fff)!important;
+}
+#expenseComposer .expense-composer-summary{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:16px!important;padding:18px 22px!important;border-radius:16px!important;
+  border:1px solid rgba(18,135,99,.24)!important;background:var(--green2)!important;
+}
+#expenseComposer .expense-summary-label{font-size:11px!important;font-weight:750!important}
+#expenseComposer #expenseComposerTotal{display:block!important;font-size:22px!important;line-height:1.3!important;font-weight:900!important;margin-top:3px!important}
+#expenseComposer #expenseComposerCount{font-size:11px!important;margin-top:3px!important}
+#expenseComposer .expense-summary-note{font-size:11px!important;font-weight:700!important;text-align:right!important}
+#modalBackdrop:has(#expenseComposer) .expense-composer-actions{
+  display:flex!important;justify-content:flex-end!important;gap:10px!important;
+  margin-top:2px!important;padding-top:2px!important;
+}
+#modalBackdrop:has(#expenseComposer) .expense-composer-actions .btn{
+  min-width:120px!important;min-height:46px!important;padding:11px 18px!important;
+  border-radius:11px!important;font-size:13px!important;font-weight:800!important;
+}
+#expenseComposer .expense-hidden-metadata{display:none!important}
+@media(max-width:760px){
+  #modalBackdrop:has(#expenseComposer){padding:9px!important}
+  #modalBackdrop:has(#expenseComposer)>.modal{
+    width:calc(100vw - 18px)!important;max-height:calc(100vh - 18px)!important;
+    padding:20px 16px 17px!important;border-radius:18px!important;
+  }
+  #modalBackdrop:has(#expenseComposer) #modalTitle{font-size:22px!important}
+  #expenseComposer{gap:12px!important}
+  #expenseComposer .expense-composer-section{padding:15px!important;border-radius:15px!important}
+  #expenseComposer .expense-category-card{flex-basis:148px!important;min-width:148px!important;min-height:50px!important}
+  #expenseComposer .expense-category-panel{padding:13px!important}
+  #expenseComposer .expense-item-row{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:8px!important;padding:10px!important;
+  }
+  #expenseComposer .expense-item-description{grid-column:1/-1!important}
+  #expenseComposer .expense-item-time{grid-column:1!important}
+  #expenseComposer .expense-item-amount{grid-column:2!important}
+  #expenseComposer .expense-item-remove{grid-column:2!important;justify-self:end!important}
+  #expenseComposer .expense-composer-summary{padding:14px 15px!important}
+  #expenseComposer #expenseComposerTotal{font-size:19px!important}
+  #modalBackdrop:has(#expenseComposer) .expense-composer-actions .btn{flex:1;min-width:0!important}
+}
+@media(max-width:420px){
+  #expenseComposer .expense-category-panel-head{align-items:flex-start!important}
+  #expenseComposer .expense-add-item{padding:8px 10px!important;font-size:11px!important}
+  #expenseComposer .expense-summary-note{max-width:115px!important}
+}
+body.dark-theme #expenseComposer .expense-composer-section,
+body.dark-theme #expenseComposer .expense-category-panel{background:var(--panel)!important}
+body.dark-theme #expenseComposer .expense-item-row{background:var(--soft)!important}
+</style>
+
+
+<style id="savely-category-rail-hidden-scrollbar">
+#expenseComposer .expense-category-grid{
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  max-width:100%!important;
+  min-width:0!important;
+  -webkit-overflow-scrolling:touch!important;
+  overscroll-behavior-x:contain!important;
+  touch-action:pan-x!important;
+  scroll-behavior:smooth!important;
+  scroll-snap-type:x proximity!important;
+  scrollbar-width:none!important;
+  -ms-overflow-style:none!important;
+  cursor:grab!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+}
+#expenseComposer .expense-category-grid::-webkit-scrollbar{
+  display:none!important;
+  width:0!important;
+  height:0!important;
+}
+#expenseComposer .expense-category-grid.is-dragging{
+  cursor:grabbing!important;
+  scroll-snap-type:none!important;
+  scroll-behavior:auto!important;
+}
+#expenseComposer .expense-category-card{
+  flex-shrink:0!important;
+  scroll-snap-align:start!important;
+}
+#expenseComposer .expense-category-card.drag-suppress{
+  pointer-events:none!important;
+}
+@media(hover:hover) and (pointer:fine){
+ #expenseComposer .expense-category-grid{cursor:grab!important}
+ #expenseComposer .expense-category-grid.is-dragging{cursor:grabbing!important}
+}
+</style>
+
 </head>
 <body>
 
@@ -7332,7 +7583,7 @@ function addExpenseItemRow(groupId){
  if(!list)return;
  const row=document.createElement('div');
  row.className='expense-item-row';
- row.innerHTML=`<input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description"><select class="expense-item-time" aria-label="Time of day" required><option value="">Time of day</option><option value="Morning">Morning</option><option value="Afternoon">Afternoon</option><option value="Evening">Evening</option></select><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button>`;
+ row.innerHTML=`<input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description"><select class="expense-item-time" aria-label="Time of day"><option value="">Time of day</option><option value="Morning">Morning</option><option value="Afternoon">Afternoon</option><option value="Evening">Evening</option></select><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button>`;
  row.querySelector('.expense-item-remove').addEventListener('click',()=>{row.remove();updateExpenseComposerTotal();});
  row.querySelectorAll('input,select').forEach(input=>input.addEventListener('input',updateExpenseComposerTotal));
  list.appendChild(row);
@@ -7377,6 +7628,7 @@ function openExpenseEntry(dateValue,editExisting=false){
  openModal('transaction');
  const form=document.getElementById('modalForm');
  if(!form)return;
+ form.noValidate=true;
  const title=document.getElementById('modalTitle');
  const desc=document.getElementById('modalDesc');
  if(title)title.textContent='Add expenses';
@@ -7387,7 +7639,7 @@ function openExpenseEntry(dateValue,editExisting=false){
   <section class="expense-composer-section">
    <div class="expense-section-heading"><div><h3>Choose expense categories</h3><p>Select one or more categories. You can add multiple items under each one.</p></div><span class="expense-section-step">01</span></div>
    <div class="expense-category-grid" aria-label="Expense categories; scroll horizontally to see more">${EXPENSE_GROUPS.map(g=>`<button type="button" class="expense-category-card${g.id==='food'?' selected active':''}" data-expense-group="${g.id}" aria-pressed="${g.id==='food'?'true':'false'}"><span class="expense-category-icon">${g.icon}</span><span>${g.name}</span><span class="expense-category-check">✓</span></button>`).join('')}</div>
-   <div class="expense-category-panels">${EXPENSE_GROUPS.map(g=>`<section class="expense-category-panel" data-expense-panel="${g.id}" ${g.id==='food'?'':'hidden'}><div class="expense-category-panel-head"><div><strong>${g.icon} ${g.name}</strong><small>Add each purchase or bill as a separate line.</small><em class="expense-category-subtotal" data-expense-subtotal="${g.id}">₱0.00</em></div><button type="button" class="btn btn-light expense-add-item" data-add-expense-item="${g.id}">＋ Add item</button></div><div class="expense-items-list" data-expense-items="${g.id}">${g.id==='food'?'<div class="expense-item-row"><input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description"><select class="expense-item-time" aria-label="Time of day" required><option value="">Time of day</option><option value="Morning">Morning</option><option value="Afternoon">Afternoon</option><option value="Evening">Evening</option></select><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button></div>':''}</div></section>`).join('')}</div>
+   <div class="expense-category-panels">${EXPENSE_GROUPS.map(g=>`<section class="expense-category-panel" data-expense-panel="${g.id}" ${g.id==='food'?'':'hidden'}><div class="expense-category-panel-head"><div><strong>${g.icon} ${g.name}</strong><small>Add each purchase or bill as a separate line.</small><em class="expense-category-subtotal" data-expense-subtotal="${g.id}">₱0.00</em></div><button type="button" class="btn btn-light expense-add-item" data-add-expense-item="${g.id}">＋ Add item</button></div><div class="expense-items-list" data-expense-items="${g.id}">${g.id==='food'?'<div class="expense-item-row"><input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description"><select class="expense-item-time" aria-label="Time of day"><option value="">Time of day</option><option value="Morning">Morning</option><option value="Afternoon">Afternoon</option><option value="Evening">Evening</option></select><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button></div>':''}</div></section>`).join('')}</div>
   </section>
   <div class="expense-hidden-metadata" hidden>
    <select id="expenseComposerAccount">${accountOptions}</select>
@@ -7408,7 +7660,7 @@ function openExpenseEntry(dateValue,editExisting=false){
    const list=document.querySelector(`#expenseComposer [data-expense-items="${group.id}"]`);
    if(!list)return;
    const row=document.createElement('div');row.className='expense-item-row';
-   row.innerHTML=`<input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description" value="${esc(item.description||'')}"><select class="expense-item-time" aria-label="Time of day" required><option value="">Time of day</option><option value="Morning">Morning</option><option value="Afternoon">Afternoon</option><option value="Evening">Evening</option></select><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount" value="${Math.max(0,Number(item.amount)||0)}"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button>`;
+   row.innerHTML=`<input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description" value="${esc(item.description||'')}"><select class="expense-item-time" aria-label="Time of day"><option value="">Time of day</option><option value="Morning">Morning</option><option value="Afternoon">Afternoon</option><option value="Evening">Evening</option></select><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount" value="${Math.max(0,Number(item.amount)||0)}"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button>`;
    const timeSelect=row.querySelector('.expense-item-time');if(['Morning','Afternoon','Evening'].includes(item.timeOfDay))timeSelect.value=item.timeOfDay;
    row.querySelector('.expense-item-remove').addEventListener('click',()=>{row.remove();updateExpenseComposerTotal();});
    row.querySelectorAll('input,select').forEach(input=>input.addEventListener('input',updateExpenseComposerTotal));
@@ -7424,9 +7676,18 @@ function openExpenseEntry(dateValue,editExisting=false){
   let dragStartX=0,dragStartScroll=0,dragging=false,moved=false;
   categoryRail.addEventListener('pointerdown',event=>{
    if(event.pointerType==='touch')return;
+   if(event.button!==0)return;
    dragging=true;moved=false;dragStartX=event.clientX;dragStartScroll=categoryRail.scrollLeft;
    categoryRail.classList.add('is-dragging');
   });
+  // Shift + mouse wheel scrolls the category rail horizontally.
+  // Trackpads with native horizontal gestures continue to use browser scrolling.
+  categoryRail.addEventListener('wheel',event=>{
+   if(event.shiftKey && Math.abs(event.deltaY)>Math.abs(event.deltaX)){
+    event.preventDefault();
+    categoryRail.scrollBy({left:event.deltaY,behavior:'auto'});
+   }
+  },{passive:false});
   window.addEventListener('pointermove',event=>{
    if(!dragging)return;
    const delta=event.clientX-dragStartX;
@@ -7453,7 +7714,13 @@ function openExpenseEntry(dateValue,editExisting=false){
     const amount=Number(amountValue);
     const timeOfDay=row.querySelector('.expense-item-time').value;
     if(!description&&!amountValue.trim()&&!timeOfDay)return;
-    if(!description||!Number.isFinite(amount)||amount<=0||(!timeOfDay&&!editExisting)){const target=!description?'.expense-item-description':(!timeOfDay&&!editExisting?'.expense-item-time':'.expense-item-amount');row.querySelector(target).focus();toast(editExisting?'Complete each expense item with a description and a valid amount.':'Complete each expense item with a description, time of day, and valid amount.');form.dataset.expenseValidationError='1';return;}
+    if(!description||!Number.isFinite(amount)||amount<=0||(!timeOfDay&&!editExisting)){
+     const target=!description?'.expense-item-description':(!timeOfDay&&!editExisting?'.expense-item-time':'.expense-item-amount');
+     row.querySelector(target).focus();
+     toast(editExisting?'Complete each expense item with a description and a valid amount.':'Complete each expense item with a description, time of day, and valid amount.');
+     form.dataset.expenseValidationError='1';
+     return;
+    }
     entries.push({description,amount,timeOfDay:timeOfDay||'',category:group?.name||'Others'});
    });
   });
