@@ -1454,25 +1454,25 @@ body.dark-theme .debt-card-menu{background:var(--panel);border-color:var(--line)
 
 <style id="savely-savings-gradient-weather-hover-v2">
 /* Give the Savings total its own clear green-gradient emphasis. */
-#stats .stats-carousel-track>.stat:nth-child(2){
+#stats>.stat:nth-child(2){
  background:linear-gradient(135deg,#117a59 0%,#16966d 52%,#35b887 100%)!important;
  border-color:#168765!important;
  color:#fff!important;
  box-shadow:0 10px 26px rgba(22,135,101,.16)!important;
  position:relative;overflow:hidden;
 }
-#stats .stats-carousel-track>.stat:nth-child(2)::after{
+#stats>.stat:nth-child(2)::after{
  content:"";position:absolute;width:150px;height:150px;border-radius:50%;
  right:-72px;top:-100px;background:rgba(255,255,255,.10);pointer-events:none;
 }
-#stats .stats-carousel-track>.stat:nth-child(2) .stat-top,
-#stats .stats-carousel-track>.stat:nth-child(2) .stat-foot,
-#stats .stats-carousel-track>.stat:nth-child(2) .stat-value,
-#stats .stats-carousel-track>.stat:nth-child(2) .savings-total-asof{color:#fff!important;position:relative;z-index:1}
-#stats .stats-carousel-track>.stat:nth-child(2) .stat-foot{opacity:.88}
-#stats .stats-carousel-track>.stat:nth-child(2) .stat-icon{background:rgba(255,255,255,.18)!important;color:#fff!important}
-#stats .stats-carousel-track>.stat:nth-child(2) .stat-foot[style*="color:var(--red)"],
-#stats .stats-carousel-track>.stat:nth-child(2) .stat-foot[style*="color: var(--red)"]{color:#fff!important}
+#stats>.stat:nth-child(2) .stat-top,
+#stats>.stat:nth-child(2) .stat-foot,
+#stats>.stat:nth-child(2) .stat-value,
+#stats>.stat:nth-child(2) .savings-total-asof{color:#fff!important;position:relative;z-index:1}
+#stats>.stat:nth-child(2) .stat-foot{opacity:.88}
+#stats>.stat:nth-child(2) .stat-icon{background:rgba(255,255,255,.18)!important;color:#fff!important}
+#stats>.stat:nth-child(2) .stat-foot[style*="color:var(--red)"],
+#stats>.stat:nth-child(2) .stat-foot[style*="color: var(--red)"]{color:#fff!important}
 .weather-pill{position:relative;overflow:hidden;transition:border-color .18s ease,box-shadow .18s ease}
 .weather-pill::after{content:"";position:absolute;left:12px;right:12px;bottom:0;height:2px;border-radius:99px;background:var(--green);transform:scaleX(0);transform-origin:center;transition:transform .2s ease}
 .weather-pill:hover,.weather-pill:focus-visible{border-color:var(--green);box-shadow:0 3px 12px rgba(22,135,101,.09);outline:none}
@@ -2414,51 +2414,51 @@ button.link-btn{
 </style>
 
 <style id="savely-overview-kpi-color-system-v2">
-#stats .stats-carousel-track>.stat:nth-child(1),
-#stats .stats-carousel-track>.stat:nth-child(2),
-#stats .stats-carousel-track>.stat:nth-child(3){
+#stats>.stat:nth-child(1),
+#stats>.stat:nth-child(2),
+#stats>.stat:nth-child(3){
  position:relative!important;
  overflow:hidden!important;
  border:1px solid transparent!important;
  border-radius:19px!important;
  box-shadow:0 10px 25px rgba(20,40,70,.08)!important;
 }
-#stats .stats-carousel-track>.stat:nth-child(1){
+#stats>.stat:nth-child(1){
  background:linear-gradient(130deg,#087b59 0%,#10966c 54%,#31b887 100%)!important;
  border-color:#168765!important;
 }
-#stats .stats-carousel-track>.stat:nth-child(2){
+#stats>.stat:nth-child(2){
  background:linear-gradient(130deg,#3159bd 0%,#436fe0 54%,#7395f2 100%)!important;
  border-color:#5276d7!important;
 }
-#stats .stats-carousel-track>.stat:nth-child(3){
+#stats>.stat:nth-child(3){
  background:linear-gradient(130deg,#c93e50 0%,#e45161 54%,#f17b82 100%)!important;
  border-color:#d84c5b!important;
 }
-#stats .stats-carousel-track>.stat:nth-child(1)::after,
-#stats .stats-carousel-track>.stat:nth-child(2)::after,
-#stats .stats-carousel-track>.stat:nth-child(3)::after{
+#stats>.stat:nth-child(1)::after,
+#stats>.stat:nth-child(2)::after,
+#stats>.stat:nth-child(3)::after{
  content:"";position:absolute;right:-48px;top:-92px;width:170px;height:170px;
  border-radius:50%;background:rgba(255,255,255,.11);pointer-events:none;
 }
-#stats .stats-carousel-track>.stat:nth-child(1) .stat-top,
-#stats .stats-carousel-track>.stat:nth-child(1) .stat-foot,
-#stats .stats-carousel-track>.stat:nth-child(1) .stat-value,
-#stats .stats-carousel-track>.stat:nth-child(1) .savings-total-asof,
-#stats .stats-carousel-track>.stat:nth-child(2) .stat-top,
-#stats .stats-carousel-track>.stat:nth-child(2) .stat-foot,
-#stats .stats-carousel-track>.stat:nth-child(2) .stat-value,
-#stats .stats-carousel-track>.stat:nth-child(3) .stat-top,
-#stats .stats-carousel-track>.stat:nth-child(3) .stat-foot,
-#stats .stats-carousel-track>.stat:nth-child(3) .stat-value{
+#stats>.stat:nth-child(1) .stat-top,
+#stats>.stat:nth-child(1) .stat-foot,
+#stats>.stat:nth-child(1) .stat-value,
+#stats>.stat:nth-child(1) .savings-total-asof,
+#stats>.stat:nth-child(2) .stat-top,
+#stats>.stat:nth-child(2) .stat-foot,
+#stats>.stat:nth-child(2) .stat-value,
+#stats>.stat:nth-child(3) .stat-top,
+#stats>.stat:nth-child(3) .stat-foot,
+#stats>.stat:nth-child(3) .stat-value{
  color:#fff!important;position:relative!important;z-index:1;
 }
-#stats .stats-carousel-track>.stat:nth-child(1) .stat-foot,
-#stats .stats-carousel-track>.stat:nth-child(2) .stat-foot,
-#stats .stats-carousel-track>.stat:nth-child(3) .stat-foot{opacity:.9}
-#stats .stats-carousel-track>.stat:nth-child(1) .stat-icon,
-#stats .stats-carousel-track>.stat:nth-child(2) .stat-icon,
-#stats .stats-carousel-track>.stat:nth-child(3) .stat-icon{
+#stats>.stat:nth-child(1) .stat-foot,
+#stats>.stat:nth-child(2) .stat-foot,
+#stats>.stat:nth-child(3) .stat-foot{opacity:.9}
+#stats>.stat:nth-child(1) .stat-icon,
+#stats>.stat:nth-child(2) .stat-icon,
+#stats>.stat:nth-child(3) .stat-icon{
  position:relative;z-index:1;background:rgba(255,255,255,.18)!important;
  color:#fff!important;border:1px solid rgba(255,255,255,.2);
 }
@@ -2928,6 +2928,24 @@ button.link-btn{
 .expense-day-action-buttons button.primary{background:var(--green);border-color:var(--green);color:#fff}
 @media(max-width:520px){.expense-day-action-menu{padding:18px 16px 16px;min-height:0}.expense-day-action-buttons{grid-template-columns:1fr}.expense-day-action-buttons button{min-height:50px}}
 .expense-day-history-list{display:grid;gap:8px;margin-top:12px}
+
+.expense-day-action-menu.has-history{width:min(520px,calc(100vw - 32px));padding:22px}
+.expense-day-action-menu.is-empty{width:min(420px,calc(100vw - 32px));padding:22px}
+.expense-date-history{display:grid;gap:8px;margin:14px 0 16px}
+.expense-date-history-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:2px}
+.expense-date-history-heading strong{font-size:13px}
+.expense-date-history-heading span{font-size:11px;color:var(--muted)}
+.expense-date-history-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--soft,#f8fafc)}
+.expense-date-history-main{display:grid;gap:3px;min-width:0}
+.expense-date-history-main strong{font-size:12px;overflow-wrap:anywhere}
+.expense-date-history-main small{font-size:10px;color:var(--muted)}
+.expense-date-history-amount{font-size:12px;color:var(--green);white-space:nowrap}
+.expense-date-history-total{display:flex;align-items:center;justify-content:space-between;padding:10px 2px 0;border-top:1px solid var(--line);font-size:12px}
+.expense-date-history-total span{color:var(--muted)}
+.expense-date-history-total strong{color:var(--green);font-size:14px}
+.expense-day-action-buttons.single-action{grid-template-columns:1fr}
+.expense-day-action-buttons.single-action button{min-height:46px}
+
 .expense-day-history-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--soft,#f8fafc);font-size:12px}
 .expense-day-history-row span{min-width:0;overflow-wrap:anywhere}
 .expense-day-history-row strong{white-space:nowrap;color:var(--green)}
@@ -3891,91 +3909,628 @@ body:has(#page-financial-list.active) .main>.topbar{display:none!important}
 </style>
 
 
-<style id="savely-overview-kpi-swipe-carousel">
-#stats.stats-carousel{
- display:grid!important;
- grid-template-columns:minmax(0,1fr)!important;
- gap:11px!important;
- width:100%!important;
- margin-bottom:20px!important;
- min-width:0!important;
+<style id="savely-expense-date-popup-xl">
+/* Larger date popups: empty-date Add state and populated Expense History state */
+.expense-day-action-backdrop{padding:24px!important}
+.expense-day-action-menu{
+  width:min(640px,calc(100vw - 48px))!important;
+  max-height:min(84vh,780px)!important;
+  padding:30px 32px 28px!important;
+  border-radius:24px!important;
+  box-shadow:0 28px 80px rgba(15,30,45,.28)!important;
 }
-#stats .stats-carousel-viewport{
- width:100%!important;
- min-width:0!important;
- overflow:hidden!important;
- border-radius:19px!important;
- touch-action:pan-y pinch-zoom!important;
- cursor:grab;
- outline:none;
+.expense-day-action-menu.has-history{
+  width:min(680px,calc(100vw - 48px))!important;
+  padding:30px 34px 28px!important;
 }
-#stats .stats-carousel-viewport.is-dragging{cursor:grabbing}
-#stats .stats-carousel-track{
- display:flex!important;
- width:300%!important;
- min-width:0!important;
- gap:0!important;
- transform:translate3d(0,0,0);
- transition:transform 560ms cubic-bezier(.22,.75,.18,1);
- will-change:transform;
+.expense-day-action-menu.is-empty{
+  width:min(540px,calc(100vw - 48px))!important;
+  padding:30px 32px 28px!important;
 }
-#stats .stats-carousel-track>.stat{
- display:flex!important;
- flex:0 0 33.333333%!important;
- width:33.333333%!important;
- min-width:0!important;
- min-height:155px;
- box-sizing:border-box!important;
+.expense-day-action-head{gap:18px!important;margin-bottom:20px!important}
+.expense-day-action-head strong{font-size:20px!important;line-height:1.35!important}
+.expense-day-action-head small{font-size:15px!important;line-height:1.5!important;margin-top:8px!important}
+.expense-day-action-close{
+  width:44px!important;height:44px!important;flex:0 0 44px!important;
+  border-radius:12px!important;font-size:22px!important;
 }
-#stats .stats-carousel-pagination{
- display:flex!important;
- align-items:center!important;
- justify-content:center!important;
- gap:8px!important;
- min-height:15px;
+.expense-date-history{gap:12px!important;margin:20px 0 22px!important}
+.expense-date-history-heading{margin-bottom:4px!important}
+.expense-date-history-heading strong{font-size:17px!important}
+.expense-date-history-heading span{font-size:14px!important}
+.expense-date-history-row{padding:16px 18px!important;border-radius:13px!important;gap:18px!important}
+.expense-date-history-main{gap:6px!important}
+.expense-date-history-main strong{font-size:16px!important;line-height:1.35!important}
+.expense-date-history-main small{font-size:13px!important;line-height:1.4!important}
+.expense-date-history-amount{font-size:16px!important}
+.expense-date-history-total{padding:15px 2px 0!important;font-size:15px!important}
+.expense-date-history-total strong{font-size:18px!important}
+.expense-day-action-buttons{gap:12px!important;margin-top:18px!important}
+.expense-day-action-buttons button{
+  min-height:62px!important;border-radius:13px!important;
+  font-size:16px!important;padding:14px 20px!important;
 }
-#stats .stats-carousel-dot{
- appearance:none!important;
- -webkit-appearance:none!important;
- display:block!important;
- width:7px!important;
- height:7px!important;
- min-width:7px!important;
- padding:0!important;
- border:0!important;
- border-radius:999px!important;
- background:#c8d3dc!important;
- cursor:pointer!important;
- transition:width 240ms ease,background 240ms ease,transform 240ms ease!important;
-}
-#stats .stats-carousel-dot[aria-current="true"]{
- width:23px!important;
- background:#168765!important;
-}
-#stats .stats-carousel-dot:focus-visible{
- outline:3px solid rgba(22,135,101,.25)!important;
- outline-offset:3px!important;
-}
-@media(hover:hover){
- #stats .stats-carousel-viewport:hover .stats-carousel-track{transition-duration:480ms!important}
-}
-@media(max-width:1050px){
- #stats.stats-carousel{grid-template-columns:minmax(0,1fr)!important}
- #stats .stats-carousel-track>.stat{min-height:145px}
-}
+.expense-day-action-buttons.single-action button{min-height:64px!important}
 @media(max-width:600px){
- #stats.stats-carousel{gap:9px!important}
- #stats .stats-carousel-viewport{border-radius:14px!important}
- #stats .stats-carousel-track>.stat{
-  min-height:142px!important;
-  padding:16px!important;
-  border-radius:15px!important;
- }
- #stats .stats-carousel-dot{width:6px!important;height:6px!important;min-width:6px!important}
- #stats .stats-carousel-dot[aria-current="true"]{width:20px!important}
+  .expense-day-action-backdrop{padding:12px!important}
+  .expense-day-action-menu,
+  .expense-day-action-menu.has-history,
+  .expense-day-action-menu.is-empty{
+    width:calc(100vw - 24px)!important;max-height:88vh!important;
+    padding:22px 18px 20px!important;border-radius:19px!important;
+  }
+  .expense-day-action-head strong{font-size:17px!important}
+  .expense-day-action-head small{font-size:13px!important}
+  .expense-date-history-row{padding:13px!important}
+  .expense-date-history-main strong,.expense-date-history-amount{font-size:14px!important}
+  .expense-day-action-buttons button{min-height:56px!important;font-size:14px!important}
+}
+</style>
+
+
+<style id="savely-expense-composer-modern">
+/* Modern, compact and task-focused expense composer */
+#modalBackdrop:has(#expenseComposer){
+  align-items:center!important;justify-content:center!important;
+  padding:20px!important;overflow-y:auto!important;overflow-x:hidden!important;
+}
+#modalBackdrop:has(#expenseComposer)>.modal{
+  width:min(1120px,calc(100vw - 40px))!important;
+  max-width:1120px!important;min-height:0!important;height:auto!important;
+  max-height:calc(100vh - 40px)!important;
+  margin:auto!important;padding:30px 34px 26px!important;
+  border-radius:24px!important;overflow-y:auto!important;overflow-x:hidden!important;
+  box-shadow:0 28px 90px rgba(18,35,50,.22)!important;
+}
+#modalBackdrop:has(#expenseComposer) #modalTitle{
+  font-size:26px!important;line-height:1.2!important;letter-spacing:-.8px!important;
+  font-weight:850!important;margin-bottom:5px!important;
+}
+#modalBackdrop:has(#expenseComposer) #modalDesc{
+  font-size:13px!important;line-height:1.55!important;margin:0 0 22px!important;
+  color:var(--muted)!important;
+}
+#expenseComposer{display:grid!important;gap:16px!important}
+#expenseComposer .expense-composer-section{
+  border:1px solid var(--line)!important;border-radius:20px!important;
+  padding:22px!important;background:linear-gradient(180deg,var(--panel,#fff),var(--soft,#f8fafc))!important;
+  box-shadow:0 5px 18px rgba(20,40,60,.035)!important;
+}
+#expenseComposer .expense-section-heading{align-items:center!important;margin-bottom:18px!important}
+#expenseComposer .expense-section-heading h3{
+  font-size:16px!important;font-weight:800!important;letter-spacing:-.25px!important;margin-bottom:5px!important;
+}
+#expenseComposer .expense-section-heading p{font-size:12px!important;line-height:1.5!important}
+#expenseComposer .expense-section-step{
+  width:36px!important;height:36px!important;border-radius:12px!important;
+  font-size:12px!important;background:var(--green2)!important;
+}
+#expenseComposer .expense-category-grid{
+  display:flex!important;gap:10px!important;padding:2px 2px 12px!important;
+  scrollbar-width:thin!important;scrollbar-color:var(--green) transparent!important;
+}
+#expenseComposer .expense-category-card{
+  flex:0 0 166px!important;min-width:166px!important;min-height:54px!important;
+  padding:11px 14px!important;gap:9px!important;border-radius:13px!important;
+  border:1px solid var(--line)!important;background:var(--panel,#fff)!important;
+  font-size:12px!important;font-weight:750!important;transition:all .16s ease!important;
+  scroll-snap-align:start!important;
+}
+#expenseComposer .expense-category-card:hover{
+  border-color:var(--green)!important;transform:translateY(-1px)!important;
+  box-shadow:0 5px 14px rgba(18,135,99,.08)!important;
+}
+#expenseComposer .expense-category-card.selected,
+#expenseComposer .expense-category-card.active{
+  border:1.5px solid var(--green)!important;background:var(--green2)!important;
+  color:var(--green)!important;box-shadow:0 0 0 2px rgba(18,135,99,.07)!important;
+}
+#expenseComposer .expense-category-icon{font-size:19px!important}
+#expenseComposer .expense-category-check{width:20px!important;height:20px!important}
+#expenseComposer .expense-category-panels{margin-top:2px!important}
+#expenseComposer .expense-category-panel{
+  padding:20px!important;border:1px solid var(--line)!important;
+  border-radius:16px!important;background:var(--panel,#fff)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5)!important;
+}
+#expenseComposer .expense-category-panel-head{margin-bottom:16px!important}
+#expenseComposer .expense-category-panel-head strong{font-size:15px!important;font-weight:800!important}
+#expenseComposer .expense-category-panel-head small{font-size:11px!important;margin-top:5px!important}
+#expenseComposer .expense-category-subtotal{font-size:13px!important;margin-top:7px!important}
+#expenseComposer .expense-add-item{
+  padding:10px 14px!important;border-radius:11px!important;font-size:12px!important;
+  font-weight:750!important;min-height:42px!important;
+}
+#expenseComposer .expense-items-list{gap:11px!important}
+#expenseComposer .expense-item-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(145px,170px) minmax(120px,150px) 42px!important;
+  gap:10px!important;padding:11px!important;border:1px solid var(--line)!important;
+  border-radius:14px!important;background:var(--soft,#f8fafc)!important;
+}
+#expenseComposer .expense-item-row input,
+#expenseComposer .expense-item-time{
+  height:46px!important;min-width:0!important;width:100%!important;
+  border:1px solid var(--line)!important;border-radius:10px!important;
+  background:var(--panel,#fff)!important;color:var(--text)!important;
+  padding:0 12px!important;font-size:13px!important;outline:none!important;
+  transition:border-color .15s ease,box-shadow .15s ease!important;
+}
+#expenseComposer .expense-item-row input:focus,
+#expenseComposer .expense-item-time:focus{
+  border-color:var(--green)!important;box-shadow:0 0 0 3px rgba(18,135,99,.12)!important;
+}
+#expenseComposer .expense-item-row input::placeholder{color:var(--muted)!important;opacity:.85!important}
+#expenseComposer .expense-item-remove{
+  width:42px!important;height:46px!important;border-radius:10px!important;
+  font-size:18px!important;background:var(--panel,#fff)!important;
+}
+#expenseComposer .expense-composer-summary{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:16px!important;padding:18px 22px!important;border-radius:16px!important;
+  border:1px solid rgba(18,135,99,.24)!important;background:var(--green2)!important;
+}
+#expenseComposer .expense-summary-label{font-size:11px!important;font-weight:750!important}
+#expenseComposer #expenseComposerTotal{display:block!important;font-size:22px!important;line-height:1.3!important;font-weight:900!important;margin-top:3px!important}
+#expenseComposer #expenseComposerCount{font-size:11px!important;margin-top:3px!important}
+#expenseComposer .expense-summary-note{font-size:11px!important;font-weight:700!important;text-align:right!important}
+#modalBackdrop:has(#expenseComposer) .expense-composer-actions{
+  display:flex!important;justify-content:flex-end!important;gap:10px!important;
+  margin-top:2px!important;padding-top:2px!important;
+}
+#modalBackdrop:has(#expenseComposer) .expense-composer-actions .btn{
+  min-width:120px!important;min-height:46px!important;padding:11px 18px!important;
+  border-radius:11px!important;font-size:13px!important;font-weight:800!important;
+}
+#expenseComposer .expense-hidden-metadata{display:none!important}
+@media(max-width:760px){
+  #modalBackdrop:has(#expenseComposer){padding:9px!important}
+  #modalBackdrop:has(#expenseComposer)>.modal{
+    width:calc(100vw - 18px)!important;max-height:calc(100vh - 18px)!important;
+    padding:20px 16px 17px!important;border-radius:18px!important;
+  }
+  #modalBackdrop:has(#expenseComposer) #modalTitle{font-size:22px!important}
+  #expenseComposer{gap:12px!important}
+  #expenseComposer .expense-composer-section{padding:15px!important;border-radius:15px!important}
+  #expenseComposer .expense-category-card{flex-basis:148px!important;min-width:148px!important;min-height:50px!important}
+  #expenseComposer .expense-category-panel{padding:13px!important}
+  #expenseComposer .expense-item-row{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:8px!important;padding:10px!important;
+  }
+  #expenseComposer .expense-item-description{grid-column:1/-1!important}
+  #expenseComposer .expense-item-time{grid-column:1!important}
+  #expenseComposer .expense-item-amount{grid-column:2!important}
+  #expenseComposer .expense-item-remove{grid-column:2!important;justify-self:end!important}
+  #expenseComposer .expense-composer-summary{padding:14px 15px!important}
+  #expenseComposer #expenseComposerTotal{font-size:19px!important}
+  #modalBackdrop:has(#expenseComposer) .expense-composer-actions .btn{flex:1;min-width:0!important}
+}
+@media(max-width:420px){
+  #expenseComposer .expense-category-panel-head{align-items:flex-start!important}
+  #expenseComposer .expense-add-item{padding:8px 10px!important;font-size:11px!important}
+  #expenseComposer .expense-summary-note{max-width:115px!important}
+}
+body.dark-theme #expenseComposer .expense-composer-section,
+body.dark-theme #expenseComposer .expense-category-panel{background:var(--panel)!important}
+body.dark-theme #expenseComposer .expense-item-row{background:var(--soft)!important}
+</style>
+
+
+<style id="savely-category-rail-hidden-scrollbar">
+#expenseComposer .expense-category-grid{
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  max-width:100%!important;
+  min-width:0!important;
+  -webkit-overflow-scrolling:touch!important;
+  overscroll-behavior-x:contain!important;
+  touch-action:pan-x!important;
+  scroll-behavior:smooth!important;
+  scroll-snap-type:x proximity!important;
+  scrollbar-width:none!important;
+  -ms-overflow-style:none!important;
+  cursor:grab!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+}
+#expenseComposer .expense-category-grid::-webkit-scrollbar{
+  display:none!important;
+  width:0!important;
+  height:0!important;
+}
+#expenseComposer .expense-category-grid.is-dragging{
+  cursor:grabbing!important;
+  scroll-snap-type:none!important;
+  scroll-behavior:auto!important;
+}
+#expenseComposer .expense-category-card{
+  flex-shrink:0!important;
+  scroll-snap-align:start!important;
+}
+#expenseComposer .expense-category-card.drag-suppress{
+  pointer-events:none!important;
+}
+@media(hover:hover) and (pointer:fine){
+ #expenseComposer .expense-category-grid{cursor:grab!important}
+ #expenseComposer .expense-category-grid.is-dragging{cursor:grabbing!important}
+}
+</style>
+
+
+<style id="savely-expense-actions-spacing-fix">
+#modalBackdrop:has(#expenseComposer) .expense-composer-actions{
+  margin-top:18px!important;
+  padding-top:10px!important;
+  gap:12px!important;
+}
+#modalBackdrop:has(#expenseComposer) .expense-composer-actions .btn{
+  min-height:48px!important;
+}
+@media(max-width:760px){
+  #modalBackdrop:has(#expenseComposer) .expense-composer-actions{
+    margin-top:14px!important;
+    padding-top:8px!important;
+  }
+}
+</style>
+
+
+<style id="savely-category-solid-green-no-check">
+/* Solid green active category; no checkmark indicator */
+#expenseComposer .expense-category-card.active,
+#expenseComposer .expense-category-card.active.selected{
+  background:var(--green,#138a68)!important;
+  background-color:var(--green,#138a68)!important;
+  border-color:var(--green,#138a68)!important;
+  color:#fff!important;
+  box-shadow:0 2px 8px rgba(19,138,104,.18)!important;
+}
+#expenseComposer .expense-category-card.active:hover,
+#expenseComposer .expense-category-card.active:focus-visible{
+  background:var(--green,#138a68)!important;
+  border-color:var(--green,#138a68)!important;
+  color:#fff!important;
+}
+#expenseComposer .expense-category-card .expense-category-check{
+  display:none!important;
+}
+#expenseComposer .expense-category-card{
+  gap:9px!important;
+}
+</style>
+
+
+<style id="savely-expense-time-tabs-ui">
+#expenseComposer .expense-category-panel-head{margin-bottom:14px!important}
+#expenseComposer .expense-time-tabs{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ gap:9px!important;margin:12px 0 14px!important;
+}
+#expenseComposer .expense-time-tab{
+ min-height:46px!important;padding:10px 12px!important;
+ border:1px solid var(--line)!important;border-radius:11px!important;
+ background:var(--panel,#fff)!important;color:var(--text)!important;
+ font:inherit!important;font-size:12px!important;font-weight:750!important;
+ cursor:pointer!important;transition:background .16s ease,border-color .16s ease,color .16s ease!important;
+}
+#expenseComposer .expense-time-tab:hover{border-color:var(--green)!important;background:var(--green2)!important}
+#expenseComposer .expense-time-tab.active{
+ background:var(--green,#138a68)!important;border-color:var(--green,#138a68)!important;
+ color:#fff!important;box-shadow:0 2px 7px rgba(19,138,104,.15)!important;
+}
+#expenseComposer .expense-time-panel[hidden]{display:none!important}
+#expenseComposer .expense-items-list{display:grid!important;gap:10px!important;margin-bottom:12px!important}
+#expenseComposer .expense-item-row{
+ display:grid!important;grid-template-columns:minmax(0,1fr) minmax(130px,165px) 42px!important;
+ gap:10px!important;padding:11px!important;border:1px solid var(--line)!important;
+ border-radius:13px!important;background:var(--soft,#f8fafc)!important;
+}
+#expenseComposer .expense-item-row input{
+ width:100%!important;min-width:0!important;height:44px!important;
+ border:1px solid var(--line)!important;border-radius:10px!important;
+ background:var(--panel,#fff)!important;color:var(--text)!important;
+ padding:0 12px!important;font-size:13px!important;
+}
+#expenseComposer .expense-item-row input:focus{
+ outline:none!important;border-color:var(--green)!important;
+ box-shadow:0 0 0 3px rgba(18,135,99,.11)!important;
+}
+#expenseComposer .expense-item-remove{width:42px!important;height:44px!important;border-radius:10px!important}
+#expenseComposer .expense-add-item{
+ min-height:43px!important;padding:10px 15px!important;border-radius:11px!important;
+ font-size:12px!important;font-weight:750!important;
+}
+@media(max-width:620px){
+ #expenseComposer .expense-time-tabs{grid-template-columns:repeat(4,minmax(104px,1fr))!important;overflow-x:auto!important;overflow-y:hidden!important;padding-bottom:5px!important;scrollbar-width:none!important}
+ #expenseComposer .expense-time-tabs::-webkit-scrollbar{display:none!important}
+ #expenseComposer .expense-item-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px!important}
+ #expenseComposer .expense-item-description{grid-column:1/-1!important}
+ #expenseComposer .expense-item-amount{grid-column:1!important}
+ #expenseComposer .expense-item-remove{grid-column:2!important;justify-self:end!important}
+}
+</style>
+
+
+<style id="savely-calendar-expense-count-summary">
+#expensesCalendarGrid .expenses-day-items{
+ display:flex!important;align-items:center!important;min-height:27px!important;
+ padding:5px 7px!important;border-radius:8px!important;
+ background:#eaf7ef!important;color:#168765!important;
+}
+#expensesCalendarGrid .expenses-day-count{
+ display:block!important;font-size:10px!important;line-height:1.25!important;
+ font-weight:800!important;letter-spacing:.05px!important;
+}
+#expensesCalendarGrid .expenses-day-total{
+ font-size:10px!important;font-weight:900!important;
+}
+</style>
+
+
+<style id="savely-page-open-transition">
+@keyframes savelyPageEnter{
+  from{opacity:0;transform:translate3d(0,12px,0) scale(.997);filter:blur(1.5px)}
+  to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+}
+.page.page-entering{
+  animation:savelyPageEnter 380ms cubic-bezier(.2,.75,.25,1) both;
+  transform-origin:top center;
+  will-change:opacity,transform;
 }
 @media(prefers-reduced-motion:reduce){
- #stats .stats-carousel-track,#stats .stats-carousel-dot{transition:none!important}
+  .page.page-entering{animation:none!important;filter:none!important;transform:none!important}
+}
+</style>
+
+
+<style id="savely-expense-edit-dedicated-page">
+.expense-editor-page .expense-editor-layout{width:min(1240px,100%);margin:0 auto;display:grid;gap:18px}
+.expense-editor-toolbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.expense-editor-back{min-height:42px;border-radius:11px;font-weight:750}
+.expense-editor-intro{display:grid;gap:4px}
+.expense-editor-intro strong{font-size:17px;font-weight:850;color:var(--text)}
+.expense-editor-intro span{font-size:12px;color:var(--muted)}
+.expense-editor-card{min-width:0;width:100%;background:var(--card,#fff);border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:0 8px 28px rgba(20,40,60,.055)}
+.expense-editor-page #modalForm{display:grid;gap:16px;width:100%}
+.expense-editor-page #expenseComposer{width:100%;gap:16px}
+.expense-editor-page .expense-composer-actions{margin-top:12px!important;padding-top:18px!important;border-top:1px solid var(--line);gap:12px!important}
+.expense-editor-page .expense-composer-actions .btn{min-width:130px;min-height:48px;border-radius:11px;font-weight:800}
+.expense-editor-page .expense-composer-section{padding:22px!important}
+.expense-editor-page .expense-composer-summary{padding:19px 22px!important}
+@media(max-width:760px){
+ .expense-editor-page .expense-editor-layout{gap:12px}
+ .expense-editor-card{padding:14px;border-radius:15px}
+ .expense-editor-toolbar{align-items:flex-start;flex-direction:column;gap:10px}
+ .expense-editor-page .expense-composer-section{padding:14px!important}
+ .expense-editor-page .expense-composer-actions{position:sticky;bottom:0;background:var(--card,#fff);padding:14px 0 max(8px,env(safe-area-inset-bottom))!important;z-index:2}
+ .expense-editor-page .expense-composer-actions .btn{flex:1;min-width:0}
+}
+</style>
+
+
+<style id="savely-expenses-calendar-heading-and-today">
+body.expense-calendar-no-heading .topbar{display:none!important}
+body.expense-calendar-no-heading .main{padding-top:24px}
+.expenses-day-top-meta{display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:0}
+.expenses-today-label{flex:0 0 auto;padding:4px 7px;border-radius:999px;background:#168765;color:#fff;font-size:9px;line-height:1;font-weight:850;letter-spacing:.15px}
+.expenses-calendar-day.is-today,
+.expenses-calendar-day.is-today.has-expenses{
+ border:2px solid #168765!important;
+ background:linear-gradient(145deg,#e4f7ed 0%,#f3fbf6 100%)!important;
+ box-shadow:0 0 0 3px rgba(22,135,101,.12),0 5px 16px rgba(22,135,101,.09)!important;
+}
+.expenses-calendar-day.is-today .expenses-day-number{background:#168765!important;color:#fff!important;box-shadow:0 2px 5px rgba(22,135,101,.22)}
+</style>
+
+
+<style id="savely-expense-editor-modern-ui">
+/* Give the editor a single, clear heading and a wider working area. */
+body.expense-editor-active .topbar{
+  align-items:flex-start!important;
+  margin-bottom:24px!important;
+  padding:0 2px 18px!important;
+  border-bottom:1px solid #e5edf0!important;
+}
+body.expense-editor-active #eyebrow{
+  color:#168765!important;
+  font-size:10px!important;
+  font-weight:850!important;
+  letter-spacing:1.15px!important;
+  margin-bottom:7px!important;
+}
+body.expense-editor-active #pageTitle{
+  color:#142b25!important;
+  font-size:30px!important;
+  line-height:1.12!important;
+  letter-spacing:-.9px!important;
+  font-weight:850!important;
+}
+body.expense-editor-active #pageDescription{
+  color:#738278!important;
+  font-size:13px!important;
+  line-height:1.6!important;
+  margin-top:7px!important;
+  max-width:680px!important;
+}
+.expense-editor-page .expense-editor-layout{
+  width:100%!important;
+  max-width:1480px!important;
+  margin:0 auto!important;
+  display:block!important;
+}
+.expense-editor-page .expense-editor-card{
+  width:100%!important;
+  min-width:0!important;
+  padding:clamp(18px,2.1vw,30px)!important;
+  border:1px solid #e4ece8!important;
+  border-radius:22px!important;
+  background:linear-gradient(180deg,#fff 0%,#fcfefd 100%)!important;
+  box-shadow:0 12px 34px rgba(25,65,48,.065)!important;
+}
+.expense-editor-datebar{
+  display:flex!important;
+  align-items:center!important;
+  gap:13px!important;
+  min-height:66px!important;
+  margin-bottom:22px!important;
+  padding:13px 16px!important;
+  border:1px solid #e1eee7!important;
+  border-radius:15px!important;
+  background:linear-gradient(110deg,#f1faf5 0%,#f8fcfa 70%,#fff 100%)!important;
+}
+.expense-editor-date-icon{
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 40px!important;
+  width:40px!important;
+  height:40px!important;
+  border-radius:12px!important;
+  background:#dff4e9!important;
+  color:#138765!important;
+  font-size:20px!important;
+  font-weight:800!important;
+}
+.expense-editor-date-copy{display:grid!important;gap:4px!important;min-width:0!important}
+.expense-editor-date-copy span{
+  color:#729084!important;
+  font-size:9px!important;
+  font-weight:850!important;
+  letter-spacing:1px!important;
+}
+.expense-editor-date-copy strong{
+  color:#183b2e!important;
+  font-size:14px!important;
+  font-weight:850!important;
+}
+.expense-editor-date-status{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  margin-left:auto!important;
+  padding:8px 11px!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  border:1px solid #e5eee9!important;
+  color:#70857b!important;
+  font-size:10px!important;
+  font-weight:750!important;
+  white-space:nowrap!important;
+}
+.expense-editor-date-status i{
+  display:block!important;
+  width:7px!important;
+  height:7px!important;
+  border-radius:50%!important;
+  background:#e7a23b!important;
+}
+.expense-editor-page #modalForm{gap:18px!important}
+.expense-editor-page .expense-composer-section{
+  padding:24px!important;
+  border:1px solid #e5ede9!important;
+  border-radius:17px!important;
+  background:#fff!important;
+  box-shadow:0 3px 12px rgba(20,55,40,.025)!important;
+}
+.expense-editor-page .expense-section-heading h3{
+  color:#18352b!important;
+  font-size:16px!important;
+  font-weight:850!important;
+  letter-spacing:-.2px!important;
+}
+.expense-editor-page .expense-section-heading p{
+  color:#829188!important;
+  font-size:11px!important;
+  line-height:1.5!important;
+}
+.expense-editor-page .expense-category-grid{
+  gap:9px!important;
+  padding:3px 1px 10px!important;
+}
+.expense-editor-page .expense-category-card{
+  min-height:50px!important;
+  border-radius:12px!important;
+  font-weight:750!important;
+  transition:transform .16s ease,background .16s ease,border-color .16s ease,box-shadow .16s ease!important;
+}
+.expense-editor-page .expense-category-card:hover{transform:translateY(-1px)!important}
+.expense-editor-page .expense-category-card.active,
+.expense-editor-page .expense-category-card.selected{
+  background:#138765!important;
+  border-color:#138765!important;
+  color:#fff!important;
+  box-shadow:0 4px 10px rgba(19,135,101,.16)!important;
+}
+.expense-editor-page .expense-category-card .expense-category-check{display:none!important}
+.expense-editor-page .expense-category-panel{
+  padding:20px!important;
+  border:1px solid #e6eee9!important;
+  border-radius:15px!important;
+  background:#f9fbfa!important;
+}
+.expense-editor-page .expense-time-tabs{gap:9px!important;margin:14px 0 15px!important}
+.expense-editor-page .expense-time-tab{
+  min-height:46px!important;
+  border-radius:11px!important;
+  border:1px solid #e2eae6!important;
+  background:#fff!important;
+  color:#4e6258!important;
+  font-size:11px!important;
+  font-weight:800!important;
+}
+.expense-editor-page .expense-time-tab.active{
+  color:#fff!important;
+  background:#138765!important;
+  border-color:#138765!important;
+  box-shadow:0 4px 10px rgba(19,135,101,.16)!important;
+}
+.expense-editor-page .expense-item-row{
+  padding:12px!important;
+  gap:10px!important;
+  border:1px solid #e5ece8!important;
+  border-radius:13px!important;
+  background:#fff!important;
+}
+.expense-editor-page .expense-item-row input{
+  min-height:46px!important;
+  border-radius:10px!important;
+  border-color:#e0e9e4!important;
+  font-size:12px!important;
+}
+.expense-editor-page .expense-add-item{
+  min-height:42px!important;
+  border-radius:10px!important;
+  font-weight:800!important;
+}
+.expense-editor-page .expense-composer-summary{
+  padding:20px 22px!important;
+  border:1px solid #aee2cb!important;
+  border-radius:15px!important;
+  background:linear-gradient(110deg,#eaf8f1,#f2fbf6)!important;
+}
+.expense-editor-page .expense-composer-actions{
+  margin-top:2px!important;
+  padding-top:20px!important;
+  border-top:1px solid #e9efec!important;
+}
+.expense-editor-page .expense-composer-actions .btn{
+  min-width:138px!important;
+  min-height:47px!important;
+  border-radius:11px!important;
+  font-size:12px!important;
+  font-weight:850!important;
+}
+@media(max-width:760px){
+  body.expense-editor-active .topbar{margin-bottom:15px!important;padding-bottom:14px!important}
+  body.expense-editor-active #pageTitle{font-size:25px!important}
+  .expense-editor-page .expense-editor-card{padding:13px!important;border-radius:16px!important}
+  .expense-editor-datebar{align-items:flex-start!important;flex-wrap:wrap!important;margin-bottom:14px!important;padding:11px!important}
+  .expense-editor-date-status{margin-left:53px!important}
+  .expense-editor-page .expense-composer-section{padding:14px!important}
+  .expense-editor-page .expense-category-panel{padding:13px!important}
+  .expense-editor-page .expense-composer-actions{position:sticky;bottom:0;background:#fff;padding:14px 0 max(8px,env(safe-area-inset-bottom))!important;z-index:2}
 }
 </style>
 
@@ -4641,6 +5196,22 @@ body:has(#page-financial-list.active) .main>.topbar{display:none!important}
     </section>
   </section>
 
+
+  <section class="page expense-editor-page" id="page-expense-editor" aria-label="Edit expenses">
+    <div class="expense-editor-layout">
+      <div class="expense-editor-card">
+        <div class="expense-editor-datebar">
+          <div class="expense-editor-date-icon" aria-hidden="true">▦</div>
+          <div class="expense-editor-date-copy">
+            <span>EDITING EXPENSES FOR</span>
+            <strong id="expenseEditorDate">Selected date</strong>
+          </div>
+          <span class="expense-editor-date-status"><i></i> Changes not yet applied</span>
+        </div>
+        <div id="expenseEditorMount"></div>
+      </div>
+    </div>
+  </section>
 </main>
 </div>
 <div class="modal-backdrop" id="savelyUpdatesBackdrop" role="dialog" aria-modal="true" aria-labelledby="savelyUpdatesTitle" style="z-index:9999" onclick="if(event.target===this)closeSavelyUpdates()"><div class="modal" style="max-width:520px"><div class="panel-head"><div><div class="pill" style="display:inline-flex;margin-bottom:10px">SAVELY UPDATES</div><h2 id="savelyUpdatesTitle">What’s new in Savely</h2></div></div><p class="muted">Version 2.8.68 · Latest patch</p><div style="display:grid;gap:12px"><div><span class="pill" style="background:#e5f7ef;color:#087f5b">MINOR UPDATE · v2.8.68</span><ul style="line-height:1.8;padding-left:22px;margin-top:8px"><li>Refined email OTP authentication flow for sign-up and login.</li><li>Requests Supabase email OTP through the Auth OTP endpoint and verifies the entered code.</li><li>Verified accounts use Supabase Authentication sessions for account-scoped cloud sync.</li><li>Updated account and privacy messaging to explain authentication and cloud data setup.</li><li>Added an embedded satellite map that opens from the live weather badge, with Zoom Earth available for weather layers.</li><li>Fixed the selected-bank savings graph height so it stays compact and fits inside the Savings panel.</li><li>Satellite map uses Esri World Imagery and centers on the selected weather city when available; Zoom Earth opens separately for weather layers.</li></ul></div></div><div class="form-actions" style="justify-content:flex-end"><button type="button" class="btn btn-primary" onclick="closeSavelyUpdates()">Okay</button></div></div></div>
@@ -7234,126 +7805,6 @@ function viewDebtHistory(id){
 }
 function closeDebtHistory(){const modal=document.getElementById('savelyDebtHistoryModal');if(modal)modal.remove();}
 
-function initStatsCarousel(){
- const root=document.getElementById('stats');
- if(!root)return;
- const cards=Array.from(root.querySelectorAll(':scope > .stat'));
- if(cards.length!==3)return;
- const viewport=document.createElement('div');
- viewport.className='stats-carousel-viewport';
- viewport.setAttribute('role','group');
- viewport.setAttribute('aria-label','Financial summary cards. Swipe or use the arrow keys to switch cards.');
- viewport.setAttribute('tabindex','0');
- const track=document.createElement('div');
- track.className='stats-carousel-track';
- track.setAttribute('aria-live','polite');
- cards.forEach((card,index)=>{
-  card.setAttribute('role','group');
-  card.setAttribute('aria-label',`Card ${index+1} of 3`);
-  track.appendChild(card);
- });
- viewport.appendChild(track);
- const pagination=document.createElement('div');
- pagination.className='stats-carousel-pagination';
- pagination.setAttribute('role','tablist');
- pagination.setAttribute('aria-label','Choose financial summary card');
- const dots=[];
- let activeIndex=0;
- let pointerStartX=0;
- let pointerStartY=0;
- let pointerLastX=0;
- let dragging=false;
- let pointerId=null;
- let suppressClickUntil=0;
- const setSlide=(next,animate=true)=>{
-  activeIndex=Math.max(0,Math.min(2,next));
-  track.style.transition=animate?'':'none';
-  track.style.transform=`translate3d(${-activeIndex*33.333333}%,0,0)`;
-  if(!animate){
-   track.getBoundingClientRect();
-   track.style.transition='';
-  }
-  dots.forEach((dot,index)=>{
-   const active=index===activeIndex;
-   dot.setAttribute('aria-current',active?'true':'false');
-   dot.setAttribute('aria-label',`${['Savings total','Salary / income total','Debt total'][index]}${active?' (current)':''}`);
-   dot.setAttribute('tabindex',active?'0':'-1');
-  });
-  cards.forEach((card,index)=>{
-   card.setAttribute('aria-hidden',index===activeIndex?'false':'true');
-   card.inert=index!==activeIndex;
-  });
- };
- ['Savings total','Salary / income total','Debt total'].forEach((label,index)=>{
-  const dot=document.createElement('button');
-  dot.type='button';
-  dot.className='stats-carousel-dot';
-  dot.setAttribute('role','tab');
-  dot.addEventListener('click',()=>setSlide(index));
-  pagination.appendChild(dot);
-  dots.push(dot);
- });
- root.classList.add('stats-carousel');
- root.replaceChildren(viewport,pagination);
- const onPointerDown=(event)=>{
-  if(event.pointerType==='mouse'&&event.button!==0)return;
-  pointerId=event.pointerId;
-  pointerStartX=pointerLastX=event.clientX;
-  pointerStartY=event.clientY;
-  dragging=false;
-  viewport.setPointerCapture?.(pointerId);
- };
- const onPointerMove=(event)=>{
-  if(pointerId!==event.pointerId)return;
-  const dx=event.clientX-pointerStartX;
-  const dy=event.clientY-pointerStartY;
-  if(!dragging&&Math.abs(dx)>7&&Math.abs(dx)>Math.abs(dy)*1.15){
-   dragging=true;
-   viewport.classList.add('is-dragging');
-   track.style.transition='none';
-  }
-  if(!dragging)return;
-  pointerLastX=event.clientX;
-  const width=viewport.clientWidth||1;
-  const offset=(-activeIndex*width)+dx;
-  track.style.transform=`translate3d(${offset/width*100}%,0,0)`;
- };
- const onPointerUp=(event)=>{
-  if(pointerId!==event.pointerId)return;
-  const dx=event.clientX-pointerStartX;
-  if(dragging){
-   suppressClickUntil=Date.now()+280;
-   if(dx<-45)setSlide(activeIndex+1);
-   else if(dx>45)setSlide(activeIndex-1);
-   else setSlide(activeIndex);
-  }
-  dragging=false;
-  pointerId=null;
-  viewport.classList.remove('is-dragging');
-  track.style.transition='';
- };
- viewport.addEventListener('pointerdown',onPointerDown);
- viewport.addEventListener('pointermove',onPointerMove);
- viewport.addEventListener('pointerup',onPointerUp);
- viewport.addEventListener('pointercancel',onPointerUp);
- viewport.addEventListener('click',(event)=>{
-  if(Date.now()<suppressClickUntil){event.preventDefault();event.stopPropagation();}
- },true);
- viewport.addEventListener('keydown',(event)=>{
-  if(event.key==='ArrowRight'){event.preventDefault();setSlide(activeIndex+1);}
-  if(event.key==='ArrowLeft'){event.preventDefault();setSlide(activeIndex-1);}
-  if(event.key==='Home'){event.preventDefault();setSlide(0);}
-  if(event.key==='End'){event.preventDefault();setSlide(2);}
- });
- viewport.addEventListener('wheel',(event)=>{
-  if(Math.abs(event.deltaX)>Math.abs(event.deltaY)*1.15&&Math.abs(event.deltaX)>18){
-   event.preventDefault();
-   setSlide(activeIndex+(event.deltaX>0?1:-1));
-  }
- },{passive:false});
- setSlide(0,false);
-}
-
 function render(){ensureDebtReceivableLinks();updateLiveDateTime();renderDashboard();updateSavingsTotalAsOf();renderTransactions();renderAccounts();renderGoals();renderBudget();renderReports();renderRecurring();renderSavingsList();renderSalaryPage();renderDebtPage()}
 function renderDashboard(){const bal=totalBalance(),goal=data.goals[0];const month=todayISO().slice(0,7);const inc=data.transactions.filter(t=>(t.type==='deposit'||t.type==='interest')&&t.date.slice(0,7)===month).reduce((s,t)=>s+ +t.amount,0);const out=data.transactions.filter(t=>(t.type==='expense'||t.type==='withdrawal')&&t.date.slice(0,7)===month).reduce((s,t)=>s+ +t.amount,0);
 const financialItems=Array.isArray(data.savingsList)?data.savingsList:[];
@@ -7365,7 +7816,6 @@ const deltaHtml=d=>Math.abs(d)<0.005?'':`<div class="stat-foot savely-private-nu
 const savingsAndSalaryTotal=savingsTotal+salaryTotal;const goalBalance=goal&&Array.isArray(goal.banks)&&goal.banks.length?goalCurrentAmount(goal):savingsAndSalaryTotal;const prog=goal?Math.min(100,Math.max(0,goalBalance/goal.target*100)):0;
 const overviewSalaryRemaining=getSalaryRemainingProjection(new Date().getFullYear()).amount;
 document.getElementById('stats').innerHTML=`<div class="stat"><div class="stat-top">Savings total <span class="stat-icon" style="background:#e5f7ef;color:#169b70">₱</span></div><div class="stat-value savely-private-number" style="color:var(--green)">${peso(savingsTotal)}</div><div class="stat-foot">Savings savings</div><div class="stat-foot savings-total-asof" id="savingsTotalAsOf" style="margin-top:5px;font-size:10px">As of —</div>${deltaHtml(savingsDelta)}</div><div class="stat"><div class="stat-top">Salary / income total <span class="stat-icon" style="background:#edf1ff;color:#536be0">↗</span></div><div class="stat-value savely-private-number" style="color:var(--blue)">${peso(overviewSalaryRemaining)}</div><div class="stat-foot">Remaining salary in ${new Date().getFullYear()}</div></div><div class="stat"><div class="stat-top">Debt total <span class="stat-icon" style="background:#fff1e7;color:#e64b5b">−</span></div><div class="stat-value savely-private-number" style="color:var(--red)">${peso(debtTotal)}</div><div class="stat-foot">I owe · remaining balance</div></div>`;
-initStatsCarousel();
 document.getElementById('mainGoal').innerHTML=goal?`<div class="between"><span>${esc(goal.name)}</span><span class="savely-private-number">${prog.toFixed(1)}%</span></div><div class="goal-amount savely-private-number">${peso(goalBalance)} <span style="font-size:13px;color:var(--muted);font-weight:600">of ${peso(goal.target)}</span></div><div class="progress"><span style="width:${prog}%"></span></div><div class="between"><span>Current savings + salary / income total</span><strong class="savely-private-number" style="color:var(--text)">${peso(Math.max(0,goal.target-goalBalance))} remaining</strong></div><div class="goal-meta"><div class="mini">✦</div><div><strong>${goalBalance>=goal.target?'Goal reached — amazing work!':'You are building a great habit.'}</strong><small>${goal.due?'Target date: '+fmtDate(goal.due):'Every deposit gets you closer.'}</small></div></div>`:'<div class="empty">Create your first savings goal.</div>';
 const vals=[];for(let i=5;i>=0;i--){let d=new Date();d.setDate(1);d.setMonth(d.getMonth()-i);let m=d.toISOString().slice(0,7);let net=data.transactions.filter(t=>t.date.slice(0,7)===m).reduce((s,t)=>s+((t.type==='deposit'||t.type==='interest')?+t.amount:- +t.amount),0);vals.push({m,label:d.toLocaleDateString('en-PH',{month:'short'}),v:net})}let max=Math.max(1,...vals.map(v=>Math.abs(v.v)));document.getElementById('chart').innerHTML=vals.map((v,i)=>`<div class="bar-wrap" title="${esc(v.m)}: ${peso(v.v)}"><div class="bar ${i===5?'current':''}" style="height:${Math.max(4,Math.abs(v.v)/max*78)}%"></div><div class="bar-label">${v.label}</div></div>`).join('');
 const financialHistory=[];
@@ -7519,32 +7969,45 @@ const EXPENSE_GROUPS=[
  {id:'other',name:'Others',icon:'＋'}
 ];
 function expenseMoney(value){return peso(Number(value)||0)}
-function addExpenseItemRow(groupId){
- const list=document.querySelector(`[data-expense-items="${groupId}"]`);
+const EXPENSE_TIMES=['Morning','Noon','Afternoon','Evening'];
+function addExpenseItemRow(groupId,timeOfDay='Morning'){
+ const list=document.querySelector(`[data-expense-items="${groupId}-${timeOfDay.toLowerCase()}"]`);
  if(!list)return;
  const row=document.createElement('div');
  row.className='expense-item-row';
- row.innerHTML=`<input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description"><select class="expense-item-time" aria-label="Time of day" required><option value="">Time of day</option><option value="Morning">Morning</option><option value="Afternoon">Afternoon</option><option value="Evening">Evening</option></select><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button>`;
+ row.dataset.timeOfDay=timeOfDay;
+ row.innerHTML=`<input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description"><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button>`;
  row.querySelector('.expense-item-remove').addEventListener('click',()=>{row.remove();updateExpenseComposerTotal();});
- row.querySelectorAll('input,select').forEach(input=>input.addEventListener('input',updateExpenseComposerTotal));
+ row.querySelectorAll('input').forEach(input=>input.addEventListener('input',updateExpenseComposerTotal));
  list.appendChild(row);
- row.querySelector('input').focus();
+ row.querySelector('.expense-item-description').focus();
+ return row;
+}
+function toggleExpenseTime(groupId,timeOfDay){
+ const panel=document.querySelector(`#expenseComposer [data-expense-panel="${groupId}"]`);
+ if(!panel)return;
+ panel.querySelectorAll('.expense-time-tab').forEach(button=>{
+  const active=button.dataset.expenseTime===timeOfDay;
+  button.classList.toggle('active',active);
+  button.setAttribute('aria-pressed',active?'true':'false');
+ });
+ panel.querySelectorAll('.expense-time-panel').forEach(section=>{
+  section.hidden=section.dataset.timePanel!==timeOfDay;
+ });
 }
 function toggleExpenseGroup(groupId){
  const card=document.querySelector(`#expenseComposer [data-expense-group="${groupId}"]`);
  const panel=document.querySelector(`#expenseComposer [data-expense-panel="${groupId}"]`);
  if(!card||!panel)return;
- // Each category is a single focused page. Previously opened categories remain selected
- // and their entries stay in the form while the user switches between them.
  document.querySelectorAll('#expenseComposer .expense-category-card').forEach(button=>{
-  button.classList.toggle('active',button.dataset.expenseGroup===groupId);
-  if(button.dataset.expenseGroup===groupId)button.classList.add('selected');
-  button.setAttribute('aria-pressed',button.dataset.expenseGroup===groupId?'true':'false');
+  const isCurrent=button.dataset.expenseGroup===groupId;
+  button.classList.toggle('active',isCurrent);
+  button.classList.toggle('selected',isCurrent);
+  button.setAttribute('aria-pressed',isCurrent?'true':'false');
  });
  document.querySelectorAll('#expenseComposer .expense-category-panel').forEach(section=>{
   section.hidden=section.dataset.expensePanel!==groupId;
  });
- if(!panel.querySelector('.expense-item-row'))addExpenseItemRow(groupId);
  updateExpenseComposerTotal();
 }
 function updateExpenseComposerTotal(){
@@ -7566,9 +8029,10 @@ function updateExpenseComposerTotal(){
 function openExpenseEntry(dateValue,editExisting=false){
  const date=dateValue||expenseLocalISO(new Date());
  const existingForDate=editExisting?(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>t.type==='expense'&&String(t.date||'')===date):[];
- openModal('transaction');
+ if(!editExisting)openModal('transaction');
  const form=document.getElementById('modalForm');
  if(!form)return;
+ form.noValidate=true;
  const title=document.getElementById('modalTitle');
  const desc=document.getElementById('modalDesc');
  if(title)title.textContent='Add expenses';
@@ -7579,7 +8043,7 @@ function openExpenseEntry(dateValue,editExisting=false){
   <section class="expense-composer-section">
    <div class="expense-section-heading"><div><h3>Choose expense categories</h3><p>Select one or more categories. You can add multiple items under each one.</p></div><span class="expense-section-step">01</span></div>
    <div class="expense-category-grid" aria-label="Expense categories; scroll horizontally to see more">${EXPENSE_GROUPS.map(g=>`<button type="button" class="expense-category-card${g.id==='food'?' selected active':''}" data-expense-group="${g.id}" aria-pressed="${g.id==='food'?'true':'false'}"><span class="expense-category-icon">${g.icon}</span><span>${g.name}</span><span class="expense-category-check">✓</span></button>`).join('')}</div>
-   <div class="expense-category-panels">${EXPENSE_GROUPS.map(g=>`<section class="expense-category-panel" data-expense-panel="${g.id}" ${g.id==='food'?'':'hidden'}><div class="expense-category-panel-head"><div><strong>${g.icon} ${g.name}</strong><small>Add each purchase or bill as a separate line.</small><em class="expense-category-subtotal" data-expense-subtotal="${g.id}">₱0.00</em></div><button type="button" class="btn btn-light expense-add-item" data-add-expense-item="${g.id}">＋ Add item</button></div><div class="expense-items-list" data-expense-items="${g.id}">${g.id==='food'?'<div class="expense-item-row"><input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description"><select class="expense-item-time" aria-label="Time of day" required><option value="">Time of day</option><option value="Morning">Morning</option><option value="Afternoon">Afternoon</option><option value="Evening">Evening</option></select><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button></div>':''}</div></section>`).join('')}</div>
+   <div class="expense-category-panels">${EXPENSE_GROUPS.map(g=>`<section class="expense-category-panel" data-expense-panel="${g.id}" ${g.id==='food'?'':'hidden'}><div class="expense-category-panel-head"><div><strong>${g.icon} ${g.name}</strong><small>Choose a time, then add your expenses below.</small><em class="expense-category-subtotal" data-expense-subtotal="${g.id}">₱0.00</em></div></div><div class="expense-time-tabs" role="group" aria-label="${g.name} time of day">${EXPENSE_TIMES.map((time,index)=>`<button type="button" class="expense-time-tab${index===0?' active':''}" data-expense-time="${time}" aria-pressed="${index===0?'true':'false'}">${time}</button>`).join('')}</div><div class="expense-time-panels">${EXPENSE_TIMES.map((time,index)=>`<section class="expense-time-panel" data-time-panel="${time}" ${index===0?'':'hidden'}><div class="expense-items-list" data-expense-items="${g.id}-${time.toLowerCase()}"></div><button type="button" class="btn btn-light expense-add-item" data-add-expense-item="${g.id}" data-add-expense-time="${time}">＋ Add ${time.toLowerCase()} item</button></section>`).join('')}</div></section>`).join('')}</div>
   </section>
   <div class="expense-hidden-metadata" hidden>
    <select id="expenseComposerAccount">${accountOptions}</select>
@@ -7587,27 +8051,25 @@ function openExpenseEntry(dateValue,editExisting=false){
   </div>
   <div class="expense-composer-summary"><div><span class="expense-summary-label">Expense total</span><strong id="expenseComposerTotal">₱0.00</strong><small id="expenseComposerCount">0 items</small></div><span class="expense-summary-note">All items will be saved separately</span></div>
  </div>
- <div class="form-actions expense-composer-actions"><button type="button" class="btn btn-light" onclick="closeModal()">Cancel</button><button type="submit" class="btn btn-primary">${editExisting?'Apply changes':'Save expenses'}</button></div>`;
+ <div class="form-actions expense-composer-actions"><button type="button" class="btn btn-light" onclick="${editExisting?'closeExpenseEditor()':'closeModal()'}">Cancel</button><button type="submit" class="btn btn-primary">${editExisting?'Apply changes':'Save expenses'}</button></div>`;
  if(editExisting&&existingForDate.length){
   if(title)title.textContent='Edit expenses';
   if(desc)desc.textContent='Update the expenses recorded on this date. Save to apply your changes.';
   const firstAccount=existingForDate.find(t=>t.accountId)?.accountId;
   const accountSelect=document.getElementById('expenseComposerAccount');
   if(accountSelect&&firstAccount)accountSelect.value=firstAccount;
-  document.querySelectorAll('#expenseComposer .expense-category-panel').forEach(panel=>{panel.querySelector('.expense-items-list').innerHTML='';});
   existingForDate.forEach(item=>{
    const group=EXPENSE_GROUPS.find(g=>String(g.name).toLowerCase()===String(item.category||'Others').toLowerCase())||EXPENSE_GROUPS[7];
-   const list=document.querySelector(`#expenseComposer [data-expense-items="${group.id}"]`);
-   if(!list)return;
-   const row=document.createElement('div');row.className='expense-item-row';
-   row.innerHTML=`<input class="expense-item-description" type="text" maxlength="100" placeholder="Item description (e.g. lunch)" aria-label="Item description" value="${esc(item.description||'')}"><select class="expense-item-time" aria-label="Time of day" required><option value="">Time of day</option><option value="Morning">Morning</option><option value="Afternoon">Afternoon</option><option value="Evening">Evening</option></select><input class="expense-item-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Amount ₱" aria-label="Item amount" value="${Math.max(0,Number(item.amount)||0)}"><button type="button" class="expense-item-remove" aria-label="Remove item" title="Remove item">×</button>`;
-   const timeSelect=row.querySelector('.expense-item-time');if(['Morning','Afternoon','Evening'].includes(item.timeOfDay))timeSelect.value=item.timeOfDay;
-   row.querySelector('.expense-item-remove').addEventListener('click',()=>{row.remove();updateExpenseComposerTotal();});
-   row.querySelectorAll('input,select').forEach(input=>input.addEventListener('input',updateExpenseComposerTotal));
-   list.appendChild(row);
+   const timeOfDay=EXPENSE_TIMES.includes(item.timeOfDay)?item.timeOfDay:'Morning';
+   const row=addExpenseItemRow(group.id,timeOfDay);
+   if(!row)return;
+   row.querySelector('.expense-item-description').value=item.description||'';
+   row.querySelector('.expense-item-amount').value=Math.max(0,Number(item.amount)||0);
   });
   const firstGroup=EXPENSE_GROUPS.find(g=>existingForDate.some(item=>String(item.category||'Others').toLowerCase()===g.name.toLowerCase()))||EXPENSE_GROUPS[0];
   toggleExpenseGroup(firstGroup.id);
+  const firstItem=existingForDate.find(item=>String(item.category||'Others').toLowerCase()===firstGroup.name.toLowerCase());
+  toggleExpenseTime(firstGroup.id,EXPENSE_TIMES.includes(firstItem?.timeOfDay)?firstItem.timeOfDay:'Morning');
  }
  form.querySelectorAll('[data-expense-group]').forEach(button=>button.addEventListener('click',()=>toggleExpenseGroup(button.dataset.expenseGroup)));
  // Drag-to-scroll category rail: mouse users can grab and swipe; touch keeps native swipe.
@@ -7616,9 +8078,18 @@ function openExpenseEntry(dateValue,editExisting=false){
   let dragStartX=0,dragStartScroll=0,dragging=false,moved=false;
   categoryRail.addEventListener('pointerdown',event=>{
    if(event.pointerType==='touch')return;
+   if(event.button!==0)return;
    dragging=true;moved=false;dragStartX=event.clientX;dragStartScroll=categoryRail.scrollLeft;
    categoryRail.classList.add('is-dragging');
   });
+  // Shift + mouse wheel scrolls the category rail horizontally.
+  // Trackpads with native horizontal gestures continue to use browser scrolling.
+  categoryRail.addEventListener('wheel',event=>{
+   if(event.shiftKey && Math.abs(event.deltaY)>Math.abs(event.deltaX)){
+    event.preventDefault();
+    categoryRail.scrollBy({left:event.deltaY,behavior:'auto'});
+   }
+  },{passive:false});
   window.addEventListener('pointermove',event=>{
    if(!dragging)return;
    const delta=event.clientX-dragStartX;
@@ -7628,7 +8099,10 @@ function openExpenseEntry(dateValue,editExisting=false){
   const stopDrag=()=>{if(!dragging)return;dragging=false;categoryRail.classList.remove('is-dragging');if(moved){categoryRail.querySelectorAll('.expense-category-card').forEach(card=>card.classList.add('drag-suppress'));setTimeout(()=>categoryRail.querySelectorAll('.expense-category-card').forEach(card=>card.classList.remove('drag-suppress')),80);}};
   window.addEventListener('pointerup',stopDrag);window.addEventListener('pointercancel',stopDrag);
  }
- form.querySelectorAll('[data-add-expense-item]').forEach(button=>button.addEventListener('click',()=>addExpenseItemRow(button.dataset.addExpenseItem)));
+ form.querySelectorAll('[data-expense-panel]').forEach(panel=>{
+  panel.querySelectorAll('.expense-time-tab').forEach(button=>button.addEventListener('click',()=>toggleExpenseTime(panel.dataset.expensePanel,button.dataset.expenseTime)));
+ });
+ form.querySelectorAll('[data-add-expense-item]').forEach(button=>button.addEventListener('click',()=>addExpenseItemRow(button.dataset.addExpenseItem,button.dataset.addExpenseTime)));
  form.querySelectorAll('.expense-item-remove').forEach(button=>button.addEventListener('click',()=>{button.closest('.expense-item-row').remove();updateExpenseComposerTotal();}));
  form.querySelectorAll('.expense-item-amount').forEach(input=>input.addEventListener('input',updateExpenseComposerTotal));
  form.onsubmit=e=>{
@@ -7643,10 +8117,15 @@ function openExpenseEntry(dateValue,editExisting=false){
     const description=row.querySelector('.expense-item-description').value.trim();
     const amountValue=row.querySelector('.expense-item-amount').value;
     const amount=Number(amountValue);
-    const timeOfDay=row.querySelector('.expense-item-time').value;
-    if(!description&&!amountValue.trim()&&!timeOfDay)return;
-    if(!description||!Number.isFinite(amount)||amount<=0||(!timeOfDay&&!editExisting)){const target=!description?'.expense-item-description':(!timeOfDay&&!editExisting?'.expense-item-time':'.expense-item-amount');row.querySelector(target).focus();toast(editExisting?'Complete each expense item with a description and a valid amount.':'Complete each expense item with a description, time of day, and valid amount.');form.dataset.expenseValidationError='1';return;}
-    entries.push({description,amount,timeOfDay:timeOfDay||'',category:group?.name||'Others'});
+    const timeOfDay=row.dataset.timeOfDay||'Morning';
+    if(!description&&!amountValue.trim())return;
+    if(!description||!Number.isFinite(amount)||amount<=0){
+     row.querySelector(!description?'.expense-item-description':'.expense-item-amount').focus();
+     toast('Complete each expense item with a description and a valid amount.');
+     form.dataset.expenseValidationError='1';
+     return;
+    }
+    entries.push({description,amount,timeOfDay,category:group?.name||'Others'});
    });
   });
   if(form.dataset.expenseValidationError){form.dataset.expenseValidationError='';return;}
@@ -7661,7 +8140,7 @@ function openExpenseEntry(dateValue,editExisting=false){
   entries.forEach((item,index)=>data.transactions.push({id:uid(),type:'expense',accountId,description:item.description,amount:item.amount,date:expenseDate,category:item.category,timeOfDay:item.timeOfDay,createdAt:createdAt+index}));
   save();
   renderBudget();
-  closeModal();
+  if(editExisting)closeExpenseEditor();else closeModal();
   toast(editExisting?'Expense changes applied and calendar updated.':entries.length+' expense item'+(entries.length===1?'':'s')+' saved successfully.');
  };
  form.addEventListener('submit',e=>{
@@ -7669,6 +8148,24 @@ function openExpenseEntry(dateValue,editExisting=false){
   if(form.dataset.expenseValidationError){e.preventDefault();form.dataset.expenseValidationError='';}
  });
  updateExpenseComposerTotal();
+ if(editExisting){
+  const mount=document.getElementById('expenseEditorMount');
+  if(mount)mount.appendChild(form);
+  const editorDate=document.getElementById('expenseEditorDate');
+  if(editorDate)editorDate.textContent=new Date(date+'T12:00:00').toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  showPage('expense-editor');
+  window.scrollTo({top:0,behavior:'smooth'});
+ }
+}
+
+
+function closeExpenseEditor(){
+ const form=document.getElementById('modalForm');
+ const modalHost=document.querySelector('#modalBackdrop .modal');
+ if(form&&modalHost&&form.parentElement?.id==='expenseEditorMount')modalHost.appendChild(form);
+ showPage('budget');
+ const backdrop=document.getElementById('modalBackdrop');
+ if(backdrop)backdrop.style.display='none';
 }
 
 function closeExpenseDayActions(){
@@ -7682,17 +8179,28 @@ function openExpenseDayActions(dateValue){
  const pretty=new Date(date+'T12:00:00').toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
  const backdrop=document.createElement('div');
  backdrop.id='expenseDayActionBackdrop';backdrop.className='expense-day-action-backdrop';
- backdrop.innerHTML=`<div class="expense-day-action-menu" role="dialog" aria-modal="true" aria-label="Expense actions for ${esc(pretty)}">
-  <div class="expense-day-action-head"><div><strong>${esc(pretty)}</strong><small>${rows.length} recorded expense${rows.length===1?'':'s'} · ${peso(rows.reduce((sum,t)=>sum+Math.max(0,Number(t.amount)||0),0))}</small></div><button type="button" class="expense-day-action-close" aria-label="Close">×</button></div>
-  <div class="expense-day-action-buttons">
-   <button type="button" class="primary" data-day-action="add">＋ Add</button>
-   <button type="button" data-day-action="edit" ${rows.length?'':'disabled'}>✎ Edit</button>
+ const total=rows.reduce((sum,t)=>sum+Math.max(0,Number(t.amount)||0),0);
+ const historyMarkup=rows.length?`<div class="expense-date-history">
+  <div class="expense-date-history-heading"><strong>Expense history</strong><span>${rows.length} item${rows.length===1?'':'s'}</span></div>
+  ${rows.map(t=>`<div class="expense-date-history-row">
+   <div class="expense-date-history-main"><strong>${esc(t.description||'Expense')}</strong><small>${esc(t.category||'Others')}${t.timeOfDay?' · '+esc(t.timeOfDay):''}</small></div>
+   <strong class="expense-date-history-amount">${peso(t.amount)}</strong>
+  </div>`).join('')}
+  <div class="expense-date-history-total"><span>Total expenses</span><strong>${peso(total)}</strong></div>
+ </div>`:'';
+ backdrop.innerHTML=`<div class="expense-day-action-menu${rows.length?' has-history':' is-empty'}" role="dialog" aria-modal="true" aria-label="Expenses for ${esc(pretty)}">
+  <div class="expense-day-action-head"><div><strong>${esc(pretty)}</strong>${rows.length?`<small>${rows.length} recorded expense${rows.length===1?'':'s'} · ${peso(total)}</small>`:`<small>No expenses recorded for this date.</small>`}</div><button type="button" class="expense-day-action-close" aria-label="Close">×</button></div>
+  ${historyMarkup}
+  <div class="expense-day-action-buttons${rows.length?' single-action':''}">
+   ${rows.length?'<button type="button" class="primary" data-day-action="edit">✎ Edit expenses</button>':'<button type="button" class="primary" data-day-action="add">＋ Add expense</button>'}
   </div>
  </div>`;
  backdrop.addEventListener('click',event=>{if(event.target===backdrop)closeExpenseDayActions();});
  backdrop.querySelector('.expense-day-action-close').addEventListener('click',closeExpenseDayActions);
- backdrop.querySelector('[data-day-action="add"]').addEventListener('click',()=>{closeExpenseDayActions();openExpenseEntry(date);});
- backdrop.querySelector('[data-day-action="edit"]').addEventListener('click',()=>{closeExpenseDayActions();openExpenseEntry(date,true);});
+ const addButton=backdrop.querySelector('[data-day-action="add"]');
+ const editButton=backdrop.querySelector('[data-day-action="edit"]');
+ if(addButton)addButton.addEventListener('click',()=>{closeExpenseDayActions();openExpenseEntry(date);});
+ if(editButton)editButton.addEventListener('click',()=>{closeExpenseDayActions();openExpenseEntry(date,true);});
 
  document.body.appendChild(backdrop);
 }
@@ -7726,11 +8234,10 @@ function renderBudget(){
   const iso=expenseLocalISO(date);
   const items=expenseRows.filter(t=>String(t.date||'')===iso).sort((a,b)=>Number(a.createdAt||0)-Number(b.createdAt||0));
   const total=items.reduce((sum,t)=>sum+Math.max(0,Number(t.amount)||0),0);
-  const chips=items.slice(0,3).map(item=>`<span class="expenses-day-item" title="${esc(item.description||item.category||'Expense')}${item.timeOfDay?' · '+esc(item.timeOfDay):''}"><span>${esc(item.description||item.category||'Expense')}${item.timeOfDay?`<small class="expenses-day-time">${esc(item.timeOfDay)}</small>`:''}</span><strong>${peso(item.amount)}</strong></span>`).join('');
-  const more=items.length>3?`<span class="expenses-day-more">+${items.length-3} more</span>`:'';
+  const chips=items.length?`<span class="expenses-day-count">${items.length} expense${items.length===1?'':'s'}</span>`:'';
   cells.push(`<button type="button" class="expenses-calendar-day${iso===today?' is-today':''}${items.length?' has-expenses':''}" onclick="openExpenseDayActions('${iso}')" aria-label="${weekdayNames[date.getDay()]}, ${date.toLocaleDateString('en-PH',{month:'long',day:'numeric',year:'numeric'})}. ${items.length} expenses totalling ${peso(total)}. Open date actions.">
-   <span class="expenses-day-top"><span class="expenses-day-number">${day}</span>${items.length?`<span class="expenses-day-total">${peso(total)}</span>`:''}</span>
-   <span class="expenses-day-items">${chips}${more}</span>
+   <span class="expenses-day-top"><span class="expenses-day-number">${day}</span><span class="expenses-day-top-meta">${iso===today?'<span class="expenses-today-label">Today</span>':''}${items.length?`<span class="expenses-day-total">${peso(total)}</span>`:''}</span></span>
+   <span class="expenses-day-items">${chips}</span>
    <span class="expenses-day-add">${items.length?'+ Add':'＋ Add expense'}</span>
   </button>`);
  }
@@ -9574,7 +10081,7 @@ function toggleOverviewFigures(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',updateOverviewPrivacyState,{once:true});
 else updateOverviewPrivacyState();
-function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'inline-flex':'none';if(p==='dashboard'){renderDashboard();setTimeout(renderOverallTrend,50);}const targetPage=document.getElementById('page-'+p);if(!targetPage){console.warn('Savely page not found:',p);return;}document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));targetPage.classList.add('active');updateOverviewPrivacyState();if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Monitor.');if(p==='live-location')setTimeout(()=>{
+function showPage(p){document.body.classList.toggle('expense-calendar-no-heading',p==='budget');document.body.classList.toggle('expense-editor-active',p==='expense-editor');if(p!=='expense-editor'){const composerForm=document.getElementById('modalForm');const modalHost=document.querySelector('#modalBackdrop .modal');if(composerForm&&modalHost&&composerForm.parentElement?.id==='expenseEditorMount')modalHost.appendChild(composerForm);}const addSavingsBtn=document.getElementById('topbarAddSavingsButton');if(addSavingsBtn)addSavingsBtn.style.display=p==='financial-list'?'inline-flex':'none';if(p==='dashboard'){renderDashboard();setTimeout(renderOverallTrend,50);}const targetPage=document.getElementById('page-'+p);if(!targetPage){console.warn('Savely page not found:',p);return;}targetPage.classList.remove('page-entering');void targetPage.offsetWidth;document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));targetPage.classList.add('active','page-entering');updateOverviewPrivacyState();if(p!=='live-location'&&window.__savelyLiveLocationWatchId!=null)stopSavelyLiveLocation('Tracking paused because you left Live Monitor.');if(p==='live-location')setTimeout(()=>{
  setSavelyLiveMapMode('traffic');
  initSavelyLiveLocationMap();
  if(savelyLiveLocationMap){
@@ -9589,7 +10096,7 @@ function showPage(p){const addSavingsBtn=document.getElementById('topbarAddSavin
   savelyLiveLocationMap.invalidateSize();
  }
   if(window.__savelyLiveLocationWatchId===null||window.__savelyLiveLocationWatchId===undefined)startSavelyLiveLocation();
-},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LIVE MONITOR','Live Monitor'],'metro-snapshot':['PUBLIC CAMERA IMAGES','Metro Manila Snapshot'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['',''],billing:['HOUSEHOLD UTILITIES','Billing']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','metro-snapshot':'View the latest available public camera snapshots across Metro Manila.','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:'',billing:'Estimate your household water bill using your meter readings and current rate assumptions.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const topbar=document.querySelector('.topbar');if(topbar)topbar.classList.toggle('savings-header-hidden',p==='financial-list');const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
+},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LIVE MONITOR','Live Monitor'],'metro-snapshot':['PUBLIC CAMERA IMAGES','Metro Manila Snapshot'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['',''],billing:['HOUSEHOLD UTILITIES','Billing'],'expense-editor':['EXPENSE MANAGEMENT','Edit expenses']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','metro-snapshot':'View the latest available public camera snapshots across Metro Manila.','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:'',billing:'Estimate your household water bill using your meter readings and current rate assumptions.','expense-editor':'Organize each purchase by category and time of day. Review your changes before applying them.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const topbar=document.querySelector('.topbar');if(topbar)topbar.classList.toggle('savings-header-hidden',p==='financial-list');const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
 document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
 function openModal(kind,goalToEdit=null){const form=document.getElementById('modalForm'),title=document.getElementById('modalTitle'),desc=document.getElementById('modalDesc');let accountOptions=data.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');let field=(label,name,type='text',value='',extra='')=>`<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let select=(label,name,opts)=>`<div class="field"><label>${label}</label><select name="${name}">${opts}</select></div>`;let fullfield=(label,name,type='text',value='',extra='')=>`<div class="field full"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let body='';
 if(kind==='transaction'){title.textContent='Add transaction';desc.textContent='Record a deposit, withdrawal, interest credit, or expense.';body=`<div class="form-grid">${fullfield('Description','description','text','','required maxlength="100"')}${select('Transaction type','type','<option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option><option value="expense">Expense</option><option value="interest">Interest credit</option>')}${select('Account','accountId',accountOptions)}${field('Amount (₱)','amount','number','','required min=".01" step=".01"')}${field('Date','date','date',todayISO(),'required')}${field('Category','category','text','General','maxlength="60"')}</div>`}
@@ -17731,9 +18238,6 @@ html body #page-live-location .live-location-stat>div{
   html body #page-live-location .live-location-consent{align-items:center!important}
 }
 </style>
-
-
-
 
 </body>
 </html>
