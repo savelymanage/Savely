@@ -3898,7 +3898,7 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
 .expense-composer-summary strong{font-size:25px;line-height:1.25;color:var(--green);font-variant-numeric:tabular-nums}
 .expense-composer-summary small{font-size:11px;color:var(--muted)}
 .expense-summary-note{font-size:11px;color:var(--green);font-weight:700;text-align:right}
-.expense-composer-actions{margin-top:18px}
+.expense-composer-actions{justify-content:flex-end!important;margin-top:18px}
 body.dark-theme .expense-category-panel{background:#101827}
 body.dark-theme .expense-item-row input{background:#101827;color:var(--text);border-color:var(--line)}
 body.dark-theme .expense-item-remove{background:var(--panel);border-color:var(--line)}
@@ -4091,7 +4091,7 @@ body:has(#page-financial-list.active) .main>.topbar{display:none!important}
 #expenseComposer #expenseComposerTotal{display:block!important;font-size:22px!important;line-height:1.3!important;font-weight:900!important;margin-top:3px!important}
 #expenseComposer #expenseComposerCount{font-size:11px!important;margin-top:3px!important}
 #expenseComposer .expense-summary-note{font-size:11px!important;font-weight:700!important;text-align:right!important}
-#modalBackdrop:has(#expenseComposer) .expense-composer-actions{
+#modalBackdrop:has(#expenseComposer) .expense-composer-actions{justify-content:flex-end!important;
   display:flex!important;justify-content:flex-end!important;gap:10px!important;
   margin-top:2px!important;padding-top:2px!important;
 }
@@ -4178,7 +4178,7 @@ body.dark-theme #expenseComposer .expense-item-row{background:var(--soft)!import
 
 
 <style id="savely-expense-actions-spacing-fix">
-#modalBackdrop:has(#expenseComposer) .expense-composer-actions{
+#modalBackdrop:has(#expenseComposer) .expense-composer-actions{justify-content:flex-end!important;
   margin-top:18px!important;
   padding-top:10px!important;
   gap:12px!important;
@@ -4187,7 +4187,7 @@ body.dark-theme #expenseComposer .expense-item-row{background:var(--soft)!import
   min-height:48px!important;
 }
 @media(max-width:760px){
-  #modalBackdrop:has(#expenseComposer) .expense-composer-actions{
+  #modalBackdrop:has(#expenseComposer) .expense-composer-actions{justify-content:flex-end!important;
     margin-top:14px!important;
     padding-top:8px!important;
   }
@@ -4313,7 +4313,7 @@ body.dark-theme #expenseComposer .expense-item-row{background:var(--soft)!import
 .expense-editor-card{min-width:0;width:100%;background:var(--card,#fff);border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:0 8px 28px rgba(20,40,60,.055)}
 .expense-editor-page #modalForm{display:grid;gap:16px;width:100%}
 .expense-editor-page #expenseComposer{width:100%;gap:16px}
-.expense-editor-page .expense-composer-actions{margin-top:12px!important;padding-top:18px!important;border-top:1px solid var(--line);gap:12px!important}
+.expense-editor-page .expense-composer-actions{justify-content:flex-end!important;margin-top:12px!important;padding-top:18px!important;border-top:1px solid var(--line);gap:12px!important}
 .expense-editor-page .expense-composer-actions .btn{min-width:130px;min-height:48px;border-radius:11px;font-weight:800}
 .expense-editor-page .expense-composer-section{padding:22px!important}
 .expense-editor-page .expense-composer-summary{padding:19px 22px!important}
@@ -4322,7 +4322,7 @@ body.dark-theme #expenseComposer .expense-item-row{background:var(--soft)!import
  .expense-editor-card{padding:14px;border-radius:15px}
  .expense-editor-toolbar{align-items:flex-start;flex-direction:column;gap:10px}
  .expense-editor-page .expense-composer-section{padding:14px!important}
- .expense-editor-page .expense-composer-actions{position:sticky;bottom:0;background:var(--card,#fff);padding:14px 0 max(8px,env(safe-area-inset-bottom))!important;z-index:2}
+ .expense-editor-page .expense-composer-actions{justify-content:flex-end!important;position:sticky;bottom:0;background:var(--card,#fff);padding:14px 0 max(8px,env(safe-area-inset-bottom))!important;z-index:2}
  .expense-editor-page .expense-composer-actions .btn{flex:1;min-width:0}
 }
 </style>
@@ -4527,7 +4527,7 @@ body.expense-editor-active #pageDescription{
   border-radius:15px!important;
   background:linear-gradient(110deg,#eaf8f1,#f2fbf6)!important;
 }
-.expense-editor-page .expense-composer-actions{
+.expense-editor-page .expense-composer-actions{justify-content:flex-end!important;
   margin-top:2px!important;
   padding-top:20px!important;
   border-top:1px solid #e9efec!important;
@@ -4547,7 +4547,7 @@ body.expense-editor-active #pageDescription{
   .expense-editor-date-status{margin-left:53px!important}
   .expense-editor-page .expense-composer-section{padding:14px!important}
   .expense-editor-page .expense-category-panel{padding:13px!important}
-  .expense-editor-page .expense-composer-actions{position:sticky;bottom:0;background:#fff;padding:14px 0 max(8px,env(safe-area-inset-bottom))!important;z-index:2}
+  .expense-editor-page .expense-composer-actions{justify-content:flex-end!important;position:sticky;bottom:0;background:#fff;padding:14px 0 max(8px,env(safe-area-inset-bottom))!important;z-index:2}
 }
 </style>
 
@@ -4686,14 +4686,14 @@ html body.expense-editor-active #page-expense-editor .expense-composer-summary{
 html body.expense-editor-active #page-expense-editor .expense-composer-summary > div{display:grid!important;gap:5px!important}
 html body.expense-editor-active #page-expense-editor .expense-summary-note{margin-left:auto!important;text-align:right!important;border:0!important;padding:0!important;width:auto!important}
 html body.expense-editor-active #page-expense-editor .expense-composer-section{grid-column:1!important;grid-row:2!important;width:100%!important}
-html body.expense-editor-active #page-expense-editor .expense-composer-actions{
+html body.expense-editor-active #page-expense-editor .expense-composer-actions{justify-content:flex-end!important;
  grid-column:1!important;grid-row:3!important;display:flex!important;flex-direction:row!important;justify-content:flex-end!important;align-items:center!important;gap:10px!important;margin:0!important;padding:16px 0 0!important;border-top:1px solid var(--line)!important;background:transparent!important;
 }
 html body.expense-editor-active #page-expense-editor .expense-composer-actions .btn{width:auto!important;min-width:130px!important;min-height:46px!important}
 @media(max-width:700px){
  html body.expense-editor-active #page-expense-editor .expense-composer-summary{align-items:flex-start!important;flex-direction:column!important;padding:18px!important}
  html body.expense-editor-active #page-expense-editor .expense-summary-note{margin-left:0!important;text-align:left!important}
- html body.expense-editor-active #page-expense-editor .expense-composer-actions{justify-content:flex-end!important}
+ html body.expense-editor-active #page-expense-editor .expense-composer-actions{justify-content:flex-end!important;justify-content:flex-end!important}
  html body.expense-editor-active #page-expense-editor .expense-composer-actions .btn{min-width:0!important;flex:0 1 auto!important}
 }
 </style>
@@ -8380,8 +8380,6 @@ function updateExpenseComposerTotal(){
  if(countEl)countEl.textContent=count+' item'+(count===1?'':'s');
 }
 function openExpenseEntry(dateValue,editExisting=false,editTransactionId=null){
- // Expense-entry page removed; the calendar remains available for viewing.
- return;
  const date=dateValue||expenseTodayISO();
  const today=expenseTodayISO();
  if(date>today){
@@ -8403,7 +8401,7 @@ function openExpenseEntry(dateValue,editExisting=false,editTransactionId=null){
    : 'New expenses can only be added today.');
   return;
  }
- // Both adding and editing use the dedicated full-page expense editor, never a modal.
+ // Open the expense composer from the Add Expenses FAB in the modal.
  const form=document.getElementById('modalForm');
  if(!form)return;
  form.noValidate=true;
@@ -8414,6 +8412,7 @@ function openExpenseEntry(dateValue,editExisting=false,editTransactionId=null){
  const accountOptions=data.accounts.map(a=>`<option value="${esc(a.id)}">${esc(a.name)}</option>`).join('');
  form.innerHTML=`
  <div id="expenseComposer" class="expense-composer">
+  <div class="expense-composer-summary"><div><span class="expense-summary-label">Monthly Expenses</span><strong id="expenseComposerTotal">₱0.00</strong><small id="expenseComposerCount">0 items</small></div><span class="expense-summary-note">All items will be saved separately</span></div>
   <section class="expense-composer-section">
    <div class="expense-section-heading"><div><h3>Choose expense categories</h3><p>Select one or more categories. You can add multiple items under each one.</p></div><span class="expense-section-step">01</span></div>
    <div class="expense-category-grid" aria-label="Expense categories; scroll horizontally to see more">${EXPENSE_GROUPS.map(g=>`<button type="button" class="expense-category-card${g.id==='food'?' selected active':''}" data-expense-group="${g.id}" aria-pressed="${g.id==='food'?'true':'false'}"><span class="expense-category-icon">${g.icon}</span><span>${g.name}</span><span class="expense-category-check">✓</span></button>`).join('')}</div>
@@ -8423,9 +8422,9 @@ function openExpenseEntry(dateValue,editExisting=false,editTransactionId=null){
    <select id="expenseComposerAccount">${accountOptions}</select>
    <input id="expenseComposerDate" type="date" value="${esc(date)}">
   </div>
-  <div class="expense-composer-summary"><div><span class="expense-summary-label">Expense total</span><strong id="expenseComposerTotal">₱0.00</strong><small id="expenseComposerCount">0 items</small></div><span class="expense-summary-note">All items will be saved separately</span></div>
+
  </div>
- <div class="form-actions expense-composer-actions"><button type="button" class="btn btn-light" onclick="closeExpenseEditor()">Cancel</button><button type="submit" class="btn btn-primary">${editExisting?'Apply changes':'Save expenses'}</button></div>`;
+ <div class="form-actions expense-composer-actions"><button type="button" class="btn btn-light" onclick="closeExpenseEditor()">Cancel</button><button type="submit" class="btn btn-primary">Apply</button></div>`;
  if(editExisting&&existingForDate.length){
   if(title)title.textContent='Edit expenses';
   if(desc)desc.textContent='Update the expenses recorded on this date. Save to apply your changes.';
@@ -8531,16 +8530,10 @@ function openExpenseEntry(dateValue,editExisting=false,editTransactionId=null){
   if(form.dataset.expenseValidationError){e.preventDefault();form.dataset.expenseValidationError='';}
  });
  updateExpenseComposerTotal();
-  const mount=document.getElementById('expenseEditorMount');
-  if(mount)mount.appendChild(form);
-  const editorDate=document.getElementById('expenseEditorDate');
-  if(editorDate)editorDate.textContent=new Date(date+'T12:00:00').toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
-  const datebarLabel=document.querySelector('.expense-editor-date-copy span');
-  if(datebarLabel)datebarLabel.textContent=editExisting?'EDITING EXPENSES FOR':'ADDING EXPENSES FOR';
-  const datebarStatus=document.querySelector('.expense-editor-date-status');
-  if(datebarStatus)datebarStatus.innerHTML='<i></i> Changes not yet applied';
-  showPage('expense-editor');
-  window.scrollTo({top:0,left:0,behavior:'instant'});
+  const backdrop=document.getElementById('modalBackdrop');
+  if(backdrop)backdrop.style.display='flex';
+  const modal=document.querySelector('#modalBackdrop .modal');
+  if(modal)modal.scrollTop=0;
 
 }
 
@@ -21881,7 +21874,7 @@ body.expense-editor-active .expense-composer-summary{
   width:100%!important;max-width:none!important;box-sizing:border-box!important;
   padding:clamp(18px,1.6vw,26px)!important;
 }
-body.expense-editor-active .expense-composer-actions{
+body.expense-editor-active .expense-composer-actions{justify-content:flex-end!important;
   width:100%!important;box-sizing:border-box!important;
 }
 body.expense-editor-active .expense-composer-section button,
@@ -22491,11 +22484,11 @@ html body.expense-editor-active #page-expense-editor .expense-summary-label{font
 html body.expense-editor-active #page-expense-editor #expenseComposerTotal{font-family:var(--font-display);font-size:clamp(34px,3.2vw,44px)!important;line-height:1.1;letter-spacing:-.025em;font-weight:800}
 html body.expense-editor-active #page-expense-editor #expenseComposerCount{font-size:13px!important;opacity:.85}
 html body.expense-editor-active #page-expense-editor .expense-summary-note{font-size:12px!important;opacity:.75;padding-top:12px;border-top:1px solid rgba(255,255,255,.2);width:100%}
-html body.expense-editor-active #page-expense-editor .expense-composer-actions{grid-column:2!important;grid-row:2!important;display:flex!important;flex-direction:column-reverse!important;gap:10px!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important}
+html body.expense-editor-active #page-expense-editor .expense-composer-actions{justify-content:flex-end!important;grid-column:2!important;grid-row:2!important;display:flex!important;flex-direction:column-reverse!important;gap:10px!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important}
 html body.expense-editor-active #page-expense-editor .expense-composer-actions .btn{width:100%!important;min-height:52px!important;border-radius:15px!important;font-size:15px!important;justify-content:center!important}
 @media(max-width:1100px){
  html body.expense-editor-active #page-expense-editor #expenseEditorMount #modalForm{grid-template-columns:minmax(0,1fr)!important;grid-template-rows:none!important}
- html body.expense-editor-active #page-expense-editor .expense-composer-section,html body.expense-editor-active #page-expense-editor .expense-composer-summary,html body.expense-editor-active #page-expense-editor .expense-composer-actions{grid-column:1!important;grid-row:auto!important}
+ html body.expense-editor-active #page-expense-editor .expense-composer-section,html body.expense-editor-active #page-expense-editor .expense-composer-summary,html body.expense-editor-active #page-expense-editor .expense-composer-actions{justify-content:flex-end!important;grid-column:1!important;grid-row:auto!important}
  html body.expense-editor-active #page-expense-editor .expense-category-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(max-width:600px){
