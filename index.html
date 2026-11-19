@@ -8353,7 +8353,7 @@ function updateExpenseComposerTotal(){
  if(totalEl)totalEl.textContent=expenseMoney(total);
  if(countEl)countEl.textContent=count+' item'+(count===1?'':'s');
 }
-function openExpenseEntry(dateValue,editExisting=false){
+function openExpenseEntry(dateValue,editExisting=false,editTransactionId=null){
  const date=dateValue||expenseTodayISO();
  const today=expenseTodayISO();
  if(date>today){
@@ -8368,7 +8368,7 @@ function openExpenseEntry(dateValue,editExisting=false){
   toast('You cannot add expenses to a future date.');
   return;
  }
- const existingForDate=editExisting?(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>t.type==='expense'&&String(t.date||'')===date):[];
+ const existingForDate=editExisting?(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>t.type==='expense'&&String(t.date||'')===date&&(!editTransactionId||String(t.id)===String(editTransactionId))):[];
  if(date<today&&(!editExisting||existingForDate.length===0)){
   toast(existingForDate.length===0
    ? 'There are no recorded expenses on this past date to edit. New expenses can only be added today.'
@@ -8477,13 +8477,22 @@ function openExpenseEntry(dateValue,editExisting=false){
   if(form.dataset.expenseValidationError){form.dataset.expenseValidationError='';return;}
   if(!entries.length){toast('Choose a category and add at least one expense item.');return;}
   const total=entries.reduce((sum,item)=>sum+item.amount,0);
-  const previouslyChargedToAccount=editExisting?(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>t.type==='expense'&&String(t.date||'')===expenseDate&&String(t.accountId)===String(accountId)).reduce((sum,t)=>sum+Math.max(0,Number(t.amount)||0),0):0;
+  const previouslyChargedToAccount=editExisting?(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>t.type==='expense'&&String(t.date||'')===expenseDate&&String(t.accountId)===String(accountId)&&(!editTransactionId||String(t.id)===String(editTransactionId))).reduce((sum,t)=>sum+Math.max(0,Number(t.amount)||0),0):0;
   if(total>balance(accountId)+previouslyChargedToAccount+0.000001){toast('Not enough funds in this account for the total expense.');return;}
-  if(editExisting){
-   data.transactions=(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>!(t.type==='expense'&&String(t.date||'')===expenseDate));
-  }
   const createdAt=Date.now();
-  entries.forEach((item,index)=>data.transactions.push({id:uid(),type:'expense',accountId,description:item.description,amount:item.amount,date:expenseDate,category:item.category,timeOfDay:item.timeOfDay,createdAt:createdAt+index}));
+  if(editExisting&&editTransactionId){
+   const targetIndex=(Array.isArray(data.transactions)?data.transactions:[]).findIndex(t=>t.type==='expense'&&String(t.id)===String(editTransactionId)&&String(t.date||'')===expenseDate);
+   if(targetIndex<0){toast('This expense could not be found. Please reopen its history and try again.');return;}
+   const original=data.transactions[targetIndex];
+   const first=entries[0];
+   data.transactions[targetIndex]={...original,accountId,description:first.description,amount:first.amount,date:expenseDate,category:first.category,timeOfDay:first.timeOfDay,updatedAt:Date.now()};
+   entries.slice(1).forEach((item,index)=>data.transactions.push({id:uid(),type:'expense',accountId,description:item.description,amount:item.amount,date:expenseDate,category:item.category,timeOfDay:item.timeOfDay,createdAt:createdAt+index+1}));
+  }else if(editExisting){
+   data.transactions=(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>!(t.type==='expense'&&String(t.date||'')===expenseDate));
+   entries.forEach((item,index)=>data.transactions.push({id:uid(),type:'expense',accountId,description:item.description,amount:item.amount,date:expenseDate,category:item.category,timeOfDay:item.timeOfDay,createdAt:createdAt+index}));
+  }else{
+   entries.forEach((item,index)=>data.transactions.push({id:uid(),type:'expense',accountId,description:item.description,amount:item.amount,date:expenseDate,category:item.category,timeOfDay:item.timeOfDay,createdAt:createdAt+index}));
+  }
   save();
   renderBudget();
   closeExpenseEditor();
@@ -8503,7 +8512,7 @@ function openExpenseEntry(dateValue,editExisting=false){
   const datebarStatus=document.querySelector('.expense-editor-date-status');
   if(datebarStatus)datebarStatus.innerHTML='<i></i> Changes not yet applied';
   showPage('expense-editor');
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0,left:0,behavior:'instant'});
 
 }
 
@@ -8523,42 +8532,54 @@ function closeExpenseDayActions(){
 }
 function openExpenseDayActions(dateValue){
  const date=String(dateValue||'');
- const rows=(Array.isArray(data.transactions)?data.transactions:[]).filter(t=>t.type==='expense'&&String(t.date||'')===date).sort((a,b)=>Number(a.createdAt||0)-Number(b.createdAt||0));
- // Empty past dates are inert: no popup, no form, and no add action.
- if(date<expenseTodayISO()&&!rows.length){
-  closeExpenseDayActions();
-  return;
- }
+ const rows=(Array.isArray(data.transactions)?data.transactions:[])
+  .filter(t=>t.type==='expense'&&String(t.date||'')===date)
+  .sort((a,b)=>Number(a.createdAt||0)-Number(b.createdAt||0));
+ if(!rows.length){closeExpenseDayActions();return;}
  closeExpenseDayActions();
  const pretty=new Date(date+'T12:00:00').toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
  const backdrop=document.createElement('div');
- backdrop.id='expenseDayActionBackdrop';backdrop.className='expense-day-action-backdrop'+(date<expenseTodayISO()&&!rows.length?' past-empty-date':'');
+ backdrop.id='expenseDayActionBackdrop';
+ backdrop.className='expense-day-action-backdrop';
  const total=rows.reduce((sum,t)=>sum+Math.max(0,Number(t.amount)||0),0);
- const historyMarkup=rows.length?`<div class="expense-date-history">
+ const historyMarkup=`<div class="expense-date-history">
   <div class="expense-date-history-heading"><strong>Expense history</strong><span>${rows.length} item${rows.length===1?'':'s'}</span></div>
-  ${rows.map(t=>`<div class="expense-date-history-row">
-   <div class="expense-date-history-main"><strong>${esc(t.description||'Expense')}</strong><small>${esc(t.category||'Others')}${t.timeOfDay?' · '+esc(t.timeOfDay):''}</small></div>
-   <strong class="expense-date-history-amount">${peso(t.amount)}</strong>
-  </div>`).join('')}
+  ${rows.map(t=>{
+   const account=data.accounts.find(a=>String(a.id)===String(t.accountId));
+   const extra=t.details||t.notes||t.note||t.memo||t.descriptionDetails||'';
+   return `<article class="expense-date-history-row">
+    <div class="expense-date-history-main">
+     <strong>${esc(t.description||'Expense')}</strong>
+     <small>${esc(t.category||'Others')}${t.timeOfDay?' · '+esc(t.timeOfDay):''}</small>
+     ${extra?`<p class="expense-date-history-description">${esc(extra)}</p>`:''}
+     ${account?`<small class="expense-date-history-account">Account: ${esc(account.name)}</small>`:''}
+    </div>
+    <div class="expense-date-history-side">
+     <strong class="expense-date-history-amount">${peso(t.amount)}</strong>
+     <button type="button" class="expense-history-edit-button" data-edit-expense="${esc(String(t.id))}">✎ Edit</button>
+    </div>
+   </article>`;
+  }).join('')}
   <div class="expense-date-history-total"><span>Total expenses</span><strong>${peso(total)}</strong></div>
- </div>`:'';
- backdrop.innerHTML=`<div class="expense-day-action-menu${rows.length?' has-history':' is-empty'}" role="dialog" aria-modal="true" aria-label="Expenses for ${esc(pretty)}">
-  <div class="expense-day-action-head"><div><strong>${esc(pretty)}</strong>${rows.length?`<small>${rows.length} recorded expense${rows.length===1?'':'s'} · ${peso(total)}</small>`:`<small>No expenses recorded for this date.</small>`}</div><button type="button" class="expense-day-action-close" aria-label="Close">×</button></div>
+ </div>`;
+ backdrop.innerHTML=`<div class="expense-day-action-menu has-history" role="dialog" aria-modal="true" aria-label="Expenses for ${esc(pretty)}">
+  <div class="expense-day-action-head">
+   <div><strong>${esc(pretty)}</strong><small>${rows.length} recorded expense${rows.length===1?'':'s'} · ${peso(total)}</small></div>
+   <button type="button" class="expense-day-action-close" aria-label="Close">×</button>
+  </div>
   ${historyMarkup}
-  ${rows.length||date===expenseTodayISO()?`<div class="expense-day-action-buttons${rows.length?' single-action':''}">
-   ${rows.length?'<button type="button" class="primary" data-day-action="edit">✎ Edit expenses</button>':'<button type="button" class="primary" data-day-action="add">＋ Add expense</button>'}
-  </div>`:''}
  </div>`;
  backdrop.addEventListener('click',event=>{if(event.target===backdrop)closeExpenseDayActions();});
  backdrop.querySelector('.expense-day-action-close').addEventListener('click',closeExpenseDayActions);
- const addButton=backdrop.querySelector('[data-day-action="add"]');
- const editButton=backdrop.querySelector('[data-day-action="edit"]');
- if(addButton)addButton.addEventListener('click',()=>{closeExpenseDayActions();openExpenseEntry(date);});
- if(editButton)editButton.addEventListener('click',()=>{closeExpenseDayActions();openExpenseEntry(date,true);});
-
+ backdrop.querySelectorAll('[data-edit-expense]').forEach(button=>{
+  button.addEventListener('click',()=>{
+   const transactionId=button.getAttribute('data-edit-expense');
+   closeExpenseDayActions();
+   openExpenseEntry(date,true,transactionId);
+  });
+ });
  document.body.appendChild(backdrop);
 }
-
 function renderBudget(){
  const grid=document.getElementById('expensesCalendarGrid');
  const monthLabel=document.getElementById('expensesCalendarMonth');
@@ -8594,7 +8615,7 @@ function renderBudget(){
   const isPast=iso<today;
   const isFuture=iso>today;
   const dateClasses=`expenses-calendar-day${isPast?' is-past':''}${isFuture?' is-future':''}${iso===today?' is-today':''}${items.length?' has-expenses':''}`;
-  cells.push(`<button type="button" tabindex="-1" class="${dateClasses}" aria-label="${weekdayNames[date.getDay()]}, ${date.toLocaleDateString('en-PH',{month:'long',day:'numeric',year:'numeric'})}. ${items.length} expenses totalling ${peso(total)}. Calendar display only; use the Add Expenses button to create a new entry.">
+  cells.push(`<button type="button" tabindex="0" class="${dateClasses}" aria-label="${weekdayNames[date.getDay()]}, ${date.toLocaleDateString('en-PH',{month:'long',day:'numeric',year:'numeric'})}. ${items.length} expenses totalling ${peso(total)}. Select to view or manage expenses for this date.">
    <span class="expenses-day-top"><span class="expenses-day-number">${day}</span><span class="expenses-day-top-meta">${iso===today?'<span class="expenses-today-label">Today</span>':''}${items.length?`<span class="expenses-day-total">${peso(total)}</span>`:''}</span></span>
    <span class="expenses-day-items">${chips}</span>
   </button>`);
@@ -10454,7 +10475,7 @@ function showPage(p){document.body.classList.toggle('expense-calendar-no-heading
   savelyLiveLocationMap.invalidateSize();
  }
   if(window.__savelyLiveLocationWatchId===null||window.__savelyLiveLocationWatchId===undefined)startSavelyLiveLocation();
-},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LIVE MONITOR','Live Monitor'],'metro-snapshot':['PUBLIC CAMERA IMAGES','Metro Manila Snapshot'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['',''],billing:['HOUSEHOLD UTILITIES','Billing'],'expense-editor':['EXPENSE MANAGEMENT','Edit expenses']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','metro-snapshot':'View the latest available public camera snapshots across Metro Manila.','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:'',billing:'Estimate your household water bill using your meter readings and current rate assumptions.','expense-editor':'Organize each purchase by category and time of day. Review your changes before applying them.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const topbar=document.querySelector('.topbar');if(topbar)topbar.classList.toggle('savings-header-hidden',p==='financial-list');const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,behavior:'smooth'})}
+},180);if(p==='debt')renderDebtPage();if(p==='financial-list'){savingsTrendSelectedAmount=null;savingsTrendSelectedBank=null;savingsTrendSelectedAt=null;savingsTrendZoom=1;savingsTrendPan=0;const graphWrap=document.getElementById('savingsTrendCanvasWrap');if(graphWrap){delete graphWrap.dataset.expanded;graphWrap.style.height='280px';graphWrap.style.overflowX='hidden';}requestAnimationFrame(()=>requestAnimationFrame(()=>{try{renderSavingsTrend()}catch(e){console.error('Savings trend redraw failed:',e)}}));}document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));const titles={interest:['MAKE YOUR MONEY WORK','Interest Calculator'],dashboard:['YOUR MONEY, IN FOCUS',getTimeBasedGreeting()],transactions:['MONEY MOVEMENT','Transactions'],accounts:['YOUR SAVINGS, ORGANIZED','Accounts'],goals:['MAKE IT HAPPEN','Savings goals'],budget:['SPEND WITH INTENTION','Expenses'],interest:['LET YOUR MONEY GROW','Interest calculator'],reports:['YOUR FINANCIAL SNAPSHOT','Reports'],settings:['YOUR DATA, YOUR CONTROL','Settings & backup'],'financial-list':['YOUR SAVINGS, ORGANIZED','Savings'],salary:['YOUR INCOME, ORGANIZED','Salary'],debt:['PAYMENTS & COLLECTIONS','Debt'],'live-map':['ROADS & CONDITIONS','Live Map'],cards:['YOUR FINANCES, ORGANIZED','Cards'],'live-location':['LIVE MONITOR','Live Monitor'],'metro-snapshot':['PUBLIC CAMERA IMAGES','Metro Manila Snapshot'],'construction-map':['PUBLIC INFRASTRUCTURE','Construction Map'],'radio':['AUDIO & ENTERTAINMENT','Radio'],holidays:['',''],billing:['HOUSEHOLD UTILITIES','Billing'],'expense-editor':['EXPENSE MANAGEMENT','Edit expenses']};document.getElementById('eyebrow').textContent=titles[p][0];document.getElementById('pageTitle').textContent=titles[p][1];const pageDescriptions={dashboard:'A clear view of your savings, income, and financial progress.','financial-list':'Track balances across your banks, digital wallets, and cash accounts.',salary:'Manage your monthly take-home pay, cutoffs, and payday schedule.',goals:'Set savings targets, assign banks, and monitor your progress.',interest:'Estimate how your money can grow using bank interest rates.',settings:'Customize Savely, manage your data, and control your preferences.',transactions:'Review deposits, withdrawals, and expenses in one place.',accounts:'Organize your accounts and track account activity.',budget:'Add expenses and review your spending by date in one calendar.',reports:'Review your financial activity and export your records.',debt:'Manage repayments, due dates, installments, and money you have lent to others.','live-map':'View nearby road conditions and travel information.',cards:'','live-location':'','metro-snapshot':'View the latest available public camera snapshots across Metro Manila.','construction-map':'Explore mapped public works projects and their recorded locations.','radio':'',holidays:'',billing:'Estimate your household water bill using your meter readings and current rate assumptions.','expense-editor':'Organize each purchase by category and time of day. Review your changes before applying them.'};const pageDescription=document.getElementById('pageDescription');if(pageDescription)pageDescription.textContent=pageDescriptions[p]||'';const topbar=document.querySelector('.topbar');if(topbar)topbar.classList.toggle('savings-header-hidden',p==='financial-list');const dashUser=document.getElementById('dashboardUsername');if(dashUser)dashUser.hidden=p!=='dashboard'||!window.savelyDashboardUsername;if(p==='reports')renderReports();window.scrollTo({top:0,left:0,behavior:'instant'})}
 document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
 function openModal(kind,goalToEdit=null){const form=document.getElementById('modalForm'),title=document.getElementById('modalTitle'),desc=document.getElementById('modalDesc');let accountOptions=data.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');let field=(label,name,type='text',value='',extra='')=>`<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let select=(label,name,opts)=>`<div class="field"><label>${label}</label><select name="${name}">${opts}</select></div>`;let fullfield=(label,name,type='text',value='',extra='')=>`<div class="field full"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;let body='';
 if(kind==='transaction'){title.textContent='Add transaction';desc.textContent='Record a deposit, withdrawal, interest credit, or expense.';body=`<div class="form-grid">${fullfield('Description','description','text','','required maxlength="100"')}${select('Transaction type','type','<option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option><option value="expense">Expense</option><option value="interest">Interest credit</option>')}${select('Account','accountId',accountOptions)}${field('Amount (₱)','amount','number','','required min=".01" step=".01"')}${field('Date','date','date',todayISO(),'required')}${field('Category','category','text','General','maxlength="60"')}</div>`}
@@ -18812,14 +18833,7 @@ if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostn
 </style>
 
 
-<style id="savely-expense-calendar-display-only-days">
-#expensesCalendarGrid button.expenses-calendar-day{
- cursor:default!important;
-}
-#expensesCalendarGrid button.expenses-calendar-day:hover{
- transform:none!important;
-}
-</style>
+
 
 
 <script id="savely-expense-calendar-horizontal-swipe-v1">
@@ -19062,7 +19076,6 @@ main.main>#page-holidays>.holiday-hero:first-child{
   }
   if(iso===today){
    // Reuse the same Add Expense entry point used by the FAB.
-   // Stop the calendar's other date handlers so Today opens the editor directly.
    event.preventDefault();
    event.stopImmediatePropagation();
    if(typeof window.openExpenseEntry==='function'){
@@ -19070,7 +19083,18 @@ main.main>#page-holidays>.holiday-hero:first-child{
    }
    return;
   }
-  // Past dates keep their existing expense review and editing behavior.
+  if(iso<today){
+   const hasRecordedExpenses=(Array.isArray(data.transactions)?data.transactions:[])
+    .some(t=>t.type==='expense'&&String(t.date||'')===iso);
+   if(hasRecordedExpenses){
+    // Historical dates with records open the complete history dialog.
+    // Prevent legacy delegated handlers from opening the add form as well.
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    openExpenseDayActions(iso);
+   }
+   return;
+  }
  }
  document.addEventListener('click',handleCalendarDateClick,true);
  window.closeExpenseFutureDateNotice=closeFutureDateNotice;
@@ -19331,6 +19355,295 @@ main.main > .page.active .settings-tabs-wrap{
   }
   #expensesCalendarGrid .expenses-day-number{
     width:20px!important;height:20px!important;flex-basis:20px!important;
+  }
+}
+</style>
+
+
+<style id="savely-expense-summary-left-aligned-and-future-popup-larger-v1">
+/* Keep all Monthly Expenses information grouped at the left of the banner. */
+#page-budget .expenses-calendar-summary{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  gap:8px!important;
+  grid-template-columns:none!important;
+  padding:25px clamp(22px,3vw,38px)!important;
+}
+#page-budget .expenses-calendar-summary .expenses-summary-main{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  gap:4px!important;
+  width:auto!important;
+  min-width:0!important;
+  grid-template-columns:none!important;
+  grid-template-rows:none!important;
+}
+#page-budget .expenses-calendar-summary .expenses-summary-label,
+#page-budget .expenses-calendar-summary strong#expensesCalendarTotal,
+#page-budget .expenses-calendar-summary .expenses-summary-month{
+  display:block!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+  justify-self:start!important;
+  align-self:flex-start!important;
+  text-align:left!important;
+}
+#page-budget .expenses-calendar-summary strong#expensesCalendarTotal{
+  font-size:clamp(29px,2.7vw,36px)!important;
+  line-height:1.12!important;
+  margin:1px 0!important;
+}
+#page-budget .expenses-calendar-summary .expenses-summary-count{
+  position:static!important;
+  display:inline-flex!important;
+  align-self:flex-start!important;
+  justify-self:start!important;
+  margin:0!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+  padding:7px 12px!important;
+}
+#page-budget .expenses-calendar-summary .expenses-summary-currency{
+  display:none!important;
+}
+@media(max-width:760px){
+  #page-budget .expenses-calendar-summary{
+    min-height:132px!important;
+    padding:19px 18px!important;
+    gap:7px!important;
+  }
+  #page-budget .expenses-calendar-summary .expenses-calendar-summary-main{
+    width:auto!important;
+  }
+  #page-budget .expenses-calendar-summary strong#expensesCalendarTotal{
+    font-size:clamp(25px,6vw,31px)!important;
+  }
+  #page-budget .expenses-calendar-summary .expenses-summary-count{
+    align-self:flex-start!important;
+    padding:6px 10px!important;
+  }
+}
+@media(max-width:420px){
+  #page-budget .expenses-calendar-summary{
+    min-height:124px!important;
+    padding:16px 14px!important;
+  }
+  #page-budget .expenses-calendar-summary .expenses-summary-label,
+  #page-budget .expenses-calendar-summary .expenses-summary-month{
+    font-size:10px!important;
+  }
+  #page-budget .expenses-calendar-summary strong#expensesCalendarTotal{
+    font-size:24px!important;
+  }
+}
+
+/* A roomier future-date availability dialog, while retaining the live countdown. */
+.expense-future-date-backdrop{
+  padding:24px!important;
+}
+.expense-future-date-dialog{
+  width:min(620px,calc(100vw - 48px))!important;
+  max-width:620px!important;
+  padding:34px 36px 32px!important;
+  border-radius:26px!important;
+  box-shadow:0 30px 90px rgba(12,44,33,.28)!important;
+}
+.expense-future-date-head{gap:22px!important}
+.expense-future-date-kicker{font-size:11px!important}
+.expense-future-date-title{
+  margin:12px 0 8px!important;
+  font-size:clamp(24px,3vw,29px)!important;
+  line-height:1.25!important;
+}
+.expense-future-date-subtitle{
+  font-size:15px!important;
+  line-height:1.6!important;
+}
+.expense-future-date-close{
+  flex-basis:44px!important;
+  width:44px!important;
+  height:44px!important;
+  border-radius:13px!important;
+  font-size:21px!important;
+}
+.expense-future-date-selected{
+  margin-top:24px!important;
+  padding:17px 20px!important;
+  border-radius:15px!important;
+  font-size:16px!important;
+  line-height:1.4!important;
+}
+.expense-future-countdown{
+  gap:12px!important;
+  margin:18px 0!important;
+}
+.expense-future-countdown-unit{
+  min-height:78px!important;
+  padding:15px 8px!important;
+  border-radius:15px!important;
+}
+.expense-future-countdown-unit strong{
+  font-size:29px!important;
+  line-height:1.2!important;
+}
+.expense-future-countdown-unit span{
+  margin-top:5px!important;
+  font-size:11px!important;
+}
+.expense-future-date-note{
+  margin-top:16px!important;
+  font-size:13px!important;
+  line-height:1.5!important;
+}
+@media(max-width:600px){
+  .expense-future-date-backdrop{padding:14px!important}
+  .expense-future-date-dialog{
+    width:calc(100vw - 28px)!important;
+    max-width:none!important;
+    padding:25px 20px 23px!important;
+    border-radius:21px!important;
+  }
+  .expense-future-date-title{font-size:22px!important}
+  .expense-future-date-subtitle{font-size:13px!important}
+  .expense-future-date-selected{
+    margin-top:19px!important;
+    padding:14px 13px!important;
+    font-size:14px!important;
+  }
+  .expense-future-countdown{gap:7px!important;margin:14px 0!important}
+  .expense-future-countdown-unit{
+    min-height:68px!important;
+    padding:12px 3px!important;
+    border-radius:12px!important;
+  }
+  .expense-future-countdown-unit strong{font-size:23px!important}
+  .expense-future-countdown-unit span{font-size:9px!important}
+  .expense-future-date-note{font-size:11px!important}
+}
+@media(max-width:360px){
+  .expense-future-date-dialog{padding:21px 15px 19px!important}
+  .expense-future-countdown{gap:5px!important}
+  .expense-future-countdown-unit strong{font-size:20px!important}
+}
+</style>
+
+
+<style id="savely-expense-history-individual-edit-and-clickability-v1">
+#expensesCalendarGrid button.expenses-calendar-day{
+  cursor:pointer!important;
+  pointer-events:auto!important;
+}
+#expensesCalendarGrid button.expenses-calendar-day.has-expenses:hover{
+  border-color:#15966e!important;
+  box-shadow:0 5px 16px rgba(15,110,75,.12)!important;
+}
+.expense-day-action-backdrop{
+  z-index:10060!important;
+}
+.expense-day-action-menu.has-history{
+  width:min(760px,calc(100vw - 40px))!important;
+  max-height:min(88vh,820px)!important;
+  overflow-y:auto!important;
+  padding:28px 30px!important;
+}
+.expense-day-action-head{
+  position:sticky!important;
+  top:-28px!important;
+  z-index:2!important;
+  padding:4px 0 16px!important;
+  background:var(--panel,#fff)!important;
+}
+.expense-date-history{gap:12px!important}
+.expense-date-history-row{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:18px!important;
+  padding:16px 17px!important;
+  border-radius:13px!important;
+}
+.expense-date-history-main{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  gap:5px!important;
+  min-width:0!important;
+}
+.expense-date-history-main strong{
+  font-size:14px!important;
+  line-height:1.4!important;
+  overflow-wrap:anywhere!important;
+}
+.expense-date-history-main small{
+  font-size:12px!important;
+  line-height:1.4!important;
+}
+.expense-date-history-description{
+  margin:2px 0 0!important;
+  color:var(--muted,#718096)!important;
+  font-size:12px!important;
+  line-height:1.5!important;
+  overflow-wrap:anywhere!important;
+}
+.expense-date-history-side{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-end!important;
+  gap:9px!important;
+  flex:0 0 auto!important;
+}
+.expense-date-history-amount{
+  font-size:15px!important;
+  font-weight:850!important;
+  white-space:nowrap!important;
+}
+.expense-history-edit-button{
+  min-height:34px!important;
+  padding:7px 12px!important;
+  border:1px solid rgba(18,135,99,.25)!important;
+  border-radius:9px!important;
+  background:#eaf7f0!important;
+  color:#087f5b!important;
+  font:700 11px/1.2 inherit!important;
+  cursor:pointer!important;
+}
+.expense-history-edit-button:hover{
+  background:#d9f1e4!important;
+  border-color:#15966e!important;
+}
+.expense-date-history-total{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  padding-top:15px!important;
+  font-size:14px!important;
+}
+@media(max-width:600px){
+  .expense-day-action-menu.has-history{
+    width:calc(100vw - 24px)!important;
+    max-height:88vh!important;
+    padding:21px 16px!important;
+    border-radius:19px!important;
+  }
+  .expense-day-action-head{top:-21px!important;padding-bottom:13px!important}
+  .expense-date-history-row{gap:10px!important;padding:13px!important}
+  .expense-date-history-main strong{font-size:13px!important}
+  .expense-date-history-main small,.expense-date-history-description{font-size:11px!important}
+  .expense-date-history-amount{font-size:13px!important}
+  .expense-history-edit-button{min-height:32px!important;padding:6px 9px!important}
+}
+@media(max-width:380px){
+  .expense-date-history-row{flex-direction:column!important}
+  .expense-date-history-side{
+    width:100%!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:space-between!important;
   }
 }
 </style>
@@ -20881,3 +21194,126 @@ body.expense-editor-active .expense-composer-section input{
  #stats.cards .summary-carousel-track{transition:none!important}
 }
 </style>
+
+
+
+<style id="savely-final-content-flow-and-scroll-reset-v1">
+/*
+  Final shared layout correction:
+  - Main content starts at the top of the content column on every route.
+  - Main/page height follows real content; no extra viewport-height main column.
+  - The app itself retains its minimum viewport height so the sidebar/background
+    remain visually continuous on short pages.
+*/
+html, body{
+  scroll-behavior:auto!important;
+}
+body > .app,
+body .app{
+  height:auto!important;
+  min-height:100vh!important;
+  align-items:start!important;
+}
+body .app > main.main,
+body main.main{
+  display:block!important;
+  position:relative!important;
+  align-self:start!important;
+  box-sizing:border-box!important;
+  width:auto!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin-top:0!important;
+  margin-bottom:0!important;
+  overflow:visible!important;
+  padding-bottom:20px!important;
+}
+body main.main > .page.active{
+  display:block!important;
+  position:relative!important;
+  inset:auto!important;
+  float:none!important;
+  clear:both!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin-top:0!important;
+  margin-bottom:0!important;
+  padding-top:0!important;
+  transform:none!important;
+  align-self:auto!important;
+  overflow:visible!important;
+}
+body main.main > .page:not(.active){
+  display:none!important;
+}
+/* Keep the editor immediately below the top edge when its page is opened. */
+body.expense-editor-active .topbar{
+  display:none!important;
+  margin:0!important;
+  padding:0!important;
+  height:0!important;
+}
+body.expense-editor-active .main,
+body.expense-editor-active main.main{
+  padding-top:14px!important;
+}
+body.expense-editor-active #page-expense-editor{
+  margin-top:0!important;
+  padding-top:0!important;
+}
+body.expense-editor-active #page-expense-editor > .expense-editor-layout{
+  margin-top:0!important;
+  padding-top:0!important;
+}
+/* Settings and all short pages end after their actual last section. */
+body #page-settings,
+body #page-settings.active{
+  height:auto!important;
+  min-height:0!important;
+  margin-top:0!important;
+  margin-bottom:0!important;
+  padding-bottom:0!important;
+}
+@media(max-width:760px){
+  body .app > main.main,
+  body main.main{
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    padding-top:12px!important;
+    padding-bottom:calc(16px + env(safe-area-inset-bottom))!important;
+  }
+  body.expense-editor-active .main,
+  body.expense-editor-active main.main{
+    padding-top:8px!important;
+  }
+  body main.main > .page.active{
+    min-height:0!important;
+    margin-top:0!important;
+    margin-bottom:0!important;
+  }
+}
+</style>
+<script id="savely-final-route-scroll-reset-v1">
+(function(){
+  // Make all normal page changes land at the top immediately, including
+  // routes opened from in-page controls rather than the sidebar.
+  const originalShowPage=window.showPage;
+  if(typeof originalShowPage==='function'&&!originalShowPage.__savelyInstantTopReset){
+    const wrappedShowPage=function(){
+      const result=originalShowPage.apply(this,arguments);
+      window.scrollTo({top:0,left:0,behavior:'instant'});
+      return result;
+    };
+    wrappedShowPage.__savelyInstantTopReset=true;
+    window.showPage=wrappedShowPage;
+  }
+  // The expense editor is mounted dynamically; normalize its scroll position
+  // after the editor page has become active and its content has been mounted.
+  document.addEventListener('click',function(){},true);
+})();
+</script>
+
