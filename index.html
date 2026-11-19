@@ -19940,6 +19940,463 @@ body #page-settings {
 })();
 </script>
 
+
+<style id="savely-expense-history-row-edit-and-summary-count-top-right-v1">
+/* Keep each Edit action compact and inside its own expense-history item. */
+.expense-date-history-row{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  min-width:0!important;
+}
+.expense-date-history-main{
+  flex:1 1 auto!important;
+  min-width:0!important;
+}
+.expense-date-history-side{
+  display:flex!important;
+  flex:0 0 auto!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:42%!important;
+  flex-direction:column!important;
+  align-items:flex-end!important;
+  justify-content:flex-start!important;
+  gap:8px!important;
+  position:static!important;
+}
+.expense-date-history-side .expense-history-edit-button,
+.expense-date-history-row .expense-history-edit-button{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 auto!important;
+  flex-grow:0!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:max-content!important;
+  min-height:34px!important;
+  height:auto!important;
+  align-self:flex-end!important;
+  position:static!important;
+  inset:auto!important;
+  margin:0!important;
+  padding:7px 12px!important;
+  white-space:nowrap!important;
+  text-align:center!important;
+  box-sizing:border-box!important;
+}
+.expense-date-history-row .expense-history-edit-button::before,
+.expense-date-history-row .expense-history-edit-button::after{
+  content:none!important;
+}
+@media(max-width:600px){
+  .expense-date-history-row{
+    flex-direction:row!important;
+    align-items:flex-start!important;
+    gap:10px!important;
+  }
+  .expense-date-history-side{
+    width:auto!important;
+    max-width:45%!important;
+    flex:0 0 auto!important;
+    flex-direction:column!important;
+    align-items:flex-end!important;
+    justify-content:flex-start!important;
+  }
+  .expense-date-history-row .expense-history-edit-button{
+    width:auto!important;
+    max-width:max-content!important;
+    align-self:flex-end!important;
+  }
+}
+@media(max-width:380px){
+  .expense-date-history-row{
+    flex-direction:row!important;
+  }
+  .expense-date-history-side{
+    width:auto!important;
+    flex-direction:column!important;
+    align-items:flex-end!important;
+    justify-content:flex-start!important;
+  }
+}
+
+/* Put the expense-count pill in the banner's upper-right corner, not below
+   the month/amount stack. Keep the amount, label and month grouped on the left. */
+#page-budget .expenses-calendar-summary{
+  position:relative!important;
+  display:block!important;
+  box-sizing:border-box!important;
+  padding:25px clamp(22px,3vw,38px)!important;
+  min-height:132px!important;
+}
+#page-budget .expenses-calendar-summary .expenses-summary-main{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  gap:4px!important;
+  width:max-content!important;
+  max-width:calc(100% - 150px)!important;
+  min-width:0!important;
+  margin:0!important;
+}
+#page-budget .expenses-calendar-summary .expenses-summary-count{
+  position:absolute!important;
+  top:22px!important;
+  right:clamp(18px,2.5vw,34px)!important;
+  left:auto!important;
+  bottom:auto!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:max-content!important;
+  max-width:140px!important;
+  margin:0!important;
+  padding:7px 12px!important;
+  align-self:auto!important;
+  justify-self:auto!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+  white-space:nowrap!important;
+}
+#page-budget .expenses-calendar-summary .expenses-summary-currency{
+  display:none!important;
+}
+@media(max-width:760px){
+  #page-budget .expenses-calendar-summary{
+    min-height:124px!important;
+    padding:20px 18px!important;
+  }
+  #page-budget .expenses-calendar-summary .expenses-summary-main{
+    max-width:calc(100% - 112px)!important;
+  }
+  #page-budget .expenses-calendar-summary .expenses-summary-count{
+    top:16px!important;
+    right:16px!important;
+    padding:6px 9px!important;
+    font-size:10px!important;
+  }
+}
+@media(max-width:420px){
+  #page-budget .expenses-calendar-summary{
+    min-height:116px!important;
+    padding:17px 14px!important;
+  }
+  #page-budget .expenses-calendar-summary .expenses-summary-main{
+    max-width:calc(100% - 98px)!important;
+  }
+  #page-budget .expenses-calendar-summary .expenses-summary-count{
+    top:13px!important;
+    right:12px!important;
+    max-width:94px!important;
+    padding:5px 7px!important;
+    font-size:9px!important;
+  }
+}
+</style>
+
+
+<style id="savely-final-natural-page-flow-and-settings-visibility-v2">
+/*
+  Shared page-flow repair.
+  Keep the sidebar viewport-fixed on desktop so its 100vh height does not
+  force the main grid row (and every short page) to be 100vh tall.
+*/
+html, body {
+  height: auto !important;
+  min-height: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+body > .app,
+body .app,
+body .app.sidebar-collapsed {
+  display: grid !important;
+  grid-template-columns: 245px minmax(0, 1fr) !important;
+  grid-template-rows: max-content !important;
+  align-items: start !important;
+  justify-items: stretch !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  overflow: visible !important;
+}
+body .app > aside.sidebar {
+  position: fixed !important;
+  inset: 0 auto 0 0 !important;
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  align-self: start !important;
+  width: 245px !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  min-height: 0 !important;
+  max-height: 100vh !important;
+  max-height: 100dvh !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+body .app.sidebar-collapsed > aside.sidebar {
+  width: 76px !important;
+}
+body .app > main.main,
+body main.main {
+  display: block !important;
+  position: relative !important;
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: start !important;
+  justify-self: stretch !important;
+  box-sizing: border-box !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 14px clamp(14px, 2vw, 30px) 18px !important;
+  overflow: visible !important;
+}
+body .app.sidebar-collapsed > main.main {
+  grid-column: 2 !important;
+}
+body main.main > .topbar {
+  display: flex !important;
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 0 16px !important;
+  padding: 0 !important;
+  transform: none !important;
+}
+body main.main > .page,
+body main.main > .page.active {
+  display: none;
+  position: relative !important;
+  inset: auto !important;
+  float: none !important;
+  clear: both !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  align-self: start !important;
+  justify-self: stretch !important;
+  transform: none !important;
+  translate: none !important;
+  overflow: visible !important;
+}
+body main.main > .page.active {
+  display: block !important;
+}
+body main.main > .page.active > :first-child {
+  margin-top: 0 !important;
+}
+body main.main > .page.active > :last-child {
+  margin-bottom: 0 !important;
+}
+body main.main > .page.active,
+body main.main > .page.active * {
+  scroll-margin-top: 0;
+}
+/* No page should inherit a viewport-sized minimum height or flex centering. */
+body main.main > .page.active,
+body main.main > .page.active > *,
+body main.main > .page.active .panel,
+body main.main > .page.active .section-grid,
+body main.main > .page.active .settings-tabs-wrap {
+  min-height: 0;
+}
+body main.main > #page-expense-editor,
+body main.main > #page-expense-editor.active,
+body.expense-editor-active main.main > #page-expense-editor {
+  display: block !important;
+  margin: 0 !important;
+  padding-top: 0 !important;
+  transform: none !important;
+}
+body.expense-editor-active main.main {
+  padding-top: 10px !important;
+}
+
+/* Settings tabs and the selected panel must remain visible in normal flow. */
+body #page-settings,
+body #page-settings.active,
+body #page-settings .settings-tabs-wrap,
+body #page-settings .settings-tabs,
+body #page-settings .settings-tabs-wrap > .section-grid {
+  display: block !important;
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  overflow: visible !important;
+}
+body #page-settings .settings-tabs {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  margin-bottom: 16px !important;
+}
+body #page-settings [data-settings-panel] {
+  display: none !important;
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 0 16px !important;
+}
+body #page-settings [data-settings-panel].settings-panel-active {
+  display: block !important;
+}
+body #page-settings #settingsDateTimePanel.settings-panel-active {
+  display: block !important;
+}
+
+/* Keep the natural page height; only the sidebar fills the viewport. */
+@media (max-width: 760px) {
+  body > .app,
+  body .app,
+  body .app.sidebar-collapsed {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  body .app > aside.sidebar,
+  body .app.sidebar-collapsed > aside.sidebar {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  body .app > main.main,
+  body main.main {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 12px 10px calc(14px + env(safe-area-inset-bottom)) !important;
+  }
+  body main.main > .page.active {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  body.expense-editor-active main.main {
+    padding-top: 8px !important;
+  }
+}
+</style>
+<script id="savely-final-settings-panel-and-route-flow-v2">
+(function () {
+  function ensureSettingsPanel() {
+    const page = document.getElementById('page-settings');
+    if (!page) return;
+    const active = page.querySelector('[data-settings-panel].settings-panel-active');
+    if (!active) {
+      const firstTab = page.querySelector('[data-settings-tab]');
+      const firstPanel = page.querySelector('[data-settings-panel]');
+      if (firstTab) firstTab.classList.add('active');
+      if (firstPanel) firstPanel.classList.add('settings-panel-active');
+    }
+  }
+
+  function normalizeActivePage() {
+    const main = document.querySelector('body > .app > main.main');
+    if (main) {
+      main.style.height = 'auto';
+      main.style.minHeight = '0';
+      main.style.marginTop = '0';
+      main.style.marginBottom = '0';
+      main.scrollTop = 0;
+    }
+    document.querySelectorAll('main.main > .page').forEach(function (page) {
+      if (page.classList.contains('active')) {
+        page.style.height = 'auto';
+        page.style.minHeight = '0';
+        page.style.marginTop = '0';
+        page.style.marginBottom = '0';
+        page.style.transform = 'none';
+      }
+    });
+    ensureSettingsPanel();
+  }
+
+  if (typeof window.showPage === 'function' && !window.showPage.__savelyNaturalPageFlowV3) {
+    const originalShowPage = window.showPage;
+    const wrappedShowPage = function () {
+      const result = originalShowPage.apply(this, arguments);
+      normalizeActivePage();
+      requestAnimationFrame(function () {
+        normalizeActivePage();
+        requestAnimationFrame(normalizeActivePage);
+      });
+      return result;
+    };
+    wrappedShowPage.__savelyNaturalPageFlowV3 = true;
+    window.showPage = wrappedShowPage;
+  }
+
+  document.addEventListener('click', function (event) {
+    const settingsTab = event.target && event.target.closest
+      ? event.target.closest('#page-settings [data-settings-tab]')
+      : null;
+    if (settingsTab) {
+      requestAnimationFrame(function () {
+        const key = settingsTab.getAttribute('data-settings-tab');
+        document.querySelectorAll('#page-settings [data-settings-tab]').forEach(function (tab) {
+          tab.classList.toggle('active', tab === settingsTab);
+        });
+        document.querySelectorAll('#page-settings [data-settings-panel]').forEach(function (panel) {
+          panel.classList.toggle('settings-panel-active', panel.getAttribute('data-settings-panel') === key);
+        });
+      });
+    }
+    const navButton = event.target && event.target.closest
+      ? event.target.closest('#nav button[data-page]')
+      : null;
+    if (navButton) {
+      requestAnimationFrame(function () {
+        normalizeActivePage();
+        requestAnimationFrame(normalizeActivePage);
+      });
+    }
+  });
+
+  ensureSettingsPanel();
+  normalizeActivePage();
+})();
+</script>
+
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
