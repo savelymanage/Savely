@@ -4674,127 +4674,6 @@ body.expense-editor-active #pageDescription{
 </style>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-
-<style id="savely-expense-summary-top-banner-and-bottom-actions">
-/* Expense editor: full-width summary banner first, workspace second, actions bottom-right. */
-html body.expense-editor-active #page-expense-editor #expenseEditorMount #modalForm{
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr)!important;
-  grid-template-rows:auto auto auto!important;
-  align-items:start!important;
-  gap:18px!important;
-}
-html body.expense-editor-active #page-expense-editor #expenseComposer{
-  display:contents!important;
-}
-html body.expense-editor-active #page-expense-editor .expense-composer-summary{
-  grid-column:1!important;
-  grid-row:1!important;
-  width:100%!important;
-  min-width:0!important;
-  display:flex!important;
-  flex-direction:row!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:20px!important;
-  margin:0!important;
-  padding:18px 24px!important;
-  border:1px solid rgba(18,135,99,.24)!important;
-  border-radius:18px!important;
-  background:
-    radial-gradient(320px 150px at 100% 0%,rgba(130,240,195,.22),transparent 72%),
-    linear-gradient(110deg,#0f7657 0%,#0b5a43 100%)!important;
-  box-shadow:0 12px 26px -16px rgba(10,74,56,.55)!important;
-}
-html body.expense-editor-active #page-expense-editor .expense-composer-summary *{
-  color:#fff!important;
-}
-html body.expense-editor-active #page-expense-editor .expense-composer-summary>div{
-  display:grid!important;
-  gap:3px!important;
-}
-html body.expense-editor-active #page-expense-editor .expense-summary-label{
-  font-size:12px!important;
-  font-weight:750!important;
-  opacity:.82!important;
-  letter-spacing:.02em!important;
-}
-html body.expense-editor-active #page-expense-editor #expenseComposerTotal{
-  font-size:clamp(27px,3vw,36px)!important;
-  line-height:1.12!important;
-  font-weight:850!important;
-  letter-spacing:-.025em!important;
-  font-variant-numeric:tabular-nums!important;
-}
-html body.expense-editor-active #page-expense-editor #expenseComposerCount{
-  font-size:12px!important;
-  opacity:.86!important;
-}
-html body.expense-editor-active #page-expense-editor .expense-summary-note{
-  width:auto!important;
-  max-width:260px!important;
-  padding:0!important;
-  border:0!important;
-  text-align:right!important;
-  font-size:11px!important;
-  font-weight:700!important;
-  opacity:.78!important;
-}
-html body.expense-editor-active #page-expense-editor .expense-composer-section{
-  grid-column:1!important;
-  grid-row:2!important;
-  width:100%!important;
-  min-width:0!important;
-}
-html body.expense-editor-active #page-expense-editor .expense-composer-actions{
-  grid-column:1!important;
-  grid-row:3!important;
-  display:flex!important;
-  flex-direction:row!important;
-  justify-content:flex-end!important;
-  align-items:center!important;
-  gap:10px!important;
-  width:100%!important;
-  margin:0!important;
-  padding:16px 0 0!important;
-  border-top:1px solid var(--line)!important;
-  background:transparent!important;
-}
-html body.expense-editor-active #page-expense-editor .expense-composer-actions .btn{
-  width:auto!important;
-  min-width:140px!important;
-  min-height:48px!important;
-  padding:11px 20px!important;
-  border-radius:12px!important;
-  font-size:13px!important;
-  font-weight:800!important;
-}
-@media(max-width:600px){
-  html body.expense-editor-active #page-expense-editor .expense-composer-summary{
-    align-items:flex-start!important;
-    flex-direction:column!important;
-    gap:8px!important;
-    padding:17px 18px!important;
-  }
-  html body.expense-editor-active #page-expense-editor .expense-summary-note{
-    max-width:none!important;
-    text-align:left!important;
-  }
-  html body.expense-editor-active #page-expense-editor .expense-composer-actions{
-    position:static!important;
-    justify-content:stretch!important;
-    flex-direction:row!important;
-    gap:8px!important;
-    padding-bottom:max(8px,env(safe-area-inset-bottom))!important;
-  }
-  html body.expense-editor-active #page-expense-editor .expense-composer-actions .btn{
-    flex:1 1 0!important;
-    min-width:0!important;
-    padding:11px 10px!important;
-  }
-}
-</style>
-
 </head>
 <body>
 
@@ -22598,5 +22477,39 @@ html body.expense-editor-active #page-expense-editor .expense-composer-actions .
  html body.expense-editor-active #page-expense-editor .expense-time-tabs{grid-template-columns:repeat(2,minmax(0,1fr))!important}
  html body.expense-editor-active #page-expense-editor .expense-item-row{grid-template-columns:minmax(0,1fr) 120px 40px!important}
  html body.expense-editor-active #page-expense-editor .expense-editor-date-status{display:none!important}
+}
+</style>
+
+<style id="savely-salary-banner-match-v1">
+/* Salary banner: same size, padding, radius and type scale as the Overview / Savings total card */
+@media(min-width:761px){
+ html body #page-salary .salary-summary-cards > .salary-annual-remaining-stat{min-height:176px!important;padding:24px 32px!important;border-radius:21px!important;grid-template-columns:minmax(0,1fr) minmax(320px,400px)!important;column-gap:40px!important}
+ html body #page-salary .salary-annual-remaining-stat > .salary-remaining-label{font-size:13px!important;font-weight:700!important;line-height:1.3!important}
+ html body #page-salary .salary-annual-remaining-stat > .stat-value{font-size:clamp(26px,2.4vw,34px)!important;line-height:1.25!important;margin:10px 0 8px!important}
+ html body #page-salary .salary-annual-remaining-stat .annual-projection-inline,
+ html body #page-salary .salary-annual-remaining-stat .annual-projection-inline #salaryAnnualDisplay{font-size:inherit!important}
+ html body #page-salary .salary-annual-remaining-stat > .stat-foot{font-size:12px!important;line-height:1.4!important}
+ html body #page-salary .salary-next-payday{gap:12px!important}
+ html body #page-salary .salary-next-payday-label{font-size:12px!important}
+ html body #page-salary .salary-next-payday-heading strong{font-size:13px!important}
+ html body #page-salary .salary-next-payday-parts strong{font-size:26px!important;line-height:1.1!important}
+ html body #page-salary .salary-next-payday-parts span{font-size:11px!important}
+}
+</style>
+
+<style id="savely-savings-card-match-overview-v1">
+/* Savings page top card now matches the Overview "Savings total" card: same size, type, ₱ tile, no decorative circles. */
+html body #page-financial-list #financialCategoryStats .savings-total-card::before,
+html body #page-financial-list #financialCategoryStats .savings-total-card::after{content:none!important;display:none!important}
+html body #page-financial-list #financialCategoryStats .savings-total-card .stat-top::after{
+ content:"₱";position:absolute;top:24px;right:32px;width:38px;height:38px;border-radius:12px;
+ display:grid;place-items:center;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.25);
+ color:#fff;font-size:16px;font-weight:800;letter-spacing:0}
+html body #page-financial-list #financialCategoryStats .savings-total-card .stat-top{position:static!important}
+@media(min-width:601px){
+ html body #page-financial-list #financialCategoryStats .savings-total-card{min-height:176px!important;padding:24px 32px!important;gap:2px!important;border-radius:19px!important;justify-content:center!important}
+ html body #page-financial-list #financialCategoryStats .savings-total-card .stat-top{font-size:13px!important;font-weight:600!important}
+ html body #page-financial-list #financialCategoryStats .savings-total-card .stat-value{font-size:clamp(26px,2.4vw,34px)!important;line-height:1.25!important;margin:10px 0 8px!important;letter-spacing:-.02em!important}
+ html body #page-financial-list #financialCategoryStats .savings-total-card .stat-foot{font-size:12px!important;margin-top:0!important}
 }
 </style>
