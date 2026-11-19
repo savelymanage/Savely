@@ -4674,6 +4674,30 @@ body.expense-editor-active #pageDescription{
 </style>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style id="savely-expense-editor-layout-adjustment">
+html body.expense-editor-active #page-expense-editor #expenseEditorMount #modalForm{
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto 1fr auto!important;gap:18px!important;align-items:start!important;
+}
+html body.expense-editor-active #page-expense-editor #expenseComposer{display:contents!important}
+html body.expense-editor-active #page-expense-editor .expense-composer-summary{
+ grid-column:1!important;grid-row:1!important;width:100%!important;min-height:112px!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:18px!important;padding:22px 28px!important;border-radius:20px!important;
+}
+html body.expense-editor-active #page-expense-editor .expense-composer-summary > div{display:grid!important;gap:5px!important}
+html body.expense-editor-active #page-expense-editor .expense-summary-note{margin-left:auto!important;text-align:right!important;border:0!important;padding:0!important;width:auto!important}
+html body.expense-editor-active #page-expense-editor .expense-composer-section{grid-column:1!important;grid-row:2!important;width:100%!important}
+html body.expense-editor-active #page-expense-editor .expense-composer-actions{
+ grid-column:1!important;grid-row:3!important;display:flex!important;flex-direction:row!important;justify-content:flex-end!important;align-items:center!important;gap:10px!important;margin:0!important;padding:16px 0 0!important;border-top:1px solid var(--line)!important;background:transparent!important;
+}
+html body.expense-editor-active #page-expense-editor .expense-composer-actions .btn{width:auto!important;min-width:130px!important;min-height:46px!important}
+@media(max-width:700px){
+ html body.expense-editor-active #page-expense-editor .expense-composer-summary{align-items:flex-start!important;flex-direction:column!important;padding:18px!important}
+ html body.expense-editor-active #page-expense-editor .expense-summary-note{margin-left:0!important;text-align:left!important}
+ html body.expense-editor-active #page-expense-editor .expense-composer-actions{justify-content:flex-end!important}
+ html body.expense-editor-active #page-expense-editor .expense-composer-actions .btn{min-width:0!important;flex:0 1 auto!important}
+}
+</style>
+
 </head>
 <body>
 
@@ -5346,6 +5370,22 @@ body.expense-editor-active #pageDescription{
   </section>
 
 
+
+  <section class="page expense-editor-page" id="page-expense-editor" aria-label="Edit expenses">
+    <div class="expense-editor-layout">
+      <div class="expense-editor-card">
+        <div class="expense-editor-datebar">
+          <div class="expense-editor-date-icon" aria-hidden="true">▦</div>
+          <div class="expense-editor-date-copy">
+            <span>EDITING EXPENSES FOR</span>
+            <strong id="expenseEditorDate">Selected date</strong>
+          </div>
+          <span class="expense-editor-date-status"><i></i> Changes not yet applied</span>
+        </div>
+        <div id="expenseEditorMount"></div>
+      </div>
+    </div>
+  </section>
 
 </main>
 </div>
