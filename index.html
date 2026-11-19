@@ -19648,6 +19648,298 @@ main.main > .page.active .settings-tabs-wrap{
 }
 </style>
 
+
+<style id="savely-global-route-position-and-natural-page-height-v2">
+/*
+  Route layout repair:
+  Keep the shared main column and each active route in normal document flow.
+  Prevent flex/grid centering, stale minimum heights, or page-sized wrappers
+  from pushing the route content down or leaving a scrollable blank tail.
+*/
+html, body {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+body > .app,
+body .app {
+  display: grid !important;
+  grid-template-columns: 245px minmax(0, 1fr) !important;
+  grid-template-rows: max-content !important;
+  align-content: start !important;
+  align-items: start !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+body .app > main.main,
+body main.main {
+  display: block !important;
+  position: relative !important;
+  grid-row: 1 !important;
+  align-self: start !important;
+  justify-self: stretch !important;
+  box-sizing: border-box !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding-bottom: 12px !important;
+  overflow: visible !important;
+}
+body main.main > .topbar {
+  position: relative !important;
+  inset: auto !important;
+  display: flex;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 0 18px !important;
+  padding-top: 0 !important;
+  transform: none !important;
+  align-self: auto !important;
+}
+body main.main > .page,
+body main.main > .page.active {
+  position: relative !important;
+  inset: auto !important;
+  float: none !important;
+  clear: both !important;
+  display: none;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  align-self: start !important;
+  justify-self: stretch !important;
+  transform: none !important;
+  translate: none !important;
+  overflow: visible !important;
+}
+body main.main > .page.active {
+  display: block !important;
+}
+body main.main > .page.active > :first-child {
+  margin-top: 0 !important;
+}
+body main.main > .page.active > :last-child {
+  margin-bottom: 0 !important;
+}
+/* The dedicated Add Expenses editor must begin directly under the top edge. */
+body.expense-editor-active main.main > .topbar {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+body.expense-editor-active main.main {
+  padding-top: 14px !important;
+}
+body.expense-editor-active main.main > #page-expense-editor,
+body.expense-editor-active #page-expense-editor.active {
+  display: block !important;
+  position: relative !important;
+  inset: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 clamp(12px, 1.5vw, 28px) !important;
+  transform: none !important;
+}
+body.expense-editor-active #page-expense-editor > .expense-editor-layout {
+  display: block !important;
+  position: relative !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  transform: none !important;
+}
+body.expense-editor-active #page-expense-editor .expense-editor-card {
+  margin-top: 0 !important;
+}
+body.expense-editor-active #page-expense-editor .expense-editor-datebar {
+  margin-top: 0 !important;
+}
+/* Settings: keep the tabs and the selected settings panel visible in normal flow. */
+body #page-settings,
+body #page-settings.active,
+body #page-settings .settings-tabs-wrap {
+  display: block !important;
+  position: relative !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  overflow: visible !important;
+}
+body #page-settings .settings-tabs {
+  display: flex !important;
+  position: relative !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin-top: 0 !important;
+}
+body #page-settings .settings-tabs-wrap .section-grid {
+  display: block !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin-top: 0 !important;
+}
+body #page-settings [data-settings-panel] {
+  display: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+body #page-settings [data-settings-panel].settings-panel-active {
+  display: block !important;
+}
+body #page-settings #settingsDateTimePanel.settings-panel-active {
+  display: block !important;
+}
+/* Calendar and all other routes use content height, not viewport-sized panels. */
+body #page-holidays,
+body #page-budget,
+body #page-goals,
+body #page-dashboard,
+body #page-financial-list,
+body #page-salary,
+body #page-debt,
+body #page-cards,
+body #page-live-location,
+body #page-radio,
+body #page-settings {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  align-self: start !important;
+}
+@media (min-width: 761px) {
+  body .app > aside.sidebar {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+  body .app > main.main {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+}
+@media (max-width: 760px) {
+  body > .app,
+  body .app {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: max-content max-content !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  body .app > main.main,
+  body main.main {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 12px 10px calc(12px + env(safe-area-inset-bottom)) !important;
+  }
+  body.expense-editor-active main.main {
+    padding-top: 8px !important;
+  }
+  body.expense-editor-active #page-expense-editor {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  body main.main > .page.active {
+    min-height: 0 !important;
+    margin: 0 !important;
+  }
+}
+</style>
+<script id="savely-global-route-scroll-and-settings-activation-v2">
+(function(){
+  function resetRoutePosition(){
+    try {
+      window.scrollTo({top:0,left:0,behavior:'instant'});
+      document.documentElement.scrollTop=0;
+      document.body.scrollTop=0;
+      const main=document.querySelector('body > .app > main.main');
+      if(main) main.scrollTop=0;
+    } catch(e) {}
+  }
+  function ensureSettingsPanel(){
+    const settings=document.getElementById('page-settings');
+    if(!settings || !settings.classList.contains('active')) return;
+    const selected=settings.querySelector('[data-settings-panel].settings-panel-active');
+    if(!selected){
+      const tab=settings.querySelector('[data-settings-tab]');
+      const panel=settings.querySelector('[data-settings-panel]');
+      if(tab) tab.classList.add('active');
+      if(panel) panel.classList.add('settings-panel-active');
+    }
+  }
+  const original=window.showPage;
+  if(typeof original==='function' && !original.__savelyRouteNaturalFlowV2){
+    const wrapped=function(){
+      const result=original.apply(this,arguments);
+      ensureSettingsPanel();
+      resetRoutePosition();
+      requestAnimationFrame(function(){
+        ensureSettingsPanel();
+        resetRoutePosition();
+        requestAnimationFrame(resetRoutePosition);
+      });
+      return result;
+    };
+    wrapped.__savelyRouteNaturalFlowV2=true;
+    window.showPage=wrapped;
+  }
+  document.addEventListener('click',function(event){
+    const navButton=event.target && event.target.closest ? event.target.closest('#nav button[data-page]') : null;
+    if(navButton){
+      requestAnimationFrame(function(){
+        ensureSettingsPanel();
+        resetRoutePosition();
+        requestAnimationFrame(resetRoutePosition);
+      });
+    }
+  },true);
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',function(){
+      ensureSettingsPanel();
+      resetRoutePosition();
+    },{once:true});
+  }else{
+    ensureSettingsPanel();
+  }
+  window.addEventListener('pageshow',function(){
+    requestAnimationFrame(resetRoutePosition);
+  });
+})();
+</script>
+
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
