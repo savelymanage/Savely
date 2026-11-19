@@ -5149,7 +5149,6 @@ body.expense-editor-active #pageDescription{
     <h2>Expense calendar</h2>
     <div class="panel-sub">Add and review your expenses by date.</div>
    </div>
-   <button type="button" class="btn btn-primary expenses-add-button" onclick="openExpenseEntry()">＋ Add expense</button>
   </div>
   <div class="expenses-calendar-toolbar">
    <div class="expenses-month-label" id="expensesCalendarMonth">November 2026</div>
@@ -5347,21 +5346,7 @@ body.expense-editor-active #pageDescription{
   </section>
 
 
-  <section class="page expense-editor-page" id="page-expense-editor" aria-label="Edit expenses">
-    <div class="expense-editor-layout">
-      <div class="expense-editor-card">
-        <div class="expense-editor-datebar">
-          <div class="expense-editor-date-icon" aria-hidden="true">▦</div>
-          <div class="expense-editor-date-copy">
-            <span>EDITING EXPENSES FOR</span>
-            <strong id="expenseEditorDate">Selected date</strong>
-          </div>
-          <span class="expense-editor-date-status"><i></i> Changes not yet applied</span>
-        </div>
-        <div id="expenseEditorMount"></div>
-      </div>
-    </div>
-  </section>
+
 </main>
 </div>
 <div class="modal-backdrop" id="savelyUpdatesBackdrop" role="dialog" aria-modal="true" aria-labelledby="savelyUpdatesTitle" style="z-index:9999" onclick="if(event.target===this)closeSavelyUpdates()"><div class="modal" style="max-width:520px"><div class="panel-head"><div><div class="pill" style="display:inline-flex;margin-bottom:10px">SAVELY UPDATES</div><h2 id="savelyUpdatesTitle">What’s new in Savely</h2></div></div><p class="muted">Version 2.8.68 · Latest patch</p><div style="display:grid;gap:12px"><div><span class="pill" style="background:#e5f7ef;color:#087f5b">MINOR UPDATE · v2.8.68</span><ul style="line-height:1.8;padding-left:22px;margin-top:8px"><li>Refined email OTP authentication flow for sign-up and login.</li><li>Requests Supabase email OTP through the Auth OTP endpoint and verifies the entered code.</li><li>Verified accounts use Supabase Authentication sessions for account-scoped cloud sync.</li><li>Updated account and privacy messaging to explain authentication and cloud data setup.</li><li>Added an embedded satellite map that opens from the live weather badge, with Zoom Earth available for weather layers.</li><li>Fixed the selected-bank savings graph height so it stays compact and fits inside the Savings panel.</li><li>Satellite map uses Esri World Imagery and centers on the selected weather city when available; Zoom Earth opens separately for weather layers.</li></ul></div></div><div class="form-actions" style="justify-content:flex-end"><button type="button" class="btn btn-primary" onclick="closeSavelyUpdates()">Okay</button></div></div></div>
@@ -8355,6 +8340,8 @@ function updateExpenseComposerTotal(){
  if(countEl)countEl.textContent=count+' item'+(count===1?'':'s');
 }
 function openExpenseEntry(dateValue,editExisting=false,editTransactionId=null){
+ // Expense-entry page removed; the calendar remains available for viewing.
+ return;
  const date=dateValue||expenseTodayISO();
  const today=expenseTodayISO();
  if(date>today){
@@ -16459,7 +16446,6 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
     if(page==='page-financial-list')return {label:'Add Savings',icon:'＋',run:()=>document.getElementById('topbarAddSavingsButton')?.click()};
     if(page==='page-salary')return {label:'Add Salary Amount',icon:'＋',run:()=>document.getElementById('salaryDetailsOpenButton')?.click()};
     if(page==='page-debt')return {label:'Add Debt',icon:'＋',run:()=>document.getElementById('topbarAddDebtButton')?.click()};
-    if(page==='page-budget')return {label:'Add Expense',icon:'＋',run:()=>window.openExpenseEntry?.()};
     if(page==='page-goals')return {label:'Create Savings Goal',icon:'＋',run:()=>window.openModal?.('goal')};
     if(page==='page-holidays'&&document.getElementById('page-holidays')?.classList.contains('personal-events-mode'))return {label:'Add Event',icon:'＋',run:()=>window.openPersonalEventForm?.()};
     return null;
