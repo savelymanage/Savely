@@ -8557,11 +8557,11 @@ function openExpenseDayActions(dateValue){
     </div>
     <div class="expense-date-history-side">
      <strong class="expense-date-history-amount">${peso(t.amount)}</strong>
-     <button type="button" class="expense-history-edit-button" data-edit-expense="${esc(String(t.id))}">✎ Edit</button>
     </div>
    </article>`;
   }).join('')}
   <div class="expense-date-history-total"><span>Total expenses</span><strong>${peso(total)}</strong></div>
+  <button type="button" class="expense-day-edit-all" data-edit-day="${esc(date)}">✎ Edit expenses</button>
  </div>`;
  backdrop.innerHTML=`<div class="expense-day-action-menu has-history" role="dialog" aria-modal="true" aria-label="Expenses for ${esc(pretty)}">
   <div class="expense-day-action-head">
@@ -8572,12 +8572,11 @@ function openExpenseDayActions(dateValue){
  </div>`;
  backdrop.addEventListener('click',event=>{if(event.target===backdrop)closeExpenseDayActions();});
  backdrop.querySelector('.expense-day-action-close').addEventListener('click',closeExpenseDayActions);
- backdrop.querySelectorAll('[data-edit-expense]').forEach(button=>{
-  button.addEventListener('click',()=>{
-   const transactionId=button.getAttribute('data-edit-expense');
-   closeExpenseDayActions();
-   openExpenseEntry(date,true,transactionId);
-  });
+ const editAllButton=backdrop.querySelector('[data-edit-day]');
+ if(editAllButton)editAllButton.addEventListener('click',()=>{
+  closeExpenseDayActions();
+  // No transaction id: the editor opens with every expense recorded on this date.
+  openExpenseEntry(date,true);
  });
  document.body.appendChild(backdrop);
 }
@@ -22273,6 +22272,13 @@ body.dark-theme th{background:rgba(46,197,149,.05)}
 body.dark-theme .btn-light{background:#162520;border-color:var(--line)}
 body.dark-theme .eyebrow{color:#5fd4ab}
 
+/* ---------- Expense day dialog: one general Edit button ---------- */
+.expense-day-edit-all{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:16px;padding:15px 18px;border:0;border-radius:14px;
+  background:linear-gradient(180deg,#17896a,#0f6b4f);color:#fff;font-weight:750;font-size:15px;letter-spacing:-.01em;
+  box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 10px 22px -10px rgba(15,107,79,.7);transition:transform .16s var(--ease),box-shadow .16s}
+.expense-day-edit-all:hover{transform:translateY(-1px);box-shadow:0 1px 0 rgba(255,255,255,.2) inset,0 14px 26px -10px rgba(15,107,79,.75)}
+.expense-day-edit-all:active{transform:none}
+
 /* ---------- Layout fix: inactive pages must never take up space ---------- */
 /* #page-budget / #page-settings / #page-expense-editor have ID-level display:!important rules
    that beat ".page{display:none}", so they stayed rendered under the active page.
@@ -22303,3 +22309,67 @@ body.dark-theme .auth-divider{color:var(--muted)}body.dark-theme .auth-divider::
 }
 </style>
 
+<style id="savely-ui-refresh-v2">
+/* v2: lighter sidebar, bold savings hero, relaxed type. Desktop sidebar only; mobile keeps its green header. */
+:root{--bg:#f4f6f2;--text:#10201a;--muted:#667771;--line:#e1e8e3;--green:#0f7a5a;--green2:#e1f3ea;--soft:#f0f4f1;--nav-ink:#0f7a5a}
+body.dark-theme{--nav-ink:#5fd4ab;--soft:#0e1814}
+
+/* Type: remove the cramped tracking (e.g. "Goodmorning") */
+body,button,input,select,textarea{letter-spacing:0}
+.page-title{letter-spacing:-.02em!important;word-spacing:.08em;font-size:clamp(24px,2.4vw,32px)}
+.stat-value,.goal-amount,.account-balance{letter-spacing:-.02em!important}
+.panel h2,.modal h2,.goal-card h3{letter-spacing:-.012em!important}
+.nav button,.btn,.financial-tab,.bank-option{letter-spacing:0!important}
+
+@media(min-width:761px){
+body:not(#_) .app>.sidebar{background:var(--panel)!important;border-right:1px solid var(--line)!important;box-shadow:none!important;color:var(--text)!important}
+body:not(#_) .app>.sidebar .brand,body:not(#_) .app>.sidebar .brand *{color:var(--text)!important}
+body:not(#_) .app>.sidebar .brand div div{color:var(--muted)!important;letter-spacing:.04em}
+body:not(#_) .app>.sidebar .brand .brand-mark{color:#fff!important;background:linear-gradient(145deg,#1a936f,#0b5a43)!important;box-shadow:0 8px 18px -8px rgba(11,90,67,.7)}
+body:not(#_) .app>.sidebar .nav-label{color:var(--muted)!important}
+body:not(#_) .app>.sidebar .nav button{color:color-mix(in srgb,var(--text) 74%,transparent)!important;font-weight:600!important;border:0!important;border-radius:12px!important;background:transparent!important;box-shadow:none!important}
+body:not(#_) .app>.sidebar .nav button *{color:inherit!important}
+body:not(#_) .app>.sidebar .nav button:hover{background:color-mix(in srgb,var(--green) 8%,transparent)!important;color:var(--text)!important}
+body:not(#_) .app>.sidebar .nav button.active{background:var(--green2)!important;color:var(--nav-ink)!important;font-weight:700!important;box-shadow:inset 3px 0 0 var(--nav-ink)!important}
+body:not(#_) .app>.sidebar .nav button.active *{color:var(--nav-ink)!important}
+body:not(#_) .app>.sidebar .side-bottom{background:var(--soft)!important;border:1px solid var(--line)!important;backdrop-filter:none}
+body:not(#_) .app>.sidebar .side-bottom strong{color:var(--text)!important}
+body:not(#_) .app>.sidebar .side-bottom p{color:var(--muted)!important}
+body:not(#_) .app>.sidebar .side-bottom button{background:var(--green)!important;color:#fff!important;border:0!important}
+}
+
+/* Savings hero card: the one bold element */
+.summary-carousel-slide .stat{min-height:190px;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:30px 36px;border-radius:26px}
+.summary-carousel-slide .stat::after{display:none}
+.summary-carousel-slide .stat-top{font-size:14px;font-weight:600}
+.summary-carousel-slide .stat-value{font-size:clamp(36px,4.6vw,56px);line-height:1.1;margin:10px 0 8px}
+.summary-carousel-slide .stat-foot{font-size:13px}
+.summary-carousel-slide .stat-icon{width:42px;height:42px;font-size:20px;border-radius:14px}
+
+/* Calmer cards */
+.panel{box-shadow:0 1px 2px rgba(16,32,26,.04);border-radius:20px}
+.stat:hover{transform:none;box-shadow:var(--shadow)}
+</style>
+
+<style id="savely-salary-banner-align-v1">
+/* Salary banner: two aligned columns, both vertically centered (countdown no longer absolutely positioned). */
+@media(min-width:761px){
+ html body #page-salary .salary-summary-cards > .salary-annual-remaining-stat{
+  display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;grid-template-rows:auto auto auto!important;
+  align-content:center!important;align-items:center!important;column-gap:40px!important;row-gap:4px!important;
+  min-height:168px!important;padding:28px 40px!important;
+ }
+ html body #page-salary .salary-annual-remaining-stat > .salary-remaining-label,
+ html body #page-salary .salary-annual-remaining-stat > .stat-value,
+ html body #page-salary .salary-annual-remaining-stat > .stat-foot{grid-column:1!important;margin:0!important;text-align:left!important}
+ html body #page-salary .salary-annual-remaining-stat > .stat-value{margin:6px 0 4px!important}
+ html body #page-salary .salary-next-payday{
+  position:static!important;transform:none!important;top:auto!important;right:auto!important;
+  grid-column:2!important;grid-row:1 / span 3!important;align-self:center!important;
+  display:grid!important;gap:14px!important;width:auto!important;min-width:min(440px,100%)!important;max-width:none!important;justify-items:stretch!important;
+ }
+ html body #page-salary .salary-next-payday-heading{display:flex!important;align-items:baseline!important;justify-content:space-between!important;gap:16px!important;margin:0!important}
+ html body #page-salary .salary-next-payday-parts{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:8px!important;align-items:start!important;text-align:center!important;margin:0!important}
+ html body #page-salary .salary-next-payday-parts > div{display:grid!important;justify-items:center!important;gap:4px!important;min-width:0!important;margin:0!important}
+}
+</style>
