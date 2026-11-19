@@ -4765,6 +4765,91 @@ body.expense-editor-active #pageDescription{
   <header class="topbar"><div><div class="eyebrow" id="eyebrow">YOUR MONEY, IN FOCUS</div><h1 class="page-title" id="pageTitle">Good afternoon 👋</h1><div id="dashboardUsername" class="dashboard-username" hidden></div><div class="page-description" id="pageDescription">A clear view of your savings, income, and financial progress.</div></div><div class="top-actions"><button type="button" class="holiday-header-refresh" id="holidayRefreshButton" onclick="refreshPhilippineHolidays(true)">Check for updates</button><button type="button" class="overview-privacy-toggle" id="overviewPrivacyToggle" onclick="toggleOverviewFigures()" hidden aria-label="Hide financial figures" aria-pressed="false" title="Hide financial figures"><span class="overview-privacy-icon" id="overviewPrivacyIcon" aria-hidden="true"></span><span id="overviewPrivacyLabel">Hide figures</span></button><div class="weather-pill" id="savelyWeather" title="Live weather · Click to view satellite imagery" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="savelySatelliteBackdrop" style="cursor:pointer"><span class="weather-icon" id="savelyWeatherIcon">🌤️</span><span class="weather-copy"><strong id="savelyWeatherTemp">Loading…</strong><small id="savelyWeatherDesc">Current weather</small></span></div><div class="date-pill date-pill-clickable" id="today" role="button" tabindex="0" aria-label="Open calendar and holiday countdowns" title="View calendar and holiday countdowns" onclick="openHolidaysPage()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openHolidaysPage()}">
 
 </div><button type="button" class="btn btn-primary" id="topbarAddDebtButton" onclick="openDebtForm()" style="display:none;background:var(--green);border-color:var(--green);white-space:nowrap">＋ Add debt</button><button type="button" class="btn btn-primary salary-amount-top-button" id="salaryDetailsOpenButton" onclick="toggleSalaryDetails(true)" style="background:var(--green);border-color:var(--green);white-space:nowrap">＋ Add salary amount</button><button id="topbarAddSavingsButton" class="btn btn-primary" style="background:var(--green);border-color:var(--green)" onclick="openFinancialAdd()">＋ <span class="desktop-label">Add Savings</span><span class="mobile-label">Add Savings</span></button><div class="avatar">S</div><div class="auth-user-chip" id="savely-auth-user-chip" hidden><span class="auth-user-email" id="savely-auth-user-email"></span></div></div></header>
+
+  <section class="page" id="page-holidays" aria-label="Calendar">
+    <div class="holiday-hero">
+      <div class="holiday-hero-copy">
+        <span class="holiday-eyebrow" id="holidayHeroEyebrow">NEXT UPCOMING HOLIDAY</span>
+        <div class="holiday-next-name" id="holidayNextName">Loading holidays…</div>
+        <div class="holiday-next-meta" id="holidayNextMeta">Checking the latest calendar</div>
+      </div>
+      <div class="holiday-countdown-wrap">
+        <div class="holiday-countdown-title" id="holidayHeroCountdownTitle">Time until the next holiday</div>
+        <div class="holiday-countdown" id="holidayHeroCountdown" aria-live="off">
+          <div><strong>—</strong><span>Days</span></div><div><strong>—</strong><span>Hours</span></div><div><strong>—</strong><span>Minutes</span></div><div><strong>—</strong><span>Seconds</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="holiday-stat-grid" id="holidayStats"></div>
+    <div class="holiday-filter-row">
+      <div class="holiday-filters" role="group" aria-label="Filter holidays">
+        <button type="button" class="active" data-holiday-filter="all" onclick="setHolidayFilter('all')">All holidays</button>
+        <button type="button" data-holiday-filter="regular" onclick="setHolidayFilter('regular')">Regular</button>
+        <button type="button" data-holiday-filter="special" onclick="setHolidayFilter('special')">Special non-working</button>
+        <button type="button" data-holiday-filter="regional" onclick="setHolidayFilter('regional')">Regional / local</button>
+        <button type="button" id="personalEventsTabButton" class="personal-events-tab-button" onclick="setCalendarContentTab('personal')">Personal Events</button>
+      </div>
+      <label class="holiday-year-label">Year
+        <select id="holidayYearSelect" onchange="setHolidayYear(this.value)">
+          <option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option><option value="2033">2033</option><option value="2034">2034</option><option value="2035">2035</option><option value="2036">2036</option><option value="2037">2037</option><option value="2038">2038</option><option value="2039">2039</option><option value="2040">2040</option><option value="2041">2041</option><option value="2042">2042</option><option value="2043">2043</option><option value="2044">2044</option><option value="2045">2045</option><option value="2046">2046</option><option value="2047">2047</option><option value="2048">2048</option><option value="2049">2049</option><option value="2050">2050</option><option value="2051">2051</option><option value="2052">2052</option><option value="2053">2053</option><option value="2054">2054</option><option value="2055">2055</option><option value="2056">2056</option><option value="2057">2057</option><option value="2058">2058</option><option value="2059">2059</option><option value="2060">2060</option><option value="2061">2061</option><option value="2062">2062</option><option value="2063">2063</option><option value="2064">2064</option><option value="2065">2065</option><option value="2066">2066</option><option value="2067">2067</option><option value="2068">2068</option><option value="2069">2069</option><option value="2070">2070</option><option value="2071">2071</option><option value="2072">2072</option><option value="2073">2073</option><option value="2074">2074</option><option value="2075">2075</option><option value="2076">2076</option><option value="2077">2077</option><option value="2078">2078</option><option value="2079">2079</option><option value="2080">2080</option><option value="2081">2081</option><option value="2082">2082</option><option value="2083">2083</option><option value="2084">2084</option><option value="2085">2085</option><option value="2086">2086</option><option value="2087">2087</option><option value="2088">2088</option><option value="2089">2089</option><option value="2090">2090</option><option value="2091">2091</option><option value="2092">2092</option><option value="2093">2093</option><option value="2094">2094</option><option value="2095">2095</option><option value="2096">2096</option><option value="2097">2097</option><option value="2098">2098</option><option value="2099">2099</option>
+        </select>
+      </label>
+    </div>
+    <section id="personalEventsInlinePanel" class="panel personal-events-inline-panel" aria-labelledby="personalEventsTitle" hidden>
+      <div class="panel-head" style="align-items:center;gap:12px;flex-wrap:wrap">
+        <div><h2 id="personalEventsTitle">Personal Events</h2><div class="panel-sub">Birthdays, trips, appointments, deadlines, and your own countdowns.</div></div>
+      </div>
+      <div class="personal-event-view-tabs" role="tablist" aria-label="Personal event views">
+        <button type="button" class="active" id="personalUpcomingTab" role="tab" aria-selected="true" onclick="setPersonalEventView('upcoming')">Upcoming</button>
+        <button type="button" id="personalHistoryTab" role="tab" aria-selected="false" onclick="setPersonalEventView('history')">History</button>
+      </div>
+      <form id="personalEventForm" class="personal-event-form personal-event-modal-overlay" onsubmit="savePersonalEvent(event)" hidden>
+        <div class="personal-event-modal-card" role="dialog" aria-modal="true" aria-labelledby="personalEventModalTitle">
+          <div class="personal-event-modal-head">
+            <div><h3 id="personalEventModalTitle">Add personal event</h3><p>Set an event and Savely will track its countdown.</p></div>
+          </div>
+          <input type="hidden" id="personalEventId">
+          <div class="form-grid">
+            <div class="field"><label for="personalEventName">Event name</label><input id="personalEventName" maxlength="90" placeholder="e.g. Birthday, Concert, Vacation" required></div>
+            <div class="field"><label for="personalEventDate">Event date</label><input id="personalEventDate" type="date" required></div>
+            <div class="field full"><label for="personalEventDescription">Description (optional)</label><textarea id="personalEventDescription" rows="3" maxlength="300" placeholder="Add a short note about this event"></textarea></div>
+          </div>
+          <div class="form-actions" style="justify-content:flex-end"><button type="button" class="btn btn-light" onclick="closePersonalEventForm()">Cancel</button><button type="submit" class="btn btn-primary" id="personalEventSaveButton">Save event</button></div>
+        </div>
+      </form>
+      <div id="personalEventDeleteModal" class="personal-event-delete-modal" hidden>
+        <div class="personal-event-delete-card" role="dialog" aria-modal="true" aria-labelledby="personalEventDeleteTitle">
+          <div class="personal-event-delete-icon" aria-hidden="true">!</div>
+          <h3 id="personalEventDeleteTitle">Delete personal event?</h3>
+          <p>Are you sure you want to delete <strong id="personalEventDeleteName"></strong>? This action cannot be undone.</p>
+          <div class="personal-event-delete-actions">
+            <button type="button" class="btn btn-light" onclick="closePersonalEventDelete()">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="confirmDeletePersonalEvent()">Delete event</button>
+          </div>
+        </div>
+      </div>
+      <div id="personalEventsList" class="personal-events-list" aria-live="polite"></div>
+    </section>
+    <section class="panel holiday-list-panel">
+      <div class="panel-head holiday-list-head">
+        <div><h2 id="holidayListTitle">2027 holiday calendar</h2><div class="panel-sub" id="holidayListSubtitle">Nationwide holidays and special days</div></div>
+        <div class="holiday-sync-status"><span class="holiday-live-dot"></span><span id="holidaySyncStatus">Checking public holiday feed…</span></div>
+      </div>
+      <div id="holidayList" class="holiday-list" aria-live="polite"></div>
+      <div class="holiday-source-note">
+        <strong>Official-source note</strong>
+        <span>Dates for published years are based on Presidential proclamations and public holiday feeds. For future years without an official proclamation, recurring dates are shown as projections only; special, local, and movable declarations may change. Verify each year with government sources.</span>
+        <div class="holiday-source-links">
+          <a href="https://pco.gov.ph/documents-issuances/" target="_blank" rel="noopener">Presidential Communications Office</a>
+          <a href="https://officialgazette.gov.ph/section/executive-issuances/proclamations/" target="_blank" rel="noopener">Official Gazette proclamations</a>
+          <a href="https://elibrary.judiciary.gov.ph/" target="_blank" rel="noopener">Supreme Court E-Library</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="holiday-pending-note">Eid’l Fitr and Eid’l Adha dates are announced separately after official dates are determined. Local or regional special days may also be declared separately.</div>
+  </section>
+
   <section class="page active" id="page-dashboard">
     <div class="cards" id="stats"></div>
     <div class="panel" id="overallTrendPanel" style="margin-bottom:18px">
@@ -5124,89 +5209,7 @@ body.expense-editor-active #pageDescription{
 <button type="button" class="financial-tab" data-settings-tab="account">Account</button><button type="button" class="financial-tab" data-settings-tab="themes">Themes</button><button type="button" class="financial-tab" data-settings-tab="version-history">Version History</button>
 </div><div class="section-grid"><div class="panel" id="settingsDateTimePanel" data-settings-panel="datetime"><div class="panel-head"><div><h2>Live date &amp; time</h2><div class="panel-sub">Current local time in the Philippines, updated every second.</div></div><button class="btn btn-secondary btn-sm" type="button" onclick="openDateTimeSettings()">✎ Edit</button><span class="pill">LIVE</span></div><div id="settingsLiveDateTime" aria-live="off" style="padding:18px 0 8px"><div style="font-size:30px;font-weight:800;font-variant-numeric:tabular-nums">Loading time…</div><div class="muted">Loading date…</div></div><div class="panel-sub" id="dateTimeZoneLabel">Timezone: Asia/Manila (UTC+8)</div><div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--line)" id="weatherLocationSettings"><div class="panel-head" style="margin-bottom:8px"><div><h3 style="margin:0;font-size:14px">Weather location</h3><div class="panel-sub">Choose a Philippine region, province, city/municipality, and barangay.</div></div><button class="btn btn-secondary btn-sm" type="button" onclick="openWeatherLocationSettings()">✎ Edit location</button></div><div id="weatherLocationSummary" class="muted" style="font-size:13px">Using device location when available</div></div></div><div class="panel" id="settingsBackupPanel" data-settings-panel="backup"><div class="panel-head"><div><h2>Data backup</h2><div class="panel-sub">Save a copy of your records or restore a backup.</div></div></div><p class="muted">Your data is stored locally and synced to your signed-in account when Supabase database setup is complete. Export a backup regularly.</p><div class="form-actions" style="justify-content:flex-start"><button class="btn btn-primary" onclick="backupJSON()">↓ Download backup</button><label class="btn btn-light">↑ Restore backup<input type="file" accept=".json,application/json" onchange="restoreJSON(event)" hidden></label><button class="btn btn-danger" type="button" onclick="deleteAllRecords()">Delete all your records</button></div></div><div class="panel" id="settingsRecurringPanel" data-settings-panel="recurring"><div class="panel-head"><div><h2>Recurring deposits</h2><div class="panel-sub">Track planned deposits. This file does not execute bank transfers.</div></div><button class="btn btn-primary" onclick="openModal('recurring')">＋ Add schedule</button></div><div id="recurringList"></div></div><div class="panel" id="settingsSecurityPanel" data-settings-panel="security"><div class="panel-head"><div><h2>Local security</h2></div></div><p class="muted">Savely uses Supabase email one-time-code authentication. Cloud financial-data sync requires the savely_user_data table and row-level security policies to be configured.</p><button class="btn btn-danger" onclick="resetData()">Reset all local data</button></div><div class="panel" id="settingsThemesPanel" data-settings-panel="themes"><div class="panel-head"><div><h2>Themes</h2><div class="panel-sub">Personalize the appearance of Savely on this device.</div></div></div><div class="theme-choice-card"><div class="theme-choice-copy"><div class="theme-choice-icon" id="themeModeIcon">🌗</div><div><strong>Day &amp; night mode</strong><p class="muted" style="margin:4px 0 0">Automatically switches to a dark UI at night and returns to the white UI in the morning.</p></div></div><div class="field" style="min-width:180px;max-width:220px"><label for="themeModeSelect">Theme mode</label><select id="themeModeSelect" aria-label="Theme mode"><option value="auto">Automatic (Day &amp; Night)</option><option value="light">Light mode</option><option value="dark">Dark mode</option></select></div></div><div class="panel-sub" id="themeStatus" style="margin-top:12px">Automatic mode: light from 6:00 AM to 5:59 PM, dark from 6:00 PM to 5:59 AM.</div></div><div class="panel" id="settingsVersionHistoryPanel" data-settings-panel="version-history"><div class="panel-head"><div><h2>Version history</h2><div class="panel-sub">Review Savely updates by version and importance.</div></div></div><div class="version-history-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px"><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.47</strong><span class="pill">MINOR</span></div><ul style="line-height:1.8;padding-left:22px"><li>Click the live weather badge to open the Zoom Earth satellite viewer.</li><li>Viewer tries to center on the selected weather city and includes a full-site fallback.</li></ul></div><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.48</strong><span class="pill">MINOR</span></div><ul style="line-height:1.8;padding-left:22px"><li>Replaced the blocked Zoom Earth iframe with an embedded Esri World Imagery satellite map.</li><li>Centers the map on the saved weather city when geocoding is available; Zoom Earth remains available in a separate tab for weather overlays.</li></ul></div><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.45</strong><span class="pill" style="background:#e5f7ef;color:#087f5b">MAJOR</span></div><ul style="line-height:1.8;padding-left:22px"><li>Set email confirmation redirects to the Savely GitHub Pages project URL.</li><li>Enabled real Supabase email/password sign-up and login instead of local testing-mode access.</li><li>New accounts are created in Supabase Auth; authenticated sessions are used for account-scoped savings sync.</li></ul></div><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.40</strong><span class="pill">MINOR</span></div><ul style="line-height:1.8;padding-left:22px"><li>Reorganized Version History into a side-by-side two-column layout for easier comparison of major and minor releases.</li><li>Updated the startup popup to show only the newest patch updates instead of repeating previous release notes.</li></ul></div><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.40</strong><strong>v2.8.38</strong><span class="pill">MINOR</span></div><ul style="line-height:1.8;padding-left:22px"><li>Added a warning confirmation before changing date, time, or timezone.</li><li>Added a confirmation dialog before logging out.</li></ul></div><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.37</strong><span class="pill">MINOR</span></div><ul style="line-height:1.8;padding-left:22px"><li>Restyled Sort by and placed it beside Overall History and Export list.</li><li>Improved responsive layout for narrow screens.</li></ul></div><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.36</strong><span class="pill" style="background:#e5f7ef;color:#087f5b">MAJOR</span></div><ul style="line-height:1.8;padding-left:22px"><li>Added Savings sorting by amount and institution type.</li><li>Added a View savings graph control to expand the graph.</li><li>Removed the extra monthly/yearly interest estimate description under the rate.</li><li>Updated the startup updates popup with major and minor labels.</li><li>Added version history in Settings.</li></ul></div><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.35</strong><span class="pill">MINOR</span></div><p class="muted">Removed zoom behavior from candle endpoint clicks while preserving bank history selection.</p></div><div style="padding:14px;border:1px solid var(--line);border-radius:12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>v2.8.34</strong><span class="pill">MINOR</span></div><p class="muted">Moved the graph timestamp to the right-most endpoint and refreshed the updates popup.</p></div></div></div><div class="panel" id="settingsAccountPanel" data-settings-panel="account"><div class="panel-head"><div><h2>Account &amp; session</h2><div class="panel-sub">Manage your current Savely session.</div></div><span class="pill">ACCOUNT</span></div><p class="muted">Log out to return to the Savely welcome screen. Your locally saved savings data will remain in this browser unless you reset or clear it.</p><div class="form-actions" style="justify-content:flex-start"><button class="btn btn-danger" type="button" id="settingsLogoutButton">↪ Log out</button></div></div></div></div></section>
 
-  <section class="page" id="page-holidays" aria-label="Calendar">
-    <div class="holiday-hero">
-      <div class="holiday-hero-copy">
-        <span class="holiday-eyebrow" id="holidayHeroEyebrow">NEXT UPCOMING HOLIDAY</span>
-        <div class="holiday-next-name" id="holidayNextName">Loading holidays…</div>
-        <div class="holiday-next-meta" id="holidayNextMeta">Checking the latest calendar</div>
-      </div>
-      <div class="holiday-countdown-wrap">
-        <div class="holiday-countdown-title" id="holidayHeroCountdownTitle">Time until the next holiday</div>
-        <div class="holiday-countdown" id="holidayHeroCountdown" aria-live="off">
-          <div><strong>—</strong><span>Days</span></div><div><strong>—</strong><span>Hours</span></div><div><strong>—</strong><span>Minutes</span></div><div><strong>—</strong><span>Seconds</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="holiday-stat-grid" id="holidayStats"></div>
-    <div class="holiday-filter-row">
-      <div class="holiday-filters" role="group" aria-label="Filter holidays">
-        <button type="button" class="active" data-holiday-filter="all" onclick="setHolidayFilter('all')">All holidays</button>
-        <button type="button" data-holiday-filter="regular" onclick="setHolidayFilter('regular')">Regular</button>
-        <button type="button" data-holiday-filter="special" onclick="setHolidayFilter('special')">Special non-working</button>
-        <button type="button" data-holiday-filter="regional" onclick="setHolidayFilter('regional')">Regional / local</button>
-        <button type="button" id="personalEventsTabButton" class="personal-events-tab-button" onclick="setCalendarContentTab('personal')">Personal Events</button>
-      </div>
-      <label class="holiday-year-label">Year
-        <select id="holidayYearSelect" onchange="setHolidayYear(this.value)">
-          <option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option><option value="2033">2033</option><option value="2034">2034</option><option value="2035">2035</option><option value="2036">2036</option><option value="2037">2037</option><option value="2038">2038</option><option value="2039">2039</option><option value="2040">2040</option><option value="2041">2041</option><option value="2042">2042</option><option value="2043">2043</option><option value="2044">2044</option><option value="2045">2045</option><option value="2046">2046</option><option value="2047">2047</option><option value="2048">2048</option><option value="2049">2049</option><option value="2050">2050</option><option value="2051">2051</option><option value="2052">2052</option><option value="2053">2053</option><option value="2054">2054</option><option value="2055">2055</option><option value="2056">2056</option><option value="2057">2057</option><option value="2058">2058</option><option value="2059">2059</option><option value="2060">2060</option><option value="2061">2061</option><option value="2062">2062</option><option value="2063">2063</option><option value="2064">2064</option><option value="2065">2065</option><option value="2066">2066</option><option value="2067">2067</option><option value="2068">2068</option><option value="2069">2069</option><option value="2070">2070</option><option value="2071">2071</option><option value="2072">2072</option><option value="2073">2073</option><option value="2074">2074</option><option value="2075">2075</option><option value="2076">2076</option><option value="2077">2077</option><option value="2078">2078</option><option value="2079">2079</option><option value="2080">2080</option><option value="2081">2081</option><option value="2082">2082</option><option value="2083">2083</option><option value="2084">2084</option><option value="2085">2085</option><option value="2086">2086</option><option value="2087">2087</option><option value="2088">2088</option><option value="2089">2089</option><option value="2090">2090</option><option value="2091">2091</option><option value="2092">2092</option><option value="2093">2093</option><option value="2094">2094</option><option value="2095">2095</option><option value="2096">2096</option><option value="2097">2097</option><option value="2098">2098</option><option value="2099">2099</option>
-        </select>
-      </label>
-    </div>
-    <section id="personalEventsInlinePanel" class="panel personal-events-inline-panel" aria-labelledby="personalEventsTitle" hidden>
-      <div class="panel-head" style="align-items:center;gap:12px;flex-wrap:wrap">
-        <div><h2 id="personalEventsTitle">Personal Events</h2><div class="panel-sub">Birthdays, trips, appointments, deadlines, and your own countdowns.</div></div>
-      </div>
-      <div class="personal-event-view-tabs" role="tablist" aria-label="Personal event views">
-        <button type="button" class="active" id="personalUpcomingTab" role="tab" aria-selected="true" onclick="setPersonalEventView('upcoming')">Upcoming</button>
-        <button type="button" id="personalHistoryTab" role="tab" aria-selected="false" onclick="setPersonalEventView('history')">History</button>
-      </div>
-      <form id="personalEventForm" class="personal-event-form personal-event-modal-overlay" onsubmit="savePersonalEvent(event)" hidden>
-        <div class="personal-event-modal-card" role="dialog" aria-modal="true" aria-labelledby="personalEventModalTitle">
-          <div class="personal-event-modal-head">
-            <div><h3 id="personalEventModalTitle">Add personal event</h3><p>Set an event and Savely will track its countdown.</p></div>
-          </div>
-          <input type="hidden" id="personalEventId">
-          <div class="form-grid">
-            <div class="field"><label for="personalEventName">Event name</label><input id="personalEventName" maxlength="90" placeholder="e.g. Birthday, Concert, Vacation" required></div>
-            <div class="field"><label for="personalEventDate">Event date</label><input id="personalEventDate" type="date" required></div>
-            <div class="field full"><label for="personalEventDescription">Description (optional)</label><textarea id="personalEventDescription" rows="3" maxlength="300" placeholder="Add a short note about this event"></textarea></div>
-          </div>
-          <div class="form-actions" style="justify-content:flex-end"><button type="button" class="btn btn-light" onclick="closePersonalEventForm()">Cancel</button><button type="submit" class="btn btn-primary" id="personalEventSaveButton">Save event</button></div>
-        </div>
-      </form>
-      <div id="personalEventDeleteModal" class="personal-event-delete-modal" hidden>
-        <div class="personal-event-delete-card" role="dialog" aria-modal="true" aria-labelledby="personalEventDeleteTitle">
-          <div class="personal-event-delete-icon" aria-hidden="true">!</div>
-          <h3 id="personalEventDeleteTitle">Delete personal event?</h3>
-          <p>Are you sure you want to delete <strong id="personalEventDeleteName"></strong>? This action cannot be undone.</p>
-          <div class="personal-event-delete-actions">
-            <button type="button" class="btn btn-light" onclick="closePersonalEventDelete()">Cancel</button>
-            <button type="button" class="btn btn-primary" onclick="confirmDeletePersonalEvent()">Delete event</button>
-          </div>
-        </div>
-      </div>
-      <div id="personalEventsList" class="personal-events-list" aria-live="polite"></div>
-    </section>
-    <section class="panel holiday-list-panel">
-      <div class="panel-head holiday-list-head">
-        <div><h2 id="holidayListTitle">2027 holiday calendar</h2><div class="panel-sub" id="holidayListSubtitle">Nationwide holidays and special days</div></div>
-        <div class="holiday-sync-status"><span class="holiday-live-dot"></span><span id="holidaySyncStatus">Checking public holiday feed…</span></div>
-      </div>
-      <div id="holidayList" class="holiday-list" aria-live="polite"></div>
-      <div class="holiday-source-note">
-        <strong>Official-source note</strong>
-        <span>Dates for published years are based on Presidential proclamations and public holiday feeds. For future years without an official proclamation, recurring dates are shown as projections only; special, local, and movable declarations may change. Verify each year with government sources.</span>
-        <div class="holiday-source-links">
-          <a href="https://pco.gov.ph/documents-issuances/" target="_blank" rel="noopener">Presidential Communications Office</a>
-          <a href="https://officialgazette.gov.ph/section/executive-issuances/proclamations/" target="_blank" rel="noopener">Official Gazette proclamations</a>
-          <a href="https://elibrary.judiciary.gov.ph/" target="_blank" rel="noopener">Supreme Court E-Library</a>
-        </div>
-      </div>
-    </section>
-
-    <div class="holiday-pending-note">Eid’l Fitr and Eid’l Adha dates are announced separately after official dates are determined. Local or regional special days may also be declared separately.</div>
-  </section>
+  
 
 
   <section class="page" id="page-billing" aria-label="Billing">
@@ -8264,13 +8267,18 @@ function expenseLocalISO(date){
  return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');
 }
 function expenseTodayISO(){
- const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Manila',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
- const get=type=>parts.find(part=>part.type===type)?.value||'';
- return get('year')+'-'+get('month')+'-'+get('day');
+ // Use the browser's local calendar date and time zone.
+ return expenseLocalISO(new Date());
 }
 function changeExpenseCalendarMonth(delta){
  expenseCalendarCursor=new Date(expenseCalendarCursor.getFullYear(),expenseCalendarCursor.getMonth()+Number(delta||0),1);
  renderBudget();
+ const grid=document.getElementById('expensesCalendarGrid');
+ if(grid){
+  grid.classList.remove('swipe-transition');
+  void grid.offsetWidth;
+  grid.classList.add('swipe-transition');
+ }
 }
 function goToExpenseCalendarToday(){
  const now=new Date();
@@ -8586,7 +8594,7 @@ function renderBudget(){
   const isPast=iso<today;
   const isFuture=iso>today;
   const dateClasses=`expenses-calendar-day${isPast?' is-past':''}${isFuture?' is-future':''}${iso===today?' is-today':''}${items.length?' has-expenses':''}`;
-  cells.push(`<button type="button" class="${dateClasses}" onclick="openExpenseDayActions('${iso}')" aria-label="${weekdayNames[date.getDay()]}, ${date.toLocaleDateString('en-PH',{month:'long',day:'numeric',year:'numeric'})}. ${items.length} expenses totalling ${peso(total)}. ${isPast?'View or edit historical expenses.':isFuture?'Future date. Adding expenses is unavailable until this date.':'Open date actions.'}">
+  cells.push(`<button type="button" tabindex="-1" class="${dateClasses}" aria-label="${weekdayNames[date.getDay()]}, ${date.toLocaleDateString('en-PH',{month:'long',day:'numeric',year:'numeric'})}. ${items.length} expenses totalling ${peso(total)}. Calendar display only; use the Add Expenses button to create a new entry.">
    <span class="expenses-day-top"><span class="expenses-day-number">${day}</span><span class="expenses-day-top-meta">${iso===today?'<span class="expenses-today-label">Today</span>':''}${items.length?`<span class="expenses-day-total">${peso(total)}</span>`:''}</span></span>
    <span class="expenses-day-items">${chips}</span>
   </button>`);
@@ -18693,58 +18701,76 @@ if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostn
 </style>
 
 
-<style id="savely-expenses-monthly-gradient-summary-v1">
+<style id="savely-expenses-monthly-gradient-summary-v2">
 #page-budget .expenses-calendar-summary{
  position:relative!important;isolation:isolate!important;overflow:hidden!important;
- display:flex!important;align-items:center!important;justify-content:space-between!important;
- gap:18px!important;box-sizing:border-box!important;
- min-height:142px!important;padding:23px 25px!important;margin:0 0 20px!important;
+ display:grid!important;grid-template-columns:minmax(0,1fr) auto auto!important;
+ align-items:center!important;column-gap:clamp(18px,4vw,54px)!important;
+ width:100%!important;min-height:150px!important;box-sizing:border-box!important;
+ padding:25px clamp(22px,3vw,38px)!important;margin:0!important;
  border:1px solid #168765!important;border-radius:18px!important;
  background:linear-gradient(112deg,#087d5c 0%,#11996e 54%,#31b887 100%)!important;
  color:#fff!important;box-shadow:0 10px 26px rgba(22,135,101,.15)!important;
 }
-#page-budget .expenses-calendar-summary::before{
- content:""!important;position:absolute!important;z-index:0!important;
- width:160px!important;height:160px!important;right:-54px!important;top:-100px!important;
- border-radius:50%!important;background:rgba(255,255,255,.11)!important;pointer-events:none!important;
-}
+#page-budget .expenses-calendar-summary::before,
 #page-budget .expenses-calendar-summary::after{
- content:"₱"!important;position:absolute!important;z-index:1!important;
- display:grid!important;place-items:center!important;top:20px!important;right:22px!important;
- width:34px!important;height:34px!important;border:1px solid rgba(255,255,255,.25)!important;
- border-radius:11px!important;background:rgba(255,255,255,.17)!important;
- color:#fff!important;font-size:16px!important;font-weight:850!important;
+ content:none!important;display:none!important;
 }
 #page-budget .expenses-calendar-summary .expenses-summary-main{
- position:relative!important;z-index:2!important;display:flex!important;
- flex-direction:column!important;align-items:flex-start!important;gap:5px!important;
- min-width:0!important;
+ position:relative!important;z-index:2!important;
+ display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;
+ grid-template-rows:auto auto!important;align-items:center!important;
+ column-gap:clamp(16px,3vw,42px)!important;row-gap:5px!important;
+ min-width:0!important;width:100%!important;
 }
 #page-budget .expenses-calendar-summary .expenses-summary-label{
- color:rgba(255,255,255,.88)!important;font-size:11px!important;font-weight:800!important;
+ grid-column:1!important;grid-row:1!important;
+ color:rgba(255,255,255,.9)!important;font-size:11px!important;font-weight:800!important;
 }
 #page-budget .expenses-calendar-summary strong#expensesCalendarTotal{
- color:#fff!important;font-size:clamp(25px,2.2vw,30px)!important;
+ grid-column:2!important;grid-row:1/3!important;justify-self:end!important;
+ color:#fff!important;font-size:clamp(27px,2.5vw,34px)!important;
  line-height:1.15!important;font-weight:900!important;letter-spacing:-.6px!important;
- font-variant-numeric:tabular-nums!important;
+ font-variant-numeric:tabular-nums!important;white-space:nowrap!important;
 }
 #page-budget .expenses-calendar-summary .expenses-summary-month{
+ grid-column:1!important;grid-row:2!important;
  color:rgba(255,255,255,.86)!important;font-size:11px!important;font-weight:650!important;
 }
 #page-budget .expenses-calendar-summary .expenses-summary-count{
- position:relative!important;z-index:2!important;align-self:flex-start!important;
- margin-right:45px!important;padding:8px 12px!important;border:1px solid rgba(255,255,255,.2)!important;
- border-radius:999px!important;background:rgba(255,255,255,.16)!important;
- color:#fff!important;font-size:10px!important;font-weight:850!important;white-space:nowrap!important;
+ position:relative!important;z-index:2!important;justify-self:end!important;
+ align-self:center!important;margin:0!important;padding:9px 14px!important;
+ border:1px solid rgba(255,255,255,.24)!important;border-radius:999px!important;
+ background:rgba(255,255,255,.16)!important;color:#fff!important;
+ font-size:10px!important;font-weight:850!important;white-space:nowrap!important;
 }
+#page-budget .expenses-calendar-summary .expenses-summary-currency{display:none!important}
 #page-budget .expenses-calendar-panel-head{margin-bottom:15px!important}
-@media(max-width:650px){
+@media(max-width:760px){
  #page-budget .expenses-calendar-summary{
-  min-height:126px!important;padding:19px 17px!important;border-radius:15px!important;
+  min-height:126px!important;padding:19px 18px!important;border-radius:15px!important;
+  grid-template-columns:minmax(0,1fr) auto!important;column-gap:12px!important;
  }
- #page-budget .expenses-calendar-summary::after{top:15px!important;right:15px!important}
- #page-budget .expenses-calendar-summary .expenses-summary-count{margin-right:37px!important}
- #page-budget .expenses-calendar-summary strong#expensesCalendarTotal{font-size:24px!important}
+ #page-budget .expenses-calendar-summary .expenses-summary-main{
+  grid-column:1/-1!important;grid-template-columns:minmax(0,1fr) auto!important;
+  column-gap:12px!important;
+ }
+ #page-budget .expenses-calendar-summary strong#expensesCalendarTotal{
+  font-size:clamp(23px,5vw,29px)!important;
+ }
+ #page-budget .expenses-calendar-summary .expenses-summary-count{
+  grid-column:2!important;grid-row:2!important;align-self:end!important;
+  justify-self:end!important;padding:7px 10px!important;
+ }
+}
+@media(max-width:420px){
+ #page-budget .expenses-calendar-summary{
+  min-height:116px!important;padding:16px 14px!important;
+ }
+ #page-budget .expenses-calendar-summary .expenses-summary-label,
+ #page-budget .expenses-calendar-summary .expenses-summary-month{font-size:10px!important}
+ #page-budget .expenses-calendar-summary strong#expensesCalendarTotal{font-size:22px!important}
+ #page-budget .expenses-calendar-summary .expenses-summary-count{font-size:9px!important}
 }
 </style>
 
@@ -18782,6 +18808,530 @@ if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostn
  #page-budget{gap:12px!important}
  #page-budget>.expenses-summary-outside-panel,
  #page-budget>.expenses-calendar-panel{width:100%!important;min-width:0!important}
+}
+</style>
+
+
+<style id="savely-expense-calendar-display-only-days">
+#expensesCalendarGrid button.expenses-calendar-day{
+ cursor:default!important;
+}
+#expensesCalendarGrid button.expenses-calendar-day:hover{
+ transform:none!important;
+}
+</style>
+
+
+<script id="savely-expense-calendar-horizontal-swipe-v1">
+(function(){
+ const grid=document.getElementById('expensesCalendarGrid');
+ const weekdays=document.querySelector('#page-budget .expenses-calendar-weekdays');
+ if(!grid||grid.dataset.swipeReady==='1')return;
+ grid.dataset.swipeReady='1';
+ let startX=0,startY=0,pointerId=null,tracking=false;
+ const surfaces=[grid,weekdays].filter(Boolean);
+ surfaces.forEach(surface=>{
+  surface.classList.add('expenses-calendar-swipe-surface');
+  surface.addEventListener('pointerdown',event=>{
+   if(event.pointerType==='mouse'&&event.button!==0)return;
+   tracking=true;pointerId=event.pointerId;startX=event.clientX;startY=event.clientY;
+  },{passive:true});
+  surface.addEventListener('pointerup',event=>{
+   if(!tracking||event.pointerId!==pointerId)return;
+   tracking=false;
+   const dx=event.clientX-startX,dy=event.clientY-startY;
+   if(Math.abs(dx)>=55&&Math.abs(dx)>Math.abs(dy)*1.25){
+    changeExpenseCalendarMonth(dx<0?1:-1);
+   }
+  },{passive:true});
+  surface.addEventListener('pointercancel',()=>{tracking=false;},{passive:true});
+  surface.addEventListener('lostpointercapture',()=>{tracking=false;},{passive:true});
+ });
+})();
+</script>
+<style id="savely-expense-calendar-horizontal-swipe-styles">
+#page-budget .expenses-calendar-weekdays,
+#page-budget .expenses-calendar-grid{
+ touch-action:pan-y pinch-zoom!important;
+ user-select:none!important;
+ -webkit-user-select:none!important;
+}
+#page-budget .expenses-calendar-grid{
+ min-width:0!important;max-width:100%!important;overflow:hidden!important;
+}
+#page-budget .expenses-calendar-grid.swipe-transition{
+ animation:savelyCalendarSwipeIn 220ms ease-out both;
+}
+@keyframes savelyCalendarSwipeIn{
+ from{opacity:.72;transform:translateX(8px)}
+ to{opacity:1;transform:translateX(0)}
+}
+@media(prefers-reduced-motion:reduce){
+ #page-budget .expenses-calendar-grid.swipe-transition{animation:none!important}
+}
+</style>
+
+
+<style id="savely-calendar-page-top-position-fix-v1">
+/* Keep the Calendars page in the main content flow directly below the shared header. */
+main.main>#page-holidays{
+ display:none;
+ width:100%!important;
+ max-width:100%!important;
+ min-width:0!important;
+ height:auto!important;
+ min-height:0!important;
+ margin:0!important;
+ padding:0!important;
+ position:relative!important;
+ inset:auto!important;
+ align-self:start!important;
+ justify-self:stretch!important;
+ box-sizing:border-box!important;
+}
+main.main>#page-holidays.active{
+ display:block!important;
+}
+main.main>#page-holidays>.holiday-hero:first-child{
+ margin-top:0!important;
+}
+@media(min-width:761px){
+ main.main>#page-holidays.active{
+  transform:none!important;
+ }
+}
+</style>
+
+
+<style id="savely-future-expense-date-countdown-modal-v1">
+/* Future dates stay visually unchanged, but are selectable to explain when entry unlocks. */
+#expensesCalendarGrid button.expenses-calendar-day.is-future{
+ pointer-events:auto!important;
+ cursor:pointer!important;
+}
+.expense-future-date-backdrop{
+ position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;
+ padding:20px;background:rgba(15,31,27,.42);backdrop-filter:blur(5px);
+}
+.expense-future-date-dialog{
+ width:min(100%,460px);padding:25px;border:1px solid #dcebe3;border-radius:22px;
+ background:#fff;box-shadow:0 24px 70px rgba(12,44,33,.22);color:#172b24;
+ animation:expenseFutureDialogIn .2s ease-out both;
+}
+@keyframes expenseFutureDialogIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+.expense-future-date-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.expense-future-date-kicker{display:inline-flex;align-items:center;gap:7px;color:#128765;font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
+.expense-future-date-kicker:before{content:"";width:7px;height:7px;border-radius:50%;background:#16a276;box-shadow:0 0 0 4px #e5f6ee}
+.expense-future-date-title{margin:9px 0 5px;font-size:clamp(20px,4vw,24px);font-weight:850;letter-spacing:-.5px}
+.expense-future-date-subtitle{margin:0;color:#748278;font-size:13px;line-height:1.55}
+.expense-future-date-close{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border:0;border-radius:11px;background:#f1f5f3;color:#33463d;font-size:21px;cursor:pointer}
+.expense-future-date-selected{margin:20px 0 15px;padding:13px 15px;border:1px solid #dcefe5;border-radius:13px;background:#f4fbf7;color:#176b50;font-size:13px;font-weight:750}
+.expense-future-countdown{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.expense-future-countdown-unit{padding:13px 5px;border:1px solid #e4eee8;border-radius:13px;background:#fbfdfc;text-align:center}
+.expense-future-countdown-unit strong{display:block;color:#087c59;font-size:clamp(23px,5vw,30px);font-weight:900;line-height:1.1;font-variant-numeric:tabular-nums}
+.expense-future-countdown-unit span{display:block;margin-top:5px;color:#829087;font-size:10px;font-weight:750;text-transform:uppercase;letter-spacing:.04em}
+.expense-future-date-note{margin:15px 0 0;color:#89958e;font-size:11px;line-height:1.5;text-align:center}
+.expense-future-date-add{display:block;width:100%;min-height:46px;margin-top:18px;border:0;border-radius:12px;background:linear-gradient(110deg,#087f5b,#16a477);color:#fff;font-size:13px;font-weight:850;cursor:pointer;box-shadow:0 7px 18px #07845f26}
+@media(max-width:480px){
+ .expense-future-date-dialog{padding:19px;border-radius:18px}
+ .expense-future-countdown{gap:6px}
+ .expense-future-countdown-unit{padding:11px 3px}
+ .expense-future-countdown-unit strong{font-size:23px}
+}
+@media(prefers-reduced-motion:reduce){.expense-future-date-dialog{animation:none}}
+</style>
+
+<script id="savely-future-expense-date-countdown-v1">
+(function(){
+ let countdownTimer=null;
+ let activeBackdrop=null;
+
+ function localMidnightForISO(iso){
+  const parts=String(iso).split('-').map(Number);
+  if(parts.length!==3||parts.some(n=>!Number.isFinite(n)))return null;
+  // Numeric local Date construction correctly handles month/year boundaries and DST.
+  return new Date(parts[0],parts[1]-1,parts[2],0,0,0,0);
+ }
+ function prettyDate(iso){
+  const target=localMidnightForISO(iso);
+  return target?target.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'}):iso;
+ }
+ function remainingParts(iso){
+  const target=localMidnightForISO(iso);
+  if(!target)return null;
+  const diff=Math.max(0,target.getTime()-Date.now());
+  const seconds=Math.floor(diff/1000);
+  return {
+   total:diff,
+   days:Math.floor(seconds/86400),
+   hours:Math.floor((seconds%86400)/3600),
+   minutes:Math.floor((seconds%3600)/60),
+   seconds:seconds%60
+  };
+ }
+ function closeFutureDateNotice(){
+  if(countdownTimer){clearInterval(countdownTimer);countdownTimer=null;}
+  if(activeBackdrop){activeBackdrop.remove();activeBackdrop=null;}
+ }
+ function showAvailableState(backdrop,iso){
+  const dialog=backdrop.querySelector('.expense-future-date-dialog');
+  if(!dialog)return;
+  dialog.querySelector('.expense-future-date-kicker').textContent='DATE AVAILABLE';
+  dialog.querySelector('.expense-future-date-title').textContent='This date is now available';
+  dialog.querySelector('.expense-future-date-subtitle').textContent='You can now record expenses for this date.';
+  dialog.querySelector('.expense-future-date-selected').textContent=prettyDate(iso);
+  dialog.querySelector('.expense-future-countdown').innerHTML='<div class="expense-future-countdown-unit" style="grid-column:1/-1"><strong>00:00:00</strong><span>Available now</span></div>';
+  dialog.querySelector('.expense-future-date-note').textContent='The selected date has arrived in your local time zone.';
+  let button=dialog.querySelector('.expense-future-date-add');
+  if(!button){
+   button=document.createElement('button');
+   button.type='button';button.className='expense-future-date-add';
+   dialog.appendChild(button);
+  }
+  button.textContent='＋ Add expense';
+  button.addEventListener('click',()=>{
+   closeFutureDateNotice();
+   if(typeof window.openExpenseEntry==='function')window.openExpenseEntry(iso);
+  },{once:true});
+ }
+ function updateCountdown(backdrop,iso){
+  const values=remainingParts(iso);
+  if(!values)return;
+  if(values.total<=0){
+   if(countdownTimer){clearInterval(countdownTimer);countdownTimer=null;}
+   showAvailableState(backdrop,iso);
+   if(typeof window.renderBudget==='function')window.renderBudget();
+   return;
+  }
+  const units=backdrop.querySelectorAll('.expense-future-countdown-unit strong');
+  [values.days,values.hours,values.minutes,values.seconds].forEach((value,index)=>{
+   if(units[index])units[index].textContent=String(value).padStart(2,'0');
+  });
+ }
+ function openFutureDateNotice(iso){
+  closeFutureDateNotice();
+  const backdrop=document.createElement('div');
+  backdrop.className='expense-future-date-backdrop';
+  backdrop.innerHTML=`<section class="expense-future-date-dialog" role="dialog" aria-modal="true" aria-label="Future date unavailable">
+   <div class="expense-future-date-head">
+    <div><span class="expense-future-date-kicker">FUTURE DATE</span><h2 class="expense-future-date-title">This date isn't available yet</h2><p class="expense-future-date-subtitle">Expenses can only be added on or before the current date.</p></div>
+    <button type="button" class="expense-future-date-close" aria-label="Close">×</button>
+   </div>
+   <div class="expense-future-date-selected">${prettyDate(iso)}</div>
+   <div class="expense-future-countdown" aria-live="off">
+    <div class="expense-future-countdown-unit"><strong>00</strong><span>Days</span></div>
+    <div class="expense-future-countdown-unit"><strong>00</strong><span>Hours</span></div>
+    <div class="expense-future-countdown-unit"><strong>00</strong><span>Minutes</span></div>
+    <div class="expense-future-countdown-unit"><strong>00</strong><span>Seconds</span></div>
+   </div>
+   <p class="expense-future-date-note">Time remaining until this date begins in your local time zone.</p>
+  </section>`;
+  backdrop.addEventListener('click',event=>{if(event.target===backdrop)closeFutureDateNotice();});
+  backdrop.querySelector('.expense-future-date-close').addEventListener('click',closeFutureDateNotice);
+  document.addEventListener('keydown',function onEscape(event){
+   if(event.key==='Escape'&&activeBackdrop===backdrop){
+    closeFutureDateNotice();
+    document.removeEventListener('keydown',onEscape);
+   }
+  });
+  document.body.appendChild(backdrop);
+  activeBackdrop=backdrop;
+  updateCountdown(backdrop,iso);
+  if(countdownTimer)clearInterval(countdownTimer);
+  countdownTimer=setInterval(()=>{
+   if(!document.body.contains(backdrop)){closeFutureDateNotice();return;}
+   updateCountdown(backdrop,iso);
+  },1000);
+ }
+ function handleCalendarDateClick(event){
+  const day=event.target.closest('#expensesCalendarGrid button.expenses-calendar-day');
+  if(!day)return;
+  const grid=document.getElementById('expensesCalendarGrid');
+  if(!grid||!grid.contains(day))return;
+  const number=day.querySelector('.expenses-day-number')?.textContent?.trim();
+  if(!number)return;
+  const year=expenseCalendarCursor.getFullYear();
+  const month=expenseCalendarCursor.getMonth();
+  const iso=year+'-'+String(month+1).padStart(2,'0')+'-'+String(number).padStart(2,'0');
+  const today=expenseTodayISO();
+  if(iso>today){
+   event.preventDefault();
+   event.stopPropagation();
+   openFutureDateNotice(iso);
+   return;
+  }
+  if(iso===today){
+   // Reuse the same Add Expense entry point used by the FAB.
+   // Stop the calendar's other date handlers so Today opens the editor directly.
+   event.preventDefault();
+   event.stopImmediatePropagation();
+   if(typeof window.openExpenseEntry==='function'){
+    window.openExpenseEntry(iso);
+   }
+   return;
+  }
+  // Past dates keep their existing expense review and editing behavior.
+ }
+ document.addEventListener('click',handleCalendarDateClick,true);
+ window.closeExpenseFutureDateNotice=closeFutureDateNotice;
+})();
+</script>
+
+
+<style id="savely-global-content-height-and-spacing-repair-v1">
+/*
+  Global layout repair:
+  - the sidebar remains viewport-pinned on desktop (existing behavior)
+  - the main column and active page size to their real content
+  - remove viewport-height minimums that were making short pages scroll into
+    large blank areas
+  - preserve all page sections, panels, charts, tables, media and controls
+*/
+html, body{
+  height:auto!important;
+  min-height:100%!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+}
+body > .app,
+.app{
+  height:auto!important;
+  min-height:100vh!important;
+  align-items:start!important;
+  overflow:visible!important;
+}
+.app > main.main,
+main.main{
+  box-sizing:border-box!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  align-self:start!important;
+  min-width:0!important;
+  overflow:visible!important;
+  padding-bottom:24px!important;
+}
+/* The selected workspace page follows the shared header in normal document flow. */
+main.main > .page.active{
+  display:block!important;
+  position:relative!important;
+  inset:auto!important;
+  float:none!important;
+  clear:both!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin-top:0!important;
+  margin-bottom:0!important;
+  align-self:auto!important;
+  overflow:visible!important;
+  transform:none;
+}
+/* Keep inactive routes out of the layout without deleting or altering their content. */
+main.main > .page:not(.active){
+  display:none!important;
+}
+/* Do not let a routed page's outermost child create an artificial vertical offset. */
+main.main > .page.active > :first-child{
+  margin-top:0;
+}
+/* Content grids and panels may grow naturally; never force a page-sized empty tail. */
+main.main > .page.active .section-grid,
+main.main > .page.active .cards,
+main.main > .page.active .panel,
+main.main > .page.active .settings-tabs-wrap{
+  max-height:none;
+}
+@media(min-width:761px){
+  .app > main.main{
+    grid-column:2!important;
+    width:auto!important;
+  }
+}
+@media(max-width:760px){
+  body > .app,
+  .app{
+    display:flex!important;
+    flex-direction:column!important;
+    height:auto!important;
+    min-height:100vh!important;
+    align-items:stretch!important;
+  }
+  .app > main.main,
+  main.main{
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    padding-bottom:20px!important;
+  }
+  main.main > .page.active{
+    width:100%!important;
+    min-height:0!important;
+    height:auto!important;
+    margin-block:0!important;
+  }
+}
+/* Respect reduced-motion preferences while avoiding route-entry transforms
+   that can make page content appear displaced during navigation. */
+@media(prefers-reduced-motion:reduce){
+  main.main > .page.active{scroll-behavior:auto!important}
+}
+</style>
+
+
+<style id="savely-expense-calendar-salary-sized-grid-v1">
+/* Expense Calendar: use the full available width and give each date the
+   same spacious, readable card treatment as Savely's other calendars. */
+#page-budget,
+#page-budget .expenses-calendar-panel{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+#page-budget .expenses-calendar-weekdays,
+#page-budget .expenses-calendar-grid,
+#expensesCalendarGrid{
+  display:grid!important;
+  grid-template-columns:repeat(7,minmax(0,1fr))!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  gap:8px!important;
+  box-sizing:border-box!important;
+}
+#page-budget .expenses-calendar-weekdays{
+  margin-bottom:8px!important;
+}
+#page-budget .expenses-calendar-weekdays span{
+  min-width:0!important;
+  padding:9px 3px!important;
+  font-size:11px!important;
+  line-height:1.25!important;
+  font-weight:800!important;
+  letter-spacing:.6px!important;
+}
+#expensesCalendarGrid button.expenses-calendar-day,
+#expensesCalendarGrid .expenses-calendar-empty{
+  box-sizing:border-box!important;
+  min-width:0!important;
+  width:100%!important;
+  min-height:clamp(124px,9vw,150px)!important;
+  height:auto!important;
+  padding:12px!important;
+  gap:9px!important;
+  border-radius:12px!important;
+}
+#expensesCalendarGrid button.expenses-calendar-day{
+  font-size:12px!important;
+  line-height:1.35!important;
+}
+#expensesCalendarGrid .expenses-day-top{
+  min-height:26px!important;
+  gap:6px!important;
+}
+#expensesCalendarGrid .expenses-day-number{
+  width:26px!important;
+  height:26px!important;
+  flex-basis:26px!important;
+  font-size:12px!important;
+  line-height:1!important;
+}
+#expensesCalendarGrid .expenses-day-total{
+  font-size:10px!important;
+  line-height:1.25!important;
+}
+#expensesCalendarGrid .expenses-day-items{
+  gap:5px!important;
+}
+#expensesCalendarGrid .expenses-day-item{
+  min-width:0!important;
+  padding:5px 6px!important;
+  gap:6px!important;
+  border-radius:7px!important;
+  font-size:10px!important;
+  line-height:1.3!important;
+}
+#expensesCalendarGrid .expenses-day-item strong{
+  font-size:10px!important;
+}
+#expensesCalendarGrid .expenses-day-count,
+#expensesCalendarGrid .expenses-day-add{
+  font-size:10px!important;
+  line-height:1.3!important;
+}
+@media(max-width:950px){
+  #page-budget .expenses-calendar-weekdays,
+  #page-budget .expenses-calendar-grid,
+  #expensesCalendarGrid{
+    gap:6px!important;
+  }
+  #expensesCalendarGrid button.expenses-calendar-day,
+  #expensesCalendarGrid .expenses-calendar-empty{
+    min-height:clamp(108px,14vw,132px)!important;
+    padding:9px!important;
+  }
+}
+@media(max-width:650px){
+  #page-budget .expenses-calendar-weekdays,
+  #page-budget .expenses-calendar-grid,
+  #expensesCalendarGrid{
+    gap:4px!important;
+  }
+  #page-budget .expenses-calendar-weekdays span{
+    padding:7px 1px!important;
+    font-size:9px!important;
+    letter-spacing:0!important;
+  }
+  #expensesCalendarGrid button.expenses-calendar-day,
+  #expensesCalendarGrid .expenses-calendar-empty{
+    min-height:94px!important;
+    padding:6px!important;
+    gap:6px!important;
+    border-radius:9px!important;
+  }
+  #expensesCalendarGrid button.expenses-calendar-day{
+    font-size:10px!important;
+  }
+  #expensesCalendarGrid .expenses-day-top{
+    min-height:21px!important;
+    gap:3px!important;
+  }
+  #expensesCalendarGrid .expenses-day-number{
+    width:22px!important;
+    height:22px!important;
+    flex-basis:22px!important;
+    font-size:10px!important;
+  }
+  #expensesCalendarGrid .expenses-day-total{
+    font-size:8px!important;
+  }
+  #expensesCalendarGrid .expenses-day-item{
+    padding:3px 4px!important;
+    font-size:8px!important;
+    line-height:1.2!important;
+  }
+  #expensesCalendarGrid .expenses-day-item strong,
+  #expensesCalendarGrid .expenses-day-count{
+    font-size:8px!important;
+  }
+}
+@media(max-width:380px){
+  #page-budget .expenses-calendar-weekdays,
+  #page-budget .expenses-calendar-grid,
+  #expensesCalendarGrid{gap:3px!important}
+  #expensesCalendarGrid button.expenses-calendar-day,
+  #expensesCalendarGrid .expenses-calendar-empty{
+    min-height:84px!important;
+    padding:4px!important;
+  }
+  #expensesCalendarGrid .expenses-day-number{
+    width:20px!important;height:20px!important;flex-basis:20px!important;
+  }
 }
 </style>
 
