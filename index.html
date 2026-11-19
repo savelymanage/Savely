@@ -22321,23 +22321,6 @@ body,button,input,select,textarea{letter-spacing:0}
 .panel h2,.modal h2,.goal-card h3{letter-spacing:-.012em!important}
 .nav button,.btn,.financial-tab,.bank-option{letter-spacing:0!important}
 
-@media(min-width:761px){
-body:not(#_) .app>.sidebar{background:var(--panel)!important;border-right:1px solid var(--line)!important;box-shadow:none!important;color:var(--text)!important}
-body:not(#_) .app>.sidebar .brand,body:not(#_) .app>.sidebar .brand *{color:var(--text)!important}
-body:not(#_) .app>.sidebar .brand div div{color:var(--muted)!important;letter-spacing:.04em}
-body:not(#_) .app>.sidebar .brand .brand-mark{color:#fff!important;background:linear-gradient(145deg,#1a936f,#0b5a43)!important;box-shadow:0 8px 18px -8px rgba(11,90,67,.7)}
-body:not(#_) .app>.sidebar .nav-label{color:var(--muted)!important}
-body:not(#_) .app>.sidebar .nav button{color:color-mix(in srgb,var(--text) 74%,transparent)!important;font-weight:600!important;border:0!important;border-radius:12px!important;background:transparent!important;box-shadow:none!important}
-body:not(#_) .app>.sidebar .nav button *{color:inherit!important}
-body:not(#_) .app>.sidebar .nav button:hover{background:color-mix(in srgb,var(--green) 8%,transparent)!important;color:var(--text)!important}
-body:not(#_) .app>.sidebar .nav button.active{background:var(--green2)!important;color:var(--nav-ink)!important;font-weight:700!important;box-shadow:inset 3px 0 0 var(--nav-ink)!important}
-body:not(#_) .app>.sidebar .nav button.active *{color:var(--nav-ink)!important}
-body:not(#_) .app>.sidebar .side-bottom{background:var(--soft)!important;border:1px solid var(--line)!important;backdrop-filter:none}
-body:not(#_) .app>.sidebar .side-bottom strong{color:var(--text)!important}
-body:not(#_) .app>.sidebar .side-bottom p{color:var(--muted)!important}
-body:not(#_) .app>.sidebar .side-bottom button{background:var(--green)!important;color:#fff!important;border:0!important}
-}
-
 /* Savings hero card: the one bold element */
 .summary-carousel-slide .stat{min-height:190px;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:30px 36px;border-radius:26px}
 .summary-carousel-slide .stat::after{display:none}
@@ -22371,5 +22354,57 @@ body:not(#_) .app>.sidebar .side-bottom button{background:var(--green)!important
  html body #page-salary .salary-next-payday-heading{display:flex!important;align-items:baseline!important;justify-content:space-between!important;gap:16px!important;margin:0!important}
  html body #page-salary .salary-next-payday-parts{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:8px!important;align-items:start!important;text-align:center!important;margin:0!important}
  html body #page-salary .salary-next-payday-parts > div{display:grid!important;justify-items:center!important;gap:4px!important;min-width:0!important;margin:0!important}
+}
+</style>
+
+<style id="savely-page-fade-v1">
+@keyframes savelyPageEnter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes savelyPageLeave{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-6px)}}
+.page.page-entering{animation:savelyPageEnter .3s cubic-bezier(.2,.7,.2,1) both;filter:none}
+.page.page-leaving{animation:savelyPageLeave .16s ease-in forwards!important;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.page.page-leaving{animation:none!important;opacity:1!important}}
+</style>
+<script id="savely-page-fade-js">
+(function(){
+ if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ var bypass=false,pending=false,SEL='#nav button[data-page],[onclick*="showPage("]';
+ function pageOf(btn){
+  if(btn.matches('#nav button[data-page]'))return btn.dataset.page;
+  var m=/showPage\(\s*['"]([^'"]+)['"]/.exec(btn.getAttribute('onclick')||'');
+  return m?m[1]:null;
+ }
+ // Capture on document runs before the sidebar's own handlers, so the old page can fade out first.
+ document.addEventListener('click',function(e){
+  if(bypass||!e.isTrusted||!e.target||e.target.nodeType!==1)return;
+  var btn=e.target.closest(SEL);if(!btn)return;
+  var p=pageOf(btn);if(!p)return;
+  var cur=document.querySelector('main.main > .page.active');
+  if(!cur||cur.id==='page-'+p)return;
+  e.preventDefault();e.stopImmediatePropagation();
+  if(pending)return;
+  pending=true;cur.classList.add('page-leaving');
+  setTimeout(function(){
+   bypass=true;
+   try{btn.click();}finally{bypass=false;pending=false;cur.classList.remove('page-leaving');}
+  },160);
+ },true);
+})();
+</script>
+
+<style id="savely-ui-fixes-v4">
+/* Overview hero cards: container grows to fit the number (was fixed at 190px and clipped it) */
+@media(min-width:601px){
+ html body #stats.cards .summary-carousel-slide > .stat{height:auto!important;min-height:230px!important;max-height:none!important;padding:32px 40px!important;justify-content:center!important}
+ html body #stats.cards .summary-carousel-slide .stat-value{font-size:clamp(38px,4.4vw,56px)!important;line-height:1.2!important;margin:14px 0 10px!important;overflow:visible!important;padding-bottom:2px}
+ html body #stats.cards .summary-carousel-slide .stat-top{font-size:14px!important}
+ html body #stats.cards .summary-carousel-slide .stat-foot{font-size:13px!important}
+}
+/* Salary banner: countdown gets a real column and breathing room from the edges */
+@media(min-width:761px){
+ html body #page-salary .salary-summary-cards > .salary-annual-remaining-stat{grid-template-columns:minmax(0,1fr) minmax(360px,460px)!important;column-gap:56px!important;padding:32px 56px!important}
+ html body #page-salary .salary-next-payday{width:100%!important;min-width:0!important}
+}
+@media(min-width:761px) and (max-width:1100px){
+ html body #page-salary .salary-summary-cards > .salary-annual-remaining-stat{grid-template-columns:minmax(0,1fr) minmax(300px,360px)!important;column-gap:32px!important;padding:28px 32px!important}
 }
 </style>
