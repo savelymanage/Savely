@@ -22273,6 +22273,12 @@ body.dark-theme th{background:rgba(46,197,149,.05)}
 body.dark-theme .btn-light{background:#162520;border-color:var(--line)}
 body.dark-theme .eyebrow{color:#5fd4ab}
 
+/* ---------- Layout fix: inactive pages must never take up space ---------- */
+/* #page-budget / #page-settings / #page-expense-editor have ID-level display:!important rules
+   that beat ".page{display:none}", so they stayed rendered under the active page.
+   The :not(#__) trick raises specificity to ID level so this rule wins. */
+main.main > .page:not(.active):not(#__hidden){display:none !important;height:0 !important;min-height:0 !important;margin:0 !important;padding:0 !important;overflow:hidden !important}
+
 /* ---------- Fixes found while reviewing ---------- */
 body:has(#page-dashboard.active) #pageTitle{color:var(--text) !important}
 .auth-story-copy h1{font-size:clamp(38px,4.2vw,60px) !important;line-height:1.04 !important;letter-spacing:-.045em !important;font-weight:800 !important}
