@@ -19102,109 +19102,7 @@ main.main>#page-holidays>.holiday-hero:first-child{
 </script>
 
 
-<style id="savely-global-content-height-and-spacing-repair-v1">
-/*
-  Global layout repair:
-  - the sidebar remains viewport-pinned on desktop (existing behavior)
-  - the main column and active page size to their real content
-  - remove viewport-height minimums that were making short pages scroll into
-    large blank areas
-  - preserve all page sections, panels, charts, tables, media and controls
-*/
-html, body{
-  height:auto!important;
-  min-height:100%!important;
-  overflow-x:hidden!important;
-  overflow-y:auto!important;
-}
-body > .app,
-.app{
-  height:auto!important;
-  min-height:100vh!important;
-  align-items:start!important;
-  overflow:visible!important;
-}
-.app > main.main,
-main.main{
-  box-sizing:border-box!important;
-  height:auto!important;
-  min-height:0!important;
-  max-height:none!important;
-  align-self:start!important;
-  min-width:0!important;
-  overflow:visible!important;
-  padding-bottom:24px!important;
-}
-/* The selected workspace page follows the shared header in normal document flow. */
-main.main > .page.active{
-  display:block!important;
-  position:relative!important;
-  inset:auto!important;
-  float:none!important;
-  clear:both!important;
-  width:100%!important;
-  max-width:100%!important;
-  min-width:0!important;
-  height:auto!important;
-  min-height:0!important;
-  max-height:none!important;
-  margin-top:0!important;
-  margin-bottom:0!important;
-  align-self:auto!important;
-  overflow:visible!important;
-  transform:none;
-}
-/* Keep inactive routes out of the layout without deleting or altering their content. */
-main.main > .page:not(.active){
-  display:none!important;
-}
-/* Do not let a routed page's outermost child create an artificial vertical offset. */
-main.main > .page.active > :first-child{
-  margin-top:0;
-}
-/* Content grids and panels may grow naturally; never force a page-sized empty tail. */
-main.main > .page.active .section-grid,
-main.main > .page.active .cards,
-main.main > .page.active .panel,
-main.main > .page.active .settings-tabs-wrap{
-  max-height:none;
-}
-@media(min-width:761px){
-  .app > main.main{
-    grid-column:2!important;
-    width:auto!important;
-  }
-}
-@media(max-width:760px){
-  body > .app,
-  .app{
-    display:flex!important;
-    flex-direction:column!important;
-    height:auto!important;
-    min-height:100vh!important;
-    align-items:stretch!important;
-  }
-  .app > main.main,
-  main.main{
-    width:100%!important;
-    height:auto!important;
-    min-height:0!important;
-    max-height:none!important;
-    padding-bottom:20px!important;
-  }
-  main.main > .page.active{
-    width:100%!important;
-    min-height:0!important;
-    height:auto!important;
-    margin-block:0!important;
-  }
-}
-/* Respect reduced-motion preferences while avoiding route-entry transforms
-   that can make page content appear displaced during navigation. */
-@media(prefers-reduced-motion:reduce){
-  main.main > .page.active{scroll-behavior:auto!important}
-}
-</style>
+
 
 
 <style id="savely-expense-calendar-salary-sized-grid-v1">
@@ -19649,235 +19547,7 @@ main.main > .page.active .settings-tabs-wrap{
 </style>
 
 
-<style id="savely-global-route-position-and-natural-page-height-v2">
-/*
-  Route layout repair:
-  Keep the shared main column and each active route in normal document flow.
-  Prevent flex/grid centering, stale minimum heights, or page-sized wrappers
-  from pushing the route content down or leaving a scrollable blank tail.
-*/
-html, body {
-  height: auto !important;
-  min-height: 100vh !important;
-  overflow-x: hidden !important;
-  overflow-y: auto !important;
-}
-body > .app,
-body .app {
-  display: grid !important;
-  grid-template-columns: 245px minmax(0, 1fr) !important;
-  grid-template-rows: max-content !important;
-  align-content: start !important;
-  align-items: start !important;
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  overflow: visible !important;
-}
-body .app > main.main,
-body main.main {
-  display: block !important;
-  position: relative !important;
-  grid-row: 1 !important;
-  align-self: start !important;
-  justify-self: stretch !important;
-  box-sizing: border-box !important;
-  width: auto !important;
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  margin: 0 !important;
-  padding-bottom: 12px !important;
-  overflow: visible !important;
-}
-body main.main > .topbar {
-  position: relative !important;
-  inset: auto !important;
-  display: flex;
-  width: 100% !important;
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  margin: 0 0 18px !important;
-  padding-top: 0 !important;
-  transform: none !important;
-  align-self: auto !important;
-}
-body main.main > .page,
-body main.main > .page.active {
-  position: relative !important;
-  inset: auto !important;
-  float: none !important;
-  clear: both !important;
-  display: none;
-  box-sizing: border-box !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  min-width: 0 !important;
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  margin: 0 !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  align-self: start !important;
-  justify-self: stretch !important;
-  transform: none !important;
-  translate: none !important;
-  overflow: visible !important;
-}
-body main.main > .page.active {
-  display: block !important;
-}
-body main.main > .page.active > :first-child {
-  margin-top: 0 !important;
-}
-body main.main > .page.active > :last-child {
-  margin-bottom: 0 !important;
-}
-/* The dedicated Add Expenses editor must begin directly under the top edge. */
-body.expense-editor-active main.main > .topbar {
-  display: none !important;
-  height: 0 !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-body.expense-editor-active main.main {
-  padding-top: 14px !important;
-}
-body.expense-editor-active main.main > #page-expense-editor,
-body.expense-editor-active #page-expense-editor.active {
-  display: block !important;
-  position: relative !important;
-  inset: auto !important;
-  height: auto !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  padding: 0 clamp(12px, 1.5vw, 28px) !important;
-  transform: none !important;
-}
-body.expense-editor-active #page-expense-editor > .expense-editor-layout {
-  display: block !important;
-  position: relative !important;
-  width: 100% !important;
-  max-width: none !important;
-  height: auto !important;
-  min-height: 0 !important;
-  margin: 0 auto !important;
-  padding: 0 !important;
-  align-items: flex-start !important;
-  justify-content: flex-start !important;
-  transform: none !important;
-}
-body.expense-editor-active #page-expense-editor .expense-editor-card {
-  margin-top: 0 !important;
-}
-body.expense-editor-active #page-expense-editor .expense-editor-datebar {
-  margin-top: 0 !important;
-}
-/* Settings: keep the tabs and the selected settings panel visible in normal flow. */
-body #page-settings,
-body #page-settings.active,
-body #page-settings .settings-tabs-wrap {
-  display: block !important;
-  position: relative !important;
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  overflow: visible !important;
-}
-body #page-settings .settings-tabs {
-  display: flex !important;
-  position: relative !important;
-  height: auto !important;
-  min-height: 0 !important;
-  margin-top: 0 !important;
-}
-body #page-settings .settings-tabs-wrap .section-grid {
-  display: block !important;
-  height: auto !important;
-  min-height: 0 !important;
-  margin-top: 0 !important;
-}
-body #page-settings [data-settings-panel] {
-  display: none !important;
-  height: auto !important;
-  min-height: 0 !important;
-}
-body #page-settings [data-settings-panel].settings-panel-active {
-  display: block !important;
-}
-body #page-settings #settingsDateTimePanel.settings-panel-active {
-  display: block !important;
-}
-/* Calendar and all other routes use content height, not viewport-sized panels. */
-body #page-holidays,
-body #page-budget,
-body #page-goals,
-body #page-dashboard,
-body #page-financial-list,
-body #page-salary,
-body #page-debt,
-body #page-cards,
-body #page-live-location,
-body #page-radio,
-body #page-settings {
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  align-self: start !important;
-}
-@media (min-width: 761px) {
-  body .app > aside.sidebar {
-    grid-column: 1 !important;
-    grid-row: 1 !important;
-  }
-  body .app > main.main {
-    grid-column: 2 !important;
-    grid-row: 1 !important;
-  }
-}
-@media (max-width: 760px) {
-  body > .app,
-  body .app {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    justify-content: flex-start !important;
-    grid-template-columns: minmax(0, 1fr) !important;
-    grid-template-rows: max-content max-content !important;
-    height: auto !important;
-    min-height: 0 !important;
-  }
-  body .app > main.main,
-  body main.main {
-    display: block !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: 12px 10px calc(12px + env(safe-area-inset-bottom)) !important;
-  }
-  body.expense-editor-active main.main {
-    padding-top: 8px !important;
-  }
-  body.expense-editor-active #page-expense-editor {
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-  }
-  body main.main > .page.active {
-    min-height: 0 !important;
-    margin: 0 !important;
-  }
-}
-</style>
+
 <script id="savely-global-route-scroll-and-settings-activation-v2">
 (function(){
   function resetRoutePosition(){
@@ -20099,223 +19769,7 @@ body #page-settings {
 </style>
 
 
-<style id="savely-final-natural-page-flow-and-settings-visibility-v2">
-/*
-  Shared page-flow repair.
-  Keep the sidebar viewport-fixed on desktop so its 100vh height does not
-  force the main grid row (and every short page) to be 100vh tall.
-*/
-html, body {
-  height: auto !important;
-  min-height: 0 !important;
-  overflow-x: hidden !important;
-  overflow-y: auto !important;
-}
-body > .app,
-body .app,
-body .app.sidebar-collapsed {
-  display: grid !important;
-  grid-template-columns: 245px minmax(0, 1fr) !important;
-  grid-template-rows: max-content !important;
-  align-items: start !important;
-  justify-items: stretch !important;
-  width: 100% !important;
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  margin: 0 !important;
-  overflow: visible !important;
-}
-body .app > aside.sidebar {
-  position: fixed !important;
-  inset: 0 auto 0 0 !important;
-  grid-column: 1 !important;
-  grid-row: 1 !important;
-  align-self: start !important;
-  width: 245px !important;
-  height: 100vh !important;
-  height: 100dvh !important;
-  min-height: 0 !important;
-  max-height: 100vh !important;
-  max-height: 100dvh !important;
-  overflow-x: hidden !important;
-  overflow-y: auto !important;
-}
-body .app.sidebar-collapsed > aside.sidebar {
-  width: 76px !important;
-}
-body .app > main.main,
-body main.main {
-  display: block !important;
-  position: relative !important;
-  grid-column: 2 !important;
-  grid-row: 1 !important;
-  align-self: start !important;
-  justify-self: stretch !important;
-  box-sizing: border-box !important;
-  width: auto !important;
-  min-width: 0 !important;
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  margin: 0 !important;
-  padding: 14px clamp(14px, 2vw, 30px) 18px !important;
-  overflow: visible !important;
-}
-body .app.sidebar-collapsed > main.main {
-  grid-column: 2 !important;
-}
-body main.main > .topbar {
-  display: flex !important;
-  position: relative !important;
-  inset: auto !important;
-  width: 100% !important;
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  margin: 0 0 16px !important;
-  padding: 0 !important;
-  transform: none !important;
-}
-body main.main > .page,
-body main.main > .page.active {
-  display: none;
-  position: relative !important;
-  inset: auto !important;
-  float: none !important;
-  clear: both !important;
-  box-sizing: border-box !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  min-width: 0 !important;
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  margin: 0 !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  align-self: start !important;
-  justify-self: stretch !important;
-  transform: none !important;
-  translate: none !important;
-  overflow: visible !important;
-}
-body main.main > .page.active {
-  display: block !important;
-}
-body main.main > .page.active > :first-child {
-  margin-top: 0 !important;
-}
-body main.main > .page.active > :last-child {
-  margin-bottom: 0 !important;
-}
-body main.main > .page.active,
-body main.main > .page.active * {
-  scroll-margin-top: 0;
-}
-/* No page should inherit a viewport-sized minimum height or flex centering. */
-body main.main > .page.active,
-body main.main > .page.active > *,
-body main.main > .page.active .panel,
-body main.main > .page.active .section-grid,
-body main.main > .page.active .settings-tabs-wrap {
-  min-height: 0;
-}
-body main.main > #page-expense-editor,
-body main.main > #page-expense-editor.active,
-body.expense-editor-active main.main > #page-expense-editor {
-  display: block !important;
-  margin: 0 !important;
-  padding-top: 0 !important;
-  transform: none !important;
-}
-body.expense-editor-active main.main {
-  padding-top: 10px !important;
-}
 
-/* Settings tabs and the selected panel must remain visible in normal flow. */
-body #page-settings,
-body #page-settings.active,
-body #page-settings .settings-tabs-wrap,
-body #page-settings .settings-tabs,
-body #page-settings .settings-tabs-wrap > .section-grid {
-  display: block !important;
-  position: relative !important;
-  inset: auto !important;
-  width: 100% !important;
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-  overflow: visible !important;
-}
-body #page-settings .settings-tabs {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  margin-bottom: 16px !important;
-}
-body #page-settings [data-settings-panel] {
-  display: none !important;
-  position: relative !important;
-  width: 100% !important;
-  height: auto !important;
-  min-height: 0 !important;
-  margin: 0 0 16px !important;
-}
-body #page-settings [data-settings-panel].settings-panel-active {
-  display: block !important;
-}
-body #page-settings #settingsDateTimePanel.settings-panel-active {
-  display: block !important;
-}
-
-/* Keep the natural page height; only the sidebar fills the viewport. */
-@media (max-width: 760px) {
-  body > .app,
-  body .app,
-  body .app.sidebar-collapsed {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    overflow: visible !important;
-  }
-  body .app > aside.sidebar,
-  body .app.sidebar-collapsed > aside.sidebar {
-    position: relative !important;
-    inset: auto !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    overflow: visible !important;
-  }
-  body .app > main.main,
-  body main.main {
-    display: block !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    margin: 0 !important;
-    padding: 12px 10px calc(14px + env(safe-area-inset-bottom)) !important;
-  }
-  body main.main > .page.active {
-    width: 100% !important;
-    height: auto !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  body.expense-editor-active main.main {
-    padding-top: 8px !important;
-  }
-}
-</style>
 <script id="savely-final-settings-panel-and-route-flow-v2">
 (function () {
   function ensureSettingsPanel() {
@@ -20396,9 +19850,6 @@ body #page-settings #settingsDateTimePanel.settings-panel-active {
   normalizeActivePage();
 })();
 </script>
-
-</body>
-</html>
 <style id="savely-metro-snapshot-monitor-v1">
 #page-metro-snapshot .savely-snapshot-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:290px;padding:34px 22px;border:1px dashed #cfe3d8;border-radius:15px;background:linear-gradient(145deg,#f4faf6,#fbfdfc)}
 #page-metro-snapshot .savely-snapshot-empty-icon{display:grid;place-items:center;width:54px;height:54px;margin-bottom:13px;border-radius:16px;background:#e3f4ea;color:#13845f;font-size:25px;font-weight:800}
@@ -21946,106 +21397,7 @@ body.expense-editor-active .expense-composer-section input{
 
 
 
-<style id="savely-final-content-flow-and-scroll-reset-v1">
-/*
-  Final shared layout correction:
-  - Main content starts at the top of the content column on every route.
-  - Main/page height follows real content; no extra viewport-height main column.
-  - The app itself retains its minimum viewport height so the sidebar/background
-    remain visually continuous on short pages.
-*/
-html, body{
-  scroll-behavior:auto!important;
-}
-body > .app,
-body .app{
-  height:auto!important;
-  min-height:100vh!important;
-  align-items:start!important;
-}
-body .app > main.main,
-body main.main{
-  display:block!important;
-  position:relative!important;
-  align-self:start!important;
-  box-sizing:border-box!important;
-  width:auto!important;
-  height:auto!important;
-  min-height:0!important;
-  max-height:none!important;
-  margin-top:0!important;
-  margin-bottom:0!important;
-  overflow:visible!important;
-  padding-bottom:20px!important;
-}
-body main.main > .page.active{
-  display:block!important;
-  position:relative!important;
-  inset:auto!important;
-  float:none!important;
-  clear:both!important;
-  width:100%!important;
-  height:auto!important;
-  min-height:0!important;
-  max-height:none!important;
-  margin-top:0!important;
-  margin-bottom:0!important;
-  padding-top:0!important;
-  transform:none!important;
-  align-self:auto!important;
-  overflow:visible!important;
-}
-body main.main > .page:not(.active){
-  display:none!important;
-}
-/* Keep the editor immediately below the top edge when its page is opened. */
-body.expense-editor-active .topbar{
-  display:none!important;
-  margin:0!important;
-  padding:0!important;
-  height:0!important;
-}
-body.expense-editor-active .main,
-body.expense-editor-active main.main{
-  padding-top:14px!important;
-}
-body.expense-editor-active #page-expense-editor{
-  margin-top:0!important;
-  padding-top:0!important;
-}
-body.expense-editor-active #page-expense-editor > .expense-editor-layout{
-  margin-top:0!important;
-  padding-top:0!important;
-}
-/* Settings and all short pages end after their actual last section. */
-body #page-settings,
-body #page-settings.active{
-  height:auto!important;
-  min-height:0!important;
-  margin-top:0!important;
-  margin-bottom:0!important;
-  padding-bottom:0!important;
-}
-@media(max-width:760px){
-  body .app > main.main,
-  body main.main{
-    width:100%!important;
-    height:auto!important;
-    min-height:0!important;
-    padding-top:12px!important;
-    padding-bottom:calc(16px + env(safe-area-inset-bottom))!important;
-  }
-  body.expense-editor-active .main,
-  body.expense-editor-active main.main{
-    padding-top:8px!important;
-  }
-  body main.main > .page.active{
-    min-height:0!important;
-    margin-top:0!important;
-    margin-bottom:0!important;
-  }
-}
-</style>
+
 <script id="savely-final-route-scroll-reset-v1">
 (function(){
   // Make all normal page changes land at the top immediately, including
@@ -22066,3 +21418,354 @@ body #page-settings.active{
 })();
 </script>
 
+<style id="savely-canonical-layout-repair-v1">
+/*
+  Canonical layout repair.
+  One shared rule set replaces the accumulated, conflicting viewport-height
+  and route-position patches. Pages size to their real content.
+*/
+html, body {
+  width: 100%;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+body > .app,
+body .app,
+body .app.sidebar-collapsed {
+  display: grid !important;
+  grid-template-columns: 245px minmax(0, 1fr) !important;
+  grid-template-rows: min-content !important;
+  align-content: start !important;
+  align-items: start !important;
+  justify-items: stretch !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  overflow: visible !important;
+}
+body .app > aside.sidebar,
+body .app.sidebar-collapsed > aside.sidebar {
+  position: fixed !important;
+  inset: 0 auto 0 0 !important;
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  align-self: start !important;
+  width: 245px !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  min-height: 0 !important;
+  max-height: 100vh !important;
+  max-height: 100dvh !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+body .app.sidebar-collapsed > aside.sidebar {
+  width: 76px !important;
+}
+body .app > main.main,
+body .app.sidebar-collapsed > main.main,
+body main.main {
+  display: block !important;
+  position: relative !important;
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: start !important;
+  justify-self: stretch !important;
+  box-sizing: border-box !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 14px clamp(14px, 2vw, 30px) 16px !important;
+  overflow: visible !important;
+}
+body main.main > .topbar {
+  display: flex !important;
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 0 16px !important;
+  padding: 0 !important;
+  transform: none !important;
+}
+body main.main > .page,
+body main.main > .page:not(.active) {
+  display: none !important;
+}
+body main.main > .page.active {
+  display: block !important;
+  position: relative !important;
+  inset: auto !important;
+  float: none !important;
+  clear: both !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  align-self: start !important;
+  justify-self: stretch !important;
+  transform: none !important;
+  translate: none !important;
+  animation: none !important;
+  overflow: visible !important;
+}
+body main.main > .page.active > :first-child {
+  margin-top: 0 !important;
+}
+body main.main > .page.active > :last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Keep Settings tabs visible and show only the selected panel. */
+body #page-settings,
+body #page-settings.active,
+body #page-settings .settings-tabs-wrap {
+  display: block !important;
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+body #page-settings .settings-tabs {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  position: relative !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 0 16px !important;
+}
+body #page-settings .settings-tabs-wrap > .section-grid {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+}
+body #page-settings [data-settings-panel] {
+  display: none !important;
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 0 16px !important;
+}
+body #page-settings [data-settings-panel].settings-panel-active {
+  display: block !important;
+}
+body #page-settings .settings-tabs-wrap > .section-grid:not(:has(> [data-settings-panel].settings-panel-active)) > [data-settings-panel]:first-child {
+  display: block !important;
+}
+
+/* Add Expenses is a dedicated route, not a modal-sized page. */
+body.expense-editor-active main.main > .topbar {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+body.expense-editor-active main.main {
+  padding-top: 14px !important;
+}
+body.expense-editor-active #page-expense-editor,
+body.expense-editor-active #page-expense-editor.active {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 clamp(12px, 1.5vw, 28px) !important;
+  transform: none !important;
+}
+body.expense-editor-active #page-expense-editor > .expense-editor-layout {
+  display: block !important;
+  position: relative !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+}
+body.expense-editor-active #page-expense-editor .expense-editor-card,
+body.expense-editor-active #page-expense-editor .expense-editor-datebar {
+  margin-top: 0 !important;
+}
+
+/* Tablet and phone: compact header followed immediately by page content. */
+@media (max-width: 760px) {
+  body > .app,
+  body .app,
+  body .app.sidebar-collapsed {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  body .app > aside.sidebar,
+  body .app.sidebar-collapsed > aside.sidebar {
+    position: relative !important;
+    inset: auto !important;
+    display: grid !important;
+    flex: 0 0 auto !important;
+    align-self: stretch !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    grid-template-columns: minmax(0, 1fr) 38px !important;
+    grid-template-rows: 48px 42px !important;
+    grid-auto-rows: max-content !important;
+    align-content: start !important;
+    align-items: center !important;
+    gap: 5px 8px !important;
+    margin: 0 !important;
+    padding: 8px 10px 8px !important;
+    overflow: hidden !important;
+  }
+  body .app > aside.sidebar > .brand,
+  body .app.sidebar-collapsed > aside.sidebar > .brand {
+    display: flex !important;
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  body .app > aside.sidebar > #savelySidebarToggle,
+  body .app.sidebar-collapsed > aside.sidebar > #savelySidebarToggle {
+    display: grid !important;
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    position: static !important;
+    inset: auto !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+  }
+  body .app > aside.sidebar > div:not(.brand):not(.side-bottom),
+  body .app.sidebar-collapsed > aside.sidebar > div:not(.brand):not(.side-bottom) {
+    display: block !important;
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    max-height: 42px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+  body .app > aside.sidebar .nav-label,
+  body .app.sidebar-collapsed > aside.sidebar .nav-label,
+  body .app > aside.sidebar .side-bottom,
+  body .app.sidebar-collapsed > aside.sidebar .side-bottom {
+    display: none !important;
+  }
+  body .app > aside.sidebar #nav,
+  body .app.sidebar-collapsed > aside.sidebar #nav {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    width: 100% !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    max-height: 42px !important;
+    margin: 0 !important;
+    padding: 0 0 2px !important;
+    gap: 4px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  body .app > aside.sidebar #nav button,
+  body .app.sidebar-collapsed > aside.sidebar #nav button {
+    display: inline-flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    min-width: 40px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    border-radius: 9px !important;
+    white-space: nowrap !important;
+    font-size: 11px !important;
+    line-height: 1 !important;
+  }
+  body .app > aside.sidebar #nav button .ico,
+  body .app.sidebar-collapsed > aside.sidebar #nav button .ico {
+    display: inline-block !important;
+    width: auto !important;
+    font-size: 14px !important;
+  }
+  body .app > aside.sidebar #nav button .nav-text,
+  body .app.sidebar-collapsed > aside.sidebar #nav button .nav-text {
+    display: inline !important;
+  }
+  body .app > main.main,
+  body .app.sidebar-collapsed > main.main,
+  body main.main {
+    display: block !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 12px 10px calc(14px + env(safe-area-inset-bottom)) !important;
+  }
+  body.expense-editor-active main.main {
+    padding-top: 8px !important;
+  }
+  body.expense-editor-active #page-expense-editor {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body main.main > .page.active { animation: none !important; }
+}
+</style>
+
+</body>
+</html>
