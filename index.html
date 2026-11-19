@@ -22394,10 +22394,10 @@ body,button,input,select,textarea{letter-spacing:0}
 <style id="savely-ui-fixes-v4">
 /* Overview hero cards: container grows to fit the number (was fixed at 190px and clipped it) */
 @media(min-width:601px){
- html body #stats.cards .summary-carousel-slide > .stat{height:auto!important;min-height:230px!important;max-height:none!important;padding:32px 40px!important;justify-content:center!important}
- html body #stats.cards .summary-carousel-slide .stat-value{font-size:clamp(38px,4.4vw,56px)!important;line-height:1.2!important;margin:14px 0 10px!important;overflow:visible!important;padding-bottom:2px}
- html body #stats.cards .summary-carousel-slide .stat-top{font-size:14px!important}
- html body #stats.cards .summary-carousel-slide .stat-foot{font-size:13px!important}
+ html body #stats.cards .summary-carousel-slide > .stat{height:auto!important;min-height:176px!important;max-height:none!important;padding:24px 32px!important;justify-content:center!important}
+ html body #stats.cards .summary-carousel-slide .stat-value{font-size:clamp(26px,2.4vw,34px)!important;line-height:1.25!important;margin:10px 0 8px!important;overflow:visible!important;padding-bottom:2px}
+ html body #stats.cards .summary-carousel-slide .stat-top{font-size:13px!important}
+ html body #stats.cards .summary-carousel-slide .stat-foot{font-size:12px!important}
 }
 /* Salary banner: countdown gets a real column and breathing room from the edges */
 @media(min-width:761px){
@@ -22406,5 +22406,76 @@ body,button,input,select,textarea{letter-spacing:0}
 }
 @media(min-width:761px) and (max-width:1100px){
  html body #page-salary .salary-summary-cards > .salary-annual-remaining-stat{grid-template-columns:minmax(0,1fr) minmax(300px,360px)!important;column-gap:32px!important;padding:28px 32px!important}
+}
+</style>
+
+<style id="savely-expense-editor-redesign-v1">
+/* Add/Edit expenses — new layout. Same markup and behavior; two columns: build the list on the left, total + actions on the right. */
+html body.expense-editor-active #page-expense-editor .expense-editor-layout{max-width:1180px;margin:0 auto!important;width:100%!important}
+html body.expense-editor-active #page-expense-editor .expense-editor-card{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+/* Date header */
+html body.expense-editor-active #page-expense-editor .expense-editor-datebar{display:flex!important;align-items:center!important;gap:16px!important;background:transparent!important;border:0!important;box-shadow:none!important;padding:4px 2px 22px!important;margin:0!important}
+html body.expense-editor-active #page-expense-editor .expense-editor-date-icon{width:52px!important;height:52px!important;border-radius:16px!important;display:grid!important;place-items:center!important;font-size:22px!important;background:linear-gradient(145deg,#1a936f,#0b5a43)!important;color:#fff!important;box-shadow:0 10px 22px -10px rgba(11,90,67,.7)!important}
+html body.expense-editor-active #page-expense-editor .expense-editor-date-copy{flex:1;min-width:0}
+html body.expense-editor-active #page-expense-editor .expense-editor-date-copy span{display:block;font-size:11px!important;letter-spacing:.1em;color:var(--muted)!important;font-weight:700}
+html body.expense-editor-active #page-expense-editor .expense-editor-date-copy strong{display:block;font-family:var(--font-display);font-size:clamp(22px,2.6vw,30px)!important;letter-spacing:-.02em;line-height:1.2;color:var(--text)!important}
+html body.expense-editor-active #page-expense-editor .expense-editor-date-status{display:inline-flex!important;align-items:center;gap:8px;padding:8px 14px!important;border-radius:99px!important;background:var(--panel)!important;border:1px solid var(--line)!important;font-size:12px!important;font-weight:650;color:var(--muted)!important}
+/* Two-column form */
+html body.expense-editor-active #page-expense-editor #expenseEditorMount #modalForm{display:grid!important;grid-template-columns:minmax(0,1fr) 340px!important;grid-template-rows:auto auto 1fr!important;gap:18px 22px!important;align-items:start!important;margin:0!important;padding:0!important}
+html body.expense-editor-active #page-expense-editor #expenseComposer{display:contents!important}
+html body.expense-editor-active #page-expense-editor .expense-composer-section{grid-column:1!important;grid-row:1 / span 3!important;background:var(--panel)!important;border:1px solid var(--line)!important;border-radius:24px!important;padding:28px!important;box-shadow:var(--shadow)!important;margin:0!important}
+html body.expense-editor-active #page-expense-editor .expense-section-heading{display:flex!important;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:20px!important}
+html body.expense-editor-active #page-expense-editor .expense-section-heading h3{font-family:var(--font-display);font-size:20px!important;letter-spacing:-.015em;margin:0 0 4px!important}
+html body.expense-editor-active #page-expense-editor .expense-section-heading p{margin:0!important;color:var(--muted)!important;font-size:13px!important}
+html body.expense-editor-active #page-expense-editor .expense-section-step{background:var(--soft)!important;color:var(--muted)!important;border-radius:10px!important;font-size:11px!important;padding:5px 9px!important}
+/* Category tiles (wrap into a grid instead of a scrolling rail) */
+html body.expense-editor-active #page-expense-editor .expense-category-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;overflow:visible!important;padding:2px!important;margin:0 0 20px!important;cursor:default!important}
+html body.expense-editor-active #page-expense-editor .expense-category-card{display:flex!important;align-items:center!important;gap:11px!important;width:auto!important;min-width:0!important;padding:12px 14px!important;border-radius:16px!important;background:var(--panel)!important;border:1.5px solid var(--line)!important;color:var(--text)!important;box-shadow:none!important;font-weight:650!important;text-align:left!important;transition:border-color .15s,background .15s,transform .15s}
+html body.expense-editor-active #page-expense-editor .expense-category-card:hover{border-color:color-mix(in srgb,var(--green) 45%,var(--line))!important;transform:translateY(-1px)}
+html body.expense-editor-active #page-expense-editor .expense-category-icon{width:38px!important;height:38px!important;flex:0 0 38px!important;display:grid!important;place-items:center!important;border-radius:12px!important;background:var(--soft)!important;font-size:18px!important}
+html body.expense-editor-active #page-expense-editor .expense-category-card > span:nth-child(2){flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+html body.expense-editor-active #page-expense-editor .expense-category-check{display:none!important;width:22px;height:22px;border-radius:50%;place-items:center;background:var(--green)!important;color:#fff!important;font-size:12px!important;flex:0 0 22px}
+html body.expense-editor-active #page-expense-editor .expense-category-card.selected,html body.expense-editor-active #page-expense-editor .expense-category-card.active{background:color-mix(in srgb,var(--green) 9%,var(--panel))!important;border-color:var(--green)!important;color:var(--text)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 14%,transparent)!important}
+html body.expense-editor-active #page-expense-editor .expense-category-card.selected .expense-category-check,html body.expense-editor-active #page-expense-editor .expense-category-card.active .expense-category-check{display:grid!important}
+html body.expense-editor-active #page-expense-editor .expense-category-card.selected .expense-category-icon,html body.expense-editor-active #page-expense-editor .expense-category-card.active .expense-category-icon{background:var(--green2)!important}
+/* Active category panel */
+html body.expense-editor-active #page-expense-editor .expense-category-panel{background:var(--soft)!important;border:1px solid var(--line)!important;border-radius:20px!important;padding:22px!important;box-shadow:none!important}
+html body.expense-editor-active #page-expense-editor .expense-category-panel-head > div{display:grid!important;grid-template-columns:minmax(0,1fr) auto;column-gap:16px;row-gap:2px;align-items:center;margin-bottom:16px}
+html body.expense-editor-active #page-expense-editor .expense-category-panel-head strong{grid-column:1;font-family:var(--font-display);font-size:18px!important;letter-spacing:-.01em}
+html body.expense-editor-active #page-expense-editor .expense-category-panel-head small{grid-column:1;color:var(--muted)!important;font-size:12px!important}
+html body.expense-editor-active #page-expense-editor .expense-category-subtotal{grid-column:2;grid-row:1 / span 2;font-style:normal!important;font-family:var(--font-display);font-size:22px!important;font-weight:800!important;color:var(--green)!important}
+/* Time of day: segmented control */
+html body.expense-editor-active #page-expense-editor .expense-time-tabs{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:4px!important;padding:4px!important;border-radius:15px!important;background:color-mix(in srgb,var(--muted) 14%,transparent)!important;margin:0 0 16px!important}
+html body.expense-editor-active #page-expense-editor .expense-time-tab{border:0!important;background:transparent!important;color:var(--muted)!important;border-radius:11px!important;padding:11px 8px!important;font-weight:650!important;box-shadow:none!important;transition:background .15s,color .15s}
+html body.expense-editor-active #page-expense-editor .expense-time-tab.active{background:var(--panel)!important;color:var(--green)!important;font-weight:800!important;box-shadow:0 2px 8px -2px rgba(16,32,26,.25)!important}
+/* Item rows */
+html body.expense-editor-active #page-expense-editor .expense-items-list{display:grid!important;gap:10px!important;margin-bottom:12px!important}
+html body.expense-editor-active #page-expense-editor .expense-item-row{display:grid!important;grid-template-columns:minmax(0,1fr) 170px 42px!important;gap:10px!important;align-items:center!important;margin:0!important}
+html body.expense-editor-active #page-expense-editor .expense-item-row input{height:48px!important;border-radius:13px!important;border:1px solid color-mix(in srgb,var(--muted) 28%,var(--line))!important;background:var(--panel)!important;padding:0 14px!important;font-size:14px!important}
+html body.expense-editor-active #page-expense-editor .expense-item-row input:focus{border-color:var(--green)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--green) 16%,transparent)!important;outline:0}
+html body.expense-editor-active #page-expense-editor .expense-item-remove{width:42px!important;height:42px!important;border-radius:50%!important;border:1px solid var(--line)!important;background:var(--panel)!important;color:var(--muted)!important;font-size:20px!important;display:grid!important;place-items:center;padding:0!important}
+html body.expense-editor-active #page-expense-editor .expense-item-remove:hover{color:var(--red)!important;border-color:var(--red)!important}
+html body.expense-editor-active #page-expense-editor .expense-add-item{width:100%!important;justify-content:center!important;border:1.5px dashed color-mix(in srgb,var(--green) 55%,var(--line))!important;background:transparent!important;color:var(--green)!important;border-radius:14px!important;padding:13px!important;font-weight:700!important;box-shadow:none!important}
+html body.expense-editor-active #page-expense-editor .expense-add-item:hover{background:color-mix(in srgb,var(--green) 7%,transparent)!important}
+/* Right column: total + actions */
+html body.expense-editor-active #page-expense-editor .expense-composer-summary{grid-column:2!important;grid-row:1!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:10px!important;margin:0!important;padding:26px!important;border:0!important;border-radius:24px!important;background:radial-gradient(260px 160px at 100% 0%,rgba(130,240,195,.25),transparent 70%),linear-gradient(155deg,#0f6b4f,#0a4a38)!important;box-shadow:0 22px 40px -22px rgba(10,74,56,.8)!important}
+html body.expense-editor-active #page-expense-editor .expense-composer-summary *{color:#fff!important}
+html body.expense-editor-active #page-expense-editor .expense-composer-summary > div{display:grid!important;gap:6px!important}
+html body.expense-editor-active #page-expense-editor .expense-summary-label{font-size:13px!important;opacity:.8;font-weight:600}
+html body.expense-editor-active #page-expense-editor #expenseComposerTotal{font-family:var(--font-display);font-size:clamp(34px,3.2vw,44px)!important;line-height:1.1;letter-spacing:-.025em;font-weight:800}
+html body.expense-editor-active #page-expense-editor #expenseComposerCount{font-size:13px!important;opacity:.85}
+html body.expense-editor-active #page-expense-editor .expense-summary-note{font-size:12px!important;opacity:.75;padding-top:12px;border-top:1px solid rgba(255,255,255,.2);width:100%}
+html body.expense-editor-active #page-expense-editor .expense-composer-actions{grid-column:2!important;grid-row:2!important;display:flex!important;flex-direction:column-reverse!important;gap:10px!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important}
+html body.expense-editor-active #page-expense-editor .expense-composer-actions .btn{width:100%!important;min-height:52px!important;border-radius:15px!important;font-size:15px!important;justify-content:center!important}
+@media(max-width:1100px){
+ html body.expense-editor-active #page-expense-editor #expenseEditorMount #modalForm{grid-template-columns:minmax(0,1fr)!important;grid-template-rows:none!important}
+ html body.expense-editor-active #page-expense-editor .expense-composer-section,html body.expense-editor-active #page-expense-editor .expense-composer-summary,html body.expense-editor-active #page-expense-editor .expense-composer-actions{grid-column:1!important;grid-row:auto!important}
+ html body.expense-editor-active #page-expense-editor .expense-category-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:600px){
+ html body.expense-editor-active #page-expense-editor .expense-composer-section{padding:18px!important}
+ html body.expense-editor-active #page-expense-editor .expense-time-tabs{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ html body.expense-editor-active #page-expense-editor .expense-item-row{grid-template-columns:minmax(0,1fr) 120px 40px!important}
+ html body.expense-editor-active #page-expense-editor .expense-editor-date-status{display:none!important}
 }
 </style>
