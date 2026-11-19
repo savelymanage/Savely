@@ -5046,14 +5046,7 @@ body.expense-editor-active #pageDescription{
     </div>
     </section>
   <section class="page" id="page-budget">
- <div class="panel expenses-calendar-panel">
-  <div class="panel-head expenses-calendar-panel-head">
-   <div>
-    <h2>Expense calendar</h2>
-    <div class="panel-sub">Add and review your expenses by date.</div>
-   </div>
-   <button type="button" class="btn btn-primary expenses-add-button" onclick="openExpenseEntry()">＋ Add expense</button>
-  </div>
+ <div class="expenses-summary-outside-panel">
   <div class="expenses-calendar-summary">
    <div class="expenses-summary-main">
     <span class="expenses-summary-label">Monthly expenses</span>
@@ -5062,6 +5055,15 @@ body.expense-editor-active #pageDescription{
    </div>
    <span class="expenses-summary-count" id="expensesCalendarCount">0 expenses</span>
    <span class="expenses-summary-currency" aria-hidden="true">₱</span>
+  </div>
+ </div>
+ <div class="panel expenses-calendar-panel">
+  <div class="panel-head expenses-calendar-panel-head">
+   <div>
+    <h2>Expense calendar</h2>
+    <div class="panel-sub">Add and review your expenses by date.</div>
+   </div>
+   <button type="button" class="btn btn-primary expenses-add-button" onclick="openExpenseEntry()">＋ Add expense</button>
   </div>
   <div class="expenses-calendar-toolbar">
    <div class="expenses-month-label" id="expensesCalendarMonth">November 2026</div>
@@ -18743,6 +18745,43 @@ if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostn
  #page-budget .expenses-calendar-summary::after{top:15px!important;right:15px!important}
  #page-budget .expenses-calendar-summary .expenses-summary-count{margin-right:37px!important}
  #page-budget .expenses-calendar-summary strong#expensesCalendarTotal{font-size:24px!important}
+}
+</style>
+
+
+<style id="savely-expenses-summary-independent-top-banner-v1">
+#page-budget{
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:stretch!important;
+ gap:16px!important;
+}
+#page-budget>.expenses-summary-outside-panel{
+ display:block!important;
+ width:100%!important;
+ min-width:0!important;
+ margin:0!important;
+ padding:0!important;
+ background:transparent!important;
+ border:0!important;
+ box-shadow:none!important;
+}
+#page-budget>.expenses-summary-outside-panel>.expenses-calendar-summary{
+ width:100%!important;
+ box-sizing:border-box!important;
+ margin:0!important;
+}
+#page-budget>.expenses-calendar-panel{
+ display:block!important;
+ width:100%!important;
+ min-width:0!important;
+ box-sizing:border-box!important;
+ margin:0!important;
+}
+@media(max-width:760px){
+ #page-budget{gap:12px!important}
+ #page-budget>.expenses-summary-outside-panel,
+ #page-budget>.expenses-calendar-panel{width:100%!important;min-width:0!important}
 }
 </style>
 
