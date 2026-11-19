@@ -4674,6 +4674,127 @@ body.expense-editor-active #pageDescription{
 </style>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style id="savely-expense-summary-top-banner-and-bottom-actions">
+/* Expense editor: full-width summary banner first, workspace second, actions bottom-right. */
+html body.expense-editor-active #page-expense-editor #expenseEditorMount #modalForm{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:auto auto auto!important;
+  align-items:start!important;
+  gap:18px!important;
+}
+html body.expense-editor-active #page-expense-editor #expenseComposer{
+  display:contents!important;
+}
+html body.expense-editor-active #page-expense-editor .expense-composer-summary{
+  grid-column:1!important;
+  grid-row:1!important;
+  width:100%!important;
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:20px!important;
+  margin:0!important;
+  padding:18px 24px!important;
+  border:1px solid rgba(18,135,99,.24)!important;
+  border-radius:18px!important;
+  background:
+    radial-gradient(320px 150px at 100% 0%,rgba(130,240,195,.22),transparent 72%),
+    linear-gradient(110deg,#0f7657 0%,#0b5a43 100%)!important;
+  box-shadow:0 12px 26px -16px rgba(10,74,56,.55)!important;
+}
+html body.expense-editor-active #page-expense-editor .expense-composer-summary *{
+  color:#fff!important;
+}
+html body.expense-editor-active #page-expense-editor .expense-composer-summary>div{
+  display:grid!important;
+  gap:3px!important;
+}
+html body.expense-editor-active #page-expense-editor .expense-summary-label{
+  font-size:12px!important;
+  font-weight:750!important;
+  opacity:.82!important;
+  letter-spacing:.02em!important;
+}
+html body.expense-editor-active #page-expense-editor #expenseComposerTotal{
+  font-size:clamp(27px,3vw,36px)!important;
+  line-height:1.12!important;
+  font-weight:850!important;
+  letter-spacing:-.025em!important;
+  font-variant-numeric:tabular-nums!important;
+}
+html body.expense-editor-active #page-expense-editor #expenseComposerCount{
+  font-size:12px!important;
+  opacity:.86!important;
+}
+html body.expense-editor-active #page-expense-editor .expense-summary-note{
+  width:auto!important;
+  max-width:260px!important;
+  padding:0!important;
+  border:0!important;
+  text-align:right!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  opacity:.78!important;
+}
+html body.expense-editor-active #page-expense-editor .expense-composer-section{
+  grid-column:1!important;
+  grid-row:2!important;
+  width:100%!important;
+  min-width:0!important;
+}
+html body.expense-editor-active #page-expense-editor .expense-composer-actions{
+  grid-column:1!important;
+  grid-row:3!important;
+  display:flex!important;
+  flex-direction:row!important;
+  justify-content:flex-end!important;
+  align-items:center!important;
+  gap:10px!important;
+  width:100%!important;
+  margin:0!important;
+  padding:16px 0 0!important;
+  border-top:1px solid var(--line)!important;
+  background:transparent!important;
+}
+html body.expense-editor-active #page-expense-editor .expense-composer-actions .btn{
+  width:auto!important;
+  min-width:140px!important;
+  min-height:48px!important;
+  padding:11px 20px!important;
+  border-radius:12px!important;
+  font-size:13px!important;
+  font-weight:800!important;
+}
+@media(max-width:600px){
+  html body.expense-editor-active #page-expense-editor .expense-composer-summary{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+    gap:8px!important;
+    padding:17px 18px!important;
+  }
+  html body.expense-editor-active #page-expense-editor .expense-summary-note{
+    max-width:none!important;
+    text-align:left!important;
+  }
+  html body.expense-editor-active #page-expense-editor .expense-composer-actions{
+    position:static!important;
+    justify-content:stretch!important;
+    flex-direction:row!important;
+    gap:8px!important;
+    padding-bottom:max(8px,env(safe-area-inset-bottom))!important;
+  }
+  html body.expense-editor-active #page-expense-editor .expense-composer-actions .btn{
+    flex:1 1 0!important;
+    min-width:0!important;
+    padding:11px 10px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
