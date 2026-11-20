@@ -3898,7 +3898,7 @@ body:has(#page-financial-list.active) #topbarAddSavingsButton{
 .expense-composer-summary strong{font-size:25px;line-height:1.25;color:var(--green);font-variant-numeric:tabular-nums}
 .expense-composer-summary small{font-size:11px;color:var(--muted)}
 .expense-summary-note{font-size:11px;color:var(--green);font-weight:700;text-align:right}
-.expense-composer-actions{justify-content:flex-end!important;margin-top:18px}
+.expense-composer-actions{margin-top:18px}
 body.dark-theme .expense-category-panel{background:#101827}
 body.dark-theme .expense-item-row input{background:#101827;color:var(--text);border-color:var(--line)}
 body.dark-theme .expense-item-remove{background:var(--panel);border-color:var(--line)}
@@ -4091,7 +4091,7 @@ body:has(#page-financial-list.active) .main>.topbar{display:none!important}
 #expenseComposer #expenseComposerTotal{display:block!important;font-size:22px!important;line-height:1.3!important;font-weight:900!important;margin-top:3px!important}
 #expenseComposer #expenseComposerCount{font-size:11px!important;margin-top:3px!important}
 #expenseComposer .expense-summary-note{font-size:11px!important;font-weight:700!important;text-align:right!important}
-#modalBackdrop:has(#expenseComposer) .expense-composer-actions{justify-content:flex-end!important;
+#modalBackdrop:has(#expenseComposer) .expense-composer-actions{
   display:flex!important;justify-content:flex-end!important;gap:10px!important;
   margin-top:2px!important;padding-top:2px!important;
 }
@@ -4178,7 +4178,7 @@ body.dark-theme #expenseComposer .expense-item-row{background:var(--soft)!import
 
 
 <style id="savely-expense-actions-spacing-fix">
-#modalBackdrop:has(#expenseComposer) .expense-composer-actions{justify-content:flex-end!important;
+#modalBackdrop:has(#expenseComposer) .expense-composer-actions{
   margin-top:18px!important;
   padding-top:10px!important;
   gap:12px!important;
@@ -4187,7 +4187,7 @@ body.dark-theme #expenseComposer .expense-item-row{background:var(--soft)!import
   min-height:48px!important;
 }
 @media(max-width:760px){
-  #modalBackdrop:has(#expenseComposer) .expense-composer-actions{justify-content:flex-end!important;
+  #modalBackdrop:has(#expenseComposer) .expense-composer-actions{
     margin-top:14px!important;
     padding-top:8px!important;
   }
@@ -4313,7 +4313,7 @@ body.dark-theme #expenseComposer .expense-item-row{background:var(--soft)!import
 .expense-editor-card{min-width:0;width:100%;background:var(--card,#fff);border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:0 8px 28px rgba(20,40,60,.055)}
 .expense-editor-page #modalForm{display:grid;gap:16px;width:100%}
 .expense-editor-page #expenseComposer{width:100%;gap:16px}
-.expense-editor-page .expense-composer-actions{justify-content:flex-end!important;margin-top:12px!important;padding-top:18px!important;border-top:1px solid var(--line);gap:12px!important}
+.expense-editor-page .expense-composer-actions{margin-top:12px!important;padding-top:18px!important;border-top:1px solid var(--line);gap:12px!important}
 .expense-editor-page .expense-composer-actions .btn{min-width:130px;min-height:48px;border-radius:11px;font-weight:800}
 .expense-editor-page .expense-composer-section{padding:22px!important}
 .expense-editor-page .expense-composer-summary{padding:19px 22px!important}
@@ -4322,7 +4322,7 @@ body.dark-theme #expenseComposer .expense-item-row{background:var(--soft)!import
  .expense-editor-card{padding:14px;border-radius:15px}
  .expense-editor-toolbar{align-items:flex-start;flex-direction:column;gap:10px}
  .expense-editor-page .expense-composer-section{padding:14px!important}
- .expense-editor-page .expense-composer-actions{justify-content:flex-end!important;position:sticky;bottom:0;background:var(--card,#fff);padding:14px 0 max(8px,env(safe-area-inset-bottom))!important;z-index:2}
+ .expense-editor-page .expense-composer-actions{position:sticky;bottom:0;background:var(--card,#fff);padding:14px 0 max(8px,env(safe-area-inset-bottom))!important;z-index:2}
  .expense-editor-page .expense-composer-actions .btn{flex:1;min-width:0}
 }
 </style>
@@ -4527,7 +4527,7 @@ body.expense-editor-active #pageDescription{
   border-radius:15px!important;
   background:linear-gradient(110deg,#eaf8f1,#f2fbf6)!important;
 }
-.expense-editor-page .expense-composer-actions{justify-content:flex-end!important;
+.expense-editor-page .expense-composer-actions{
   margin-top:2px!important;
   padding-top:20px!important;
   border-top:1px solid #e9efec!important;
@@ -4547,7 +4547,7 @@ body.expense-editor-active #pageDescription{
   .expense-editor-date-status{margin-left:53px!important}
   .expense-editor-page .expense-composer-section{padding:14px!important}
   .expense-editor-page .expense-category-panel{padding:13px!important}
-  .expense-editor-page .expense-composer-actions{justify-content:flex-end!important;position:sticky;bottom:0;background:#fff;padding:14px 0 max(8px,env(safe-area-inset-bottom))!important;z-index:2}
+  .expense-editor-page .expense-composer-actions{position:sticky;bottom:0;background:#fff;padding:14px 0 max(8px,env(safe-area-inset-bottom))!important;z-index:2}
 }
 </style>
 
@@ -4674,30 +4674,6 @@ body.expense-editor-active #pageDescription{
 </style>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-
-<style id="savely-expense-editor-layout-adjustment">
-html body.expense-editor-active #page-expense-editor #expenseEditorMount #modalForm{
- display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto 1fr auto!important;gap:18px!important;align-items:start!important;
-}
-html body.expense-editor-active #page-expense-editor #expenseComposer{display:contents!important}
-html body.expense-editor-active #page-expense-editor .expense-composer-summary{
- grid-column:1!important;grid-row:1!important;width:100%!important;min-height:112px!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:18px!important;padding:22px 28px!important;border-radius:20px!important;
-}
-html body.expense-editor-active #page-expense-editor .expense-composer-summary > div{display:grid!important;gap:5px!important}
-html body.expense-editor-active #page-expense-editor .expense-summary-note{margin-left:auto!important;text-align:right!important;border:0!important;padding:0!important;width:auto!important}
-html body.expense-editor-active #page-expense-editor .expense-composer-section{grid-column:1!important;grid-row:2!important;width:100%!important}
-html body.expense-editor-active #page-expense-editor .expense-composer-actions{justify-content:flex-end!important;
- grid-column:1!important;grid-row:3!important;display:flex!important;flex-direction:row!important;justify-content:flex-end!important;align-items:center!important;gap:10px!important;margin:0!important;padding:16px 0 0!important;border-top:1px solid var(--line)!important;background:transparent!important;
-}
-html body.expense-editor-active #page-expense-editor .expense-composer-actions .btn{width:auto!important;min-width:130px!important;min-height:46px!important}
-@media(max-width:700px){
- html body.expense-editor-active #page-expense-editor .expense-composer-summary{align-items:flex-start!important;flex-direction:column!important;padding:18px!important}
- html body.expense-editor-active #page-expense-editor .expense-summary-note{margin-left:0!important;text-align:left!important}
- html body.expense-editor-active #page-expense-editor .expense-composer-actions{justify-content:flex-end!important;justify-content:flex-end!important}
- html body.expense-editor-active #page-expense-editor .expense-composer-actions .btn{min-width:0!important;flex:0 1 auto!important}
-}
-</style>
-
 </head>
 <body>
 
@@ -5173,6 +5149,7 @@ html body.expense-editor-active #page-expense-editor .expense-composer-actions .
     <h2>Expense calendar</h2>
     <div class="panel-sub">Add and review your expenses by date.</div>
    </div>
+   <button type="button" class="btn btn-primary expenses-add-button" onclick="openExpenseEntry()">＋ Add expense</button>
   </div>
   <div class="expenses-calendar-toolbar">
    <div class="expenses-month-label" id="expensesCalendarMonth">November 2026</div>
@@ -5370,7 +5347,6 @@ html body.expense-editor-active #page-expense-editor .expense-composer-actions .
   </section>
 
 
-
   <section class="page expense-editor-page" id="page-expense-editor" aria-label="Edit expenses">
     <div class="expense-editor-layout">
       <div class="expense-editor-card">
@@ -5386,7 +5362,6 @@ html body.expense-editor-active #page-expense-editor .expense-composer-actions .
       </div>
     </div>
   </section>
-
 </main>
 </div>
 <div class="modal-backdrop" id="savelyUpdatesBackdrop" role="dialog" aria-modal="true" aria-labelledby="savelyUpdatesTitle" style="z-index:9999" onclick="if(event.target===this)closeSavelyUpdates()"><div class="modal" style="max-width:520px"><div class="panel-head"><div><div class="pill" style="display:inline-flex;margin-bottom:10px">SAVELY UPDATES</div><h2 id="savelyUpdatesTitle">What’s new in Savely</h2></div></div><p class="muted">Version 2.8.68 · Latest patch</p><div style="display:grid;gap:12px"><div><span class="pill" style="background:#e5f7ef;color:#087f5b">MINOR UPDATE · v2.8.68</span><ul style="line-height:1.8;padding-left:22px;margin-top:8px"><li>Refined email OTP authentication flow for sign-up and login.</li><li>Requests Supabase email OTP through the Auth OTP endpoint and verifies the entered code.</li><li>Verified accounts use Supabase Authentication sessions for account-scoped cloud sync.</li><li>Updated account and privacy messaging to explain authentication and cloud data setup.</li><li>Added an embedded satellite map that opens from the live weather badge, with Zoom Earth available for weather layers.</li><li>Fixed the selected-bank savings graph height so it stays compact and fits inside the Savings panel.</li><li>Satellite map uses Esri World Imagery and centers on the selected weather city when available; Zoom Earth opens separately for weather layers.</li></ul></div></div><div class="form-actions" style="justify-content:flex-end"><button type="button" class="btn btn-primary" onclick="closeSavelyUpdates()">Okay</button></div></div></div>
@@ -8401,7 +8376,7 @@ function openExpenseEntry(dateValue,editExisting=false,editTransactionId=null){
    : 'New expenses can only be added today.');
   return;
  }
- // Open the expense composer from the Add Expenses FAB in the modal.
+ // Both adding and editing use the dedicated full-page expense editor, never a modal.
  const form=document.getElementById('modalForm');
  if(!form)return;
  form.noValidate=true;
@@ -8422,9 +8397,8 @@ function openExpenseEntry(dateValue,editExisting=false,editTransactionId=null){
    <select id="expenseComposerAccount">${accountOptions}</select>
    <input id="expenseComposerDate" type="date" value="${esc(date)}">
   </div>
-
  </div>
- <div class="form-actions expense-composer-actions"><button type="button" class="btn btn-light" onclick="closeExpenseEditor()">Cancel</button><button type="submit" class="btn btn-primary">Apply</button></div>`;
+ <div class="form-actions expense-composer-actions"><button type="button" class="btn btn-light" onclick="closeExpenseEditor()">Cancel</button><button type="submit" class="btn btn-primary">${editExisting?'Apply changes':'Save expenses'}</button></div>`;
  if(editExisting&&existingForDate.length){
   if(title)title.textContent='Edit expenses';
   if(desc)desc.textContent='Update the expenses recorded on this date. Save to apply your changes.';
@@ -8530,10 +8504,18 @@ function openExpenseEntry(dateValue,editExisting=false,editTransactionId=null){
   if(form.dataset.expenseValidationError){e.preventDefault();form.dataset.expenseValidationError='';}
  });
  updateExpenseComposerTotal();
-  const backdrop=document.getElementById('modalBackdrop');
-  if(backdrop)backdrop.style.display='flex';
-  const modal=document.querySelector('#modalBackdrop .modal');
-  if(modal)modal.scrollTop=0;
+  const mount=document.getElementById('expenseEditorMount');
+  if(mount)mount.appendChild(form);
+  const editorDate=document.getElementById('expenseEditorDate');
+  if(editorDate)editorDate.textContent=new Date(date+'T12:00:00').toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  const datebarLabel=document.querySelector('.expense-editor-date-copy span');
+  if(datebarLabel)datebarLabel.textContent=editExisting?'EDITING EXPENSES FOR':'ADDING EXPENSES FOR';
+  const datebarStatus=document.querySelector('.expense-editor-date-status');
+  if(datebarStatus)datebarStatus.innerHTML='<i></i> Changes not yet applied';
+  const expenseModalBackdrop=document.getElementById('modalBackdrop');
+  if(expenseModalBackdrop)expenseModalBackdrop.style.display='none';
+  showPage('expense-editor');
+  window.scrollTo({top:0,left:0,behavior:'instant'});
 
 }
 
@@ -16479,7 +16461,7 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
     if(page==='page-financial-list')return {label:'Add Savings',icon:'＋',run:()=>document.getElementById('topbarAddSavingsButton')?.click()};
     if(page==='page-salary')return {label:'Add Salary Amount',icon:'＋',run:()=>document.getElementById('salaryDetailsOpenButton')?.click()};
     if(page==='page-debt')return {label:'Add Debt',icon:'＋',run:()=>document.getElementById('topbarAddDebtButton')?.click()};
-    if(page==='page-budget')return {label:'Add Expenses',icon:'＋',run:()=>window.openExpenseEntry?.()};
+    if(page==='page-budget')return {label:'Add Expense',icon:'＋',run:()=>window.openExpenseEntry?.()};
     if(page==='page-goals')return {label:'Create Savings Goal',icon:'＋',run:()=>window.openModal?.('goal')};
     if(page==='page-holidays'&&document.getElementById('page-holidays')?.classList.contains('personal-events-mode'))return {label:'Add Event',icon:'＋',run:()=>window.openPersonalEventForm?.()};
     return null;
@@ -21875,7 +21857,7 @@ body.expense-editor-active .expense-composer-summary{
   width:100%!important;max-width:none!important;box-sizing:border-box!important;
   padding:clamp(18px,1.6vw,26px)!important;
 }
-body.expense-editor-active .expense-composer-actions{justify-content:flex-end!important;
+body.expense-editor-active .expense-composer-actions{
   width:100%!important;box-sizing:border-box!important;
 }
 body.expense-editor-active .expense-composer-section button,
@@ -22485,11 +22467,11 @@ html body.expense-editor-active #page-expense-editor .expense-summary-label{font
 html body.expense-editor-active #page-expense-editor #expenseComposerTotal{font-family:var(--font-display);font-size:clamp(34px,3.2vw,44px)!important;line-height:1.1;letter-spacing:-.025em;font-weight:800}
 html body.expense-editor-active #page-expense-editor #expenseComposerCount{font-size:13px!important;opacity:.85}
 html body.expense-editor-active #page-expense-editor .expense-summary-note{font-size:12px!important;opacity:.75;padding-top:12px;border-top:1px solid rgba(255,255,255,.2);width:100%}
-html body.expense-editor-active #page-expense-editor .expense-composer-actions{justify-content:flex-end!important;grid-column:2!important;grid-row:2!important;display:flex!important;flex-direction:column-reverse!important;gap:10px!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important}
+html body.expense-editor-active #page-expense-editor .expense-composer-actions{grid-column:2!important;grid-row:2!important;display:flex!important;flex-direction:column-reverse!important;gap:10px!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important}
 html body.expense-editor-active #page-expense-editor .expense-composer-actions .btn{width:100%!important;min-height:52px!important;border-radius:15px!important;font-size:15px!important;justify-content:center!important}
 @media(max-width:1100px){
  html body.expense-editor-active #page-expense-editor #expenseEditorMount #modalForm{grid-template-columns:minmax(0,1fr)!important;grid-template-rows:none!important}
- html body.expense-editor-active #page-expense-editor .expense-composer-section,html body.expense-editor-active #page-expense-editor .expense-composer-summary,html body.expense-editor-active #page-expense-editor .expense-composer-actions{justify-content:flex-end!important;grid-column:1!important;grid-row:auto!important}
+ html body.expense-editor-active #page-expense-editor .expense-composer-section,html body.expense-editor-active #page-expense-editor .expense-composer-summary,html body.expense-editor-active #page-expense-editor .expense-composer-actions{grid-column:1!important;grid-row:auto!important}
  html body.expense-editor-active #page-expense-editor .expense-category-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(max-width:600px){
@@ -22498,6 +22480,19 @@ html body.expense-editor-active #page-expense-editor .expense-composer-actions .
  html body.expense-editor-active #page-expense-editor .expense-item-row{grid-template-columns:minmax(0,1fr) 120px 40px!important}
  html body.expense-editor-active #page-expense-editor .expense-editor-date-status{display:none!important}
 }
+
+/* Expense entry is a dedicated page, not a modal. */
+html body.expense-editor-active #modalBackdrop{display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body.expense-editor-active #page-expense-editor .expense-editor-datebar{display:none!important}
+html body.expense-editor-active #page-expense-editor .expense-editor-layout{width:100%!important;max-width:none!important}
+html body.expense-editor-active #page-expense-editor .expense-editor-card{padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+html body.expense-editor-active #page-expense-editor #expenseEditorMount #modalForm{display:flex!important;flex-direction:column!important;gap:14px!important;width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
+html body.expense-editor-active #page-expense-editor #expenseComposer{display:flex!important;flex-direction:column!important;gap:14px!important;width:100%!important}
+html body.expense-editor-active #page-expense-editor .expense-composer-summary{order:0!important;width:100%!important;min-height:112px!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:18px!important;margin:0!important;padding:22px 28px!important;border-radius:18px!important}
+html body.expense-editor-active #page-expense-editor .expense-composer-section{order:1!important;width:100%!important;margin:0!important}
+html body.expense-editor-active #page-expense-editor .expense-composer-actions{order:2!important;width:100%!important;display:flex!important;flex-direction:row!important;justify-content:flex-end!important;align-items:center!important;gap:10px!important;margin:0!important;padding:0 2px 10px!important}
+html body.expense-editor-active #page-expense-editor .expense-composer-actions .btn{width:auto!important;min-width:112px!important;min-height:46px!important;padding:0 22px!important}
+@media(max-width:700px){html body.expense-editor-active #page-expense-editor .expense-composer-summary{align-items:flex-start!important;flex-direction:column!important;padding:18px!important}html body.expense-editor-active #page-expense-editor .expense-composer-actions{justify-content:stretch!important}html body.expense-editor-active #page-expense-editor .expense-composer-actions .btn{flex:1!important;min-width:0!important}}
 </style>
 
 <style id="savely-salary-banner-match-v1">
