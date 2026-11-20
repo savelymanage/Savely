@@ -22491,8 +22491,8 @@ html body.expense-editor-active #page-expense-editor .expense-section-heading h3
 html body.expense-editor-active #page-expense-editor .expense-section-heading p{margin:0!important;color:var(--muted)!important;font-size:13px!important}
 html body.expense-editor-active #page-expense-editor .expense-section-step{background:var(--soft)!important;color:var(--muted)!important;border-radius:10px!important;font-size:11px!important;padding:5px 9px!important}
 /* Category tiles (wrap into a grid instead of a scrolling rail) */
-html body.expense-editor-active #page-expense-editor .expense-category-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;overflow:visible!important;padding:2px!important;margin:0 0 20px!important;cursor:default!important}
-html body.expense-editor-active #page-expense-editor .expense-category-card{display:flex!important;align-items:center!important;gap:11px!important;width:auto!important;min-width:0!important;padding:12px 14px!important;border-radius:16px!important;background:var(--panel)!important;border:1.5px solid var(--line)!important;color:var(--text)!important;box-shadow:none!important;font-weight:650!important;text-align:left!important;transition:border-color .15s,background .15s,transform .15s}
+html body.expense-editor-active #page-expense-editor .expense-category-grid{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;gap:10px!important;overflow-x:auto!important;overflow-y:hidden!important;padding:3px 2px 10px!important;margin:0 0 20px!important;cursor:grab!important;touch-action:pan-x!important;overscroll-behavior-x:contain!important;-webkit-overflow-scrolling:touch!important;scroll-snap-type:x proximity!important;scrollbar-width:none!important}
+html body.expense-editor-active #page-expense-editor .expense-category-card{display:flex!important;align-items:center!important;gap:11px!important;flex:0 0 190px!important;width:190px!important;min-width:190px!important;scroll-snap-align:start!important;padding:12px 14px!important;border-radius:16px!important;background:var(--panel)!important;border:1.5px solid var(--line)!important;color:var(--text)!important;box-shadow:none!important;font-weight:650!important;text-align:left!important;transition:border-color .15s,background .15s,transform .15s}
 html body.expense-editor-active #page-expense-editor .expense-category-card:hover{border-color:color-mix(in srgb,var(--green) 45%,var(--line))!important;transform:translateY(-1px)}
 html body.expense-editor-active #page-expense-editor .expense-category-icon{width:38px!important;height:38px!important;flex:0 0 38px!important;display:grid!important;place-items:center!important;border-radius:12px!important;background:var(--soft)!important;font-size:18px!important}
 html body.expense-editor-active #page-expense-editor .expense-category-card > span:nth-child(2){flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
@@ -22500,6 +22500,9 @@ html body.expense-editor-active #page-expense-editor .expense-category-check{dis
 html body.expense-editor-active #page-expense-editor .expense-category-card.selected,html body.expense-editor-active #page-expense-editor .expense-category-card.active{background:color-mix(in srgb,var(--green) 9%,var(--panel))!important;border-color:var(--green)!important;color:var(--text)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 14%,transparent)!important}
 html body.expense-editor-active #page-expense-editor .expense-category-card.selected .expense-category-check,html body.expense-editor-active #page-expense-editor .expense-category-card.active .expense-category-check{display:grid!important}
 html body.expense-editor-active #page-expense-editor .expense-category-card.selected .expense-category-icon,html body.expense-editor-active #page-expense-editor .expense-category-card.active .expense-category-icon{background:var(--green2)!important}
+html body.expense-editor-active #page-expense-editor .expense-category-grid::-webkit-scrollbar{display:none!important}
+html body.expense-editor-active #page-expense-editor .expense-category-grid.is-dragging{cursor:grabbing!important;scroll-snap-type:none!important}
+@media(max-width:600px){html body.expense-editor-active #page-expense-editor .expense-category-card{flex-basis:160px!important;width:160px!important;min-width:160px!important}}
 /* Active category panel */
 html body.expense-editor-active #page-expense-editor .expense-category-panel{background:var(--soft)!important;border:1px solid var(--line)!important;border-radius:20px!important;padding:22px!important;box-shadow:none!important}
 html body.expense-editor-active #page-expense-editor .expense-category-panel-head > div{display:grid!important;grid-template-columns:minmax(0,1fr) auto;column-gap:16px;row-gap:2px;align-items:center;margin-bottom:16px}
@@ -22532,7 +22535,6 @@ html body.expense-editor-active #page-expense-editor .expense-composer-actions .
 @media(max-width:1100px){
  html body.expense-editor-active #page-expense-editor #expenseEditorMount #modalForm{grid-template-columns:minmax(0,1fr)!important;grid-template-rows:none!important}
  html body.expense-editor-active #page-expense-editor .expense-composer-section,html body.expense-editor-active #page-expense-editor .expense-composer-summary,html body.expense-editor-active #page-expense-editor .expense-composer-actions{grid-column:1!important;grid-row:auto!important}
- html body.expense-editor-active #page-expense-editor .expense-category-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(max-width:600px){
  html body.expense-editor-active #page-expense-editor .expense-composer-section{padding:18px!important}
