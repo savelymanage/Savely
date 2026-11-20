@@ -20426,6 +20426,33 @@ body #page-settings #settingsDateTimePanel.settings-panel-active {
 })();
 </script>
 
+
+<style id="savely-expense-editor-horizontal-category-rail-final">
+/* Keep every expense category in one swipeable horizontal row on the dedicated editor page. */
+html body.expense-editor-active #page-expense-editor .expense-category-grid{
+  display:flex!important; flex-direction:row!important; flex-wrap:nowrap!important;
+  justify-content:flex-start!important; align-items:stretch!important;
+  gap:10px!important; width:100%!important; max-width:100%!important; min-width:0!important;
+  overflow-x:auto!important; overflow-y:hidden!important;
+  overscroll-behavior-x:contain!important; -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-x!important; scroll-snap-type:x proximity!important;
+  scrollbar-width:none!important; -ms-overflow-style:none!important;
+  padding:3px 2px 10px!important; margin:0 0 20px!important;
+  cursor:grab!important; user-select:none!important;
+}
+html body.expense-editor-active #page-expense-editor .expense-category-grid::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+html body.expense-editor-active #page-expense-editor .expense-category-grid.is-dragging{cursor:grabbing!important;scroll-snap-type:none!important}
+html body.expense-editor-active #page-expense-editor .expense-category-card{
+  display:flex!important; flex:0 0 190px!important; width:190px!important;
+  min-width:190px!important; max-width:190px!important;
+  white-space:nowrap!important; scroll-snap-align:start!important;
+}
+html body.expense-editor-active #page-expense-editor .expense-category-card .expense-category-icon{display:none!important}
+@media(max-width:700px){
+ html body.expense-editor-active #page-expense-editor .expense-category-card{flex-basis:165px!important;width:165px!important;min-width:165px!important;max-width:165px!important}
+}
+</style>
+
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
@@ -21291,7 +21318,10 @@ html body #topbarAddDebtButton {
  function localISO(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
  function findNextPayday(){
   if(typeof salarySettingsForYear!=='function'||typeof getSalaryPaydayEntries!=='function')return null;
-  const now=new Date(),today=localISO(now),currentYear=now.getFullYear();
+  const now=new Date();
+  // Use the same Philippine-local calendar date boundary as the Holidays countdown.
+  const today=typeof phTodayISO==='function'?phTodayISO():localISO(now);
+  const currentYear=Number(today.slice(0,4));
   // Resolve the schedule from the year the cutoff belongs to. This automatically
   // switches to the newly saved year's salary schedule on January 1.
   for(let year=currentYear;year<=currentYear+10;year++){
@@ -21304,7 +21334,8 @@ html body #topbarAddDebtButton {
    for(let month=firstMonth;month<12;month++){
     const entries=getSalaryPaydayEntries(schedule,year,month).sort((a,b)=>a.date.localeCompare(b.date));
     for(const entry of entries){
-     if(entry.date<today)continue;
+     // Match the Holidays page's next-upcoming-date rule: today's payday is no longer upcoming.
+     if(entry.date<=today)continue;
      return {date:entry.date,entry,amount,year,settings};
     }
    }
@@ -21334,7 +21365,9 @@ html body #topbarAddDebtButton {
   if(!next){dateEl.textContent='No upcoming payday';timerEl.textContent='Set your salary and payday schedule';setParts('—','—','—','—');return;}
   if(next.custom){dateEl.textContent='Payday varies';timerEl.textContent='Set a fixed payday schedule to enable countdown';setParts('—','—','—','—');return;}
   const [y,m,d]=next.date.split('-').map(Number);
-  const target=new Date(y,m-1,d,0,0,0,0),now=new Date(),diff=target.getTime()-now.getTime();
+  // Match the Holidays page: midnight at the start of the target date in Asia/Manila.
+  const target=typeof phHolidayDate==='function'?phHolidayDate(next.date):new Date(`${next.date}T00:00:00+08:00`);
+  const diff=target.getTime()-Date.now();
   dateEl.textContent=target.toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
   if(diff<=0){timerEl.textContent='Payday today';setParts(0,0,0,0);return;}
   const seconds=Math.floor(diff/1000),days=Math.floor(seconds/86400),hours=Math.floor(seconds%86400/3600),minutes=Math.floor(seconds%3600/60),secs=seconds%60;
