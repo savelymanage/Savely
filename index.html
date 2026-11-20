@@ -5021,22 +5021,21 @@ html body.expense-editor-active #page-expense-editor .expense-category-card > sp
 
   <section class="page" id="page-salary">
     <div class="cards salary-summary-cards" style="grid-template-columns:minmax(0,1fr);margin-bottom:18px">
-      <div class="stat salary-annual-remaining-stat salary-remaining-blue">
-        <div class="salary-remaining-label">Remaining salary</div>
-        <div class="stat-value" id="salaryAnnualRemainingDisplay">₱0.00 <span class="annual-projection-inline">/ <span id="salaryAnnualDisplay">₱0.00</span></span></div>
-        <div class="stat-foot" id="salaryAnnualRemainingFoot">Estimated future cutoffs through December</div>
-        <div class="salary-next-payday" id="salaryNextPaydayCountdown" aria-live="off">
-          <div class="salary-next-payday-heading">
-            <span class="salary-next-payday-label">Next payday</span>
-            <strong id="salaryNextPaydayDate">Calculating…</strong>
-          </div>
-          <div class="salary-next-payday-parts" id="salaryNextPaydayParts">
+      <div class="salary-hero">
+        <div class="salary-hero-copy">
+          <span class="salary-hero-eyebrow">REMAINING SALARY</span>
+          <div class="salary-hero-amount" id="salaryAnnualRemainingDisplay">₱0.00 <span class="salary-hero-total">/ <span id="salaryAnnualDisplay">₱0.00</span></span></div>
+          <div class="salary-hero-meta" id="salaryAnnualRemainingFoot">Estimated future cutoffs through December</div>
+        </div>
+        <div class="salary-hero-countdown-wrap" id="salaryHeroCountdown" aria-live="off">
+          <div class="salary-hero-countdown-title">Next payday · <strong id="salaryNextPaydayDate">Calculating…</strong></div>
+          <div class="salary-hero-countdown" id="salaryNextPaydayParts">
             <div><strong id="salaryPaydayDays">—</strong><span>Days</span></div>
             <div><strong id="salaryPaydayHours">—</strong><span>Hours</span></div>
             <div><strong id="salaryPaydayMinutes">—</strong><span>Minutes</span></div>
             <div><strong id="salaryPaydaySeconds">—</strong><span>Seconds</span></div>
           </div>
-          <span class="salary-next-payday-timer" id="salaryNextPaydayTimer" hidden>—</span>
+          <span id="salaryNextPaydayTimer" hidden>—</span>
         </div>
       </div>
     </div>
@@ -20453,6 +20452,34 @@ html body.expense-editor-active #page-expense-editor .expense-category-card .exp
 }
 </style>
 
+
+<style id="savely-salary-hero-matches-calendar-v1">
+/* Salary hero uses the same layout + countdown style as the Calendar holiday hero (blue palette kept). */
+html body #page-salary .salary-summary-cards{display:block!important;margin-bottom:18px!important}
+html body #page-salary .salary-hero{
+ position:relative;overflow:hidden;box-sizing:border-box;
+ display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.9fr);gap:24px;align-items:center;
+ min-height:184px;padding:32px 30px;border-radius:20px;
+ border:1px solid #315fce;color:#fff;
+ background:radial-gradient(circle at 91% 3%,#ffffff25 0 108px,transparent 109px),
+  linear-gradient(112deg,#315fce 0%,#4778e6 55%,#6c91f0 100%);
+ box-shadow:0 12px 28px rgba(49,95,206,.22);
+}
+html body #page-salary .salary-hero-eyebrow{display:inline-flex;padding:6px 10px;border-radius:999px;background:rgba(10,30,100,.38);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:10px;font-weight:850;letter-spacing:.5px}
+html body #page-salary .salary-hero-amount{margin:10px 0 5px;color:#fff;font-size:clamp(24px,3vw,34px);font-weight:900;letter-spacing:-1px;line-height:1.15}
+html body #page-salary .salary-hero-total{color:#fff;font-size:inherit;font-weight:inherit}
+html body #page-salary .salary-hero-meta{font-size:13px;line-height:1.45;color:#e8efff}
+html body #page-salary .salary-hero-countdown-wrap{padding:0;border:0;background:transparent;box-shadow:none}
+html body #page-salary .salary-hero-countdown-title{margin-bottom:10px;color:#fff;font-size:12px;font-weight:850;text-shadow:0 1px 2px rgba(0,30,100,.2)}
+html body #page-salary .salary-hero-countdown-title strong{font-weight:850;color:#fff}
+html body #page-salary .salary-hero-countdown{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+html body #page-salary .salary-hero-countdown>div{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0;border:0;background:transparent;box-shadow:none}
+html body #page-salary .salary-hero-countdown strong{color:#fff;font-size:clamp(25px,2.2vw,34px);line-height:1.05;font-weight:900;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px rgba(0,30,100,.2)}
+html body #page-salary .salary-hero-countdown span{color:#e8efff;font-size:11px;font-weight:750}
+@media(max-width:900px){html body #page-salary .salary-hero{grid-template-columns:1fr;min-height:0;padding:26px 24px}}
+@media(max-width:700px){html body #page-salary .salary-hero-countdown{gap:8px}html body #page-salary .salary-hero-countdown strong{font-size:22px}html body #page-salary .salary-hero-countdown span{font-size:9px}}
+@media(max-width:600px){html body #page-salary .salary-hero{padding:22px 18px}}
+</style>
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
