@@ -4674,6 +4674,33 @@ body.expense-editor-active #pageDescription{
 </style>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style id="expense-editor-category-rail-fix">
+/* Expense editor: text-only category rail with horizontal swipe */
+html body.expense-editor-active #page-expense-editor .expense-category-grid{
+  display:flex!important; flex-flow:row nowrap!important; align-items:stretch!important;
+  gap:10px!important; width:100%!important; max-width:100%!important;
+  overflow-x:auto!important; overflow-y:hidden!important;
+  overscroll-behavior-x:contain!important; -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-x!important; scroll-snap-type:x mandatory!important;
+  scrollbar-width:thin!important; scrollbar-color:var(--green) transparent!important;
+  padding:3px 2px 12px!important; margin:0 0 20px!important; cursor:grab!important;
+}
+html body.expense-editor-active #page-expense-editor .expense-category-grid:active{cursor:grabbing!important}
+html body.expense-editor-active #page-expense-editor .expense-category-card{
+  display:flex!important; flex:0 0 190px!important; width:190px!important; min-width:190px!important;
+  max-width:190px!important; min-height:50px!important; padding:12px 15px!important;
+  gap:0!important; white-space:nowrap!important; scroll-snap-align:start!important;
+}
+html body.expense-editor-active #page-expense-editor .expense-category-icon{display:none!important}
+html body.expense-editor-active #page-expense-editor .expense-category-card > span:nth-child(2){
+  flex:1 1 auto!important; min-width:0!important; overflow:hidden!important;
+  text-overflow:ellipsis!important; white-space:nowrap!important; font-size:13px!important;
+}
+@media(max-width:700px){
+ html body.expense-editor-active #page-expense-editor .expense-category-card{flex-basis:165px!important;width:165px!important;min-width:165px!important;max-width:165px!important}
+}
+</style>
 </head>
 <body>
 
