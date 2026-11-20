@@ -16479,6 +16479,7 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
     if(page==='page-financial-list')return {label:'Add Savings',icon:'＋',run:()=>document.getElementById('topbarAddSavingsButton')?.click()};
     if(page==='page-salary')return {label:'Add Salary Amount',icon:'＋',run:()=>document.getElementById('salaryDetailsOpenButton')?.click()};
     if(page==='page-debt')return {label:'Add Debt',icon:'＋',run:()=>document.getElementById('topbarAddDebtButton')?.click()};
+    if(page==='page-budget')return {label:'Add Expenses',icon:'＋',run:()=>window.openExpenseEntry?.()};
     if(page==='page-goals')return {label:'Create Savings Goal',icon:'＋',run:()=>window.openModal?.('goal')};
     if(page==='page-holidays'&&document.getElementById('page-holidays')?.classList.contains('personal-events-mode'))return {label:'Add Event',icon:'＋',run:()=>window.openPersonalEventForm?.()};
     return null;
