@@ -23226,3 +23226,62 @@ html body #page-salary .salary-hero-countdown>div span{font-size:10px!important;
  html body #page-salary .salary-hero-meta{width:auto}
 }
 </style>
+
+<style id="savely-hero-style-shared-v1">
+/* Same look as the Salary hero: Overview cards, Savings cards, Expenses banner, Calendar hero */
+html body #page-holidays .holiday-hero,
+html body #page-budget .expenses-calendar-summary,
+html body #stats .stat,
+html body #page-financial-list #financialCategoryStats .stat{position:relative!important;overflow:hidden!important;border:0!important;border-radius:26px!important;color:#fff!important;font-family:var(--font-ui,'DM Sans',system-ui,sans-serif)!important;
+ background:radial-gradient(520px 260px at 8% -10%,rgba(125,160,255,.45),transparent 65%),radial-gradient(420px 300px at 100% 110%,rgba(90,215,255,.28),transparent 65%),linear-gradient(135deg,#1e3a9e 0%,#2f56d6 48%,#4f7bf0 100%)!important;
+ box-shadow:0 24px 44px -26px rgba(37,72,200,.75),0 0 0 1px rgba(255,255,255,.12) inset!important}
+html body #page-holidays .holiday-hero::before,
+html body #page-budget .expenses-calendar-summary::before,
+html body #stats .stat::before,
+html body #page-financial-list #financialCategoryStats .stat::before{content:""!important;position:absolute!important;inset:0!important;width:auto!important;height:auto!important;border-radius:0!important;transform:none!important;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px)!important;background-size:34px 34px!important;-webkit-mask-image:linear-gradient(100deg,transparent 30%,#000 100%);mask-image:linear-gradient(100deg,transparent 30%,#000 100%);pointer-events:none!important}
+html body #page-holidays .holiday-hero::after,
+html body #page-budget .expenses-calendar-summary::after,
+html body #stats .stat::after,
+html body #page-financial-list #financialCategoryStats .stat::after{display:none!important;content:none!important}
+html body #page-budget .expenses-summary-currency{display:none!important}
+
+/* Overview + Savings stat cards */
+html body #stats .stat,html body #page-financial-list #financialCategoryStats .stat{padding:24px 26px!important;min-height:150px!important;display:flex!important;flex-direction:column!important;justify-content:center!important;gap:6px!important;transform:none!important}
+html body #stats .stat>*,html body #page-financial-list #financialCategoryStats .stat>*{position:relative;z-index:1}
+html body #stats .stat-top,html body #page-financial-list #financialCategoryStats .stat-top{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px;margin:0 0 6px!important;font-size:12.5px!important;font-weight:500!important;letter-spacing:.02em!important;color:rgba(255,255,255,.82)!important}
+html body #stats .stat-icon,html body #page-financial-list #financialCategoryStats .stat-icon{display:grid!important;place-items:center!important;width:38px!important;height:38px!important;border-radius:13px!important;background:rgba(255,255,255,.18)!important;border:1px solid rgba(255,255,255,.26)!important;color:#fff!important;font-weight:600!important}
+html body #stats .stat-value,html body #page-financial-list #financialCategoryStats .stat-value{font-family:var(--font-ui,'DM Sans',system-ui,sans-serif)!important;font-size:clamp(28px,3vw,38px)!important;font-weight:600!important;letter-spacing:-.01em!important;line-height:1.15!important;color:#fff!important;margin:0!important}
+html body #stats .stat-foot,html body #page-financial-list #financialCategoryStats .stat-foot{font-size:12.5px!important;font-weight:400!important;color:rgba(255,255,255,.78)!important;margin:0!important}
+html body #stats .stat [class*="delta"],html body #page-financial-list #financialCategoryStats .stat [class*="delta"]{color:#fff!important;background:rgba(255,255,255,.16)!important;border:1px solid rgba(255,255,255,.22)!important;border-radius:999px!important;width:fit-content}
+html body #stats .summary-carousel-viewport{border-radius:26px!important}
+
+/* Expenses banner */
+html body #page-budget .expenses-calendar-summary{display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:flex-start!important;padding:30px 36px!important;min-height:150px}
+html body #page-budget .expenses-summary-main{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+html body #page-budget .expenses-summary-label{display:inline-flex;align-items:center;padding:6px 13px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.26);color:#fff!important;font-size:11px!important;font-weight:600!important;letter-spacing:.08em!important;text-transform:uppercase}
+html body #page-budget .expenses-calendar-summary strong{font-family:var(--font-ui,'DM Sans',system-ui,sans-serif)!important;font-size:clamp(28px,3vw,38px)!important;font-weight:600!important;letter-spacing:-.01em!important;line-height:1.15!important;color:#fff!important}
+html body #page-budget .expenses-summary-month{font-size:12.5px!important;font-weight:400!important;color:rgba(255,255,255,.78)!important}
+html body #page-budget .expenses-calendar-summary .expenses-summary-count{position:absolute!important;z-index:1;right:36px!important;top:50%!important;transform:translateY(-50%)!important;padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.26);color:#fff!important;font-size:12.5px!important;font-weight:500!important}
+
+/* Calendar hero */
+html body #page-holidays .holiday-hero{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;column-gap:56px!important;min-height:0!important;padding:34px 40px!important}
+html body #page-holidays .holiday-hero-copy{position:relative;z-index:1;display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:12px!important;margin:0!important;padding:0!important}
+html body #page-holidays .holiday-eyebrow{display:inline-flex!important;align-items:center;width:auto!important;padding:6px 13px!important;border-radius:999px!important;background:rgba(255,255,255,.16)!important;border:1px solid rgba(255,255,255,.26)!important;color:#fff!important;font-size:11px!important;font-weight:600!important;letter-spacing:.08em!important;margin:0!important}
+html body #page-holidays .holiday-next-name{font-family:var(--font-ui,'DM Sans',system-ui,sans-serif)!important;font-size:clamp(26px,2.8vw,36px)!important;font-weight:600!important;letter-spacing:-.01em!important;line-height:1.15!important;color:#fff!important;margin:0!important}
+html body #page-holidays .holiday-next-meta{font-size:12.5px!important;font-weight:400!important;color:rgba(255,255,255,.8)!important;margin:0!important}
+html body #page-holidays .holiday-countdown-wrap{position:relative!important;z-index:1;display:flex!important;flex-direction:column!important;align-items:flex-end!important;gap:14px!important;margin:0!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important}
+html body #page-holidays .holiday-countdown-title{position:static!important;margin:0!important;padding:6px 14px!important;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.26);color:rgba(255,255,255,.88)!important;font-size:12px!important;font-weight:400!important;text-align:right!important;white-space:nowrap!important}
+html body #page-holidays .holiday-countdown{display:grid!important;grid-template-columns:repeat(4,92px)!important;gap:22px!important;margin:0!important;padding:0!important;background:none!important;border:0!important}
+html body #page-holidays .holiday-countdown>div{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:8px!important;min-width:92px;padding:18px 8px 14px!important;border-radius:20px!important;background:rgba(255,255,255,.13)!important;border:1px solid rgba(255,255,255,.24)!important;box-shadow:0 10px 20px -16px rgba(5,20,80,.6)!important}
+html body #page-holidays .holiday-countdown>div strong{font-family:var(--font-ui,'DM Sans',system-ui,sans-serif)!important;font-size:clamp(22px,2vw,28px)!important;font-weight:600!important;line-height:1!important;letter-spacing:0!important;color:#fff!important}
+html body #page-holidays .holiday-countdown>div span{font-size:10px!important;font-weight:500!important;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7)!important}
+@media(max-width:900px){
+ html body #page-holidays .holiday-hero{grid-template-columns:1fr!important;row-gap:22px!important;padding:26px 22px!important}
+ html body #page-holidays .holiday-countdown-wrap{align-items:stretch!important}
+ html body #page-holidays .holiday-countdown{grid-template-columns:repeat(4,1fr)!important;gap:10px!important}
+ html body #page-holidays .holiday-countdown>div{min-width:0;padding:14px 4px 11px!important}
+ html body #page-budget .expenses-calendar-summary{padding:26px 22px!important}
+ html body #page-budget .expenses-calendar-summary .expenses-summary-count{right:22px!important}
+}
+html body #stats .stat-foot[style*="font-weight:800"]{font-weight:600!important;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.16);width:fit-content}
+</style>
