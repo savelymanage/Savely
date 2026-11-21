@@ -5599,8 +5599,12 @@ function openSavingsTransfer(sourceId){
    const currentBalance=selected?Math.max(0,Number(selected.amount)||0):0;
    selectedCard.innerHTML=`<div class="panel-sub">TO · DESTINATION</div><div style="display:flex;align-items:center;gap:9px;margin-top:4px">${savelyBrandLogo(bankName,'bank-logo')||`<span class="bank-logo" style="background:#168765">${esc(String(bankName).slice(0,3).toUpperCase())}</span>`}<div style="min-width:0"><strong>${esc(bankName)}</strong><div class="panel-sub">${selected?`${peso(currentBalance)} current balance`:'New Savings item · will be created automatically'}</div></div></div>`;
    amountInput.disabled=false;reviewButton.disabled=false;
-   amountInput.placeholder='Enter amount';amountInput.focus();
-   renderTransferBankPicker();
+   amountInput.placeholder='Enter amount';
+   // Update the highlight in place instead of rebuilding the whole bank list on every tap.
+   picker.querySelectorAll('.bank-option.selected').forEach(x=>x.classList.remove('selected'));
+   btn.classList.add('selected');
+   // Do not auto-open the on-screen keyboard on touch devices; it makes the form jump and feel slow.
+   if(!(window.matchMedia&&window.matchMedia('(pointer:coarse)').matches))amountInput.focus({preventScroll:true});
   }));
   picker.querySelectorAll('[data-transfer-favorite]').forEach(btn=>btn.addEventListener('click',()=>{
    const name=btn.dataset.transferFavorite;
@@ -22777,4 +22781,12 @@ html body.expense-editor-active #page-expense-editor #expenseComposer .expense-c
 body.dark-theme #expenseComposer .expense-composer-section h2,
 body.dark-theme #expenseComposer .expense-composer-section h3,
 body.dark-theme #expenseComposer .expense-composer-section-title{color:var(--text,#eef5f1)!important}
+</style>
+<style id="savely-transfer-modal-performance-v1">
+/* Transfer form: no heavy blur/animation work behind or inside the modal, instant tap feedback. */
+#savelyTransferModal,#savelyTransferReviewBackdrop{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(8,24,19,.66)!important;animation:none!important}
+#savelyTransferModal .modal,#savelyTransferReviewBackdrop .modal{animation:none!important;will-change:auto}
+#savelyTransferBankPicker{contain:layout style;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#savelyTransferModal .bank-option,#savelyTransferModal .bank-favorite,#savelyTransferModal [data-transfer-filter]{touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:none!important}
+@media (hover:none){#savelyTransferModal .bank-option:hover{transform:none!important;box-shadow:none!important}}
 </style>
