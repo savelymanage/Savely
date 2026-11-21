@@ -5555,7 +5555,7 @@ function openSavingsTransfer(sourceId){
    <div class="form-grid" style="grid-template-columns:minmax(0,420px)">
     <div class="field"><label for="savelyTransferAmount">Transfer amount (₱)</label><input id="savelyTransferAmount" type="number" min="0.01" max="${Math.max(0,Number(source.amount)||0)}" step="0.01" placeholder="Choose destination first" required disabled style="width:100%"><div class="panel-sub" id="savelyTransferAvailable" style="margin-top:5px">Available: ${peso(source.amount)}</div></div>
    </div>
-   <div class="form-actions" style="justify-content:flex-end;margin-top:16px"><button type="button" class="btn btn-secondary" onclick="closeSavingsTransfer()">Cancel</button><button type="submit" id="savelyTransferReviewButton" class="btn btn-primary" style="background:var(--green);border-color:var(--green)" disabled>Review transfer</button></div>
+   <div class="form-actions" style="justify-content:flex-end;margin-top:16px"><button type="button" class="btn btn-secondary" onclick="closeSavingsTransfer()">Cancel</button><button type="button" id="savelyTransferReviewButton" class="btn btn-primary" style="background:var(--green);border-color:var(--green)" disabled>Review transfer</button></div>
   </form>
  </div>`;
  modal.addEventListener('click',event=>{if(event.target===modal)closeSavingsTransfer();});
@@ -5735,15 +5735,20 @@ function openSavingsTransfer(sourceId){
   if(typeof renderBankPicker==='function')renderBankPicker();
   toast(createdDestination?`Transferred ${peso(amount)}. ${destination.name} was added to Savings.`:`Transferred ${peso(amount)} to ${destination.name}.`);
  }
- modal.querySelector('#savelyTransferForm').addEventListener('submit',event=>{
-  event.preventDefault();
+ const transferForm=modal.querySelector('#savelyTransferForm');
+ function handleTransferReview(event){
+  if(event)event.preventDefault();
   const amount=Number(amountInput.value);
   const available=Math.max(0,Number(source.amount)||0);
   if(!selectedDestinationName){toast('Please choose a destination bank.');return;}
   if(!Number.isFinite(amount)||amount<=0){toast('Enter a transfer amount greater than zero.');return;}
   if(amount>available+0.000001){toast('Transfer amount exceeds the available balance.');return;}
   showTransferReview(amount);
- });
+ }
+ // Use an explicit button click instead of relying only on native form submission.
+ // This avoids the review step being blocked by browser form-submit behavior.
+ transferForm.addEventListener('submit',handleTransferReview);
+ reviewButton.addEventListener('click',handleTransferReview);
 }
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.style.display='block';setTimeout(()=>el.style.display='none',2400)}
 function balance(accountId){const a=data.accounts.find(x=>x.id===accountId);if(!a)return 0;return Number(a.opening)+data.transactions.filter(t=>t.accountId===accountId).reduce((s,t)=>s+(t.type==='deposit'||t.type==='interest'?Number(t.amount):-Number(t.amount)),0)}
