@@ -8595,6 +8595,7 @@ function openExpenseDayActions(dateValue){
     </div>
     <div class="expense-date-history-side">
      <strong class="expense-date-history-amount">${peso(t.amount)}</strong>
+     <button type="button" class="expense-history-delete-button" data-delete-expense="${esc(t.id)}" aria-label="Delete ${esc(t.description||'expense')}">🗑 Delete</button>
     </div>
    </article>`;
   }).join('')}
@@ -8610,6 +8611,19 @@ function openExpenseDayActions(dateValue){
  </div>`;
  backdrop.addEventListener('click',event=>{if(event.target===backdrop)closeExpenseDayActions();});
  backdrop.querySelector('.expense-day-action-close').addEventListener('click',closeExpenseDayActions);
+ backdrop.querySelectorAll('[data-delete-expense]').forEach(button=>button.addEventListener('click',async()=>{
+  const id=button.dataset.deleteExpense;
+  const item=(data.transactions||[]).find(t=>t.type==='expense'&&String(t.id)===String(id));
+  if(!item)return;
+  const confirmed=await showSavelyConfirm({title:'Delete this expense?',message:'This removes the expense from your history and gives the amount back to the account it was charged to. This cannot be undone.',details:(item.description||'Expense')+' · '+peso(item.amount)+'\n'+pretty,confirmLabel:'Delete',cancelLabel:'Keep'});
+  if(!confirmed)return;
+  data.transactions=data.transactions.filter(t=>!(t.type==='expense'&&String(t.id)===String(id)));
+  save();
+  renderBudget();
+  // Reopen with the remaining items; closes automatically when the day has none left.
+  openExpenseDayActions(date);
+  toast('Expense deleted.');
+ }));
  const editAllButton=backdrop.querySelector('[data-edit-day]');
  if(editAllButton)editAllButton.addEventListener('click',()=>{
   closeExpenseDayActions();
@@ -19350,25 +19364,14 @@ main.main>#page-holidays>.holiday-hero:first-child{
    openFutureDateNotice(iso);
    return;
   }
-  if(iso===today){
-   // Reuse the same Add Expense entry point used by the FAB.
+  // Today and past dates: pressing a date only shows that day's history (if any).
+  // It never opens the Add expense form; use the "＋ Add expense" button for that.
+  if(iso<=today){
    event.preventDefault();
    event.stopImmediatePropagation();
-   if(typeof window.openExpenseEntry==='function'){
-    window.openExpenseEntry(iso);
-   }
-   return;
-  }
-  if(iso<today){
    const hasRecordedExpenses=(Array.isArray(data.transactions)?data.transactions:[])
     .some(t=>t.type==='expense'&&String(t.date||'')===iso);
-   if(hasRecordedExpenses){
-    // Historical dates with records open the complete history dialog.
-    // Prevent legacy delegated handlers from opening the add form as well.
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    openExpenseDayActions(iso);
-   }
+   if(hasRecordedExpenses)openExpenseDayActions(iso);
    return;
   }
  }
@@ -23052,4 +23055,14 @@ html body #page-salary .salary-hero-countdown-title{
 #salaryTransferBankPicker{contain:layout style;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 #salaryTransferModal .bank-option,#salaryTransferModal .bank-favorite,#salaryTransferModal [data-salary-transfer-filter]{touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:none!important}
 @media (hover:none){#salaryTransferModal .bank-option:hover{transform:none!important;box-shadow:none!important}}
+</style>
+
+<style id="savely-expenses-hero-centered-and-history-delete-v1">
+/* Monthly expenses banner: content vertically centered */
+html body #page-budget .expenses-calendar-summary{display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:flex-start!important}
+html body #page-budget .expenses-calendar-summary .expenses-summary-count{top:50%!important;transform:translateY(-50%)!important}
+/* Delete button in expense history rows */
+.expense-date-history-side .expense-history-delete-button{display:inline-flex;align-items:center;gap:5px;min-height:32px;padding:6px 10px;border:1px solid #f3c9cd;border-radius:9px;background:#fff1f2;color:#c2414b;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}
+.expense-date-history-side .expense-history-delete-button:hover{background:#ffe3e6;border-color:#e9a5ac}
+body.dark-theme .expense-date-history-side .expense-history-delete-button{background:#3a1f26;border-color:#6b2f3a;color:#ff9aa6}
 </style>
