@@ -4293,11 +4293,7 @@ body.dark-theme #expenseComposer .expense-item-row{background:var(--soft)!import
   from{opacity:0;transform:translate3d(0,12px,0)}
   to{opacity:1;transform:translate3d(0,0,0)}
 }
-.page.page-entering{
-  animation:savelyPageEnter 380ms cubic-bezier(.2,.75,.25,1) both;
-  transform-origin:top center;
-  will-change:opacity,transform;
-}
+.page.page-entering{animation:none}
 @media(prefers-reduced-motion:reduce){
   .page.page-entering{animation:none!important;filter:none!important;transform:none!important}
 }
@@ -5080,22 +5076,22 @@ html body.expense-editor-active #page-expense-editor .expense-category-card > sp
     <div class="dcar" id="debtSummaryCarousel" data-tone="red" aria-roledescription="carousel" aria-label="Debt summary">
       <div class="dcar-stage" tabindex="0">
       <div class="dcar-slide is-active" data-tone="red" role="group" aria-label="1 of 4">
-        <div class="dcar-top"><span class="dcar-pill">I owe</span><span class="dcar-count">1 / 4</span></div>
+        <div class="dcar-top"><span class="dcar-pill">I owe</span></div>
         <div class="dcar-value" id="debtOweTotal">₱0.00</div>
         <div class="dcar-foot">Your remaining payments</div>
       </div>
       <div class="dcar-slide" data-tone="green" role="group" aria-label="2 of 4" aria-hidden="true">
-        <div class="dcar-top"><span class="dcar-pill">Owed to me</span><span class="dcar-count">2 / 4</span></div>
+        <div class="dcar-top"><span class="dcar-pill">Owed to me</span></div>
         <div class="dcar-value" id="debtLentTotal">₱0.00</div>
         <div class="dcar-foot">Money to collect</div>
       </div>
       <div class="dcar-slide" data-tone="blue" role="group" aria-label="3 of 4" aria-hidden="true">
-        <div class="dcar-top"><span class="dcar-pill">Due this month</span><span class="dcar-count">3 / 4</span></div>
+        <div class="dcar-top"><span class="dcar-pill">Due this month</span></div>
         <div class="dcar-value" id="debtDueMonthTotal">₱0.00</div>
         <div class="dcar-foot">Unpaid scheduled amounts</div>
       </div>
       <div class="dcar-slide" data-tone="orange" role="group" aria-label="4 of 4" aria-hidden="true">
-        <div class="dcar-top"><span class="dcar-pill">Overdue</span><span class="dcar-count">4 / 4</span></div>
+        <div class="dcar-top"><span class="dcar-pill">Overdue</span></div>
         <div class="dcar-value" id="debtOverdueTotal">₱0.00</div>
         <div class="dcar-foot" id="debtOverdueCount">No overdue records</div>
       </div>
@@ -23000,39 +22996,6 @@ body,button,input,select,textarea{letter-spacing:0}
 }
 </style>
 
-<style id="savely-page-fade-v1">
-@keyframes savelyPageEnter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@keyframes savelyPageLeave{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-6px)}}
-.page.page-entering{animation:savelyPageEnter .3s cubic-bezier(.2,.7,.2,1) both;filter:none}
-.page.page-leaving{animation:savelyPageLeave .16s ease-in forwards!important;pointer-events:none}
-@media(prefers-reduced-motion:reduce){.page.page-leaving{animation:none!important;opacity:1!important}}
-</style>
-<script id="savely-page-fade-js">
-(function(){
- if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
- var bypass=false,pending=false,SEL='#nav button[data-page],[onclick*="showPage("]';
- function pageOf(btn){
-  if(btn.matches('#nav button[data-page]'))return btn.dataset.page;
-  var m=/showPage\(\s*['"]([^'"]+)['"]/.exec(btn.getAttribute('onclick')||'');
-  return m?m[1]:null;
- }
- // Capture on document runs before the sidebar's own handlers, so the old page can fade out first.
- document.addEventListener('click',function(e){
-  if(bypass||!e.isTrusted||!e.target||e.target.nodeType!==1)return;
-  var btn=e.target.closest(SEL);if(!btn)return;
-  var p=pageOf(btn);if(!p)return;
-  var cur=document.querySelector('main.main > .page.active');
-  if(!cur||cur.id==='page-'+p)return;
-  e.preventDefault();e.stopImmediatePropagation();
-  if(pending)return;
-  pending=true;cur.classList.add('page-leaving');
-  setTimeout(function(){
-   bypass=true;
-   try{btn.click();}finally{bypass=false;pending=false;cur.classList.remove('page-leaving');}
-  },160);
- },true);
-})();
-</script>
 
 <style id="savely-ui-fixes-v4">
 /* Overview hero cards: container grows to fit the number (was fixed at 190px and clipped it) */
@@ -23781,41 +23744,6 @@ html body #stats.cards .summary-carousel-slide[data-carousel-clone]{display:none
 @media(max-width:600px){#page-debt .dcar-slide{min-height:164px;padding:20px 18px;gap:10px;border-radius:0}#page-debt .dcar-stage{border-radius:20px}}
 @media(prefers-reduced-motion:reduce){#page-debt .dcar-slide,#page-debt .dcar-slide.is-active{transition:none}}
 </style>
-<script id="savely-debt-carousel-js-v1">
-(function(){
- const root=document.getElementById('debtSummaryCarousel');
- if(!root)return;
- const stage=root.querySelector('.dcar-stage');
- const slides=Array.from(root.querySelectorAll('.dcar-slide'));
- const dots=Array.from(root.querySelectorAll('.dcar-dot'));
- const INTERVAL=5000;
- let index=0,timer=null,startX=null,startY=null;
- function show(n){
-  index=((n%slides.length)+slides.length)%slides.length;
-  slides.forEach((el,i)=>{el.classList.toggle('is-active',i===index);el.setAttribute('aria-hidden',i===index?'false':'true');});
-  dots.forEach((d,i)=>{d.classList.toggle('active',i===index);if(i===index)d.setAttribute('aria-current','true');else d.removeAttribute('aria-current');});
-  root.dataset.tone=slides[index].dataset.tone;
- }
- function stop(){if(timer){clearInterval(timer);timer=null;}}
- function start(){stop();timer=setInterval(()=>{if(document.hidden||!root.offsetParent)return;show(index+1);},INTERVAL);}
- dots.forEach(d=>d.addEventListener('click',()=>{show(Number(d.dataset.i)||0);start();}));
- stage.addEventListener('pointerdown',e=>{startX=e.clientX;startY=e.clientY;});
- stage.addEventListener('pointerup',e=>{
-  if(startX===null)return;
-  const dx=e.clientX-startX,dy=e.clientY-startY;startX=startY=null;
-  if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy)*1.15){show(index+(dx<0?1:-1));start();}
- });
- stage.addEventListener('pointercancel',()=>{startX=startY=null;});
- stage.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight'){e.preventDefault();show(index+1);start();}
-  if(e.key==='ArrowLeft'){e.preventDefault();show(index-1);start();}
- });
- root.addEventListener('mouseenter',stop);
- root.addEventListener('mouseleave',start);
- document.addEventListener('visibilitychange',()=>{if(!document.hidden)start();});
- show(0);start();
-})();
-</script>
 
 <style id="savely-sidebar-collapse-layout-and-arrow-v1">
 @media (min-width:761px){
@@ -23844,3 +23772,189 @@ html body #stats.cards .summary-carousel-slide[data-carousel-clone]{display:none
     transform:translateX(-3.5px) rotate(-135deg)!important}       /* points right (expand), optically centred */
 }
 </style>
+
+<style id="savely-page-fade-v2">
+/* Page fade is driven by the Web Animations API (see script below): opacity-only, GPU-friendly,
+   and not affected by the global "reduce motion" CSS overrides. Old class animations are disabled. */
+html body .page.page-entering,html body .page.page-leaving{animation:none!important;will-change:auto!important}
+</style>
+<script id="savely-page-fade-js-v2">
+(function(){
+ var OUT=150,IN=280,EASE_IN='cubic-bezier(.2,.7,.2,1)';
+ var SEL='#nav button[data-page],[onclick*="showPage("]';
+ var bypass=false,pendingBtn=null,outAnim=null;
+ function activePage(){return document.querySelector('main.main > .page.active');}
+ function pageOf(btn){
+  if(btn.matches('#nav button[data-page]'))return btn.dataset.page;
+  var m=/showPage\(\s*['"]([^'"]+)['"]/.exec(btn.getAttribute('onclick')||'');
+  return m?m[1]:null;
+ }
+ /* Fade-in: wrap showPage (stays synchronous, so any code that calls it keeps working). */
+ var orig=window.showPage;
+ if(typeof orig==='function'&&!orig.__savelyFade){
+  var wrapped=function(){
+   var before=activePage();
+   var result=orig.apply(this,arguments);
+   var after=activePage();
+   if(after&&after!==before&&after.animate){
+    after.animate([{opacity:0},{opacity:1}],{duration:IN,easing:EASE_IN,fill:'backwards'});
+   }
+   return result;
+  };
+  wrapped.__savelyFade=true;
+  window.showPage=wrapped;
+ }
+ /* Fade-out: sidebar / showPage buttons fade the current page first, then switch. */
+ document.addEventListener('click',function(e){
+  if(bypass||!e.isTrusted||!e.target||e.target.nodeType!==1)return;
+  var btn=e.target.closest(SEL);if(!btn)return;
+  var p=pageOf(btn);if(!p)return;
+  var cur=activePage();
+  if(!cur||!cur.animate||cur.id==='page-'+p)return;
+  e.preventDefault();e.stopImmediatePropagation();
+  pendingBtn=btn;
+  if(outAnim)return;                       // already fading out; the latest tap wins
+  cur.style.pointerEvents='none';
+  outAnim=cur.animate([{opacity:1},{opacity:0}],{duration:OUT,easing:'ease-out',fill:'forwards'});
+  outAnim.onfinish=function(){
+   var b=pendingBtn;pendingBtn=null;
+   // let the faded-out frame paint before the (heavier) page switch runs
+   requestAnimationFrame(function(){
+    var target=b?pageOf(b):null;
+    if(b&&target&&cur.id!=='page-'+target){
+     bypass=true;
+     try{b.click();}finally{bypass=false;}
+    }
+    try{outAnim.cancel();}catch(_){}
+    outAnim=null;cur.style.pointerEvents='';
+   });
+  };
+ },true);
+})();
+</script>
+
+<style id="savely-debt-carousel-match-overview-v2">
+/* Debt carousel = same look as the Overview hero cards */
+html body #page-debt .dcar{margin-bottom:20px}
+html body #page-debt .dcar-stage{border-radius:28px;user-select:none;-webkit-user-select:none;cursor:grab;touch-action:pan-y}
+html body #page-debt .dcar-stage.is-dragging{cursor:grabbing}
+html body #page-debt .dcar-slide{min-height:204px;padding:30px 36px;gap:14px;justify-content:center;
+  transition:opacity .6s ease,visibility 0s linear .6s;will-change:opacity}
+html body #page-debt .dcar-slide.is-active{transition:opacity .6s ease,visibility 0s linear 0s}
+html body #page-debt .dcar-slide::before{
+  background:radial-gradient(circle at 14% 0%,rgba(255,255,255,.26) 0,transparent 46%),
+             linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px) 0 0/30px 30px,
+             linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px) 0 0/30px 30px}
+html body #page-debt .dcar-top{width:auto}
+html body #page-debt .dcar-value{font-size:clamp(28px,3.4vw,34px);font-weight:700;letter-spacing:-.01em;margin:0}
+html body #page-debt .dcar-foot{font-size:12px;padding:8px 14px;border-radius:12px}
+/* Dots: small round dots, active = green pill (identical to Overview) */
+html body #page-debt .dcar-dots{display:flex;justify-content:center;align-items:center;gap:9px;padding:12px 0 0;width:100%}
+html body #page-debt .dcar-dots .dcar-dot{
+  appearance:none;-webkit-appearance:none;display:block;flex:0 0 10px;
+  width:10px;min-width:10px;max-width:10px;height:10px;min-height:10px;max-height:10px;
+  padding:0;margin:0;border:0;border-radius:999px;background:#cbd5e1;box-shadow:none;cursor:pointer;
+  transition:width .3s ease,flex-basis .3s ease,background-color .3s ease}
+html body #page-debt .dcar-dots .dcar-dot.active{
+  flex-basis:22px;width:22px;min-width:22px;max-width:22px;background:#168765;
+  outline:2px solid rgba(22,135,101,.2);outline-offset:3px}
+html body #page-debt .dcar-dots .dcar-dot:focus-visible{outline:2px solid #168765;outline-offset:4px}
+@media(max-width:600px){
+  html body #page-debt .dcar-stage{border-radius:22px}
+  html body #page-debt .dcar-slide{min-height:164px;padding:22px 20px;gap:11px;border-radius:0}
+}
+</style>
+<script id="savely-debt-carousel-js-v2">
+(function(){
+ var root=document.getElementById('debtSummaryCarousel');
+ if(!root)return;
+ var stage=root.querySelector('.dcar-stage');
+ var slides=Array.prototype.slice.call(root.querySelectorAll('.dcar-slide'));
+ var dots=Array.prototype.slice.call(root.querySelectorAll('.dcar-dot'));
+ var INTERVAL=5000,SETTLE=340;
+ var index=0,timer=null,drag=null,settling=false;
+
+ function wrap(n){return((n%slides.length)+slides.length)%slides.length;}
+ function show(n){
+  index=wrap(n);
+  slides.forEach(function(el,i){el.classList.toggle('is-active',i===index);el.setAttribute('aria-hidden',i===index?'false':'true');});
+  dots.forEach(function(d,i){d.classList.toggle('active',i===index);if(i===index)d.setAttribute('aria-current','true');else d.removeAttribute('aria-current');});
+  root.dataset.tone=slides[index].dataset.tone;
+ }
+ function stop(){if(timer){clearInterval(timer);timer=null;}}
+ function start(){stop();timer=setInterval(function(){if(document.hidden||!root.offsetParent||drag||settling)return;show(index+1);},INTERVAL);}
+ function clearInline(el){el.style.opacity='';el.style.transform='';el.style.transition='';el.style.visibility='';}
+
+ /* ---- drag-follow swipe with cross-fade ---- */
+ function neighbour(dx){return slides[wrap(index+(dx<0?1:-1))];}
+ function applyDrag(dx){
+  var W=stage.clientWidth||320,p=Math.min(Math.abs(dx)/(W*0.6),1);
+  var cur=slides[index],nb=neighbour(dx);
+  if(drag.nb&&drag.nb!==nb){clearInline(drag.nb);}
+  drag.nb=nb;
+  cur.style.transition='none';nb.style.transition='none';
+  cur.style.visibility='visible';nb.style.visibility='visible';
+  cur.style.opacity=String(1-p);
+  cur.style.transform='translate3d('+(dx*0.25)+'px,0,0)';
+  nb.style.opacity=String(p);
+  nb.style.transform='translate3d('+((dx<0?1:-1)*(1-p)*28)+'px,0,0)';
+ }
+ function settle(commit,dx){
+  var cur=slides[index],nb=drag&&drag.nb;
+  settling=true;
+  var ease='opacity '+SETTLE+'ms ease,transform '+SETTLE+'ms cubic-bezier(.2,.7,.2,1)';
+  cur.style.transition=ease;if(nb)nb.style.transition=ease;
+  requestAnimationFrame(function(){
+   if(commit&&nb){
+    cur.style.opacity='0';cur.style.transform='translate3d('+(dx<0?-24:24)+'px,0,0)';
+    nb.style.opacity='1';nb.style.transform='translate3d(0,0,0)';
+   }else{
+    cur.style.opacity='1';cur.style.transform='translate3d(0,0,0)';
+    if(nb){nb.style.opacity='0';nb.style.transform='translate3d('+(dx<0?28:-28)+'px,0,0)';}
+   }
+  });
+  setTimeout(function(){
+   var target=commit&&nb?slides.indexOf(nb):index;
+   slides.forEach(clearInline);
+   show(target);
+   settling=false;
+   start();
+  },SETTLE+30);
+ }
+ stage.addEventListener('pointerdown',function(e){
+  if(settling||(e.button!==undefined&&e.button!==0))return;
+  drag={id:e.pointerId,x:e.clientX,y:e.clientY,active:false,nb:null,dx:0,t:Date.now()};
+  stop();
+ });
+ stage.addEventListener('pointermove',function(e){
+  if(!drag||e.pointerId!==drag.id)return;
+  var dx=e.clientX-drag.x,dy=e.clientY-drag.y;
+  if(!drag.active){
+   if(Math.abs(dx)>8&&Math.abs(dx)>Math.abs(dy)*1.2){
+    drag.active=true;stage.classList.add('is-dragging');
+    try{stage.setPointerCapture(e.pointerId);}catch(_){}
+   }else return;
+  }
+  drag.dx=dx;applyDrag(dx);
+ });
+ function end(e,cancelled){
+  if(!drag||(e&&e.pointerId!==drag.id))return;
+  var d=drag;drag=null;stage.classList.remove('is-dragging');
+  if(!d.active){start();return;}
+  var W=stage.clientWidth||320,dx=d.dx,speed=Math.abs(dx)/Math.max(Date.now()-d.t,1);
+  var commit=!cancelled&&(Math.abs(dx)>W*0.18||(Math.abs(dx)>30&&speed>0.45));
+  drag=d;settle(commit,dx);drag=null;
+ }
+ stage.addEventListener('pointerup',function(e){end(e,false);});
+ stage.addEventListener('pointercancel',function(e){end(e,true);});
+ dots.forEach(function(d){d.addEventListener('click',function(){if(settling)return;show(Number(d.dataset.i)||0);start();});});
+ stage.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'){e.preventDefault();show(index+1);start();}
+  if(e.key==='ArrowLeft'){e.preventDefault();show(index-1);start();}
+ });
+ root.addEventListener('mouseenter',stop);
+ root.addEventListener('mouseleave',function(){if(!drag)start();});
+ document.addEventListener('visibilitychange',function(){if(!document.hidden)start();});
+ show(0);start();
+})();
+</script>
