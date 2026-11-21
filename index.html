@@ -5476,7 +5476,7 @@ function accrueRealtimeInterest(){
  // Save the tracking anchor on first run, then record one estimated net-interest
  // entry after every complete 24-hour period. Missed days are caught up on next visit.
  const now=Date.now(), intervalMs=24*60*60*1000, taxMultiplier=.8;
- let changed=false;
+ let changed=false, interestPosted=false;
  for(const item of (data.savingsList||[])){
   const annualRate=getTrackedDailyInterestRate(item);
   if(annualRate===null)continue;
@@ -5540,7 +5540,7 @@ function accrueRealtimeInterest(){
       type:'interest',label:'Estimated daily interest',interestEarned:dailyInterest,
       annualRate:annualRate,taxRate:20,interestDate:day
      });
-     item.amount=Math.max(0,Number(item.amount)||0)+dailyInterest;
+     item.amount=Math.max(0,Number(item.amount)||0)+dailyInterest;interestPosted=true;
      if(!Array.isArray(item.graphHistory))item.graphHistory=[];
      const existing=item.graphHistory.find(point=>interestLocalDate(Number(point.at)||now)===day);
      if(existing){existing.at=dayEnd-1;existing.amount=item.amount;delete existing.liveMinute;}
@@ -5556,7 +5556,9 @@ function accrueRealtimeInterest(){
  }
  if(changed){
   try{localStorage.setItem(STORE,JSON.stringify(data));}catch(e){toast('Could not save daily interest history. Export a backup and check browser storage.');}
-  if(typeof renderSavingsList==='function')renderSavingsList();
+  // When daily interest changed a balance, refresh every view that shows it (Overview carousel, totals, goals, reports, Savings list).
+  if(interestPosted&&typeof render==='function'){try{render();}catch(e){console.error('Refresh after daily interest failed:',e);if(typeof renderSavingsList==='function')renderSavingsList();}}
+  else if(typeof renderSavingsList==='function')renderSavingsList();
  }
 }
 
@@ -20842,64 +20844,6 @@ html body #page-salary .salary-hero-countdown span{color:#e8efff;font-size:11px;
 </style>
 
 
-<style id="savely-savings-hero-salary-style-v1">
-/* Savings top banner uses the Salary banner layout (pill label, big amount, pill note, top-right pill, grid texture) in Savely green. */
-html body #page-financial-list #financialCategoryStats{display:block!important}
-html body #page-financial-list #financialCategoryStats .savings-total-card{
- position:relative!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;
- min-height:0!important;height:auto!important;gap:0!important;padding:64px 40px 34px!important;
- border:0!important;border-radius:28px!important;overflow:hidden!important;color:#fff!important;
- font-family:var(--font-ui,'DM Sans',system-ui,sans-serif)!important;
- background:
-  radial-gradient(520px 260px at 8% -10%,rgba(120,230,185,.42),transparent 65%),
-  radial-gradient(420px 300px at 100% 110%,rgba(90,220,170,.28),transparent 65%),
-  linear-gradient(135deg,#0a6b50 0%,#12875f 48%,#2fb585 100%)!important;
- box-shadow:0 24px 44px -26px rgba(18,135,101,.75),0 0 0 1px rgba(255,255,255,.12) inset!important}
-html body #page-financial-list #financialCategoryStats .savings-total-card::before{
- content:""!important;display:block!important;position:absolute!important;inset:0!important;width:auto!important;height:auto!important;
- border-radius:0!important;transform:none!important;pointer-events:none!important;
- background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px)!important;
- background-size:34px 34px!important;
- -webkit-mask-image:linear-gradient(100deg,transparent 30%,#000 100%);mask-image:linear-gradient(100deg,transparent 30%,#000 100%)}
-html body #page-financial-list #financialCategoryStats .savings-total-card::after{content:none!important;display:none!important}
-html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-copy{
- position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:12px;min-width:0}
-html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-eyebrow{
- display:inline-flex;align-items:center;gap:8px;padding:6px 13px;border-radius:999px;
- background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.26);backdrop-filter:blur(6px);
- color:#fff;font-size:11px;font-weight:600;letter-spacing:.08em;line-height:1}
-html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-eyebrow::before{
- content:"";width:7px;height:7px;border-radius:50%;background:#7dffc4;box-shadow:0 0 0 3px rgba(125,255,196,.25)}
-html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-amount{
- margin:0;font-size:clamp(28px,3vw,38px);font-weight:600;letter-spacing:-.01em;line-height:1.15;color:#fff;
- font-variant-numeric:tabular-nums}
-html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-copy .stat-foot{
- margin:0!important;width:fit-content;padding:8px 14px;border-radius:12px;
- background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);
- color:rgba(255,255,255,.9)!important;font-size:12.5px!important;font-weight:400!important;line-height:1.45!important}
-html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-copy .stat-foot[style*="font-weight:800"]{color:#e2fff1!important;font-weight:600!important}
-html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-asof{
- position:absolute;top:20px;right:28px;z-index:2;display:inline-flex;align-items:center;gap:6px;
- padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.26);
- color:rgba(255,255,255,.85);font-size:12px;font-weight:400;line-height:1.2;white-space:nowrap;text-align:right}
-@media(max-width:600px){
- html body #page-financial-list #financialCategoryStats .savings-total-card{padding:62px 22px 24px!important}
- html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-asof{top:18px;right:18px;left:18px;white-space:normal}
-}
-</style>
-<style id="savely-summary-carousel-fade-v1">
-/* Overview carousel: cross-fade between cards (fade out + fade in) instead of sliding. Auto-advance every 30 seconds. */
-html body #stats.cards .summary-carousel-track{display:grid!important;transform:none!important;transition:none!important}
-html body #stats.cards .summary-carousel-slide{grid-area:1/1!important;width:100%!important;min-width:0!important;flex:none!important;
- opacity:0;visibility:hidden;pointer-events:none;
- transition:opacity .8s ease,visibility 0s linear .8s}
-html body #stats.cards .summary-carousel-slide.is-active{opacity:1;visibility:visible;pointer-events:auto;
- transition:opacity .8s ease,visibility 0s linear 0s}
-html body #stats.cards .summary-carousel-slide[data-carousel-clone]{display:none!important}
-@media(prefers-reduced-motion:reduce){
- html body #stats.cards .summary-carousel-slide,html body #stats.cards .summary-carousel-slide.is-active{transition:none!important}
-}
-</style>
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
@@ -23474,3 +23418,62 @@ html body #stats.cards .summary-carousel-slide .stat [class*="delta"]{align-self
  window.addEventListener('focus',run);
 })();
 </script>
+
+<style id="savely-savings-hero-salary-style-v1">
+/* Savings top banner uses the Salary banner layout (pill label, big amount, pill note, top-right pill, grid texture) in Savely green. */
+html body #page-financial-list #financialCategoryStats{display:block!important}
+html body #page-financial-list #financialCategoryStats .savings-total-card{
+ position:relative!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;
+ min-height:0!important;height:auto!important;gap:0!important;padding:64px 40px 34px!important;
+ border:0!important;border-radius:28px!important;overflow:hidden!important;color:#fff!important;
+ font-family:var(--font-ui,'DM Sans',system-ui,sans-serif)!important;
+ background:
+  radial-gradient(520px 260px at 8% -10%,rgba(120,230,185,.42),transparent 65%),
+  radial-gradient(420px 300px at 100% 110%,rgba(90,220,170,.28),transparent 65%),
+  linear-gradient(135deg,#0a6b50 0%,#12875f 48%,#2fb585 100%)!important;
+ box-shadow:0 24px 44px -26px rgba(18,135,101,.75),0 0 0 1px rgba(255,255,255,.12) inset!important}
+html body #page-financial-list #financialCategoryStats .savings-total-card::before{
+ content:""!important;display:block!important;position:absolute!important;inset:0!important;width:auto!important;height:auto!important;
+ border-radius:0!important;transform:none!important;pointer-events:none!important;
+ background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px)!important;
+ background-size:34px 34px!important;
+ -webkit-mask-image:linear-gradient(100deg,transparent 30%,#000 100%);mask-image:linear-gradient(100deg,transparent 30%,#000 100%)}
+html body #page-financial-list #financialCategoryStats .savings-total-card::after{content:none!important;display:none!important}
+html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-copy{
+ position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:12px;min-width:0;text-align:left;margin:0}
+html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-eyebrow{
+ display:inline-flex;align-items:center;gap:8px;padding:6px 13px;border-radius:999px;
+ background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.26);backdrop-filter:blur(6px);
+ color:#fff;font-size:11px;font-weight:600;letter-spacing:.08em;line-height:1}
+html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-eyebrow::before{
+ content:"";width:7px;height:7px;border-radius:50%;background:#7dffc4;box-shadow:0 0 0 3px rgba(125,255,196,.25)}
+html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-amount{
+ margin:0;font-size:clamp(28px,3vw,38px);font-weight:600;letter-spacing:-.01em;line-height:1.15;color:#fff;
+ font-variant-numeric:tabular-nums}
+html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-copy .stat-foot{
+ margin:0!important;width:fit-content;padding:8px 14px;border-radius:12px;
+ background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);
+ color:rgba(255,255,255,.9)!important;font-size:12.5px!important;font-weight:400!important;line-height:1.45!important}
+html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-copy .stat-foot[style*="font-weight:800"]{color:#e2fff1!important;font-weight:600!important}
+html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-asof{
+ position:absolute;top:20px;right:28px;z-index:2;display:inline-flex;align-items:center;gap:6px;
+ padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.26);
+ color:rgba(255,255,255,.85);font-size:12px;font-weight:400;line-height:1.2;white-space:nowrap;text-align:right}
+@media(max-width:600px){
+ html body #page-financial-list #financialCategoryStats .savings-total-card{padding:62px 22px 24px!important}
+ html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-asof{top:18px;right:18px;left:18px;white-space:normal}
+}
+</style>
+<style id="savely-summary-carousel-fade-v1">
+/* Overview carousel: cross-fade between cards (fade out + fade in) instead of sliding. Auto-advance every 30 seconds. */
+html body #stats.cards .summary-carousel-track{display:grid!important;transform:none!important;transition:none!important}
+html body #stats.cards .summary-carousel-slide{grid-area:1/1!important;width:100%!important;min-width:0!important;flex:none!important;
+ opacity:0;visibility:hidden;pointer-events:none;
+ transition:opacity .8s ease,visibility 0s linear .8s}
+html body #stats.cards .summary-carousel-slide.is-active{opacity:1;visibility:visible;pointer-events:auto;
+ transition:opacity .8s ease,visibility 0s linear 0s}
+html body #stats.cards .summary-carousel-slide[data-carousel-clone]{display:none!important}
+@media(prefers-reduced-motion:reduce){
+ html body #stats.cards .summary-carousel-slide,html body #stats.cards .summary-carousel-slide.is-active{transition:none!important}
+}
+</style>
