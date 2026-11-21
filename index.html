@@ -8224,9 +8224,9 @@ const overviewSalaryRemaining=getSalaryRemainingProjection(new Date().getFullYea
 document.getElementById('stats').innerHTML=`<div class="summary-carousel" aria-label="Financial summary cards">
  <div class="summary-carousel-viewport">
   <div class="summary-carousel-track" id="summaryCarouselTrack" tabindex="0" aria-roledescription="carousel" aria-label="Financial summary">
-   <div class="summary-carousel-slide" data-summary-card="savings" role="group" aria-label="1 of 3"><div class="stat"><div class="stat-top">Savings total <span class="stat-icon" style="background:#e5f7ef;color:#169b70">₱</span></div><div class="stat-value savely-private-number" style="color:var(--green)">${peso(savingsTotal)}</div><div class="stat-foot">Savings savings</div><div class="stat-foot savings-total-asof" id="savingsTotalAsOf" style="margin-top:5px;font-size:10px">As of —</div></div></div>
-   <div class="summary-carousel-slide" data-summary-card="income" role="group" aria-label="2 of 3"><div class="stat"><div class="stat-top">Salary / income total <span class="stat-icon" style="background:#edf1ff;color:#536be0">↗</span></div><div class="stat-value savely-private-number" style="color:var(--blue)">${peso(overviewSalaryRemaining)}</div><div class="stat-foot">Remaining salary in ${new Date().getFullYear()}</div></div></div>
-   <div class="summary-carousel-slide" data-summary-card="debt" role="group" aria-label="3 of 3"><div class="stat"><div class="stat-top">Debt total <span class="stat-icon" style="background:#fff1e7;color:#e64b5b">−</span></div><div class="stat-value savely-private-number" style="color:var(--red)">${peso(debtTotal)}</div><div class="stat-foot">I owe · remaining balance</div></div></div>
+   <div class="summary-carousel-slide" data-summary-card="savings" role="group" aria-label="1 of 3"><div class="stat"><div class="stat-top"><span class="ov-pill">Savings total</span> <span class="stat-icon" style="background:#e5f7ef;color:#169b70">₱</span></div><div class="stat-value savely-private-number" style="color:var(--green)">${peso(savingsTotal)}</div><div class="stat-foot">Savings savings</div><div class="stat-foot savings-total-asof" id="savingsTotalAsOf" style="margin-top:5px;font-size:10px">As of —</div></div></div>
+   <div class="summary-carousel-slide" data-summary-card="income" role="group" aria-label="2 of 3"><div class="stat"><div class="stat-top"><span class="ov-pill">Salary / income total</span> <span class="stat-icon" style="background:#edf1ff;color:#536be0">↗</span></div><div class="stat-value savely-private-number" style="color:var(--blue)">${peso(overviewSalaryRemaining)}</div><div class="stat-foot">Remaining salary in ${new Date().getFullYear()}</div></div></div>
+   <div class="summary-carousel-slide" data-summary-card="debt" role="group" aria-label="3 of 3"><div class="stat"><div class="stat-top"><span class="ov-pill">Debt total</span> <span class="stat-icon" style="background:#fff1e7;color:#e64b5b">−</span></div><div class="stat-value savely-private-number" style="color:var(--red)">${peso(debtTotal)}</div><div class="stat-foot">I owe · remaining balance</div></div></div>
   </div>
  </div>
  <div class="summary-carousel-pagination" role="group" aria-label="Choose financial summary card">
@@ -8822,7 +8822,7 @@ function interestEstimate(amount,rate){
  if(rate===null||rate===undefined)return '';
  const gross=Number(amount||0)*rate/100;
  const net=gross*.8;
- return `<span class="interest-chip">${rate.toFixed(4).replace(/0+$/,'').replace(/\\.$/,'')}% p.a.</span><div class="interest-sub">~${peso(net/12)}/mo net · ${peso(net)}/yr net</div>`;
+ return `<span class="interest-chip">${rate.toFixed(4).replace(/0+$/,'').replace(/\\.$/,'')}% p.a.</span><div class="interest-sub savely-private-number">~${peso(net/12)}/mo net · ${peso(net)}/yr net</div>`;
 }
 
 function latestSavingsDelta(item){
@@ -9429,15 +9429,15 @@ function renderSavingsList(){
  }
  const savedDelta=Number(savingsTracker.delta)||0;
  const savingsChangeHtml=savedDelta>0.005
-  ? `<div class="stat-foot" style="color:var(--green);font-weight:800">＋ ${peso(Math.abs(savedDelta))} increase</div>`
+  ? `<div class="stat-foot savely-private-number" style="color:var(--green);font-weight:800">＋ ${peso(Math.abs(savedDelta))} increase</div>`
   : `<div class="stat-foot" style="color:var(--muted)">No increase recorded</div>`;
  document.getElementById('financialCategoryStats').innerHTML=
-  `<div class="stat savings-total-card"><div class="sv-hero-copy"><span class="sv-hero-eyebrow">SAVINGS TOTAL</span><div class="sv-hero-amount">${peso(savings)}</div>${savingsChangeHtml}</div><div class="sv-hero-asof" id="financialSavingsAsOf">As of —</div></div>`;
+  `<div class="stat savings-total-card"><div class="sv-hero-copy"><span class="sv-hero-eyebrow">SAVINGS TOTAL</span><div class="sv-hero-amount savely-private-number">${peso(savings)}</div>${savingsChangeHtml}</div><div class="sv-hero-asof" id="financialSavingsAsOf">As of —</div></div>`;
  try{updateFinancialSavingsAsOf();}catch(e){}
  renderSavingsTrend();
  renderOverallTrend();
  const target=document.getElementById('savingsListTable');
- target.innerHTML=selected.length?`<table><thead><tr><th>Item / source</th><th>Date added</th><th class="financial-trend-col" aria-label="Balance trend"></th><th style="text-align:right">Amount</th>${activeFinancialCategory==='Savings'?'<th>Interest estimate</th>':''}<th></th></tr></thead><tbody>${selected.map(item=>`<tr data-financial-item-id="${esc(item.id)}" data-trend-bank="${esc(item.isGoalAllocation?item.name:(item.bankName||item.name))}" title="Click to focus this item on the graph" draggable="true" class="financial-draggable-row" style="cursor:pointer"><td><div class="tx-title" style="display:flex;align-items:center;min-width:180px">${financialBankLogo(item.bankName||item.name)}<span>${item.isGoalAllocation?`<span class="goal-linked-item">${esc(item.name)}</span><div class="footer-note">Linked from Savings Goals</div>`:esc(item.name)}</span></div></td><td>${fmtDate(item.date)}</td><td class="financial-trend-col" style="text-align:center;width:42px">${financialItemTrendIndicator(item)}</td><td style="text-align:right;font-weight:800;color:${item.category==='Debt'?'var(--red)':'var(--text)'}"><span style="display:inline-flex;align-items:center;justify-content:flex-end;gap:6px"><span>${item.category==='Debt'?'−':'+'}${peso(item.amount)}</span></span></td>${activeFinancialCategory==='Savings'?`<td>${item.isReceivable?'<span class="muted">Receivable · No bank interest</span>':(/^maya$/i.test(String(item.bankName||item.name||'').trim())||/maya savings/i.test(String(item.bankName||item.name||'')))?mayaInterestEstimate(item.amount,item.mayaBonusRate||3):(interestEstimate(item.amount,getInterestRate(item.bankName||item.name,item.category))||'<span class="muted">Rate unavailable</span>')}</td>`:''}<td style="text-align:right"><div class="savings-item-actions"><button type="button" class="savings-item-menu-button" aria-label="Savings item actions" aria-expanded="false" onclick="toggleSavingsItemMenu(event,'${esc(String(item.id))}')">⋯</button><div class="savings-item-menu" id="savings-item-menu-${esc(String(item.id))}">${item.isReceivable?savingsLinkedDebtMenuHTML(item):item.isGoalAllocation?`<button type="button" class="apply-savings-goal-action is-disabled" disabled aria-disabled="true" title="This bank is already linked to a savings goal">Apply to savings goal ✓</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationInterest('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">View interest</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationHistory('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editGoal('${esc(String(item.goalId))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();removeGoalBankAllocation('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">Delete</button>`:`${activeFinancialCategory==='Savings'?`<button type="button" class="apply-savings-goal-action" data-savings-item-id="${esc(String(item.id))}" onclick="event.preventDefault();event.stopPropagation();closeSavingsItemMenus();askAddSavingsToGoal(this.dataset.savingsItemId)">Apply to savings goal</button><button type="button" onclick="closeSavingsItemMenus();openSavingsTransfer('${esc(String(item.id))}')">Transfer</button>`:''}${activeFinancialCategory==='Savings'&&!/^(cash|coins?|coins?\s*\(.*\)|₱1 coin.*|1 coin.*)$/i.test(String(item.name||'').trim())?`<button type="button" onclick="closeSavingsItemMenus();openSavingsInterest('${esc(String(item.id))}')">View interest</button>`:''}<button type="button" onclick="closeSavingsItemMenus();openSavingsHistory('${esc(String(item.id))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editFinancialItem('${esc(String(item.id))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();deleteSavingsItem('${esc(String(item.id))}')">Delete</button>`}</div></div></td></tr>`).join('')}</tbody></table><div class="between savely-items-updated-footer" style="margin-top:14px;justify-content:flex-end"><span style="color:var(--muted)">Last updated</span><strong id="savingsItemsLastUpdated" style="font-weight:700">${getSavingsItemsLastUpdatedLabel(selected)}</strong></div>`:`<div class="empty">No ${activeFinancialCategory.toLowerCase()} items yet. Click Add to create one.</div>`;
+ target.innerHTML=selected.length?`<table><thead><tr><th>Item / source</th><th>Date added</th><th class="financial-trend-col" aria-label="Balance trend"></th><th style="text-align:right">Amount</th>${activeFinancialCategory==='Savings'?'<th>Interest estimate</th>':''}<th></th></tr></thead><tbody>${selected.map(item=>`<tr data-financial-item-id="${esc(item.id)}" data-trend-bank="${esc(item.isGoalAllocation?item.name:(item.bankName||item.name))}" title="Click to focus this item on the graph" draggable="true" class="financial-draggable-row" style="cursor:pointer"><td><div class="tx-title" style="display:flex;align-items:center;min-width:180px">${financialBankLogo(item.bankName||item.name)}<span>${item.isGoalAllocation?`<span class="goal-linked-item">${esc(item.name)}</span><div class="footer-note">Linked from Savings Goals</div>`:esc(item.name)}</span></div></td><td>${fmtDate(item.date)}</td><td class="financial-trend-col" style="text-align:center;width:42px">${financialItemTrendIndicator(item)}</td><td style="text-align:right;font-weight:800;color:${item.category==='Debt'?'var(--red)':'var(--text)'}"><span style="display:inline-flex;align-items:center;justify-content:flex-end;gap:6px"><span class="savely-private-number">${item.category==='Debt'?'−':'+'}${peso(item.amount)}</span></span></td>${activeFinancialCategory==='Savings'?`<td>${item.isReceivable?'<span class="muted">Receivable · No bank interest</span>':(/^maya$/i.test(String(item.bankName||item.name||'').trim())||/maya savings/i.test(String(item.bankName||item.name||'')))?mayaInterestEstimate(item.amount,item.mayaBonusRate||3):(interestEstimate(item.amount,getInterestRate(item.bankName||item.name,item.category))||'<span class="muted">Rate unavailable</span>')}</td>`:''}<td style="text-align:right"><div class="savings-item-actions"><button type="button" class="savings-item-menu-button" aria-label="Savings item actions" aria-expanded="false" onclick="toggleSavingsItemMenu(event,'${esc(String(item.id))}')">⋯</button><div class="savings-item-menu" id="savings-item-menu-${esc(String(item.id))}">${item.isReceivable?savingsLinkedDebtMenuHTML(item):item.isGoalAllocation?`<button type="button" class="apply-savings-goal-action is-disabled" disabled aria-disabled="true" title="This bank is already linked to a savings goal">Apply to savings goal ✓</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationInterest('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">View interest</button><button type="button" onclick="closeSavingsItemMenus();openGoalAllocationHistory('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editGoal('${esc(String(item.goalId))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();removeGoalBankAllocation('${esc(String(item.goalId))}','${esc(String(item.bankName))}')">Delete</button>`:`${activeFinancialCategory==='Savings'?`<button type="button" class="apply-savings-goal-action" data-savings-item-id="${esc(String(item.id))}" onclick="event.preventDefault();event.stopPropagation();closeSavingsItemMenus();askAddSavingsToGoal(this.dataset.savingsItemId)">Apply to savings goal</button><button type="button" onclick="closeSavingsItemMenus();openSavingsTransfer('${esc(String(item.id))}')">Transfer</button>`:''}${activeFinancialCategory==='Savings'&&!/^(cash|coins?|coins?\s*\(.*\)|₱1 coin.*|1 coin.*)$/i.test(String(item.name||'').trim())?`<button type="button" onclick="closeSavingsItemMenus();openSavingsInterest('${esc(String(item.id))}')">View interest</button>`:''}<button type="button" onclick="closeSavingsItemMenus();openSavingsHistory('${esc(String(item.id))}')">History</button><button type="button" onclick="closeSavingsItemMenus();editFinancialItem('${esc(String(item.id))}')">Edit</button><button type="button" class="menu-delete" onclick="closeSavingsItemMenus();deleteSavingsItem('${esc(String(item.id))}')">Delete</button>`}</div></div></td></tr>`).join('')}</tbody></table><div class="between savely-items-updated-footer" style="margin-top:14px;justify-content:flex-end"><span style="color:var(--muted)">Last updated</span><strong id="savingsItemsLastUpdated" style="font-weight:700">${getSavingsItemsLastUpdatedLabel(selected)}</strong></div>`:`<div class="empty">No ${activeFinancialCategory.toLowerCase()} items yet. Click Add to create one.</div>`;
  // Clicking a savings row focuses the growth graph on that bank; clicking it again restores all banks.
  const tbody=target.querySelector('tbody');
  if(tbody){
@@ -10587,7 +10587,7 @@ function updateOverviewPrivacyState(){
  }
  document.body.setAttribute('data-savely-figures',hidden?'hidden':'visible');
  if(button){
-  button.hidden=!(page&&page.classList.contains('active'));
+  button.hidden=!((page&&page.classList.contains('active'))||document.getElementById('page-financial-list')?.classList.contains('active'));
   button.setAttribute('aria-pressed',hidden?'true':'false');
   button.setAttribute('aria-label',hidden?'Show financial figures':'Hide financial figures');
   button.title=hidden?'Show financial figures':'Hide financial figures';
@@ -16630,7 +16630,7 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
       addIcon.textContent=action.icon;
     }
     // Financial-figure privacy controls belong exclusively to Overview.
-    if(hideFiguresButton)hideFiguresButton.hidden=page!=='page-dashboard';
+    if(hideFiguresButton)hideFiguresButton.hidden=!['page-dashboard','page-financial-list'].includes(page);
     // Holiday refresh is available on calendar categories, but not Personal Events.
     if(holidayRefreshButton){
       const holidaysPage=document.getElementById('page-holidays');
@@ -20844,6 +20844,79 @@ html body #page-salary .salary-hero-countdown span{color:#e8efff;font-size:11px;
 </style>
 
 
+
+<style id="savely-overview-hero-match-savings-v1">
+/* Overview carousel cards use the Savings hero layout (pill label, big amount, pill note, grid texture, same size). Each card keeps its own colour. */
+html body #stats.cards .summary-carousel .summary-carousel-viewport{border-radius:28px!important;overflow:visible!important}
+html body #stats.cards .summary-carousel .summary-carousel-slide[data-summary-card]>.stat{
+ position:relative!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;
+ min-height:204px!important;height:auto!important;max-height:none!important;gap:12px!important;padding:64px 40px 34px!important;
+ border:0!important;border-radius:28px!important;overflow:hidden!important;color:#fff!important;text-align:left!important;
+ font-family:var(--font-ui,'DM Sans',system-ui,sans-serif)!important}
+html body #stats.cards .summary-carousel .summary-carousel-slide[data-summary-card="savings"]>.stat{
+ background:radial-gradient(520px 260px at 8% -10%,rgba(120,230,185,.42),transparent 65%),radial-gradient(420px 300px at 100% 110%,rgba(90,220,170,.28),transparent 65%),linear-gradient(135deg,#0a6b50 0%,#12875f 48%,#2fb585 100%)!important;
+ box-shadow:0 24px 44px -26px rgba(18,135,101,.75),0 0 0 1px rgba(255,255,255,.12) inset!important}
+html body #stats.cards .summary-carousel .summary-carousel-slide[data-summary-card="income"]>.stat{
+ background:radial-gradient(520px 260px at 8% -10%,rgba(150,180,255,.42),transparent 65%),radial-gradient(420px 300px at 100% 110%,rgba(120,160,255,.28),transparent 65%),linear-gradient(135deg,#2547a8 0%,#3a62d6 48%,#6f93f0 100%)!important;
+ box-shadow:0 24px 44px -26px rgba(58,98,214,.75),0 0 0 1px rgba(255,255,255,.12) inset!important}
+html body #stats.cards .summary-carousel .summary-carousel-slide[data-summary-card="debt"]>.stat{
+ background:radial-gradient(520px 260px at 8% -10%,rgba(255,170,175,.42),transparent 65%),radial-gradient(420px 300px at 100% 110%,rgba(255,140,150,.28),transparent 65%),linear-gradient(135deg,#b02c3c 0%,#d94858 48%,#f07c84 100%)!important;
+ box-shadow:0 24px 44px -26px rgba(217,72,88,.75),0 0 0 1px rgba(255,255,255,.12) inset!important}
+html body #stats.cards .summary-carousel .summary-carousel-slide[data-summary-card]>.stat::before{
+ content:""!important;display:block!important;position:absolute!important;inset:0!important;width:auto!important;height:auto!important;border-radius:0!important;transform:none!important;pointer-events:none!important;z-index:0!important;
+ background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px)!important;background-size:34px 34px!important;
+ -webkit-mask-image:linear-gradient(100deg,transparent 30%,#000 100%);mask-image:linear-gradient(100deg,transparent 30%,#000 100%)}
+html body #stats.cards .summary-carousel .summary-carousel-slide[data-summary-card]>.stat::after{content:none!important;display:none!important}
+html body #stats.cards .summary-carousel .summary-carousel-slide .stat-top{position:static!important;display:flex!important;width:fit-content!important;min-height:0!important;margin:0!important;gap:0!important;z-index:1!important}
+html body #stats.cards .summary-carousel .summary-carousel-slide .ov-pill{
+ display:inline-flex;align-items:center;gap:8px;padding:6px 13px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.26);
+ backdrop-filter:blur(6px);color:#fff;font-size:11px;font-weight:600;letter-spacing:.08em;line-height:1;text-transform:uppercase}
+html body #stats.cards .summary-carousel .summary-carousel-slide .ov-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;opacity:.85;box-shadow:0 0 0 3px rgba(255,255,255,.22)}
+html body #stats.cards .summary-carousel .summary-carousel-slide[data-summary-card="savings"] .ov-pill::before{background:#7dffc4;opacity:1;box-shadow:0 0 0 3px rgba(125,255,196,.25)}
+html body #stats.cards .summary-carousel .summary-carousel-slide .stat-icon{position:absolute!important;top:14px!important;right:24px!important;z-index:2!important;margin:0!important}
+html body #stats.cards .summary-carousel .summary-carousel-slide .stat-value{
+ position:relative!important;z-index:1!important;width:auto!important;margin:0!important;padding:0!important;overflow:visible!important;
+ font-size:clamp(28px,3vw,38px)!important;font-weight:600!important;letter-spacing:-.01em!important;line-height:1.15!important;color:#fff!important;font-variant-numeric:tabular-nums}
+html body #stats.cards .summary-carousel .summary-carousel-slide .stat-foot:not(.savings-total-asof){
+ position:relative!important;z-index:1!important;width:fit-content!important;margin:0!important;padding:8px 14px!important;border-radius:12px!important;
+ background:rgba(255,255,255,.1)!important;border:1px solid rgba(255,255,255,.16)!important;color:rgba(255,255,255,.9)!important;font-size:12.5px!important;font-weight:400!important;line-height:1.45!important;opacity:1!important}
+html body #stats.cards .summary-carousel .summary-carousel-slide .stat-foot.savings-total-asof{
+ position:absolute!important;top:20px!important;right:74px!important;z-index:2!important;width:auto!important;margin:0!important;display:inline-flex!important;align-items:center!important;
+ padding:7px 14px!important;border-radius:999px!important;background:rgba(255,255,255,.16)!important;border:1px solid rgba(255,255,255,.26)!important;
+ color:rgba(255,255,255,.85)!important;font-size:12px!important;font-weight:400!important;line-height:1.2!important;white-space:nowrap!important;opacity:1!important}
+@media(max-width:600px){
+ html body #stats.cards .summary-carousel .summary-carousel-slide[data-summary-card]>.stat{padding:62px 22px 24px!important;min-height:0!important}
+ html body #stats.cards .summary-carousel .summary-carousel-slide .stat-foot.savings-total-asof{top:18px!important;left:18px!important;right:64px!important;white-space:normal!important}
+ html body #stats.cards .summary-carousel .summary-carousel-slide .stat-icon{top:12px!important;right:16px!important}
+}
+</style>
+
+<style id="savely-savings-hide-figures-v1">
+/* Hide figures on the Savings page: amounts become asterisks and the growth graph is blurred. */
+body[data-savely-figures="hidden"] #page-financial-list .savely-private-number{
+ position:relative!important;display:inline-block;-webkit-text-fill-color:transparent!important;text-shadow:none!important;user-select:none!important;pointer-events:none!important}
+body[data-savely-figures="hidden"] #page-financial-list .savely-private-number::after{
+ content:"******"!important;display:block!important;position:absolute!important;inset:0!important;padding:inherit;box-sizing:border-box;
+ text-align:inherit;white-space:nowrap;color:inherit;-webkit-text-fill-color:currentColor!important;pointer-events:none!important}
+body[data-savely-figures="hidden"] #page-financial-list .stat-foot.savely-private-number{display:inline-block!important}
+body[data-savely-figures="hidden"] #page-financial-list #savingsTrendCanvasWrap,
+body[data-savely-figures="hidden"] #page-financial-list #savingsTrendLegend{
+ filter:blur(9px);user-select:none;pointer-events:none;transition:filter .18s ease}
+body[data-savely-figures="hidden"] #page-financial-list #savingsTrendCanvasWrap canvas{opacity:.55}
+body:not([data-savely-figures="hidden"]) #page-financial-list #savingsTrendCanvasWrap,
+body:not([data-savely-figures="hidden"]) #page-financial-list #savingsTrendLegend{filter:none;transition:filter .18s ease}
+</style>
+<script id="savely-savings-hide-figures-v1-js">
+(function(){
+ function sync(){try{if(typeof updateOverviewPrivacyState==='function')updateOverviewPrivacyState();}catch(e){}}
+ function bind(){
+  const obs=new MutationObserver(sync);
+  ['page-dashboard','page-financial-list'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el,{attributes:true,attributeFilter:['class']});});
+  sync();
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
+})();
+</script>
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
