@@ -5171,11 +5171,7 @@ html body.expense-editor-active #page-expense-editor .expense-category-card > sp
   </div>
  </div>
  <div class="panel expenses-calendar-panel">
-  <div class="panel-head expenses-calendar-panel-head">
-   <div>
-    <h2>Expense calendar</h2>
-    <div class="panel-sub">Add and review your expenses by date.</div>
-   </div>
+  <div class="panel-head expenses-calendar-panel-head" style="justify-content:flex-end">
    <button type="button" class="btn btn-primary expenses-add-button" onclick="openExpenseEntry()">＋ Add expense</button>
   </div>
   <div class="expenses-calendar-toolbar">
@@ -5519,12 +5515,14 @@ function accrueRealtimeInterest(){
   }
   // First time: record yesterday so there is a record today; afterwards continue from the last record.
   let day=lastDone?interestShiftDate(lastDone,1):yesterdayStr;
+  const stamps=[...(item.changeHistory||[]),...(item.graphHistory||[])].map(h=>Number(h&&h.at)).filter(Number.isFinite);
+  const earliestAt=stamps.length?Math.min(...stamps):NaN;
   let guard=0;
   while(day<=yesterdayStr && guard<365){
    guard++;
    const dayStart=interestLocalMidnight(day);
    const dayEnd=interestLocalMidnight(interestShiftDate(day,1));
-   const createdOk=!item.date || String(item.date)<=day;
+   const createdOk=Number.isFinite(earliestAt) && dayEnd>earliestAt;
    const dup=item.changeHistory.some(h=>h && h.type==='interest' && h.interestDate===day);
    if(createdOk && !dup){
     const dailyRate=annualRate/100*taxMultiplier/365;
@@ -23331,3 +23329,60 @@ html body #page-holidays .holiday-countdown>div span{font-size:10px!important;fo
 }
 html body #stats .stat-foot[style*="font-weight:800"]{font-weight:600!important;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.16);width:fit-content}
 </style>
+
+<style id="savely-green-heroes-and-carousel-spacing-v1">
+/* 1) Savings top cards, Expenses summary and Calendar hero: green (was blue from the shared hero style) */
+html body #page-holidays .holiday-hero,
+html body #page-holidays.personal-events-mode .holiday-hero,
+html body #page-budget .expenses-calendar-summary,
+html body #page-financial-list #financialCategoryStats .stat,
+html body #page-financial-list #financialCategoryStats .savings-total-card{
+ border:0!important;
+ background:
+  radial-gradient(520px 260px at 8% -10%,rgba(120,230,185,.42),transparent 65%),
+  radial-gradient(420px 300px at 100% 110%,rgba(90,220,170,.28),transparent 65%),
+  linear-gradient(135deg,#0a6b50 0%,#12875f 48%,#2fb585 100%)!important;
+ box-shadow:0 24px 44px -26px rgba(18,135,101,.75),0 0 0 1px rgba(255,255,255,.12) inset!important;
+}
+
+/* 2) Overview carousel cards: tighter vertical spacing, centered labels */
+html body #stats.cards .summary-carousel-slide>.stat{
+ position:relative!important;
+ height:auto!important;min-height:0!important;max-height:none!important;
+ padding:22px 64px!important;
+ display:flex!important;flex-direction:column!important;
+ justify-content:center!important;align-items:center!important;
+ text-align:center!important;gap:4px!important;
+}
+html body #stats.cards .summary-carousel-slide .stat-top{
+ min-height:0!important;width:100%!important;margin:0!important;gap:0!important;
+ justify-content:center!important;text-align:center!important;line-height:1.3!important;
+}
+html body #stats.cards .summary-carousel-slide .stat-icon{
+ position:absolute!important;top:18px!important;right:20px!important;margin:0!important;
+}
+html body #stats.cards .summary-carousel-slide .stat-value{
+ width:100%!important;margin:0!important;text-align:center!important;line-height:1.2!important;padding-bottom:0!important;
+}
+html body #stats.cards .summary-carousel-slide .stat-foot{
+ width:100%!important;margin:0!important;text-align:center!important;line-height:1.35!important;
+}
+html body #stats.cards .summary-carousel-slide .stat-foot.savings-total-asof{margin-top:2px!important}
+html body #stats.cards .summary-carousel-slide .stat [class*="delta"]{align-self:center!important;margin:4px auto 0!important}
+@media(max-width:600px){
+ html body #stats.cards .summary-carousel-slide>.stat{padding:18px 52px!important}
+ html body #stats.cards .summary-carousel-slide .stat-icon{top:14px!important;right:14px!important}
+}
+</style>
+
+<script>
+/* The big main script stops early on a missing #interestForm, so the daily-interest accrual at its end never ran.
+   Run it from here so MariBank (and other daily-interest banks) always get their daily records. */
+(function(){
+ function run(){try{if(typeof accrueRealtimeInterest==='function')accrueRealtimeInterest();}catch(e){console.error('Daily interest accrual failed:',e);}}
+ run();
+ setInterval(run,30000);
+ document.addEventListener('visibilitychange',function(){if(!document.hidden)run();});
+ window.addEventListener('focus',run);
+})();
+</script>
