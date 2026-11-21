@@ -5077,11 +5077,35 @@ html body.expense-editor-active #page-expense-editor .expense-category-card > sp
   </section>
 
     <section class="page" id="page-debt">
-    <div class="cards debt-summary-cards">
-      <div class="stat"><div class="stat-top">I owe</div><div class="stat-value" id="debtOweTotal" style="color:var(--red)">₱0.00</div><div class="stat-foot">Your remaining payments</div></div>
-      <div class="stat"><div class="stat-top">Owed to me</div><div class="stat-value" id="debtLentTotal" style="color:var(--green)">₱0.00</div><div class="stat-foot">Money to collect</div></div>
-      <div class="stat"><div class="stat-top">Due this month</div><div class="stat-value" id="debtDueMonthTotal">₱0.00</div><div class="stat-foot">Unpaid scheduled amounts</div></div>
-      <div class="stat"><div class="stat-top">Overdue</div><div class="stat-value" id="debtOverdueTotal" style="color:var(--red)">₱0.00</div><div class="stat-foot" id="debtOverdueCount">No overdue records</div></div>
+    <div class="dcar" id="debtSummaryCarousel" data-tone="red" aria-roledescription="carousel" aria-label="Debt summary">
+      <div class="dcar-stage" tabindex="0">
+      <div class="dcar-slide is-active" data-tone="red" role="group" aria-label="1 of 4">
+        <div class="dcar-top"><span class="dcar-pill">I owe</span><span class="dcar-count">1 / 4</span></div>
+        <div class="dcar-value" id="debtOweTotal">₱0.00</div>
+        <div class="dcar-foot">Your remaining payments</div>
+      </div>
+      <div class="dcar-slide" data-tone="green" role="group" aria-label="2 of 4" aria-hidden="true">
+        <div class="dcar-top"><span class="dcar-pill">Owed to me</span><span class="dcar-count">2 / 4</span></div>
+        <div class="dcar-value" id="debtLentTotal">₱0.00</div>
+        <div class="dcar-foot">Money to collect</div>
+      </div>
+      <div class="dcar-slide" data-tone="blue" role="group" aria-label="3 of 4" aria-hidden="true">
+        <div class="dcar-top"><span class="dcar-pill">Due this month</span><span class="dcar-count">3 / 4</span></div>
+        <div class="dcar-value" id="debtDueMonthTotal">₱0.00</div>
+        <div class="dcar-foot">Unpaid scheduled amounts</div>
+      </div>
+      <div class="dcar-slide" data-tone="orange" role="group" aria-label="4 of 4" aria-hidden="true">
+        <div class="dcar-top"><span class="dcar-pill">Overdue</span><span class="dcar-count">4 / 4</span></div>
+        <div class="dcar-value" id="debtOverdueTotal">₱0.00</div>
+        <div class="dcar-foot" id="debtOverdueCount">No overdue records</div>
+      </div>
+      </div>
+      <div class="dcar-dots" role="group" aria-label="Choose debt summary card">
+        <button type="button" class="dcar-dot active" data-i="0" aria-label="Show I owe" aria-current="true"></button>
+        <button type="button" class="dcar-dot" data-i="1" aria-label="Show Owed to me"></button>
+        <button type="button" class="dcar-dot" data-i="2" aria-label="Show Due this month"></button>
+        <button type="button" class="dcar-dot" data-i="3" aria-label="Show Overdue"></button>
+      </div>
     </div>
     <section class="panel debt-calendar-panel">
       <div class="panel-head debt-calendar-head">
@@ -8094,7 +8118,7 @@ function closeDebtHistory(){const modal=document.getElementById('savelyDebtHisto
 function render(){ensureDebtReceivableLinks();updateLiveDateTime();renderDashboard();updateSavingsTotalAsOf();renderTransactions();renderAccounts();renderGoals();renderBudget();renderReports();renderRecurring();renderSavingsList();renderSalaryPage();renderDebtPage()}
 
 let summaryCarouselIndex=0,summaryCarouselBound=false,summaryCarouselAutoTimer=null,summaryCarouselResumeTimer=null;
-const SUMMARY_CAROUSEL_INTERVAL=10000;
+const SUMMARY_CAROUSEL_INTERVAL=5000;
 function stopSummaryCarouselAuto(){
  if(summaryCarouselAutoTimer){clearTimeout(summaryCarouselAutoTimer);summaryCarouselAutoTimer=null;}
  if(summaryCarouselResumeTimer){clearTimeout(summaryCarouselResumeTimer);summaryCarouselResumeTimer=null;}
@@ -23712,5 +23736,111 @@ html body #stats.cards .summary-carousel-slide[data-carousel-clone]{display:none
   html body #page-salary .salary-hero-countdown>div{padding:11px 2px 9px!important;border-radius:13px!important}
   html body #page-salary .salary-hero-countdown>div strong{font-size:22px!important}
   html body #page-salary .salary-hero-countdown>div span{font-size:8.5px!important;letter-spacing:.03em!important}
+}
+</style>
+
+<style id="savely-carousel-fade-and-debt-carousel-v1">
+/* ===== Overview carousel: cross-fade instead of slide (timing set to 5s in JS) ===== */
+html body #stats.cards .summary-carousel-track{display:grid!important;transform:none!important;transition:none!important;will-change:auto!important}
+html body #stats.cards .summary-carousel-slide{grid-area:1/1!important;min-width:0!important;width:100%!important;
+  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .7s ease,visibility 0s linear .7s!important}
+html body #stats.cards .summary-carousel-slide.is-active{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .7s ease,visibility 0s linear 0s!important}
+html body #stats.cards .summary-carousel-slide[data-carousel-clone]{display:none!important}
+@media(prefers-reduced-motion:reduce){html body #stats.cards .summary-carousel-slide,html body #stats.cards .summary-carousel-slide.is-active{transition:none!important}}
+
+/* ===== Debt page: summary carousel (same look as Overview hero) ===== */
+#page-debt .dcar{margin-bottom:18px;width:100%;min-width:0;--dcar-dot:#d33f50}
+#page-debt .dcar[data-tone="green"]{--dcar-dot:#0f966c}
+#page-debt .dcar[data-tone="blue"]{--dcar-dot:#3f6bdc}
+#page-debt .dcar[data-tone="orange"]{--dcar-dot:#e8870f}
+#page-debt .dcar-stage{display:grid;position:relative;overflow:hidden;border-radius:24px;isolation:isolate;touch-action:pan-y;outline:none}
+#page-debt .dcar-slide{grid-area:1/1;position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:12px;
+  min-width:0;min-height:188px;padding:28px 34px;color:#fff;box-sizing:border-box;overflow:hidden;
+  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .7s ease,visibility 0s linear .7s}
+#page-debt .dcar-slide.is-active{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .7s ease,visibility 0s linear 0s}
+#page-debt .dcar-slide::before{content:"";position:absolute;inset:0;z-index:-1;
+  background:radial-gradient(circle at 12% 0%,rgba(255,255,255,.20) 0,transparent 42%),
+             linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px) 0 0/28px 28px,
+             linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px) 0 0/28px 28px}
+#page-debt .dcar-slide[data-tone="red"]{background:linear-gradient(130deg,#c93e50 0%,#e45161 54%,#f17b82 100%)}
+#page-debt .dcar-slide[data-tone="green"]{background:linear-gradient(130deg,#087b59 0%,#10966c 54%,#31b887 100%)}
+#page-debt .dcar-slide[data-tone="blue"]{background:linear-gradient(130deg,#3159bd 0%,#436fe0 54%,#7395f2 100%)}
+#page-debt .dcar-slide[data-tone="orange"]{background:linear-gradient(130deg,#c2570c 0%,#e8870f 54%,#f6b04a 100%)}
+#page-debt .dcar-top{display:flex;align-items:center;justify-content:space-between;width:100%;gap:12px}
+#page-debt .dcar-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 13px;border-radius:999px;background:rgba(0,0,0,.14);
+  border:1px solid rgba(255,255,255,.28);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#fff}
+#page-debt .dcar-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.25)}
+#page-debt .dcar-count{padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.26);font-size:11px;font-weight:600;color:#fff;white-space:nowrap}
+#page-debt .dcar-value{font-size:clamp(28px,4vw,38px);font-weight:800;line-height:1.1;letter-spacing:-.02em;color:#fff!important;font-variant-numeric:tabular-nums;max-width:100%;overflow-wrap:anywhere}
+#page-debt .dcar-foot{display:inline-flex;align-items:center;padding:8px 15px;border-radius:14px;background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.24);font-size:12.5px;line-height:1.35;color:#fff}
+#page-debt .dcar-dots{display:flex;justify-content:center;align-items:center;gap:9px;padding-top:12px}
+#page-debt .dcar-dot{appearance:none;width:10px;height:10px;padding:0;border:0;border-radius:99px;background:#cbd5e1;cursor:pointer;transition:width .3s ease,background-color .3s ease}
+#page-debt .dcar-dot.active{width:22px;background:var(--dcar-dot)}
+#page-debt .dcar-dot:focus-visible{outline:2px solid var(--dcar-dot);outline-offset:4px}
+@media(max-width:600px){#page-debt .dcar-slide{min-height:164px;padding:20px 18px;gap:10px;border-radius:0}#page-debt .dcar-stage{border-radius:20px}}
+@media(prefers-reduced-motion:reduce){#page-debt .dcar-slide,#page-debt .dcar-slide.is-active{transition:none}}
+</style>
+<script id="savely-debt-carousel-js-v1">
+(function(){
+ const root=document.getElementById('debtSummaryCarousel');
+ if(!root)return;
+ const stage=root.querySelector('.dcar-stage');
+ const slides=Array.from(root.querySelectorAll('.dcar-slide'));
+ const dots=Array.from(root.querySelectorAll('.dcar-dot'));
+ const INTERVAL=5000;
+ let index=0,timer=null,startX=null,startY=null;
+ function show(n){
+  index=((n%slides.length)+slides.length)%slides.length;
+  slides.forEach((el,i)=>{el.classList.toggle('is-active',i===index);el.setAttribute('aria-hidden',i===index?'false':'true');});
+  dots.forEach((d,i)=>{d.classList.toggle('active',i===index);if(i===index)d.setAttribute('aria-current','true');else d.removeAttribute('aria-current');});
+  root.dataset.tone=slides[index].dataset.tone;
+ }
+ function stop(){if(timer){clearInterval(timer);timer=null;}}
+ function start(){stop();timer=setInterval(()=>{if(document.hidden||!root.offsetParent)return;show(index+1);},INTERVAL);}
+ dots.forEach(d=>d.addEventListener('click',()=>{show(Number(d.dataset.i)||0);start();}));
+ stage.addEventListener('pointerdown',e=>{startX=e.clientX;startY=e.clientY;});
+ stage.addEventListener('pointerup',e=>{
+  if(startX===null)return;
+  const dx=e.clientX-startX,dy=e.clientY-startY;startX=startY=null;
+  if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy)*1.15){show(index+(dx<0?1:-1));start();}
+ });
+ stage.addEventListener('pointercancel',()=>{startX=startY=null;});
+ stage.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'){e.preventDefault();show(index+1);start();}
+  if(e.key==='ArrowLeft'){e.preventDefault();show(index-1);start();}
+ });
+ root.addEventListener('mouseenter',stop);
+ root.addEventListener('mouseleave',start);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)start();});
+ show(0);start();
+})();
+</script>
+
+<style id="savely-sidebar-collapse-layout-and-arrow-v1">
+@media (min-width:761px){
+  /* Collapsed sidebar: shrink the first grid column too, so the content expands into the freed space
+     (an earlier rule forced 245px even when collapsed, leaving an empty gap). */
+  html body .app.sidebar-collapsed{grid-template-columns:76px minmax(0,1fr)!important}
+  html body .app.sidebar-collapsed > aside.sidebar{width:76px!important}
+  html body .app.sidebar-collapsed > main.main{grid-column:2!important}
+  html body .app:not(.sidebar-collapsed){grid-template-columns:245px minmax(0,1fr)!important}
+
+  /* Arrow handle: exact centering of the chevron inside the white button */
+  html body .app > aside.sidebar > #savelySidebarToggle{
+    box-sizing:border-box!important;display:flex!important;align-items:center!important;justify-content:center!important;
+    padding:0!important;line-height:0!important}
+  html body #savelySidebarToggle span{
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    width:100%!important;height:100%!important;margin:0!important;padding:0!important;
+    font-size:0!important;line-height:0!important;transform:none!important}
+  html body #savelySidebarToggle span::before{
+    content:""!important;display:block!important;box-sizing:border-box!important;flex:none;
+    width:10px!important;height:10px!important;margin:0!important;
+    border-left:2.5px solid #168765!important;border-bottom:2.5px solid #168765!important;border-top:0!important;border-right:0!important;
+    border-radius:1px!important;
+    transform:translateX(3.5px) rotate(45deg)!important}          /* points left (collapse), optically centred */
+  html body .app.sidebar-collapsed #savelySidebarToggle span::before{
+    transform:translateX(-3.5px) rotate(-135deg)!important}       /* points right (expand), optically centred */
 }
 </style>
