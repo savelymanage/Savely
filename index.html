@@ -5448,6 +5448,34 @@ function ensureInterestTracking(item, now){
  }
  return changed;
 }
+function interestShiftDate(dateStr,days){
+ const [y,m,d]=String(dateStr).split('-').map(Number);
+ return new Date(Date.UTC(y,m-1,d+days)).toISOString().slice(0,10);
+}
+function interestLocalMidnight(dateStr){
+ // Timestamp of 00:00 on dateStr in the user's chosen timezone.
+ const [y,m,d]=String(dateStr).split('-').map(Number);
+ const target=Date.UTC(y,m-1,d);
+ const tz=(typeof dateTimePrefs!=='undefined'&&dateTimePrefs.timezone)||'Asia/Manila';
+ const fmt=new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
+ let guess=target;
+ for(let i=0;i<3;i++){
+  const p=fmt.formatToParts(new Date(guess)).reduce((o,x)=>(o[x.type]=Number(x.value),o),{});
+  const asUTC=Date.UTC(p.year,p.month-1,p.day,p.hour%24,p.minute,p.second);
+  guess-=(asUTC-target);
+ }
+ return guess;
+}
+function interestBalanceAt(item,ts){
+ // Balance of a savings item at a moment in time, rebuilt from its change history.
+ const rows=(item.changeHistory||[]).filter(h=>h&&Number.isFinite(Number(h.at))).sort((a,b)=>Number(a.at)-Number(b.at));
+ let last=null;
+ for(const h of rows){if(Number(h.at)<=ts)last=h;else break;}
+ if(last)return Math.max(0,Number(last.newAmount)||0);
+ const first=rows[0];
+ if(first&&Number.isFinite(Number(first.oldAmount)))return Math.max(0,Number(first.oldAmount)||0);
+ return Math.max(0,Number(item.amount)||0);
+}
 function accrueRealtimeInterest(){
  // Save the tracking anchor on first run, then record one estimated net-interest
  // entry after every complete 24-hour period. Missed days are caught up on next visit.
@@ -5480,34 +5508,52 @@ function accrueRealtimeInterest(){
     item.graphHistory=cleaned;changed=true;
    }
   }
+  // Credit one estimated net-interest record for every COMPLETE calendar day (local midnight
+  // to midnight, same clock as the live counter). Missed days are caught up on next visit.
+  if(!Array.isArray(item.changeHistory))item.changeHistory=[];
+  const todayStr=interestLocalDate(now);
+  const yesterdayStr=interestShiftDate(todayStr,-1);
+  let lastDone=null;
+  for(const h of item.changeHistory){
+   if(h && h.type==='interest' && h.interestDate && (!lastDone || String(h.interestDate)>lastDone))lastDone=String(h.interestDate);
+  }
+  // First time: record yesterday so there is a record today; afterwards continue from the last record.
+  let day=lastDone?interestShiftDate(lastDone,1):yesterdayStr;
   let guard=0;
-  while(now-Number(t.lastTickAt)>=intervalMs && guard<365){
+  while(day<=yesterdayStr && guard<365){
    guard++;
-   const tickAt=Number(t.lastTickAt)+intervalMs;
-   const oldBalance=Math.max(0,Number(item.amount)||0);
-   const dailyInterest=oldBalance*(annualRate/100)*taxMultiplier/365;
-   const newBalance=oldBalance+dailyInterest;
-   const tickDate=interestLocalDate(tickAt);
-   if(!Array.isArray(item.changeHistory))item.changeHistory=[];
-   const alreadyRecorded=item.changeHistory.some(h=>
-    h && h.type==='interest' && Math.abs(Number(h.at)-tickAt)<60000
-   );
-   if(!alreadyRecorded && dailyInterest>=0.0000001){
-    item.changeHistory.push({
-     at:tickAt,oldName:item.name,newName:item.name,oldAmount:oldBalance,newAmount:newBalance,
-     type:'interest',label:'Estimated daily interest',interestEarned:dailyInterest,
-     annualRate:annualRate,taxRate:20,interestDate:tickDate
-    });
+   const dayStart=interestLocalMidnight(day);
+   const dayEnd=interestLocalMidnight(interestShiftDate(day,1));
+   const createdOk=!item.date || String(item.date)<=day;
+   const dup=item.changeHistory.some(h=>h && h.type==='interest' && h.interestDate===day);
+   if(createdOk && !dup){
+    const dailyRate=annualRate/100*taxMultiplier/365;
+    const startBalance=interestBalanceAt(item,dayStart);
+    // Time-weight the balance across the day so mid-day deposits/withdrawals are handled fairly.
+    const cuts=item.changeHistory.map(h=>Number(h&&h.at)).filter(a=>Number.isFinite(a)&&a>dayStart&&a<dayEnd).sort((a,b)=>a-b);
+    let weighted=0,cursor=dayStart,bal=startBalance;
+    for(const c of cuts){weighted+=bal*(c-cursor);cursor=c;bal=interestBalanceAt(item,c);}
+    weighted+=bal*(dayEnd-cursor);
+    const dailyInterest=Math.max(0,weighted/(dayEnd-dayStart))*dailyRate;
+    if(dailyInterest>=0.0000001){
+     const oldBalance=interestBalanceAt(item,dayEnd);
+     item.changeHistory.push({
+      at:dayEnd,oldName:item.name,newName:item.name,oldAmount:oldBalance,newAmount:oldBalance+dailyInterest,
+      type:'interest',label:'Estimated daily interest',interestEarned:dailyInterest,
+      annualRate:annualRate,taxRate:20,interestDate:day
+     });
+     item.amount=Math.max(0,Number(item.amount)||0)+dailyInterest;
+     if(!Array.isArray(item.graphHistory))item.graphHistory=[];
+     const existing=item.graphHistory.find(point=>interestLocalDate(Number(point.at)||now)===day);
+     if(existing){existing.at=dayEnd-1;existing.amount=item.amount;delete existing.liveMinute;}
+     else item.graphHistory.push({at:dayEnd-1,amount:item.amount,dailyInterestDate:day});
+     t.dayStartBalance=item.amount;
+     t.lastTickAt=dayEnd;
+     t.lastHistoryDate=day;
+     changed=true;
+    }
    }
-   if(!Array.isArray(item.graphHistory))item.graphHistory=[];
-   const existing=item.graphHistory.find(point=>interestLocalDate(Number(point.at)||now)===tickDate);
-   if(existing){existing.at=tickAt;existing.amount=newBalance;delete existing.liveMinute;}
-   else item.graphHistory.push({at:tickAt,amount:newBalance,dailyInterestDate:tickDate});
-   item.amount=newBalance;
-   t.dayStartBalance=newBalance;
-   t.lastTickAt=tickAt;
-   t.lastHistoryDate=tickDate;
-   changed=true;
+   day=interestShiftDate(day,1);
   }
  }
  if(changed){
