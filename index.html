@@ -4290,8 +4290,8 @@ body.dark-theme #expenseComposer .expense-item-row{background:var(--soft)!import
 
 <style id="savely-page-open-transition">
 @keyframes savelyPageEnter{
-  from{opacity:0;transform:translate3d(0,12px,0) scale(.997);filter:blur(1.5px)}
-  to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+  from{opacity:0;transform:translate3d(0,12px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
 }
 .page.page-entering{
   animation:savelyPageEnter 380ms cubic-bezier(.2,.75,.25,1) both;
@@ -10144,7 +10144,9 @@ function updateHolidayHeroLabels(){
   savelyHolidayFilter==='special'?'Time until the next special non-working holiday':
   savelyHolidayFilter==='regional'?'Time until the next regional / local holiday':'Time until the next holiday';
 }
+function savelySetTextInPlace(el,v){if(!el)return;v=String(v);const t=el.firstChild;if(t&&t.nodeType===3&&!t.nextSibling){if(t.nodeValue!==v)t.nodeValue=v;}else if(el.textContent!==v){el.textContent=v;}}
 function updateHolidayCountdowns(){
+ if(document.hidden)return;
  if(typeof savelyCalendarContentTab!=='undefined'&&savelyCalendarContentTab==='personal'){
   const currentPersonalDay=personalEventTodayISO();
   if(window.__savelyPersonalEventsRenderedDay!==currentPersonalDay){
@@ -10165,13 +10167,16 @@ function updateHolidayCountdowns(){
   if(typeof renderHolidayPage==='function'&&!window.__savelyHolidayRolloverRendering){window.__savelyHolidayRolloverRendering=true;renderHolidayPage();window.__savelyHolidayRolloverRendering=false;}
  }
  window.__savelyNextHolidayKey=nextKey;
- if(hero){if(next){const p=phCountdownParts(phHolidayRemaining(next.date));hero.innerHTML=p.map((v,i)=>`<div><strong>${v}</strong><span>${['Days','Hours','Minutes','Seconds'][i]}</span></div>`).join('');}else hero.innerHTML='<div><strong>—</strong><span>Days</span></div><div><strong>—</strong><span>Hours</span></div><div><strong>—</strong><span>Minutes</span></div><div><strong>—</strong><span>Seconds</span></div>';}
+ if(hero){if(next){const p=phCountdownParts(phHolidayRemaining(next.date));const cells=hero.children;if(hero.dataset.liveParts==='1'&&cells.length===4){for(let k=0;k<4;k++)savelySetTextInPlace(cells[k].firstElementChild,p[k]);}else{hero.innerHTML=p.map((v,i)=>`<div><strong>${v}</strong><span>${['Days','Hours','Minutes','Seconds'][i]}</span></div>`).join('');hero.dataset.liveParts='1';}}else{hero.dataset.liveParts='';hero.innerHTML='<div><strong>—</strong><span>Days</span></div><div><strong>—</strong><span>Hours</span></div><div><strong>—</strong><span>Minutes</span></div><div><strong>—</strong><span>Seconds</span></div>';}}
  document.querySelectorAll('[data-holiday-countdown]').forEach(el=>{
   const ms=phHolidayRemaining(el.dataset.holidayCountdown);
   el.classList.toggle('passed',ms<=0);
-  if(ms<=0){el.innerHTML='<span>Holiday date reached</span>';return;}
+  if(ms<=0){if(el.dataset.livePassed!=='1'){el.innerHTML='<span>Holiday date reached</span>';el.dataset.livePassed='1';el.dataset.liveParts='';}return;}
   const seconds=Math.floor(ms/1000),days=Math.floor(seconds/86400),hours=Math.floor(seconds%86400/3600),minutes=Math.floor(seconds%3600/60),secs=seconds%60;
-  el.innerHTML=`<span>${days} days</span><span>${String(hours).padStart(2,'0')} hrs</span><span>${String(minutes).padStart(2,'0')} min</span><span>${String(secs).padStart(2,'0')} sec</span>`;
+  const txt=[`${days} days`,`${String(hours).padStart(2,'0')} hrs`,`${String(minutes).padStart(2,'0')} min`,`${String(secs).padStart(2,'0')} sec`];
+  const kids=el.children;
+  if(el.dataset.liveParts==='1'&&el.dataset.livePassed!=='1'&&kids.length===4){for(let k=0;k<4;k++)savelySetTextInPlace(kids[k],txt[k]);}
+  else{el.innerHTML=txt.map(t=>`<span>${t}</span>`).join('');el.dataset.liveParts='1';el.dataset.livePassed='';}
  });
  updatePersonalEventCountdowns();
 }
@@ -10691,10 +10696,10 @@ function updateMariBankLivePanel(){
 }
 updateMariBankLivePanel();
 updateLiveDateTime();
-setInterval(()=>{try{updateLiveDateTime();}catch(err){console.error('Savely live clock update failed:',err);}},1000);
-setInterval(()=>{try{watchSavingsChanges();updateSavingsTotalAsOf();updateFinancialSavingsAsOf();}catch(err){console.error('Savings total timestamp update failed:',err);}},500);
+setInterval(()=>{if(document.hidden)return;try{updateLiveDateTime();}catch(err){console.error('Savely live clock update failed:',err);}},1000);
+setInterval(()=>{if(document.hidden)return;try{watchSavingsChanges();updateSavingsTotalAsOf();updateFinancialSavingsAsOf();}catch(err){console.error('Savings total timestamp update failed:',err);}},1000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){try{updateLiveDateTime();updateSavingsTotalAsOf();updateFinancialSavingsAsOf();updateMariBankLivePanel();}catch(err){console.error('Savely live clock refresh failed:',err);}}});
-setInterval(()=>{try{updateMariBankLivePanel();}catch(err){console.error('MariBank live estimate update failed:',err);}},1000);
+setInterval(()=>{if(document.hidden)return;try{updateMariBankLivePanel();}catch(err){console.error('MariBank live estimate update failed:',err);}},1000);
 setInterval(accrueRealtimeInterest,30000);
 accrueRealtimeInterest();
 </script>
@@ -11268,7 +11273,7 @@ accrueRealtimeInterest();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installTouchTooltip,{once:true});else installTouchTooltip();
   window.addEventListener('resize',redrawOnResize,{passive:true});
   // The graph is rendered dynamically after page navigation, so retry installation when the page changes.
-  const observer=new MutationObserver(function(){installTouchTooltip()});
+  let __ttQueued=false;const observer=new MutationObserver(function(){if(__ttQueued)return;__ttQueued=true;(window.requestIdleCallback||function(f){return setTimeout(f,120)})(function(){__ttQueued=false;installTouchTooltip();});});
   if(document.body)observer.observe(document.body,{childList:true,subtree:true});
 })();
 </script>
@@ -17773,7 +17778,7 @@ body:not([data-savely-figures="hidden"]) #page-dashboard .savely-private-number:
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSavelyYearPicker,{once:true});
   else initSavelyYearPicker();
-  const observer=new MutationObserver(()=>initSavelyYearPicker());
+  let __ypQueued=false;const observer=new MutationObserver(()=>{if(__ypQueued)return;__ypQueued=true;(window.requestIdleCallback||function(f){return setTimeout(f,120)})(()=>{__ypQueued=false;initSavelyYearPicker();});});
   observer.observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
@@ -20507,6 +20512,7 @@ html body #page-salary .salary-hero-countdown span{color:#e8efff;font-size:11px;
 }
 </style>
 
+
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
@@ -22642,5 +22648,74 @@ html body #page-financial-list #financialCategoryStats .savings-total-card .stat
  html body #page-financial-list #financialCategoryStats .savings-total-card .stat-top{font-size:13px!important;font-weight:600!important}
  html body #page-financial-list #financialCategoryStats .savings-total-card .stat-value{font-size:clamp(26px,2.4vw,34px)!important;line-height:1.25!important;margin:10px 0 8px!important;letter-spacing:-.02em!important}
  html body #page-financial-list #financialCategoryStats .savings-total-card .stat-foot{font-size:12px!important;margin-top:0!important}
+}
+</style>
+<style id="savely-salary-countdown-size-match-holiday-v1">
+/* Salary "Next payday" countdown numbers use the same size as the Holiday countdown (clamp 25px–34px, weight 900, labels 11px). */
+html body #page-salary #salaryNextPaydayParts strong,
+html body #page-salary .salary-next-payday-parts strong,
+html body #page-salary .salary-hero-countdown strong{
+ font-size:clamp(25px,2.2vw,34px)!important;
+ line-height:1.05!important;
+ font-weight:900!important;
+ letter-spacing:normal!important;
+ font-variant-numeric:tabular-nums!important;
+}
+html body #page-salary #salaryNextPaydayParts span,
+html body #page-salary .salary-next-payday-parts span,
+html body #page-salary .salary-hero-countdown span{
+ font-size:11px!important;
+ font-weight:750!important;
+}
+@media(max-width:700px){
+ html body #page-salary #salaryNextPaydayParts strong,
+ html body #page-salary .salary-next-payday-parts strong,
+ html body #page-salary .salary-hero-countdown strong{font-size:22px!important}
+ html body #page-salary #salaryNextPaydayParts span,
+ html body #page-salary .salary-next-payday-parts span,
+ html body #page-salary .salary-hero-countdown span{font-size:9px!important}
+}
+</style>
+
+<style id="savely-performance-v1">
+/* Performance: lighter blur effects and no GPU-heavy filters on always-visible areas. */
+body .app > .sidebar .side-bottom{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.modal-backdrop{backdrop-filter:blur(3px)!important;-webkit-backdrop-filter:blur(3px)!important}
+#page-holidays .holiday-countdown-wrap{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.live-location-map-controls{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+/* Numbers that tick every second keep a stable width so the layout does not reflow. */
+#page-holidays .holiday-countdown strong,#page-salary #salaryNextPaydayParts strong{font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+
+<style id="savely-expense-category-solid-green-amount-right-v1">
+/* Selected expense category: solid green, no checkmark. */
+html body.expense-editor-active #page-expense-editor #expenseComposer .expense-category-card.selected,
+html body.expense-editor-active #page-expense-editor #expenseComposer .expense-category-card.active,
+html body.expense-editor-active #page-expense-editor #expenseComposer .expense-category-card.selected:hover,
+html body.expense-editor-active #page-expense-editor #expenseComposer .expense-category-card.active:hover{
+ background:var(--green)!important;
+ border-color:var(--green)!important;
+ color:#fff!important;
+ box-shadow:none!important;
+}
+html body.expense-editor-active #page-expense-editor #expenseComposer .expense-category-card.selected *,
+html body.expense-editor-active #page-expense-editor #expenseComposer .expense-category-card.active *{color:#fff!important}
+html body.expense-editor-active #page-expense-editor #expenseComposer .expense-category-card.selected .expense-category-icon,
+html body.expense-editor-active #page-expense-editor #expenseComposer .expense-category-card.active .expense-category-icon{background:rgba(255,255,255,.2)!important}
+html body.expense-editor-active #page-expense-editor #expenseComposer .expense-category-card .expense-category-check,
+html body.expense-editor-active #page-expense-editor #expenseComposer .expense-category-card.selected .expense-category-check,
+html body.expense-editor-active #page-expense-editor #expenseComposer .expense-category-card.active .expense-category-check{display:none!important}
+
+/* Expense form summary: amount on the right side. */
+@media(min-width:701px){
+ html body.expense-editor-active #page-expense-editor #expenseComposer .expense-composer-summary{flex-direction:row-reverse!important;justify-content:space-between!important;align-items:center!important}
+ html body.expense-editor-active #page-expense-editor #expenseComposer .expense-composer-summary > div{text-align:right!important;justify-items:end!important}
+ html body.expense-editor-active #page-expense-editor #expenseComposer .expense-composer-summary .expense-summary-note{text-align:left!important;border-top:0!important;padding-top:0!important;width:auto!important}
+}
+@media(max-width:700px){
+ html body.expense-editor-active #page-expense-editor #expenseComposer .expense-composer-summary{align-items:flex-end!important}
+ html body.expense-editor-active #page-expense-editor #expenseComposer .expense-composer-summary > div{text-align:right!important;justify-items:end!important}
+ html body.expense-editor-active #page-expense-editor #expenseComposer .expense-composer-summary .expense-summary-note{text-align:right!important}
 }
 </style>
