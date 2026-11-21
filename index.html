@@ -6362,7 +6362,7 @@ function renderSalaryCalendar(){
   const isHoliday=!!holiday&&holiday.type!=='special_working';
   const selected=salaryCalendarSelectedDate===iso;
   const accessibleDate=new Date(year,month,day).toLocaleDateString('en-PH',{dateStyle:'full'});
-  cells.push(`<button type="button" role="gridcell" aria-label="${accessibleDate}${isPayday?', payday':''}${holiday?', '+holiday.name:''}" title="${holiday?esc(holiday.name)+' · '+(holiday.type==='regular'?'REGULAR HOLIDAY':holiday.type==='special_working'?'SPECIAL WORKING DAY':holiday.type==='special_non_working'?'SPECIAL NON-WORKING HOLIDAY':'LOCAL HOLIDAY'):''}" class="salary-calendar-day${isToday?' is-today':''}${isPayday?' is-payday':''}${isPastCutoff?' is-paid-out':''}${isHoliday?' is-holiday':''}${holiday&&holiday.type==='special_non_working'?' is-special-non-working':''}${selected?' is-selected':''}" onclick="selectSalaryCalendarDate('${iso}')"><span class="salary-calendar-day-number">${day}</span>${isPayday?`<span class="salary-calendar-event">${paydayIndex===0?'1st cutoff':'2nd cutoff'}${paydayEntry.reason?' · moved':''}</span><span class="salary-calendar-event-amount">${peso(amount/2)}</span>`:''}${holiday?`<span class="salary-calendar-holiday${holiday.type==='special_non_working'?' is-special-non-working':''}"><b>${holiday.type==='regular'?'REGULAR':holiday.type==='special_non_working'?'SPECIAL NON-WORKING':holiday.type==='special_working'?'SPECIAL WORKING':'LOCAL'}</b> · ${esc(holiday.name)}</span>`:''}</button>`);
+  cells.push(`<button type="button" role="gridcell" aria-label="${accessibleDate}${isPayday?', payday':''}${holiday?', '+holiday.name:''}" title="${holiday?esc(holiday.name)+' · '+(holiday.type==='regular'?'REGULAR HOLIDAY':holiday.type==='special_working'?'SPECIAL WORKING DAY':holiday.type==='special_non_working'?'SPECIAL NON-WORKING HOLIDAY':'LOCAL HOLIDAY'):''}" class="salary-calendar-day${isToday?' is-today':''}${isPayday?' is-payday':''}${isPastCutoff?' is-paid-out':''}${isHoliday?' is-holiday':''}${holiday&&holiday.type==='special_non_working'?' is-special-non-working':''}${selected?' is-selected':''}" onclick="selectSalaryCalendarDate('${iso}')"><span class="salary-calendar-day-number">${day}</span>${isPayday?`<span class="salary-calendar-event">${paydayIndex===0?'1st cutoff':'2nd cutoff'}${paydayEntry.reason?' · moved':''}</span><span class="salary-calendar-event-amount">${peso(amount/2)}</span>`:''}${holiday?`<span class="salary-calendar-holiday${holiday.type==='special_non_working'?' is-special-non-working':''}"><b>${holiday.type==='regular'?'REGULAR':holiday.type==='special_non_working'?'SPECIAL NON-WORKING':holiday.type==='special_working'?'SPECIAL WORKING':'LOCAL'}</b><span class="sc-sep"> · </span><span class="sc-name">${esc(holiday.name)}</span></span>`:''}</button>`);
  }
  grid.innerHTML=cells.join('');
  const selectedParts=String(salaryCalendarSelectedDate||'').split('-').map(Number);
@@ -21858,6 +21858,8 @@ html body #topbarAddDebtButton {
 </style>
 
 
+
+
 <style id="savely-salary-next-payday-countdown-v1">
 #page-salary .salary-summary-cards{width:100%;grid-template-columns:minmax(0,1fr)!important}
 #page-salary .salary-annual-remaining-stat{width:100%;box-sizing:border-box}
@@ -23586,5 +23588,129 @@ html body #stats.cards .summary-carousel-slide.is-active{opacity:1;visibility:vi
 html body #stats.cards .summary-carousel-slide[data-carousel-clone]{display:none!important}
 @media(prefers-reduced-motion:reduce){
  html body #stats.cards .summary-carousel-slide,html body #stats.cards .summary-carousel-slide.is-active{transition:none!important}
+}
+</style>
+
+<style id="savely-sidebar-toggle-center-fix">
+@media (min-width:761px){
+  /* Center the handle exactly on the sidebar's right edge (245px expanded / 76px collapsed) and on the vertical middle */
+  html body .app > aside.sidebar > #savelySidebarToggle{
+    position:fixed!important;
+    top:50%!important;
+    left:245px!important;
+    right:auto!important;
+    transform:translate(-50%,-50%)!important;
+    width:42px!important;min-width:42px!important;
+    height:42px!important;min-height:42px!important;
+    padding:0!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:12px!important;
+    border:1px solid #d8e9e1!important;
+  }
+  html body .app.sidebar-collapsed > aside.sidebar > #savelySidebarToggle{
+    left:76px!important;
+    transform:translate(-50%,-50%)!important;
+  }
+  html body .app > aside.sidebar > #savelySidebarToggle:hover{
+    width:42px!important; /* no width growth on hover, keeps it centered */
+  }
+  /* Draw the chevron with CSS so it is perfectly centered, regardless of font glyph metrics */
+  html body #savelySidebarToggle span{
+    display:grid!important;
+    place-items:center!important;
+    width:100%!important;height:100%!important;
+    margin:0!important;
+    font-size:0!important;line-height:0!important;
+    transform:none!important;
+  }
+  html body #savelySidebarToggle span::before{
+    content:"";
+    display:block;
+    width:9px;height:9px;
+    border-left:2.5px solid #168765;
+    border-bottom:2.5px solid #168765;
+    border-radius:1px;
+    transform:translateX(2px) rotate(45deg); /* points left = collapse */
+  }
+  html body .app.sidebar-collapsed #savelySidebarToggle span::before{
+    transform:translateX(-2px) rotate(-135deg); /* points right = expand */
+  }
+}
+</style>
+<style id="savely-salary-calendar-fit-v1">
+/* Salary calendar: fit any width, including "Desktop site" mode on phones.
+   Uses the calendar panel's own width (container query) instead of the device width,
+   because desktop-site mode reports a ~980px viewport even on a phone. */
+.salary-calendar-panel{container-type:inline-size;container-name:salcal}
+.salary-calendar-grid{min-width:0}
+#page-salary #salaryCalendarGrid .salary-calendar-day{overflow:hidden}
+
+@container salcal (max-width:860px){
+  #page-salary .salary-calendar-grid{gap:4px!important}
+  #page-salary .salary-calendar-weekdays>div{font-size:9px!important;padding:6px 0!important;letter-spacing:0!important}
+  html body #page-salary #salaryCalendarGrid .salary-calendar-day{
+    min-height:78px!important;height:auto!important;padding:5px!important;gap:3px!important;
+    border-radius:9px!important;overflow:hidden!important;min-width:0!important;
+  }
+  html body #page-salary #salaryCalendarGrid .salary-calendar-day.is-outside-empty{min-height:78px!important}
+  html body #page-salary .salary-calendar-day-number{font-size:12px!important;line-height:1.2!important}
+  html body #page-salary .salary-calendar-day.is-today .salary-calendar-day-number{
+    width:22px!important;height:22px!important;font-size:11px!important;margin:-2px 0 0 -2px!important}
+  html body #page-salary #salaryCalendarGrid .salary-calendar-event{
+    display:block!important;width:100%!important;max-width:100%!important;
+    font-size:9px!important;line-height:1.2!important;padding:2px 3px!important;border-radius:5px!important;
+    white-space:normal!important;overflow:hidden!important;overflow-wrap:normal!important;word-break:normal!important}
+  html body #page-salary #salaryCalendarGrid .salary-calendar-event-amount{
+    font-size:9px!important;line-height:1.2!important;max-width:100%;overflow-wrap:anywhere}
+  /* Holiday label: hide the long type prefix (colour already shows the type; full info is in the details box on tap) */
+  html body #page-salary #salaryCalendarGrid .salary-calendar-holiday{
+    display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;
+    width:100%!important;max-width:100%!important;
+    font-size:8px!important;line-height:1.2!important;padding:2px 3px!important;border-radius:5px!important;
+    white-space:normal!important;overflow:hidden!important;overflow-wrap:break-word!important;
+    word-break:normal!important;hyphens:auto;text-overflow:ellipsis!important}
+  html body #page-salary #salaryCalendarGrid .salary-calendar-holiday b,
+  html body #page-salary #salaryCalendarGrid .salary-calendar-holiday .sc-sep{display:none!important}
+  #page-salary .salary-calendar-month-row{flex-wrap:wrap}
+}
+@container salcal (max-width:480px){
+  html body #page-salary #salaryCalendarGrid .salary-calendar-day{min-height:62px!important;padding:3px!important}
+  html body #page-salary #salaryCalendarGrid .salary-calendar-day.is-outside-empty{min-height:62px!important}
+  html body #page-salary #salaryCalendarGrid .salary-calendar-event,
+  html body #page-salary #salaryCalendarGrid .salary-calendar-event-amount{font-size:8px!important}
+  html body #page-salary #salaryCalendarGrid .salary-calendar-holiday{font-size:7px!important;-webkit-line-clamp:2;line-clamp:2}
+}
+</style>
+<style id="savely-salary-hero-fit-v1">
+/* Salary hero: stack neatly when the banner itself is narrow (also covers "Desktop site" mode on phones). */
+#page-salary .salary-summary-cards{container-type:inline-size;container-name:salhero}
+@container salhero (max-width:820px){
+  html body #page-salary .salary-hero{
+    grid-template-columns:minmax(0,1fr)!important;gap:18px!important;min-height:0!important;
+    padding:22px 20px 20px!important;border-radius:20px!important}
+  html body #page-salary .salary-hero-copy{gap:10px!important;width:100%}
+  html body #page-salary .salary-hero-amount{
+    margin:0!important;font-size:clamp(28px,7.5cqw,40px)!important;line-height:1.1!important;
+    display:flex;flex-wrap:wrap;align-items:baseline;column-gap:8px}
+  html body #page-salary .salary-hero-total{font-size:.5em!important;font-weight:700!important;opacity:.85;white-space:nowrap}
+  html body #page-salary .salary-hero-meta{width:100%!important;max-width:none!important;font-size:12.5px!important;box-sizing:border-box}
+  /* Next payday label goes right above the timer instead of floating in the corner */
+  html body #page-salary .salary-hero-countdown-wrap{width:100%}
+  html body #page-salary .salary-hero-countdown-title{
+    position:static!important;text-align:left!important;white-space:normal!important;margin:0 0 10px!important;font-size:12px!important}
+  html body #page-salary .salary-hero{padding-top:22px!important}
+  html body #page-salary .salary-hero-countdown{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important}
+  html body #page-salary .salary-hero-countdown>div{
+    min-width:0!important;width:100%;padding:14px 4px 11px!important;border-radius:16px!important;gap:6px!important}
+  html body #page-salary .salary-hero-countdown>div strong{font-size:clamp(24px,6cqw,32px)!important}
+  html body #page-salary .salary-hero-countdown>div span{font-size:9.5px!important;letter-spacing:.06em!important}
+}
+@container salhero (max-width:430px){
+  html body #page-salary .salary-hero{padding:18px 14px 16px!important}
+  html body #page-salary .salary-hero-countdown{gap:6px!important}
+  html body #page-salary .salary-hero-countdown>div{padding:11px 2px 9px!important;border-radius:13px!important}
+  html body #page-salary .salary-hero-countdown>div strong{font-size:22px!important}
+  html body #page-salary .salary-hero-countdown>div span{font-size:8.5px!important;letter-spacing:.03em!important}
 }
 </style>
