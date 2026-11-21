@@ -8423,7 +8423,7 @@ function openExpenseEntry(dateValue,editExisting=false,editTransactionId=null){
  const accountOptions=data.accounts.map(a=>`<option value="${esc(a.id)}">${esc(a.name)}</option>`).join('');
  form.innerHTML=`
  <div id="expenseComposer" class="expense-composer">
-  <div class="expense-composer-summary"><div><span class="expense-summary-label">Monthly Expenses</span><strong id="expenseComposerTotal">₱0.00</strong><small id="expenseComposerCount">0 items</small></div><span class="expense-summary-note">All items will be saved separately</span></div>
+  <div class="expense-composer-summary"><div><span class="expense-summary-label">Daily Expenses</span><strong id="expenseComposerTotal">₱0.00</strong><small id="expenseComposerCount">0 items</small></div><span class="expense-summary-note">All items will be saved separately</span></div>
   <section class="expense-composer-section">
    <div class="expense-section-heading"><div><h3>Choose expense categories</h3><p>Select one or more categories. You can add multiple items under each one.</p></div><span class="expense-section-step">01</span></div>
    <div class="expense-category-grid" aria-label="Expense categories; scroll horizontally to see more">${EXPENSE_GROUPS.map(g=>`<button type="button" class="expense-category-card${g.id==='food'?' selected active':''}" data-expense-group="${g.id}" aria-pressed="${g.id==='food'?'true':'false'}"><span class="expense-category-icon">${g.icon}</span><span>${g.name}</span><span class="expense-category-check">✓</span></button>`).join('')}</div>
@@ -8589,7 +8589,8 @@ function openExpenseDayActions(dateValue){
    const cat=String(t.category||'Others');
    const catKey=cat.toLowerCase();
    const catIcon=/food|meal|grocer|drink/.test(catKey)?'🍽':/transport|fare|gas|fuel|commute|travel/.test(catKey)?'🚌':/bill|util|rent|water|electric|load/.test(catKey)?'🧾':/shop|cloth|gadget/.test(catKey)?'🛍':/health|med|pharm/.test(catKey)?'💊':/school|educ/.test(catKey)?'🎓':'💸';
-   return `<article class="expense-date-history-row">
+   return `<article class="expense-date-history-row" data-row-id="${esc(t.id)}">
+    <label class="edh-select" title="Select to delete"><input type="checkbox" data-select-expense="${esc(t.id)}" aria-label="Select ${esc(t.description||'expense')}"><span></span></label>
     <div class="edh-icon" aria-hidden="true">${catIcon}</div>
     <div class="expense-date-history-main">
      <strong>${esc(t.description||'Expense')}</strong>
@@ -8599,15 +8600,14 @@ function openExpenseDayActions(dateValue){
     </div>
     <div class="expense-date-history-side">
      <strong class="expense-date-history-amount">${peso(t.amount)}</strong>
-     <div class="edh-actions">
-      <button type="button" class="expense-history-edit-button edh-btn edh-btn-edit" data-edit-expense="${esc(t.id)}" aria-label="Edit ${esc(t.description||'expense')}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Edit</button>
-      <button type="button" class="expense-history-delete-button edh-btn edh-btn-delete" data-delete-expense="${esc(t.id)}" aria-label="Delete ${esc(t.description||'expense')}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>Delete</button>
-     </div>
     </div>
    </article>`;
   }).join('')}
   <div class="expense-date-history-total"><span>Total expenses</span><strong>${peso(total)}</strong></div>
-  <button type="button" class="expense-day-edit-all" data-edit-day="${esc(date)}">✎ Edit expenses</button>
+  <div class="edh-footer">
+   <button type="button" class="edh-btn edh-btn-delete" data-delete-selected disabled>🗑 Delete</button>
+   <button type="button" class="expense-day-edit-all" data-edit-day="${esc(date)}">✎ Edit expenses</button>
+  </div>
  </div>`;
  backdrop.innerHTML=`<div class="expense-day-action-menu has-history" role="dialog" aria-modal="true" aria-label="Expenses for ${esc(pretty)}">
   <div class="expense-day-action-head">
@@ -8618,24 +8618,29 @@ function openExpenseDayActions(dateValue){
  </div>`;
  backdrop.addEventListener('click',event=>{if(event.target===backdrop)closeExpenseDayActions();});
  backdrop.querySelector('.expense-day-action-close').addEventListener('click',closeExpenseDayActions);
- backdrop.querySelectorAll('[data-delete-expense]').forEach(button=>button.addEventListener('click',async()=>{
-  const id=button.dataset.deleteExpense;
-  const item=(data.transactions||[]).find(t=>t.type==='expense'&&String(t.id)===String(id));
-  if(!item)return;
-  const confirmed=await showSavelyConfirm({title:'Delete this expense?',message:'This removes the expense from your history and gives the amount back to the account it was charged to. This cannot be undone.',details:(item.description||'Expense')+' · '+peso(item.amount)+'\n'+pretty,confirmLabel:'Delete',cancelLabel:'Keep'});
+ const deleteBtn=backdrop.querySelector('[data-delete-selected]');
+ const checks=[...backdrop.querySelectorAll('[data-select-expense]')];
+ const syncSelection=()=>{
+  const n=checks.filter(c=>c.checked).length;
+  deleteBtn.disabled=n===0;
+  deleteBtn.textContent='🗑 Delete'+(n?' ('+n+')':'');
+  checks.forEach(c=>c.closest('.expense-date-history-row').classList.toggle('is-selected',c.checked));
+ };
+ checks.forEach(c=>c.addEventListener('change',syncSelection));
+ deleteBtn.addEventListener('click',async()=>{
+  const ids=checks.filter(c=>c.checked).map(c=>String(c.dataset.selectExpense));
+  if(!ids.length)return;
+  const items=(data.transactions||[]).filter(t=>t.type==='expense'&&ids.includes(String(t.id)));
+  if(!items.length)return;
+  const confirmed=await showSavelyConfirm({title:items.length>1?'Delete '+items.length+' expenses?':'Delete this expense?',message:'This removes the selected expense'+(items.length>1?'s':'')+' from your history and gives the amount back to the account it was charged to. This cannot be undone.',details:items.map(i=>(i.description||'Expense')+' · '+peso(i.amount)).join('\n')+'\n'+pretty,confirmLabel:'Delete',cancelLabel:'Keep'});
   if(!confirmed)return;
-  data.transactions=data.transactions.filter(t=>!(t.type==='expense'&&String(t.id)===String(id)));
+  data.transactions=data.transactions.filter(t=>!(t.type==='expense'&&ids.includes(String(t.id))));
   save();
   renderBudget();
   // Reopen with the remaining items; closes automatically when the day has none left.
   openExpenseDayActions(date);
-  toast('Expense deleted.');
- }));
- backdrop.querySelectorAll('[data-edit-expense]').forEach(button=>button.addEventListener('click',()=>{
-  const id=button.dataset.editExpense;
-  closeExpenseDayActions();
-  openExpenseEntry(date,true,id);
- }));
+  toast(items.length>1?'Expenses deleted.':'Expense deleted.');
+ });
  const editAllButton=backdrop.querySelector('[data-edit-day]');
  if(editAllButton)editAllButton.addEventListener('click',()=>{
   closeExpenseDayActions();
@@ -23123,5 +23128,48 @@ body.dark-theme .edh-btn-edit{background:#1f3a30!important;border-color:#2c5646!
  html body .expense-date-history-row{grid-template-columns:auto minmax(0,1fr)!important;gap:12px!important}
  html body .expense-date-history-side{grid-column:1/-1;flex-direction:row!important;align-items:center!important;padding:12px 0 0;border-left:0;border-top:1px dashed rgba(22,135,101,.22)}
  html body .edh-actions{margin-top:0}
+}
+</style>
+
+<style id="savely-expense-editor-banner-centered-v1">
+/* Category buttons: text centered */
+html body.expense-editor-active #page-expense-editor #expenseComposer .expense-category-card{justify-content:center!important;text-align:center!important}
+html body.expense-editor-active #page-expense-editor #expenseComposer .expense-category-card > span:nth-child(2){flex:0 1 auto!important;text-align:center!important}
+/* Top banner: Daily Expenses on the left, vertically centered; note on the right */
+html body.expense-editor-active #page-expense-editor #expenseComposer .expense-composer-summary{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:20px!important}
+html body.expense-editor-active #page-expense-editor #expenseComposer .expense-composer-summary > div{display:grid!important;justify-items:start!important;text-align:left!important;align-content:center!important;gap:6px!important}
+html body.expense-editor-active #page-expense-editor #expenseComposer .expense-composer-summary .expense-summary-note{width:auto!important;margin-left:auto!important;padding-top:0!important;border-top:0!important;text-align:right!important;align-self:center!important;white-space:nowrap}
+@media(max-width:520px){
+ html body.expense-editor-active #page-expense-editor #expenseComposer .expense-composer-summary{flex-direction:column!important;align-items:flex-start!important}
+ html body.expense-editor-active #page-expense-editor #expenseComposer .expense-composer-summary .expense-summary-note{margin-left:0!important;text-align:left!important;white-space:normal}
+}
+</style>
+
+<style id="savely-expense-day-modal-footer-v2">
+/* Row: checkbox | icon | main | amount (no buttons inside the item) */
+html body .expense-date-history-row{grid-template-columns:auto auto minmax(0,1fr) auto!important;align-items:center!important}
+html body .expense-date-history-side{justify-content:center!important;align-items:flex-end!important;border-left:0!important;padding-left:0!important}
+html body .edh-select{display:grid;place-items:center;cursor:pointer}
+html body .edh-select input{position:absolute;opacity:0;pointer-events:none}
+html body .edh-select span{width:22px;height:22px;border-radius:7px;border:2px solid #b7d9c8;background:#fff;display:grid;place-items:center;transition:all .15s}
+html body .edh-select input:checked+span{background:#d94d5c;border-color:#d94d5c}
+html body .edh-select input:checked+span::after{content:"";width:5px;height:10px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+html body .edh-select input:focus-visible+span{box-shadow:0 0 0 3px rgba(22,135,101,.3)}
+html body .expense-date-history-row.is-selected{border-color:#f0b4ba!important;background:#fff8f8!important}
+/* Total: no green background */
+html body .expense-date-history-total{background:transparent!important;box-shadow:none!important;border-radius:0!important;padding:14px 2px 0!important;border-top:1px solid var(--line,#e8edf4)!important}
+html body .expense-date-history-total span{color:var(--muted)!important}
+html body .expense-date-history-total strong{color:var(--green)!important;font-size:20px!important}
+/* Footer: Delete + Edit expenses side by side, lower right */
+html body .edh-footer{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-top:6px}
+html body .edh-footer .edh-btn{min-height:46px!important;padding:0 18px!important;border-radius:14px!important;font-size:13px!important}
+html body .edh-footer .edh-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+html body .edh-footer .expense-day-edit-all{width:auto!important;margin:0!important;min-height:46px;padding:0 22px!important;border-radius:14px!important;font-size:13px!important}
+body.dark-theme .edh-select span{background:#1a2622;border-color:#2c5646}
+body.dark-theme .expense-date-history-row.is-selected{background:#2a1c20!important;border-color:#6b2f3a!important}
+@media(max-width:520px){
+ html body .expense-date-history-row{grid-template-columns:auto auto minmax(0,1fr)!important}
+ html body .expense-date-history-side{grid-column:1/-1;flex-direction:row!important;justify-content:flex-end!important;border-top:1px dashed rgba(22,135,101,.22)!important;padding-top:10px!important}
+ html body .edh-footer{flex-wrap:wrap}
 }
 </style>
