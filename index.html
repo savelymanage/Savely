@@ -5914,6 +5914,41 @@ function getLatestSavingsActivityAt(){
  if(!latest){const saved=Number(data.savingsLastUpdatedAt);if(Number.isFinite(saved)&&saved>0)latest=saved;}
  return latest;
 }
+function savelyLatestSavingsChange(){
+ // One shared source for the Overview Savings card and the Savings page hero: the most recent add, edit, transfer or interest entry.
+ const events=[];
+ for(const item of (Array.isArray(data.savingsList)?data.savingsList:[])){
+  if(!item||item.isReceivable||(item.category||'Savings')!=='Savings')continue;
+  const changes=Array.isArray(item.changeHistory)?item.changeHistory:[];
+  const graph=(Array.isArray(item.graphHistory)?item.graphHistory:[]).filter(g=>g&&!g.liveMinute);
+  changes.forEach(h=>{
+   const at=Number(h&&h.at)||0,d=(Number(h&&h.newAmount)||0)-(Number(h&&h.oldAmount)||0);
+   if(!at||Math.abs(d)<0.005)return;
+   const t=String(h.type||'edit');
+   events.push({at,delta:d,kind:(t==='transfer_in'||t==='transfer_out')?'transfer':(t==='interest'?'interest':'edited')});
+  });
+  if(graph.length){
+   const at=Number(graph[0].at)||0,amt=Number(graph[0].amount)||0;
+   if(at&&amt>0.005&&!changes.some(h=>Math.abs((Number(h&&h.at)||0)-at)<5000))events.push({at,delta:amt,kind:'added'});
+  }
+  for(let i=1;i<graph.length;i++){
+   const at=Number(graph[i].at)||0,d=(Number(graph[i].amount)||0)-(Number(graph[i-1].amount)||0);
+   if(!at||Math.abs(d)<0.005)continue;
+   if(changes.some(h=>Math.abs((Number(h&&h.at)||0)-at)<60000))continue;
+   events.push({at,delta:d,kind:'edited'});
+  }
+ }
+ let latest=null;
+ for(const e of events){if(e.at<=Date.now()+60000&&(!latest||e.at>latest.at))latest=e;}
+ return latest;
+}
+function savelyLatestSavingsChangeHtml(){
+ const c=savelyLatestSavingsChange();
+ if(!c)return '<div class="stat-foot savely-change-note">No changes recorded yet</div>';
+ const amt=peso(Math.abs(c.delta)),sign=c.delta>0?'＋':'−';
+ const text=c.kind==='added'?`＋ ${amt} added`:c.kind==='transfer'?`⇄ ${amt} transferred`:c.kind==='interest'?`＋ ${amt} interest`:`${sign} ${amt} edited`;
+ return `<div class="stat-foot savely-change-note savely-private-number">${text}</div>`;
+}
 function updateFinancialSavingsAsOf(){
  const el=document.getElementById('financialSavingsAsOf');
  if(!el)return;
@@ -8059,7 +8094,7 @@ function closeDebtHistory(){const modal=document.getElementById('savelyDebtHisto
 function render(){ensureDebtReceivableLinks();updateLiveDateTime();renderDashboard();updateSavingsTotalAsOf();renderTransactions();renderAccounts();renderGoals();renderBudget();renderReports();renderRecurring();renderSavingsList();renderSalaryPage();renderDebtPage()}
 
 let summaryCarouselIndex=0,summaryCarouselBound=false,summaryCarouselAutoTimer=null,summaryCarouselResumeTimer=null;
-const SUMMARY_CAROUSEL_INTERVAL=30000;
+const SUMMARY_CAROUSEL_INTERVAL=10000;
 function stopSummaryCarouselAuto(){
  if(summaryCarouselAutoTimer){clearTimeout(summaryCarouselAutoTimer);summaryCarouselAutoTimer=null;}
  if(summaryCarouselResumeTimer){clearTimeout(summaryCarouselResumeTimer);summaryCarouselResumeTimer=null;}
@@ -8224,9 +8259,9 @@ const overviewSalaryRemaining=getSalaryRemainingProjection(new Date().getFullYea
 document.getElementById('stats').innerHTML=`<div class="summary-carousel" aria-label="Financial summary cards">
  <div class="summary-carousel-viewport">
   <div class="summary-carousel-track" id="summaryCarouselTrack" tabindex="0" aria-roledescription="carousel" aria-label="Financial summary">
-   <div class="summary-carousel-slide" data-summary-card="savings" role="group" aria-label="1 of 3"><div class="stat"><div class="stat-top"><span class="ov-pill">Savings total</span> <span class="stat-icon" style="background:#e5f7ef;color:#169b70">₱</span></div><div class="stat-value savely-private-number" style="color:var(--green)">${peso(savingsTotal)}</div><div class="stat-foot">Savings savings</div><div class="stat-foot savings-total-asof" id="savingsTotalAsOf" style="margin-top:5px;font-size:10px">As of —</div></div></div>
-   <div class="summary-carousel-slide" data-summary-card="income" role="group" aria-label="2 of 3"><div class="stat"><div class="stat-top"><span class="ov-pill">Salary / income total</span> <span class="stat-icon" style="background:#edf1ff;color:#536be0">↗</span></div><div class="stat-value savely-private-number" style="color:var(--blue)">${peso(overviewSalaryRemaining)}</div><div class="stat-foot">Remaining salary in ${new Date().getFullYear()}</div></div></div>
-   <div class="summary-carousel-slide" data-summary-card="debt" role="group" aria-label="3 of 3"><div class="stat"><div class="stat-top"><span class="ov-pill">Debt total</span> <span class="stat-icon" style="background:#fff1e7;color:#e64b5b">−</span></div><div class="stat-value savely-private-number" style="color:var(--red)">${peso(debtTotal)}</div><div class="stat-foot">I owe · remaining balance</div></div></div>
+   <div class="summary-carousel-slide" data-summary-card="savings" role="group" aria-label="1 of 3"><div class="stat"><div class="stat-top"><span class="ov-pill">Savings total</span></div><div class="stat-value savely-private-number" style="color:var(--green)">${peso(savingsTotal)}</div>${savelyLatestSavingsChangeHtml()}<div class="stat-foot savings-total-asof" id="savingsTotalAsOf" style="margin-top:5px;font-size:10px">As of —</div></div></div>
+   <div class="summary-carousel-slide" data-summary-card="income" role="group" aria-label="2 of 3"><div class="stat"><div class="stat-top"><span class="ov-pill">Salary / income total</span></div><div class="stat-value savely-private-number" style="color:var(--blue)">${peso(overviewSalaryRemaining)}</div><div class="stat-foot">Remaining salary in ${new Date().getFullYear()}</div></div></div>
+   <div class="summary-carousel-slide" data-summary-card="debt" role="group" aria-label="3 of 3"><div class="stat"><div class="stat-top"><span class="ov-pill">Debt total</span></div><div class="stat-value savely-private-number" style="color:var(--red)">${peso(debtTotal)}</div><div class="stat-foot">I owe · remaining balance</div></div></div>
   </div>
  </div>
  <div class="summary-carousel-pagination" role="group" aria-label="Choose financial summary card">
@@ -9432,7 +9467,7 @@ function renderSavingsList(){
   ? `<div class="stat-foot savely-private-number" style="color:var(--green);font-weight:800">＋ ${peso(Math.abs(savedDelta))} increase</div>`
   : `<div class="stat-foot" style="color:var(--muted)">No increase recorded</div>`;
  document.getElementById('financialCategoryStats').innerHTML=
-  `<div class="stat savings-total-card"><div class="sv-hero-copy"><span class="sv-hero-eyebrow">SAVINGS TOTAL</span><div class="sv-hero-amount savely-private-number">${peso(savings)}</div>${savingsChangeHtml}</div><div class="sv-hero-asof" id="financialSavingsAsOf">As of —</div></div>`;
+  `<div class="stat savings-total-card"><div class="sv-hero-copy"><span class="sv-hero-eyebrow">SAVINGS TOTAL</span><div class="sv-hero-amount savely-private-number">${peso(savings)}</div>${savelyLatestSavingsChangeHtml()}</div><div class="sv-hero-asof" id="financialSavingsAsOf">As of —</div></div>`;
  try{updateFinancialSavingsAsOf();}catch(e){}
  renderSavingsTrend();
  renderOverallTrend();
@@ -20881,12 +20916,12 @@ html body #stats.cards .summary-carousel .summary-carousel-slide .stat-foot:not(
  position:relative!important;z-index:1!important;width:fit-content!important;margin:0!important;padding:8px 14px!important;border-radius:12px!important;
  background:rgba(255,255,255,.1)!important;border:1px solid rgba(255,255,255,.16)!important;color:rgba(255,255,255,.9)!important;font-size:12.5px!important;font-weight:400!important;line-height:1.45!important;opacity:1!important}
 html body #stats.cards .summary-carousel .summary-carousel-slide .stat-foot.savings-total-asof{
- position:absolute!important;top:20px!important;right:74px!important;z-index:2!important;width:auto!important;margin:0!important;display:inline-flex!important;align-items:center!important;
+ position:absolute!important;top:20px!important;right:28px!important;z-index:2!important;width:auto!important;margin:0!important;display:inline-flex!important;align-items:center!important;
  padding:7px 14px!important;border-radius:999px!important;background:rgba(255,255,255,.16)!important;border:1px solid rgba(255,255,255,.26)!important;
  color:rgba(255,255,255,.85)!important;font-size:12px!important;font-weight:400!important;line-height:1.2!important;white-space:nowrap!important;opacity:1!important}
 @media(max-width:600px){
  html body #stats.cards .summary-carousel .summary-carousel-slide[data-summary-card]>.stat{padding:62px 22px 24px!important;min-height:0!important}
- html body #stats.cards .summary-carousel .summary-carousel-slide .stat-foot.savings-total-asof{top:18px!important;left:18px!important;right:64px!important;white-space:normal!important}
+ html body #stats.cards .summary-carousel .summary-carousel-slide .stat-foot.savings-total-asof{top:18px!important;left:18px!important;right:18px!important;white-space:normal!important}
  html body #stats.cards .summary-carousel .summary-carousel-slide .stat-icon{top:12px!important;right:16px!important}
 }
 </style>
@@ -20917,6 +20952,53 @@ body:not([data-savely-figures="hidden"]) #page-financial-list #savingsTrendLegen
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
 })();
 </script>
+
+<style id="savely-expense-history-green-days-v1">
+/* Past days that have expense history are highlighted green instead of grey. Past days with no history stay grey. */
+html body #expensesCalendarGrid button.expenses-calendar-day.is-past.has-expenses:not(.is-today),
+html body #expensesCalendarGrid button.expenses-calendar-day.is-past.has-expenses:not(.is-today):focus,
+html body #expensesCalendarGrid button.expenses-calendar-day.is-past.has-expenses:not(.is-today):active{
+ background:linear-gradient(160deg,#eaf8f1 0%,#d9f1e4 100%)!important;background-image:linear-gradient(160deg,#eaf8f1 0%,#d9f1e4 100%)!important;
+ border:1px solid #8fd3b3!important;color:#0f5f45!important;box-shadow:0 2px 8px rgba(22,135,101,.10)!important}
+html body #expensesCalendarGrid button.expenses-calendar-day.is-past.has-expenses:not(.is-today):hover{
+ background:linear-gradient(160deg,#e2f6ec 0%,#cdeddc 100%)!important;border-color:#15966e!important;box-shadow:0 5px 16px rgba(15,110,75,.16)!important}
+html body #expensesCalendarGrid button.expenses-calendar-day.is-past.has-expenses:not(.is-today) .expenses-day-number{
+ background:#bfe8d3!important;color:#0f6b4d!important}
+html body #expensesCalendarGrid button.expenses-calendar-day.is-past.has-expenses:not(.is-today) .expenses-day-total{color:#07845d!important}
+html body #expensesCalendarGrid button.expenses-calendar-day.is-past.has-expenses:not(.is-today) .expenses-day-items,
+html body #expensesCalendarGrid button.expenses-calendar-day.is-past.has-expenses:not(.is-today) .expenses-day-count{
+ background:#c6ecd9!important;color:#116b4c!important}
+body.dark-theme #expensesCalendarGrid button.expenses-calendar-day.is-past.has-expenses:not(.is-today),
+body.dark-theme #expensesCalendarGrid button.expenses-calendar-day.is-past.has-expenses:not(.is-today):hover{
+ background:linear-gradient(160deg,#16382f 0%,#12302a 100%)!important;background-image:linear-gradient(160deg,#16382f 0%,#12302a 100%)!important;
+ border-color:#2f8f6d!important;color:#d7f7e8!important}
+body.dark-theme #expensesCalendarGrid button.expenses-calendar-day.is-past.has-expenses:not(.is-today) .expenses-day-number{background:#1f5a47!important;color:#bff0d9!important}
+body.dark-theme #expensesCalendarGrid button.expenses-calendar-day.is-past.has-expenses:not(.is-today) .expenses-day-total{color:#6fe0b0!important}
+body.dark-theme #expensesCalendarGrid button.expenses-calendar-day.is-past.has-expenses:not(.is-today) .expenses-day-items,
+body.dark-theme #expensesCalendarGrid button.expenses-calendar-day.is-past.has-expenses:not(.is-today) .expenses-day-count{background:#1d4d3f!important;color:#a8ecd0!important}
+</style>
+
+<style id="savely-hide-page-heading-except-overview-v1">
+/* Only Overview keeps its greeting/title block; every other page drops the eyebrow, title and description. */
+html body:has(#page-dashboard:not(.active)) main.main > .topbar > div:first-child{display:none!important}
+html body:has(#page-dashboard:not(.active)) main.main > .topbar{justify-content:flex-end!important;margin-bottom:12px!important}
+</style>
+
+<style id="savely-savings-change-note-and-asof-v1">
+/* Keep the "As of" pill visible on both Savings containers, and keep the shared change note styled like the other pills. */
+html body #stats.cards .summary-carousel .summary-carousel-slide[data-summary-card="savings"] .savings-total-asof,
+html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-asof{
+ display:inline-flex!important;visibility:visible!important;opacity:1!important;position:absolute!important;top:20px!important;right:28px!important;z-index:3!important;
+ padding:7px 14px!important;border-radius:999px!important;background:rgba(255,255,255,.16)!important;border:1px solid rgba(255,255,255,.26)!important;
+ color:rgba(255,255,255,.9)!important;font-size:12px!important;line-height:1.2!important;white-space:nowrap!important}
+html body .savely-change-note{width:fit-content;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);
+ color:rgba(255,255,255,.95)!important;font-size:12.5px;font-weight:500;line-height:1.45;margin:0}
+body[data-savely-figures="hidden"] #page-dashboard .savely-change-note::after{padding:inherit;box-sizing:border-box;text-align:inherit}
+@media(max-width:600px){
+ html body #stats.cards .summary-carousel .summary-carousel-slide[data-summary-card="savings"] .savings-total-asof,
+ html body #page-financial-list #financialCategoryStats .savings-total-card .sv-hero-asof{top:18px!important;left:18px!important;right:18px!important;white-space:normal!important}
+}
+</style>
 </body>
 </html>
 <style id="savely-metro-snapshot-monitor-v1">
