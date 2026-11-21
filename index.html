@@ -16636,7 +16636,8 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
    <div class="sc-total"><small>Net payout</small><strong id="salaryCutoffNetTotal" class="sc-net">₱0.00</strong></div>
   </div>
   <div class="sc-inline-note">The net payout is calculated automatically and saved to this specific cutoff.</div>
-  <div class="sc-actions"><button type="button" class="btn btn-light" onclick="closeSalaryCutoffEditor()">Cancel</button><button type="button" class="btn btn-primary" onclick="saveSalaryCutoff()">Save cutoff</button></div>
+  <div class="sc-inline-note sc-transfer-note" id="salaryCutoffTransferNote" style="display:none"></div>
+  <div class="sc-actions"><button type="button" class="btn btn-light" onclick="closeSalaryCutoffEditor()">Cancel</button><button type="button" class="btn btn-light sc-transfer-btn" id="salaryCutoffTransferButton" onclick="openSalaryCutoffTransfer()">Transfer</button><button type="button" class="btn btn-primary" onclick="saveSalaryCutoff()">Save cutoff</button></div>
  </div>
 </div>
 <script id="savely-cutoff-deductions-script">
@@ -16664,6 +16665,7 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   document.getElementById('salaryCutoffGrossTotal').textContent=money(gross);
   document.getElementById('salaryCutoffDeductionTotal').textContent=money(total);
   document.getElementById('salaryCutoffNetTotal').textContent=money(Math.max(0,gross-total));
+  if(typeof renderTransferNote==='function')renderTransferNote();
  }
  // Recalculate gross, deductions, and net payout immediately as the cutoff salary changes.
  const grossInput=document.getElementById('salaryCutoffGross');
@@ -16679,7 +16681,235 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   root.appendChild(row);updateTotals();
  }
  window.addSalaryCutoffDeduction=()=>addRow();
- window.closeSalaryCutoffEditor=()=>{document.getElementById('salaryCutoffBackdrop').style.display='none';};
+ window.closeSalaryCutoffEditor=()=>{if(window.closeSalaryCutoffTransfer)window.closeSalaryCutoffTransfer();document.getElementById('salaryCutoffBackdrop').style.display='none';};
+
+ // ===== Transfer the cutoff net payout to a bank / digital wallet =====
+ // Uses the exact same bank picker UI as Savings → Transfer money.
+ function cutoffFormState(){
+  const gross=Math.max(0,Number(document.getElementById('salaryCutoffGross')?.value)||0);
+  const deductions=[...document.querySelectorAll('#salaryCutoffDeductionRows .sc-deduction-row')].map(row=>({
+   id:'ded-'+Math.random().toString(36).slice(2,10),
+   name:(row.querySelector('.sc-deduction-name').value||'Other deduction').trim(),
+   amount:Math.max(0,Number(row.querySelector('.sc-deduction-amount').value)||0)
+  })).filter(x=>x.amount>0);
+  const total=deductions.reduce((sum,x)=>sum+x.amount,0);
+  return {gross,deductions,total,net:Math.max(0,gross-total)};
+ }
+ function transferredTotal(iso){
+  const r=record(iso),list=r&&Array.isArray(r.transfers)?r.transfers:[];
+  return Math.round(list.reduce((sum,t)=>sum+Math.max(0,Number(t.amount)||0),0)*100)/100;
+ }
+ function renderTransferNote(){
+  const el=document.getElementById('salaryCutoffTransferNote');if(!el)return;
+  const r=activeISO?record(activeISO):null,list=r&&Array.isArray(r.transfers)?r.transfers:[];
+  if(!list.length){el.style.display='none';el.textContent='';return;}
+  const done=transferredTotal(activeISO),left=Math.max(0,cutoffFormState().net-done);
+  el.style.display='block';
+  el.textContent='Transferred '+money(done)+' so far · '+money(left)+' left to transfer';
+ }
+ window.closeSalaryCutoffTransfer=function(){
+  const review=document.getElementById('salaryTransferReviewBackdrop');if(review)review.remove();
+  const modal=document.getElementById('salaryTransferModal');if(modal)modal.remove();
+ };
+ window.openSalaryCutoffTransfer=function(){
+  if(!activeISO)return;
+  const info=cutoffInfo(activeISO);if(!info)return;
+  const form=cutoffFormState();
+  if(form.total>form.gross){toast('Deductions cannot exceed the cutoff salary.');return;}
+  const available=Math.round(Math.max(0,form.net-transferredTotal(activeISO))*100)/100;
+  if(available<=0){toast(form.net<=0?'Net payout is ₱0.00, so there is nothing to transfer.':'The full net payout for this cutoff was already transferred.');return;}
+  window.closeSalaryCutoffTransfer();
+  const sourceName='Salary · '+(info.index===0?'1st':'2nd')+' cutoff';
+  const sourceDate=document.getElementById('salaryCutoffDateLabel')?.textContent||'';
+  const destinations=(data.savingsList||[]).filter(item=>!item.isReceivable&&(item.category||'Savings')==='Savings');
+  let selectedDestinationId='',selectedDestinationName='',transferFilter='Traditional banks',favs=[];
+  try{favs=JSON.parse(localStorage.getItem('savelyFavoriteBanks')||'[]');if(!Array.isArray(favs))favs=[];}catch(e){favs=[];}
+  const sourceLogo='<span class="bank-logo savely-transfer-fallback-logo">₱</span>';
+  const modal=document.createElement('div');
+  modal.id='salaryTransferModal';
+  modal.className='modal-backdrop';
+  modal.style.cssText='display:flex;align-items:center;justify-content:center;padding:18px';
+  modal.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="salaryTransferTitle" style="width:min(820px,100%);max-height:92vh;overflow:auto;padding:22px">
+  <div class="panel-head" style="align-items:flex-start"><div><h2 id="salaryTransferTitle">Transfer money</h2><p class="panel-sub">Choose a destination bank or digital wallet.</p></div><button type="button" class="btn btn-light" data-salary-transfer-close>✕ Close</button></div>
+  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0">
+   <div style="border:1px solid var(--line);background:var(--soft);border-radius:12px;padding:12px 14px;min-width:0"><div class="panel-sub">FROM · SOURCE</div><strong>${esc(sourceName)}</strong><div style="font-size:19px;font-weight:850;color:var(--green);margin-top:3px">${peso(available)}</div><div class="panel-sub">Available net payout${sourceDate?' · '+esc(sourceDate):''}</div></div>
+   <div id="salaryTransferSelectedCard" style="border:1px dashed var(--line);background:var(--card);border-radius:12px;padding:12px 14px;min-width:0"><div class="panel-sub">TO · DESTINATION</div><strong style="color:var(--muted)">Choose a bank below</strong><div class="panel-sub" style="margin-top:5px">Choose any bank. If it is not in Savings yet, Savely will add it automatically after confirmation.</div></div>
+  </div>
+  <div class="panel-sub" style="font-weight:800;margin:8px 0">Choose a bank or digital wallet</div>
+  <div class="bank-picker-tabs" role="tablist" aria-label="Destination bank category">
+   <button type="button" class="bank-picker-tab active" data-salary-transfer-filter="Traditional banks">Traditional Banks</button>
+   <button type="button" class="bank-picker-tab" data-salary-transfer-filter="Digital banks & wallets">Digital Banks</button>
+   <button type="button" class="bank-picker-tab" data-salary-transfer-filter="Favorites">★ Favorites</button>
+   <button type="button" class="bank-picker-tab" data-salary-transfer-filter="Other">Other</button>
+  </div>
+  <div class="bank-picker" id="salaryTransferBankPicker" style="max-height:260px"></div>
+  <form id="salaryTransferForm" style="border-top:1px solid var(--line);padding-top:14px;margin-top:10px">
+   <div class="form-grid" style="grid-template-columns:minmax(0,420px)">
+    <div class="field"><label for="salaryTransferAmount">Transfer amount (₱)</label><input id="salaryTransferAmount" type="number" min="0.01" max="${available}" step="0.01" placeholder="Choose destination first" required disabled style="width:100%"><div class="panel-sub" id="salaryTransferAvailable" style="margin-top:5px">Available: ${peso(available)}</div></div>
+   </div>
+   <div class="form-actions" style="justify-content:flex-end;margin-top:16px"><button type="button" class="btn btn-secondary" data-salary-transfer-close>Cancel</button><button type="button" id="salaryTransferReviewButton" class="btn btn-primary" style="background:var(--green);border-color:var(--green)" disabled>Review transfer</button></div>
+  </form>
+ </div>`;
+  modal.addEventListener('click',event=>{if(event.target===modal)window.closeSalaryCutoffTransfer();});
+  modal.querySelectorAll('[data-salary-transfer-close]').forEach(b=>b.addEventListener('click',window.closeSalaryCutoffTransfer));
+  document.body.appendChild(modal);
+  const picker=modal.querySelector('#salaryTransferBankPicker'),amountInput=modal.querySelector('#salaryTransferAmount'),
+        reviewButton=modal.querySelector('#salaryTransferReviewButton'),selectedCard=modal.querySelector('#salaryTransferSelectedCard'),
+        availableLabel=modal.querySelector('#salaryTransferAvailable');
+  const fallbackLogo=name=>`<span class="bank-logo" style="background:#168765">${esc(String(name).slice(0,3).toUpperCase())}</span>`;
+  function renderPicker(){
+   const favSet=new Set(favs.map(x=>String(x).toLowerCase()));
+   const existingByName=new Map(destinations.map(item=>[String(item.name||'').trim().toLowerCase(),item]));
+   let shown=bankOptions.filter(b=>transferFilter==='Favorites'?favSet.has(b.name.toLowerCase()):b.group===transferFilter);
+   if(transferFilter==='Other'){
+    const known=new Set(bankOptions.map(b=>b.name.toLowerCase()));
+    destinations.filter(item=>!known.has(String(item.name||'').toLowerCase())).forEach(item=>{
+     shown.push({name:item.name||'Other account',short:String(item.name||'OT').slice(0,3).toUpperCase(),color:'#168765',group:'Other',customItemId:item.id});
+    });
+   }
+   modal.querySelectorAll('[data-salary-transfer-filter]').forEach(btn=>btn.classList.toggle('active',btn.dataset.salaryTransferFilter===transferFilter));
+   picker.innerHTML=shown.map(b=>{
+    const key=b.name.trim().toLowerCase();
+    const item=b.customItemId?destinations.find(x=>String(x.id)===String(b.customItemId)):existingByName.get(key);
+    const isSelected=(item&&String(item.id)===String(selectedDestinationId))||(!item&&selectedDestinationName.toLowerCase()===key);
+    const favorite=favSet.has(key);
+    const logo=savelyBrandLogo(b.name,'bank-logo')||`<span class="bank-logo" style="background:${b.color}">${esc(b.short)}</span>`;
+    return `<div class="bank-option-wrap"><button type="button" class="bank-option${isSelected?' selected':''}" data-salary-transfer-bank="${esc(b.name)}" title="${esc(b.name)}${!item?' — will be added automatically after transfer':''}">${logo}<span class="bank-option-name">${esc(b.name)}</span></button><button type="button" class="bank-favorite${favorite?' is-favorite':''}" data-salary-transfer-favorite="${esc(b.name)}" aria-label="${favorite?'Remove':'Add'} ${esc(b.name)} ${favorite?'from':'to'} favorites">${favorite?'★':'☆'}</button></div>`;
+   }).join('')||'<div class="panel-sub" style="padding:10px">No banks in this category yet.</div>';
+   picker.querySelectorAll('[data-salary-transfer-bank]').forEach(btn=>btn.addEventListener('click',()=>{
+    const bankName=btn.dataset.salaryTransferBank;
+    const selected=destinations.find(item=>String(item.name||'').trim().toLowerCase()===bankName.trim().toLowerCase());
+    selectedDestinationId=selected?String(selected.id):'';
+    selectedDestinationName=selected?String(selected.name||bankName):bankName;
+    const currentBalance=selected?Math.max(0,Number(selected.amount)||0):0;
+    selectedCard.innerHTML=`<div class="panel-sub">TO · DESTINATION</div><div style="display:flex;align-items:center;gap:9px;margin-top:4px">${savelyBrandLogo(bankName,'bank-logo')||fallbackLogo(bankName)}<div style="min-width:0"><strong>${esc(bankName)}</strong><div class="panel-sub">${selected?`${peso(currentBalance)} current balance`:'New Savings item · will be created automatically'}</div></div></div>`;
+    amountInput.disabled=false;reviewButton.disabled=false;
+    amountInput.placeholder='Enter amount';
+    if(!amountInput.value){amountInput.value=String(available);availableLabel.textContent='Remaining after transfer: '+peso(0);availableLabel.style.color='var(--muted)';}
+    picker.querySelectorAll('.bank-option.selected').forEach(x=>x.classList.remove('selected'));
+    btn.classList.add('selected');
+    if(!(window.matchMedia&&window.matchMedia('(pointer:coarse)').matches))amountInput.focus({preventScroll:true});
+   }));
+   picker.querySelectorAll('[data-salary-transfer-favorite]').forEach(btn=>btn.addEventListener('click',()=>{
+    const name=btn.dataset.salaryTransferFavorite;
+    favs=favSet.has(name.toLowerCase())?favs.filter(x=>String(x).toLowerCase()!==name.toLowerCase()):[...favs,name];
+    try{localStorage.setItem('savelyFavoriteBanks',JSON.stringify(favs));}catch(e){}
+    renderPicker();
+   }));
+  }
+  modal.querySelectorAll('[data-salary-transfer-filter]').forEach(btn=>btn.addEventListener('click',()=>{transferFilter=btn.dataset.salaryTransferFilter;renderPicker();}));
+  renderPicker();
+  amountInput.addEventListener('input',()=>{
+   const amount=Math.max(0,Number(amountInput.value)||0);
+   availableLabel.textContent='Remaining after transfer: '+peso(Math.max(0,available-amount));
+   availableLabel.style.color=amount>available+0.000001?'var(--red)':'var(--muted)';
+  });
+
+  function showReview(amount){
+   const old=document.getElementById('salaryTransferReviewBackdrop');if(old)old.remove();
+   const destination=selectedDestinationId?(data.savingsList||[]).find(item=>String(item.id)===String(selectedDestinationId)):null;
+   const destinationName=destination?String(destination.name||selectedDestinationName):selectedDestinationName;
+   const destinationBalance=destination?Math.max(0,Number(destination.amount)||0):0;
+   const review=document.createElement('div');
+   review.id='salaryTransferReviewBackdrop';
+   review.className='modal-backdrop savely-transfer-review-backdrop';
+   review.style.cssText='display:flex;align-items:center;justify-content:center;padding:18px';
+   review.innerHTML=`<div class="modal savely-transfer-review-dialog" role="dialog" aria-modal="true" aria-labelledby="salaryTransferReviewTitle">
+   <div class="panel-head" style="align-items:flex-start">
+    <div><div class="savely-transfer-step-label">TRANSFER · FINAL REVIEW</div><h2 id="salaryTransferReviewTitle">Review your transfer</h2><p class="panel-sub">Check the details before moving your money.</p></div>
+    <button type="button" class="btn btn-light" id="salaryTransferReviewClose" aria-label="Close review">✕ Close</button>
+   </div>
+   <div class="savely-transfer-review-route">
+    <div class="savely-transfer-review-account">
+     <span class="savely-transfer-review-label">FROM · SOURCE</span>
+     <div class="savely-transfer-review-bank">${sourceLogo}<strong>${esc(sourceName)}</strong></div>
+     <small>Available net payout · ${peso(available)}</small>
+    </div>
+    <div class="savely-transfer-review-arrow" aria-hidden="true">→</div>
+    <div class="savely-transfer-review-account">
+     <span class="savely-transfer-review-label">TO · DESTINATION</span>
+     <div class="savely-transfer-review-bank">${savelyBrandLogo(destinationName,'bank-logo')||`<span class="bank-logo savely-transfer-fallback-logo">${esc(String(destinationName||'₱').slice(0,3).toUpperCase())}</span>`}<strong>${esc(destinationName)}</strong></div>
+     <small>${destination?`Current balance · ${peso(destinationBalance)}`:'New Savings item · created after confirmation'}</small>
+    </div>
+   </div>
+   <div class="savely-transfer-review-amount"><span>Transfer amount</span><strong>${peso(amount)}</strong></div>
+   <div class="savely-transfer-review-after">
+    <div><span>Net payout left after</span><strong>${peso(Math.max(0,available-amount))}</strong></div>
+    <div><span>Destination balance after</span><strong>${peso(destinationBalance+amount)}</strong></div>
+   </div>
+   <p class="savely-transfer-review-note">${destination?'The selected account already exists in your Savings items.':'Savely will create the destination Savings item automatically.'} This transfer adds the amount to the bank's balance and history, and saves this cutoff.</p>
+   <div class="form-actions savely-transfer-review-actions">
+    <button type="button" class="btn btn-secondary" id="salaryTransferBackButton">Back</button>
+    <button type="button" class="btn btn-primary" id="salaryTransferConfirmButton">Confirm transfer</button>
+   </div>
+  </div>`;
+   review.addEventListener('click',event=>{if(event.target===review)review.remove();});
+   document.body.appendChild(review);
+   review.querySelector('#salaryTransferReviewClose').addEventListener('click',()=>review.remove());
+   review.querySelector('#salaryTransferBackButton').addEventListener('click',()=>review.remove());
+   review.querySelector('#salaryTransferConfirmButton').addEventListener('click',commit);
+  }
+  function commit(){
+   const amount=Math.round(Number(amountInput.value)*100)/100;
+   if(!selectedDestinationName){toast('Please choose a destination bank.');return;}
+   if(!Number.isFinite(amount)||amount<=0){toast('Enter a transfer amount greater than zero.');return;}
+   if(amount>available+0.000001){toast('Transfer amount exceeds the available net payout.');return;}
+   const now=Date.now(),transferId='sal-'+uid();
+   let destination=selectedDestinationId?(data.savingsList||[]).find(item=>String(item.id)===String(selectedDestinationId)):null;
+   let createdDestination=false;
+   const recordBefore=record(activeISO)?JSON.parse(JSON.stringify(record(activeISO))):null;
+   if(!destination){
+    const bank=bankOptions.find(b=>String(b.name||'').trim().toLowerCase()===selectedDestinationName.trim().toLowerCase());
+    destination={id:uid(),name:bank?bank.name:selectedDestinationName,amount:0,category:'Savings',date:todayISO(),graphHistory:[{at:now-1,amount:0}],changeHistory:[]};
+    if(isRealtimeDailyInterestItem(destination))destination.interestTracking={lastTickAt:now,dayStartBalance:0,lastHistoryDate:interestLocalDate(now)};
+    if(!Array.isArray(data.savingsList))data.savingsList=[];
+    data.savingsList.push(destination);
+    createdDestination=true;
+   }
+   const destSnapshot={amount:destination.amount,changeHistory:Array.isArray(destination.changeHistory)?destination.changeHistory.slice():null,graphHistory:Array.isArray(destination.graphHistory)?destination.graphHistory.slice():null,interestTracking:destination.interestTracking?{...destination.interestTracking}:null};
+   const destinationBalance=Math.max(0,Number(destination.amount)||0);
+   destination.amount=destinationBalance+amount;
+   if(!Array.isArray(destination.changeHistory))destination.changeHistory=[];
+   destination.changeHistory.push({at:now,oldName:destination.name,newName:destination.name,oldAmount:destinationBalance,newAmount:destination.amount,type:'transfer_in',label:'Salary transferred',transferId,relatedItemId:'',relatedItemName:sourceName});
+   if(!Array.isArray(destination.graphHistory)||!destination.graphHistory.length)destination.graphHistory=[{at:now-1,amount:destinationBalance}];
+   destination.graphHistory.push({at:now,amount:destination.amount});
+   if(isRealtimeDailyInterestItem(destination))destination.interestTracking={lastTickAt:now,dayStartBalance:Math.max(0,Number(destination.amount)||0),lastHistoryDate:interestLocalDate(now)};
+   // Save the cutoff (current gross / deductions) together with this transfer so the numbers stay consistent.
+   const form=cutoffFormState();
+   ensureStore();
+   const prev=record(activeISO),transfers=(prev&&Array.isArray(prev.transfers))?prev.transfers.slice():[];
+   transfers.push({id:transferId,at:now,bankName:destination.name,destinationId:destination.id,amount});
+   data.salaryCutoffRecords[activeISO]={grossAmount:form.gross,deductions:form.deductions,transfers,updatedAt:new Date(now).toISOString()};
+   try{localStorage.setItem(STORE,JSON.stringify(data));}
+   catch(error){
+    destination.amount=destSnapshot.amount;
+    destination.changeHistory=destSnapshot.changeHistory||[];
+    destination.graphHistory=destSnapshot.graphHistory||[];
+    if(destSnapshot.interestTracking)destination.interestTracking=destSnapshot.interestTracking;else delete destination.interestTracking;
+    if(createdDestination)data.savingsList=data.savingsList.filter(item=>String(item.id)!==String(destination.id));
+    if(recordBefore)data.salaryCutoffRecords[activeISO]=recordBefore;else delete data.salaryCutoffRecords[activeISO];
+    toast('Transfer could not be saved. Check browser storage and try again.');
+    return;
+   }
+   window.closeSalaryCutoffTransfer();
+   if(typeof renderSavingsList==='function')renderSavingsList();
+   if(typeof renderBankPicker==='function')renderBankPicker();
+   if(typeof renderSalaryPage==='function')renderSalaryPage();
+   renderTransferNote();
+   toast(createdDestination?`Transferred ${peso(amount)}. ${destination.name} was added to Savings.`:`Transferred ${peso(amount)} to ${destination.name}.`);
+  }
+  const transferFormEl=modal.querySelector('#salaryTransferForm');
+  function handleReview(event){
+   if(event)event.preventDefault();
+   const amount=Math.round(Number(amountInput.value)*100)/100;
+   if(!selectedDestinationName){toast('Please choose a destination bank.');return;}
+   if(!Number.isFinite(amount)||amount<=0){toast('Enter a transfer amount greater than zero.');return;}
+   if(amount>available+0.000001){toast('Transfer amount exceeds the available net payout.');return;}
+   showReview(amount);
+  }
+  transferFormEl.addEventListener('submit',handleReview);
+  reviewButton.addEventListener('click',handleReview);
+ };
  window.openSalaryCutoffEditor=function(iso){
   const info=cutoffInfo(iso);if(!info)return;
   activeISO=iso;
@@ -16701,8 +16931,11 @@ html body #page-salary .salary-summary-cards > .stat > .stat-foot{
   })).filter(x=>x.amount>0);
   const total=deductions.reduce((sum,x)=>sum+x.amount,0);
   if(total>gross){toast('Deductions cannot exceed the cutoff salary.');return;}
+  const alreadyTransferred=transferredTotal(activeISO);
+  if(gross-total+0.005<alreadyTransferred){toast('Net payout cannot be lower than the '+money(alreadyTransferred)+' already transferred.');return;}
   ensureStore();
-  data.salaryCutoffRecords[activeISO]={grossAmount:gross,deductions,updatedAt:new Date().toISOString()};
+  const previousRecord=record(activeISO);
+  data.salaryCutoffRecords[activeISO]={grossAmount:gross,deductions,transfers:(previousRecord&&Array.isArray(previousRecord.transfers))?previousRecord.transfers:[],updatedAt:new Date().toISOString()};
   save();window.closeSalaryCutoffEditor();
   if(typeof renderSalaryPage==='function')renderSalaryPage();
   toast('Cutoff salary and deductions saved.');
@@ -22789,4 +23022,34 @@ body.dark-theme #expenseComposer .expense-composer-section-title{color:var(--tex
 #savelyTransferBankPicker{contain:layout style;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 #savelyTransferModal .bank-option,#savelyTransferModal .bank-favorite,#savelyTransferModal [data-transfer-filter]{touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:none!important}
 @media (hover:none){#savelyTransferModal .bank-option:hover{transform:none!important;box-shadow:none!important}}
+</style>
+
+<style id="savely-salary-payday-top-right-and-cutoff-transfer-v1">
+/* "Next payday · date" sits at the top-right corner of the salary banner; the countdown stays centered on the right. */
+html body #page-salary .salary-hero{position:relative}
+html body #page-salary .salary-hero-countdown-wrap{position:static!important}
+html body #page-salary .salary-hero-countdown-title{
+ position:absolute;top:16px;right:clamp(18px,2.4vw,30px);left:auto;margin:0;z-index:2;
+ text-align:right;white-space:nowrap;font-size:12px;line-height:1.3
+}
+@media(max-width:900px){
+ html body #page-salary .salary-hero{padding-top:56px}
+ html body #page-salary .salary-hero-countdown-title{top:18px;right:18px;left:18px;white-space:normal}
+}
+/* Cutoff form: Transfer button next to Cancel / Save cutoff */
+#salaryCutoffModal .sc-actions .sc-transfer-btn{border-color:var(--green);color:var(--green);font-weight:800}
+#salaryCutoffModal .sc-actions .sc-transfer-btn:hover{background:var(--green2)}
+#salaryCutoffModal .sc-transfer-note{color:var(--green);font-weight:750}
+@media(max-width:520px){
+ #salaryCutoffModal .sc-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+ #salaryCutoffModal .sc-actions .btn{min-width:0;padding-left:8px!important;padding-right:8px!important}
+}
+/* Cutoff transfer dialogs: same look/behavior as the Savings transfer dialogs, stacked above the cutoff form */
+#salaryTransferModal{z-index:30200!important}
+#salaryTransferReviewBackdrop{z-index:30210!important}
+#salaryTransferModal,#salaryTransferReviewBackdrop{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(8,24,19,.66)!important;animation:none!important}
+#salaryTransferModal .modal,#salaryTransferReviewBackdrop .modal{animation:none!important;will-change:auto}
+#salaryTransferBankPicker{contain:layout style;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#salaryTransferModal .bank-option,#salaryTransferModal .bank-favorite,#salaryTransferModal [data-salary-transfer-filter]{touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:none!important}
+@media (hover:none){#salaryTransferModal .bank-option:hover{transform:none!important;box-shadow:none!important}}
 </style>
