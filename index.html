@@ -19453,6 +19453,12 @@ main.main>#page-holidays>.holiday-hero:first-child{
    event.stopImmediatePropagation();
    const hasRecordedExpenses=(Array.isArray(data.transactions)?data.transactions:[])
     .some(t=>t.type==='expense'&&String(t.date||'')===iso);
+   if(iso===today){
+    // Clicking today's date opens the quick-actions FAB so its buttons (Add Expense, etc.) show right away.
+    const fabRoot=document.getElementById('savelyMobileFabRoot');
+    const fabToggle=document.getElementById('savelyMobileFabToggle');
+    if(fabRoot&&fabToggle&&!fabRoot.classList.contains('is-open'))fabToggle.click();
+   }
    if(hasRecordedExpenses)openExpenseDayActions(iso);
    return;
   }
