@@ -5898,16 +5898,32 @@ function updateLiveDateTime(){
   settingsEl.innerHTML=`<div style="font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.5px">${time}</div><div style="font-size:15px;margin-top:5px">${date}</div>`;
  }
 }
+function getLatestSavingsActivityAt(){
+ // Latest real activity across all Savings items: edits, transfers, new items, and daily interest records.
+ let latest=0;
+ for(const item of (Array.isArray(data.savingsList)?data.savingsList:[])){
+  if(!item || item.isReceivable || (item.category||'Savings')!=='Savings')continue;
+  const stamps=[Number(item.updatedAt)];
+  for(const h of (Array.isArray(item.changeHistory)?item.changeHistory:[]))stamps.push(Number(h&&h.at));
+  for(const g of (Array.isArray(item.graphHistory)?item.graphHistory:[]))stamps.push(Number(g&&g.at));
+  for(const t of stamps){if(Number.isFinite(t)&&t>latest&&t<=Date.now()+60000)latest=t;}
+ }
+ // Only fall back to the observed-change time when there is no recorded activity at all.
+ if(!latest){const saved=Number(data.savingsLastUpdatedAt);if(Number.isFinite(saved)&&saved>0)latest=saved;}
+ return latest;
+}
 function updateFinancialSavingsAsOf(){
  const el=document.getElementById('financialSavingsAsOf');
  if(!el)return;
- const now=new Date(Number(data.savingsLastUpdatedAt)||Date.now());
+ const stamp=getLatestSavingsActivityAt();
+ if(!stamp){el.textContent='As of —';return;}
+ const now=new Date(stamp);
  const timezone=(dateTimePrefs&&dateTimePrefs.timezone)||'Asia/Manila';
  try{
-  const time=new Intl.DateTimeFormat('en-PH',{timeZone:timezone,hour:'numeric',minute:'2-digit',second:'2-digit',hour12:!dateTimePrefs||dateTimePrefs.format!=='24'}).format(now);
+  const time=new Intl.DateTimeFormat('en-PH',{timeZone:timezone,hour:'numeric',minute:'2-digit',hour12:!dateTimePrefs||dateTimePrefs.format!=='24'}).format(now);
   const date=new Intl.DateTimeFormat('en-PH',{timeZone:timezone,month:'short',day:'numeric',year:'numeric'}).format(now);
   el.textContent=`As of ${date} · ${time}${timezone==='Asia/Manila'?' PHT':''}`;
-  el.title=`Last savings update · ${timezone}`;
+  el.title=`Last savings activity (edit, transfer, add or daily interest) · ${timezone}`;
  }catch(err){el.textContent='As of '+now.toLocaleString('en-PH');}
 }
 function watchSavingsChanges(){
@@ -5937,16 +5953,19 @@ function watchSavingsChanges(){
  }
 }
 function updateSavingsTotalAsOf(){
+ // Same record as the Savings page top container: latest edit, transfer, add or daily interest.
  const el=document.getElementById('savingsTotalAsOf');
  if(!el)return;
- const now=getDisplayedDateTime();
+ const stamp=getLatestSavingsActivityAt();
+ if(!stamp){el.textContent='As of —';return;}
+ const when=new Date(stamp);
  const timezone=(dateTimePrefs&&dateTimePrefs.timezone)||'Asia/Manila';
  try{
-  const time=new Intl.DateTimeFormat('en-PH',{timeZone:timezone,hour:'numeric',minute:'2-digit',second:'2-digit',hour12:dateTimePrefs.format!=='24'}).format(now);
-  const date=new Intl.DateTimeFormat('en-PH',{timeZone:timezone,month:'short',day:'numeric',year:'numeric'}).format(now);
-  el.textContent=`As of ${time} · ${date}${timezone==='Asia/Manila'?' PHT':''}`;
-  el.title=`Live savings total timestamp · ${timezone}`;
- }catch(err){el.textContent='As of '+new Date().toLocaleString('en-PH');}
+  const time=new Intl.DateTimeFormat('en-PH',{timeZone:timezone,hour:'numeric',minute:'2-digit',hour12:!dateTimePrefs||dateTimePrefs.format!=='24'}).format(when);
+  const date=new Intl.DateTimeFormat('en-PH',{timeZone:timezone,month:'short',day:'numeric',year:'numeric'}).format(when);
+  el.textContent=`As of ${date} · ${time}${timezone==='Asia/Manila'?' PHT':''}`;
+  el.title=`Last savings activity (edit, transfer, add or daily interest) · ${timezone}`;
+ }catch(err){el.textContent='As of '+when.toLocaleString('en-PH');}
 }
 
 function salarySettingsForYear(year){
@@ -8202,7 +8221,7 @@ const overviewSalaryRemaining=getSalaryRemainingProjection(new Date().getFullYea
 document.getElementById('stats').innerHTML=`<div class="summary-carousel" aria-label="Financial summary cards">
  <div class="summary-carousel-viewport">
   <div class="summary-carousel-track" id="summaryCarouselTrack" tabindex="0" aria-roledescription="carousel" aria-label="Financial summary">
-   <div class="summary-carousel-slide" data-summary-card="savings" role="group" aria-label="1 of 3"><div class="stat"><div class="stat-top">Savings total <span class="stat-icon" style="background:#e5f7ef;color:#169b70">₱</span></div><div class="stat-value savely-private-number" style="color:var(--green)">${peso(savingsTotal)}</div><div class="stat-foot">Savings savings</div><div class="stat-foot savings-total-asof" id="savingsTotalAsOf" style="margin-top:5px;font-size:10px">As of —</div>${deltaHtml(savingsDelta)}</div></div>
+   <div class="summary-carousel-slide" data-summary-card="savings" role="group" aria-label="1 of 3"><div class="stat"><div class="stat-top">Savings total <span class="stat-icon" style="background:#e5f7ef;color:#169b70">₱</span></div><div class="stat-value savely-private-number" style="color:var(--green)">${peso(savingsTotal)}</div><div class="stat-foot">Savings savings</div><div class="stat-foot savings-total-asof" id="savingsTotalAsOf" style="margin-top:5px;font-size:10px">As of —</div></div></div>
    <div class="summary-carousel-slide" data-summary-card="income" role="group" aria-label="2 of 3"><div class="stat"><div class="stat-top">Salary / income total <span class="stat-icon" style="background:#edf1ff;color:#536be0">↗</span></div><div class="stat-value savely-private-number" style="color:var(--blue)">${peso(overviewSalaryRemaining)}</div><div class="stat-foot">Remaining salary in ${new Date().getFullYear()}</div></div></div>
    <div class="summary-carousel-slide" data-summary-card="debt" role="group" aria-label="3 of 3"><div class="stat"><div class="stat-top">Debt total <span class="stat-icon" style="background:#fff1e7;color:#e64b5b">−</span></div><div class="stat-value savely-private-number" style="color:var(--red)">${peso(debtTotal)}</div><div class="stat-foot">I owe · remaining balance</div></div></div>
   </div>
@@ -8213,6 +8232,7 @@ document.getElementById('stats').innerHTML=`<div class="summary-carousel" aria-l
   <button type="button" class="summary-carousel-dot" data-summary-slide="2" aria-label="Show Debt total"></button>
  </div>
 </div>`;
+try{updateSavingsTotalAsOf();}catch(e){}
 initSummaryCarousel();
 document.getElementById('mainGoal').innerHTML=goal?`<div class="between"><span>${esc(goal.name)}</span><span class="savely-private-number">${prog.toFixed(1)}%</span></div><div class="goal-amount savely-private-number">${peso(goalBalance)} <span style="font-size:13px;color:var(--muted);font-weight:600">of ${peso(goal.target)}</span></div><div class="progress"><span style="width:${prog}%"></span></div><div class="between"><span>Current savings + salary / income total</span><strong class="savely-private-number" style="color:var(--text)">${peso(Math.max(0,goal.target-goalBalance))} remaining</strong></div><div class="goal-meta"><div class="mini">✦</div><div><strong>${goalBalance>=goal.target?'Goal reached — amazing work!':'You are building a great habit.'}</strong><small>${goal.due?'Target date: '+fmtDate(goal.due):'Every deposit gets you closer.'}</small></div></div>`:'<div class="empty">Create your first savings goal.</div>';
 const vals=[];for(let i=5;i>=0;i--){let d=new Date();d.setDate(1);d.setMonth(d.getMonth()-i);let m=d.toISOString().slice(0,7);let net=data.transactions.filter(t=>t.date.slice(0,7)===m).reduce((s,t)=>s+((t.type==='deposit'||t.type==='interest')?+t.amount:- +t.amount),0);vals.push({m,label:d.toLocaleDateString('en-PH',{month:'short'}),v:net})}let max=Math.max(1,...vals.map(v=>Math.abs(v.v)));document.getElementById('chart').innerHTML=vals.map((v,i)=>`<div class="bar-wrap" title="${esc(v.m)}: ${peso(v.v)}"><div class="bar ${i===5?'current':''}" style="height:${Math.max(4,Math.abs(v.v)/max*78)}%"></div><div class="bar-label">${v.label}</div></div>`).join('');
@@ -9410,6 +9430,7 @@ function renderSavingsList(){
   : `<div class="stat-foot" style="color:var(--muted)">No increase recorded</div>`;
  document.getElementById('financialCategoryStats').innerHTML=
   `<div class="stat savings-total-card"><div class="stat-top">Savings total</div><div class="stat-value" style="color:var(--green)">${peso(savings)}</div><div class="stat-foot" id="financialSavingsAsOf" style="margin-top:5px;font-size:10px">As of —</div>${savingsChangeHtml}</div>`;
+ try{updateFinancialSavingsAsOf();}catch(e){}
  renderSavingsTrend();
  renderOverallTrend();
  const target=document.getElementById('savingsListTable');
@@ -23380,6 +23401,9 @@ html body #stats.cards .summary-carousel-slide .stat [class*="delta"]{align-self
 (function(){
  function run(){try{if(typeof accrueRealtimeInterest==='function')accrueRealtimeInterest();}catch(e){console.error('Daily interest accrual failed:',e);}}
  run();
+ function refreshAsOf(){try{if(typeof watchSavingsChanges==='function')watchSavingsChanges();if(typeof updateFinancialSavingsAsOf==='function')updateFinancialSavingsAsOf();if(typeof updateSavingsTotalAsOf==='function')updateSavingsTotalAsOf();}catch(e){console.error(e);}}
+ refreshAsOf();
+ setInterval(function(){if(!document.hidden)refreshAsOf();},1000);
  setInterval(run,30000);
  document.addEventListener('visibilitychange',function(){if(!document.hidden)run();});
  window.addEventListener('focus',run);
