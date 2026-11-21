@@ -9112,7 +9112,7 @@ function renderOverallTrend(){
  if(!ctx){if(meta)meta.textContent='Your browser does not support canvas charts.';return;}
  const graphViewport=canvas.parentElement;
  const viewportWidth=Math.max(320,Math.round(graphViewport.clientWidth||600));
- const historyPointCount=Math.max(1,events.length);
+ const historyPointCount=Math.max(1,allEvents.length);
  const graphContentWidth=Math.max(viewportWidth,Math.min(9000,Math.round(110+historyPointCount*54)));
  canvas.style.width=graphContentWidth+'px';
  canvas.style.minWidth=graphContentWidth+'px';
@@ -21419,7 +21419,7 @@ html body #topbarAddDebtButton {
   }
   const setParts=(days,hours,minutes,seconds)=>{
    const values={salaryPaydayDays:days,salaryPaydayHours:hours,salaryPaydayMinutes:minutes,salaryPaydaySeconds:seconds};
-   Object.entries(values).forEach(([id,value])=>{const el=$(id);if(el)el.textContent=String(value).padStart(2,'0');});
+   Object.entries(values).forEach(([id,value])=>{const el=$(id);if(el)el.textContent=(value==='—')?'—':String(value).padStart(2,'0');});
   };
   const next=findNextPayday();
   if(!next){dateEl.textContent='No upcoming payday';timerEl.textContent='Set your salary and payday schedule';setParts('—','—','—','—');return;}
@@ -22718,4 +22718,63 @@ html body.expense-editor-active #page-expense-editor #expenseComposer .expense-c
  html body.expense-editor-active #page-expense-editor #expenseComposer .expense-composer-summary > div{text-align:right!important;justify-items:end!important}
  html body.expense-editor-active #page-expense-editor #expenseComposer .expense-composer-summary .expense-summary-note{text-align:right!important}
 }
+</style>
+
+<script id="savely-desktop-site-fit-v1">
+/* Android "Desktop site" mode: the browser pretends the phone is ~980px wide, so the page renders tiny.
+   On a touch phone showing a desktop-sized viewport, scale the UI up and make the phone layout (media queries) apply.
+   Normal phones, tablets and desktops are never touched. Re-evaluates when the phone is rotated. */
+(function(){
+ 'use strict';
+ var root=document.documentElement,rules=[],collected=false,cur=1,timer=null;
+ function scale(text,z){
+  return String(text).replace(/((?:min-|max-)?(?:width|height)\s*:\s*)([\d.]+)px/gi,function(m,a,n){return a+(parseFloat(n)*z).toFixed(2)+'px';});
+ }
+ function walk(list){
+  for(var i=0;i<list.length;i++){
+   var r=list[i];
+   try{
+    if(r.type===4&&r.media&&/(width|height)/i.test(r.media.mediaText))rules.push({r:r,orig:r.media.mediaText});
+    if(r.cssRules&&r.cssRules.length)walk(r.cssRules);
+   }catch(e){}
+  }
+ }
+ function collect(){
+  for(var k=0;k<document.styleSheets.length;k++){try{walk(document.styleSheets[k].cssRules);}catch(e){}}
+  collected=true;
+ }
+ function apply(){
+  try{
+   var iw=window.innerWidth||0,z=1;
+   var phone=(navigator.maxTouchPoints||0)>0&&Math.min(screen.width||9999,screen.height||9999)<=600;
+   if(phone&&iw>=800){
+    z=iw/Math.max(360,screen.width||412);
+    if(!(z>1.2&&z<4))z=1;
+   }
+   if(Math.abs(z-cur)<0.01)return;
+   cur=z;
+   window.__savelyDesktopSiteFit=z>1?z:0;
+   root.classList.toggle('savely-desktop-site',z>1);
+   root.style.zoom=z>1?String(z):'';
+   if(!collected)collect();
+   for(var i=0;i<rules.length;i++){
+    var t=z>1?scale(rules[i].orig,z):rules[i].orig;
+    try{if(rules[i].r.media.mediaText!==t)rules[i].r.media.mediaText=t;}catch(e){}
+   }
+   try{window.dispatchEvent(new Event('resize'));}catch(e){}
+  }catch(err){console.warn('Savely desktop-site fit skipped',err);}
+ }
+ var mm=window.matchMedia&&window.matchMedia.bind(window);
+ if(mm)window.matchMedia=function(q){return mm(cur>1?scale(q,cur):q);};
+ function later(){clearTimeout(timer);timer=setTimeout(apply,250);}
+ window.addEventListener('orientationchange',later);
+ window.addEventListener('resize',later,{passive:true});
+ try{if(screen.orientation&&screen.orientation.addEventListener)screen.orientation.addEventListener('change',later);}catch(e){}
+ apply();
+})();
+</script>
+<style id="savely-expense-title-contrast-v1">
+body.dark-theme #expenseComposer .expense-composer-section h2,
+body.dark-theme #expenseComposer .expense-composer-section h3,
+body.dark-theme #expenseComposer .expense-composer-section-title{color:var(--text,#eef5f1)!important}
 </style>
